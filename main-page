@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AskMe Search</title>
+<style>
+  /* Reset some defaults */
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4a90e2, #50e3c2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+
+  .search-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px 60px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .logo {
+    font-size: 2.25rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    margin-bottom: 30px;
+    user-select: none;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  form {
+    display: flex;
+    gap: 12px;
+  }
+
+  input[type="search"] {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 1.25rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+
+  input[type="search"]:focus {
+    box-shadow: 0 0 8px 3px #50e3c2;
+    background-color: rgba(255,255,255,0.9);
+    color: #000;
+  }
+
+  button {
+    padding: 0 28px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 10px;
+    border: none;
+    background: #50e3c2;
+    color: #003333;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.15s ease;
+    box-shadow: 0 4px 10px rgba(80, 227, 194, 0.7);
+  }
+
+  button:hover, button:focus {
+    background: #38b89d;
+    outline: none;
+    transform: scale(1.05);
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 480px) {
+    .search-container {
+      padding: 30px 20px;
+    }
+    .logo {
+      font-size: 1.75rem;
+      margin-bottom: 20px;
+    }
+    form {
+      flex-direction: column;
+      gap: 16px;
+    }
+    button {
+      padding: 14px;
+      width: 100%;
+    }
+  }
+
+  /* Screen reader only helper class */
+  .sr-only {
+    position: absolute;
+    width: 1px; 
+    height: 1px; 
+    padding: 0; 
+    margin: -1px; 
+    overflow: hidden; 
+    clip: rect(0, 0, 0, 0); 
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+  <main class="search-container" role="main" aria-label="AskMe Search Engine">
+    <div class="logo" aria-label="AskMe logo" role="img">https://askme.co.uk</div>
+    <form action="https://askme.co.uk/search" method="get" target="_blank" role="search" aria-labelledby="search-label">
+      <label for="search-input" id="search-label" class="sr-only">Search AskMe</label>
+      <input 
+        type="search" 
+        name="q" 
+        id="search-input" 
+        placeholder="Type your query here..." 
+        autocomplete="off" 
+        required 
+        aria-required="true"
+        aria-describedby="help-text"
+      />
+      <button type="submit" aria-label="Submit search">Go</button>
+    </form>
+    <p id="help-text" class="sr-only">Enter search keywords and press Go or Enter to search AskMe.</p>
+  </main>
+
+</body>
+</html>
