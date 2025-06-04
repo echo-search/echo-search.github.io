@@ -9,7 +9,7 @@
     :root {
       --bg-color: #f1f3f4;
       --text-color: #000;
-      --accent-color: #4285f4;
+      --accent-color: #00b0ff;
     }
 
     body.dark {
@@ -18,7 +18,7 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: var(--bg-color);
       color: var(--text-color);
       margin: 0;
@@ -28,7 +28,7 @@
     }
 
     h1 {
-      font-size: 3em;
+      font-size: 2.5em;
       color: var(--accent-color);
       margin-bottom: 10px;
     }
@@ -59,9 +59,14 @@
       color: #fff;
     }
 
+    .logo {
+      width: 200px;
+      margin-bottom: 20px;
+    }
+
     @media (max-width: 600px) {
-      input.gsc-input {
-        width: 90%;
+      .logo {
+        width: 150px;
       }
     }
   </style>
@@ -71,7 +76,7 @@
     <button class="toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
   </div>
 
-  <h1>EchoSearch</h1>
+  <img src="logo.png" alt="EchoSearch Logo" class="logo">
   <gcse:search></gcse:search>
 
   <script>
