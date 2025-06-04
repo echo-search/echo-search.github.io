@@ -1,80 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EchoSearch</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f1f3f4;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      color: #4285f4;
-    }
-    #searchInput {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-    }
-    #results {
-      margin-top: 20px;
-    }
-    .result-item {
-      background-color: #fff;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-    .result-item h2 {
-      margin: 0 0 10px 0;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>EchoSearch</h1>
-  <input type="text" id="searchInput" placeholder="Type to search..." oninput="performSearch()" />
-
-  <div id="results"></div>
-
-  <script src="data.js"></script>
-  <script>
-    function performSearch() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const resultsContainer = document.getElementById('results');
-      resultsContainer.innerHTML = '';
-
-      if (!query) return;
-
-      const results = documents.filter(doc =>
-        doc.title.toLowerCase().includes(query) ||
-        doc.content.toLowerCase().includes(query)
-      );
-
-      if (results.length === 0) {
-        resultsContainer.innerHTML = '<p>No results found.</p>';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <title>EchoSearch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f1f3f4;
+        margin: 0;
+        padding: 40px 20px;
+        text-align: center;
       }
 
-      results.forEach(result => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
+      h1 {
+        font-size: 3em;
+        color: #4285f4;
+        margin-bottom: 10px;
+      }
 
-        const title = document.createElement('h2');
-        title.textContent = result.title;
+      input.gsc-input {
+        border-radius: 20px;
+        padding: 10px;
+        width: 70%;
+      }
 
-        const content = document.createElement('p');
-        content.textContent = result.content;
+      .gcse-search {
+        margin-top: 20px;
+      }
 
-        resultItem.appendChild(title);
-        resultItem.appendChild(content);
-        resultsContainer.appendChild(resultItem);
-      });
-    }
-  </script>
-
-</body>
+      @media (max-width: 600px) {
+        input.gsc-input {
+          width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>EchoSearch</h1>
+    <gcse:search></gcse:search>
+  </body>
 </html>
