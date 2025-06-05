@@ -99,17 +99,32 @@ button {
   padding: 0.3rem;
   border-radius: 10px;
 }
-#aiOverview {
-  max-width: 800px;
-  margin: 2rem auto 1rem;
+.tabs {
+  text-align: center;
+  margin-top: 1rem;
+}
+.tabs button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: bold;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+#calculator-result {
+  display: none;
+  margin: 1rem auto;
+  max-width: 700px;
   padding: 1rem;
-  border-radius: 16px;
-  background: var(--bg-blur);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: #dfe6e9;
+  border-left: 5px solid var(--accent);
+  border-radius: 10px;
+  font-size: 1.2rem;
 }
 #results {
   max-width: 800px;
-  margin: 1rem auto 2rem;
+  margin: 2rem auto;
   padding: 0 1rem;
 }
 
@@ -136,25 +151,51 @@ button {
       <select id="theme" onchange="changeTheme(this.value)">
         <option value="default">Default</option>
         <option value="dark">Dark</option>
-        <option value="retro">Retro</option>
-        <option value="neon">Neon</option>
       </select>
     </div>
-  </div>  <div id="aiOverview" style="display: none;"></div>
+    <div class="tabs">
+      <button onclick="setSearchType('')">All</button>
+      <button onclick="setSearchType('image')">Images</button>
+      <button onclick="setSearchType('news')">News</button>
+    </div>
+  </div>  <div id="calculator-result"></div>
   <div id="results">
     <div class="gcse-searchresults-only"></div>
   </div>  <script>
+    let searchType = '';
+
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
     }
 
+    function setSearchType(type) {
+      searchType = type;
+    }
+
+    function isMathExpression(input) {
+      return /^[0-9+\-*/^().sqrt\s]+$/.test(input);
+    }
+
     function performSearch() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (query) {
-        showAIOOverview(query);
-        google.search.cse.element.getElement('results').execute(query);
-        localStorage.setItem('lastSearch', query);
+      const input = document.getElementById('searchInput').value.trim();
+      const calcResult = document.getElementById('calculator-result');
+
+      try {
+        if (isMathExpression(input)) {
+          const result = eval(input.replace(/sqrt([^)]+)/g, 'Math.sqrt($1)'));
+          calcResult.style.display = 'block';
+          calcResult.textContent = `🧮 Result: ${result}`;
+          return;
+        } else {
+          calcResult.style.display = 'none';
+        }
+      } catch (e) {
+        calcResult.style.display = 'none';
       }
+
+      const query = input + (searchType ? ` ${searchType}` : '');
+      google.search.cse.element.getElement('results').execute(query);
+      localStorage.setItem('lastSearch', input);
     }
 
     function randomSurprise() {
@@ -184,32 +225,6 @@ button {
       };
     }
 
-    function showAIOOverview(query) {
-      const overview = document.getElementById("aiOverview");
-      overview.style.display = "block";
-      overview.innerHTML = "<strong>AI Overview:</strong> Thinking...";
-      fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer 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"
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: `Give a concise answer to: ${query}` }],
-          max_tokens: 150
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const answer = data.choices?.[0]?.message?.content || "No response from AI.";
-        overview.innerHTML = `<strong>AI Overview:</strong> ${answer}`;
-      })
-      .catch(err => {
-        overview.innerHTML = "<strong>AI Overview:</strong> Error fetching AI response.";
-      });
-    }
-
     window.__gcse = {
       callback: function () {
         if (localStorage.getItem('lastSearch')) {
@@ -226,4 +241,4 @@ button {
       document.body.appendChild(gcse);
     })();
   </script></body>
-  </html>
+</html>
