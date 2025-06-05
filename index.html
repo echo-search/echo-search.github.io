@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EchoSearch</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
   <style>
     :root {
       --bg: #fff;
@@ -19,7 +20,6 @@
       color: var(--text);
       transition: all 0.3s;
     }
-
     header {
       text-align: center;
       padding: 2rem 1rem 1rem;
@@ -29,7 +29,6 @@
       font-family: 'Pacifico', cursive;
       color: var(--accent);
     }
-
     .toggle-dark {
       position: fixed;
       top: 1rem;
@@ -41,7 +40,6 @@
       color: var(--accent);
       cursor: pointer;
     }
-
     .search-container {
       max-width: 700px;
       margin: 0 auto;
@@ -96,6 +94,10 @@
       padding: 0.3rem;
       border-radius: 10px;
     }
+    .gcse-searchresults-only {
+      max-width: 700px;
+      margin: 2rem auto;
+    }
   </style>
 </head>
 <body>
@@ -133,20 +135,40 @@
     </div>
   </div>
 
-  <!-- 🔥 Removed the broken iframe -->
+  <div class="gcse-searchresults-only"></div>
 
   <script>
     const themes = {
-      default: { '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9', '--font': 'Segoe UI, sans-serif' },
-      dark: { '--bg': '#121212', '--text': '#ffffff', '--accent': '#00cec9' },
-      retro: { '--bg': '#fdf6e3', '--text': '#586e75', '--accent': '#2aa198', '--font': 'Courier New, monospace' },
-      neon: { '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff', '--font': 'Orbitron, sans-serif' },
-      ocean: { '--bg': '#e0f7fa', '--text': '#006064', '--accent': '#0097a7' },
-      midnight: { '--bg': '#1a1a2e', '--text': '#e0e0e0', '--accent': '#7f00ff' },
-      sunset: { '--bg': 'linear-gradient(to right, #ff7e5f, #feb47b)', '--text': '#4e342e', '--accent': '#ff7043' },
-      matrix: { '--bg': '#000000', '--text': '#00ff00', '--accent': '#00ff00', '--font': 'Courier New, monospace' },
-      cyberpunk: { '--bg': '#2a2a2a', '--text': '#f50057', '--accent': '#00e5ff' },
-      forest: { '--bg': '#e8f5e9', '--text': '#2e7d32', '--accent': '#66bb6a', '--font': 'Georgia, serif' }
+      default: {
+        '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9', '--font': 'Segoe UI, sans-serif'
+      },
+      dark: {
+        '--bg': '#121212', '--text': '#ffffff', '--accent': '#00cec9'
+      },
+      retro: {
+        '--bg': '#fdf6e3', '--text': '#586e75', '--accent': '#2aa198', '--font': 'Courier New, monospace'
+      },
+      neon: {
+        '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff', '--font': 'Orbitron, sans-serif'
+      },
+      ocean: {
+        '--bg': '#e0f7fa', '--text': '#006064', '--accent': '#0097a7'
+      },
+      midnight: {
+        '--bg': '#1a1a2e', '--text': '#e0e0e0', '--accent': '#7f00ff'
+      },
+      sunset: {
+        '--bg': 'linear-gradient(to right, #ff7e5f, #feb47b)', '--text': '#4e342e', '--accent': '#ff7043'
+      },
+      matrix: {
+        '--bg': '#000000', '--text': '#00ff00', '--accent': '#00ff00', '--font': 'Courier New, monospace'
+      },
+      cyberpunk: {
+        '--bg': '#2a2a2a', '--text': '#f50057', '--accent': '#00e5ff'
+      },
+      forest: {
+        '--bg': '#e8f5e9', '--text': '#2e7d32', '--accent': '#66bb6a', '--font': 'Georgia, serif'
+      }
     };
 
     function changeTheme(theme) {
@@ -173,8 +195,14 @@
         } catch {}
       }
 
-      const url = `https://cse.google.com/cse?cx=8504b5117a0734987&q=${encodeURIComponent(query)}`;
-      window.open(url, '_blank');
+      
+      const element = google.search.cse.element.getElement('searchresults-only0');
+      if (element) {
+        element.execute(query);
+      } else {
+        document.querySelector('input.gsc-input').value = query;
+        document.querySelector('input.gsc-search-button').click();
+      }
     }
 
     function randomSurprise() {
@@ -195,7 +223,7 @@
         "People are more likely to remember emotionally charged events.",
         "Cleopatra lived closer to the iPhone than to the Great Pyramid.",
         "Your brain uses about 20% of your body’s energy.",
-        "Yawning cools down your brain."
+        "Yawning cools down your brain.",
       ];
       alert(facts[Math.floor(Math.random() * facts.length)]);
     }
@@ -213,4 +241,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
