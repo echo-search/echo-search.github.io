@@ -6,90 +6,36 @@
   <title>EchoSearch</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #ffffff;
-      --text: #000000;
-      --accent: #00cec9;
-    }
-
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: 0.3s;
-    }
-
-    header {
-      text-align: center;
-      padding: 2rem 1rem 1rem;
+      transition: background 0.3s, color 0.3s;
     }
 
     .logo {
       font-size: 3rem;
       font-family: 'Pacifico', cursive;
-      color: var(--accent);
-    }
-
-    .toggle-dark {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: none;
-      border: 2px solid var(--accent);
-      padding: 0.5rem 1rem;
-      color: var(--accent);
-      cursor: pointer;
-      border-radius: 30px;
+      text-align: center;
+      margin-top: 2rem;
     }
 
     .search-container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 0.5rem;
+      text-align: center;
+      padding: 2rem;
     }
 
     input[type="search"] {
-      flex-grow: 1;
-      font-size: 1.2rem;
       padding: 0.6rem 1rem;
+      font-size: 1.2rem;
+      width: 60%;
       border-radius: 30px;
       border: 2px solid var(--accent);
     }
 
-    .voice-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent);
-      border: none;
-      cursor: pointer;
-    }
-
-    .voice-btn svg {
-      fill: white;
-      width: 24px;
-      height: 24px;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
+    button, select {
       margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-
-    button {
-      padding: 0.6rem 1.2rem;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
       border-radius: 30px;
       border: none;
       background: var(--accent);
@@ -98,174 +44,177 @@
       cursor: pointer;
     }
 
-    .theme-selector {
-      margin-top: 1rem;
-      text-align: center;
-    }
-
-    .theme-selector select {
-      padding: 0.3rem;
-      border-radius: 10px;
-    }
-
-    .tabs {
-      max-width: 800px;
-      margin: 1rem auto 0;
-      text-align: center;
-    }
-
-    .tabs button {
-      background: none;
-      color: var(--text);
-      border: none;
-      font-weight: bold;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-    }
-
-    .tabs button.active {
-      border-bottom: 3px solid var(--accent);
-    }
-
-    #results {
-      max-width: 800px;
+    #resultBox {
+      max-width: 700px;
       margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 1rem;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 1rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
+    .gcse-searchresults-only {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    /* Themes */
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --accent: #00cec9;
+      --card: #f5f5f5;
+    }
+
+    body.theme-dark {
+      --bg: #121212;
+      --text: #ffffff;
+      --accent: #bb86fc;
+      --card: #1e1e1e;
+    }
+
+    body.theme-retro {
+      --bg: #fef9e7;
+      --text: #4b2e2e;
+      --accent: #d4ac0d;
+      --card: #fcf3cf;
+    }
+
+    body.theme-neon {
+      --bg: #000000;
+      --text: #39ff14;
+      --accent: #ff00ff;
+      --card: #1a1a1a;
+    }
+
+    body.theme-solar-light {
+      --bg: #fdf6e3;
+      --text: #657b83;
+      --accent: #268bd2;
+      --card: #eee8d5;
+    }
+
+    body.theme-solar-dark {
+      --bg: #002b36;
+      --text: #839496;
+      --accent: #b58900;
+      --card: #073642;
+    }
+
+    body.theme-terminal {
+      --bg: #000000;
+      --text: #33ff33;
+      --accent: #00ffcc;
+      --card: #1a1a1a;
+    }
+
+    body.theme-ocean {
+      --bg: #d0f0f9;
+      --text: #004466;
+      --accent: #00aaff;
+      --card: #e0f7ff;
+    }
+
+    body.theme-pastel {
+      --bg: #ffe0f0;
+      --text: #804070;
+      --accent: #ff80c0;
+      --card: #fff0fa;
+    }
+
+    body.theme-forest {
+      --bg: #e6f4ea;
+      --text: #2e4d2e;
+      --accent: #4caf50;
+      --card: #d0e0d0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    input, select, button {
+      border: 2px solid var(--accent);
+    }
+
+    button {
+      background-color: var(--accent);
     }
   </style>
 </head>
-<body>
-  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark</button>
-
-  <header>
-    <div class="logo">EchoSearch</div>
-  </header>
+<body class="theme-default">
+  <div class="logo">EchoSearch</div>
 
   <div class="search-container">
-    <div class="search-box">
-      <input type="search" id="searchInput" placeholder="Type your search...">
-      <button class="voice-btn" id="voiceBtn" title="Voice input">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="buttons">
-      <button onclick="performSearch()">Search</button>
-      <button onclick="randomSurprise()">🎲 Surprise Me</button>
-    </div>
-
-    <div class="theme-selector">
-      <label>Theme:</label>
-      <select onchange="changeTheme(this.value)">
-        <option value="">Select</option>
-        <option value="default">Default</option>
-        <option value="dark">Dark</option>
-        <option value="retro">Retro</option>
-        <option value="neon">Neon</option>
-        <option value="contrast">High Contrast</option>
-        <option value="pastel">Pastel</option>
-        <option value="terminal">Terminal</option>
-        <option value="purple">Purple Vibes</option>
-        <option value="glass">Glassmorphism</option>
-      </select>
-    </div>
+    <input type="search" id="searchInput" placeholder="Type your search..." />
+    <br />
+    <button onclick="handleSearch()">Search</button>
+    <button onclick="startVoice()">🎤</button>
+    <br /><br />
+    <label for="theme">🎨 Theme: </label>
+    <select id="theme" onchange="changeTheme(this.value)">
+      <option value="default">Default</option>
+      <option value="dark">Dark</option>
+      <option value="retro">Retro</option>
+      <option value="neon">Neon</option>
+      <option value="solar-light">Solarized Light</option>
+      <option value="solar-dark">Solarized Dark</option>
+      <option value="terminal">Terminal</option>
+      <option value="ocean">Ocean</option>
+      <option value="pastel">Pastel</option>
+      <option value="forest">Forest</option>
+    </select>
   </div>
 
-  <div class="tabs">
-    <button onclick="setTab('all')" class="active" id="tabAll">All</button>
-    <button onclick="setTab('images')" id="tabImages">Images</button>
-    <button onclick="setTab('news')" id="tabNews">News</button>
-  </div>
-
-  <div id="results">
-    <div id="calcResult" style="font-weight:bold; font-size:1.3rem; margin-bottom:1rem;"></div>
-    <div class="gcse-searchresults-only"></div>
-  </div>
+  <div id="resultBox"></div>
+  <!-- Google Search Element container -->
+  <div class="gcse-searchresults-only"></div>
 
   <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark');
-    }
+    const changeTheme = (theme) => {
+      document.body.className = 'theme-' + theme;
+    };
 
-    function performSearch() {
+    const handleSearch = () => {
       const query = document.getElementById('searchInput').value.trim();
-      if (!query) return;
-
-      // Check for math query
-      try {
-        if (/^[\d+\-*/().\s]+$/.test(query)) {
-          document.getElementById('calcResult').innerText = "Answer: " + eval(query);
-        } else {
-          document.getElementById('calcResult').innerText = "";
-        }
-      } catch (e) {
-        document.getElementById('calcResult').innerText = "";
+      const mathPattern = /^[\d\s\+\-\*\/\.]+$/;
+      if (mathPattern.test(query)) {
+        try {
+          const result = eval(query);
+          const resultBox = document.getElementById("resultBox");
+          resultBox.style.display = "block";
+          resultBox.innerText = `🧮 Result: ${result}`;
+          return;
+        } catch (e) {}
       }
 
-      google.search.cse.element.getElement('results').execute(query);
-      localStorage.setItem('lastSearch', query);
-    }
+      document.getElementById("resultBox").style.display = "none";
+      google.search.cse.element.getElement("results").execute(query);
+    };
 
-    function randomSurprise() {
-      const facts = [
-        "Honey never spoils.",
-        "Bananas are berries, strawberries aren’t.",
-        "Oxford Uni is older than the Aztec Empire.",
-        "A day on Venus is longer than a year.",
-        "You can't hum holding your nose."
-      ];
-      alert(facts[Math.floor(Math.random() * facts.length)]);
-    }
-
-    function changeTheme(theme) {
-      const root = document.documentElement.style;
-      const themes = {
-        default: { '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9' },
-        dark: { '--bg': '#121212', '--text': '#f4f4f4', '--accent': '#00cec9' },
-        retro: { '--bg': '#fcf1d5', '--text': '#3e2f1c', '--accent': '#ff6f00' },
-        neon: { '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff' },
-        contrast: { '--bg': '#000', '--text': '#fff', '--accent': '#ffff00' },
-        pastel: { '--bg': '#fdf6f0', '--text': '#333', '--accent': '#f7b2ad' },
-        terminal: { '--bg': '#0d0208', '--text': '#00ff00', '--accent': '#00ff00' },
-        purple: { '--bg': '#2e003e', '--text': '#f3e5f5', '--accent': '#a020f0' },
-        glass: { '--bg': 'rgba(0,0,0,0.4)', '--text': '#ffffff', '--accent': '#ffffff' }
-      };
-      const selected = themes[theme];
-      if (selected) for (let key in selected) root.setProperty(key, selected[key]);
-    }
-
-    function setTab(tab) {
-      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
-      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
-      // Could filter results in the future
-    }
-
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    const startVoice = () => {
+      if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        alert("Voice input not supported");
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
       recognition.lang = 'en-US';
       recognition.interimResults = false;
-      document.getElementById('voiceBtn').onclick = () => recognition.start();
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         document.getElementById('searchInput').value = transcript;
-        performSearch();
+        handleSearch();
       };
-    }
+      recognition.start();
+    };
 
     window.__gcse = {
       callback: function () {
-        const last = localStorage.getItem('lastSearch');
-        if (last) google.search.cse.element.getElement('results').execute(last);
+        const last = localStorage.getItem("lastSearch");
+        if (last) google.search.cse.element.getElement("results").execute(last);
       }
     };
 
