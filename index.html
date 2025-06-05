@@ -1,285 +1,229 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EchoSearch</title>
-<style>
-  :root {
-    --bg-light: #f4f4f4;
-    --text-light: #111;
-    --bg-dark: #121212;
-    --text-dark: #f4f4f4;
-    --accent: #00cec9;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EchoSearch Advanced</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #f4f4f4;
+      --text-light: #111;
+      --bg-dark: #121212;
+      --text-dark: #f4f4f4;
+      --accent: #00cec9;
+      --bg-blur: rgba(255, 255, 255, 0.05);
+    }body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
 
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-light);
-    color: var(--text-light);
-    transition: background 0.3s, color 0.3s;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+.logo {
+  font-size: 3rem;
+  font-family: 'Pacifico', cursive;
+  color: var(--accent);
+}
 
-  body.dark {
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
-  }
+.toggle-dark {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: 2px solid var(--accent);
+  padding: 0.5rem 1rem;
+  color: var(--accent);
+  cursor: pointer;
+  border-radius: 30px;
+}
 
-  header {
-    text-align: center;
-    padding: 2rem 1rem 1rem;
-    flex-shrink: 0;
-  }
+.search-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+.search-box {
+  display: flex;
+  gap: 0.5rem;
+}
+input[type="search"] {
+  flex-grow: 1;
+  font-size: 1.2rem;
+  padding: 0.6rem 1rem;
+  border-radius: 30px;
+  border: 2px solid var(--accent);
+}
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.voice-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.voice-btn svg {
+  fill: white;
+  width: 24px;
+  height: 24px;
+}
+.theme-selector {
+  margin-top: 1rem;
+  text-align: center;
+}
+.theme-selector select {
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+#aiOverview {
+  max-width: 800px;
+  margin: 2rem auto 1rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: var(--bg-blur);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+#results {
+  max-width: 800px;
+  margin: 1rem auto 2rem;
+  padding: 0 1rem;
+}
 
-  .logo {
-    font-size: 3rem;
-    font-family: 'Brush Script MT', cursive;
-    font-weight: bold;
-    color: var(--accent);
-    margin-bottom: 1rem;
-  }
-
-  .toggle-dark {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: 2px solid var(--accent);
-    border-radius: 25px;
-    padding: 0.5rem 1rem;
-    color: var(--accent);
-    cursor: pointer;
-    font-weight: bold;
-    z-index: 1000;
-  }
-
-  .search-container {
-    max-width: 700px;
-    margin: 0 auto 2rem;
-    padding: 0 1rem;
-    width: 100%;
-    flex-grow: 0;
-  }
-
-  .search-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-    gap: 0.5rem;
-  }
-
-  input[type="search"] {
-    flex-grow: 1;
-    font-size: 1.2rem;
-    padding: 0.6rem 1rem;
-    border: 2px solid var(--accent);
-    border-radius: 30px;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-
-  input[type="search"]:focus {
-    border-color: #019a99;
-  }
-
-  button {
-    background-color: var(--accent);
-    border: none;
-    color: white;
-    font-size: 1.1rem;
-    padding: 0.7rem 1.5rem;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: bold;
-  }
-
-  button:hover {
-    background-color: #019a99;
-  }
-
-  .voice-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .voice-btn svg {
-    width: 24px;
-    height: 24px;
-    fill: white;
-  }
-
-  .voice-btn.listening {
-    background-color: #ff3b3b !important;
-  }
-
-  .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  #results {
-    max-width: 800px;
-    margin: 0 auto 2rem;
-    padding: 0 1rem;
-    flex-grow: 1;
-  }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    .logo {
-      font-size: 2.2rem;
-    }
-    .search-box {
-      flex-direction: row;
-      gap: 0.5rem;
-    }
-    button {
-      width: 100%;
-      max-width: 300px;
-    }
-  }
-</style>
+  </style>
 </head>
 <body>
-<button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>  <header>
+    <div class="logo">EchoSearch</div>
+  </header>  <div class="search-container">
+    <div class="search-box">
+      <input type="search" id="searchInput" placeholder="Type your search..." />
+      <button class="voice-btn" id="voiceBtn" title="Voice input">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="buttons">
+      <button onclick="performSearch()">Search</button>
+      <button onclick="randomSurprise()">🎲 Surprise Me</button>
+    </div>
+    <div class="theme-selector">
+      <label for="theme">🎨 Theme: </label>
+      <select id="theme" onchange="changeTheme(this.value)">
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="retro">Retro</option>
+        <option value="neon">Neon</option>
+      </select>
+    </div>
+  </div>  <div id="aiOverview" style="display: none;"></div>
+  <div id="results">
+    <div class="gcse-searchresults-only"></div>
+  </div>  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
 
-<header>
-  <div class="logo">EchoSearch</div>
-</header>
-
-<div class="search-container">
-  <div class="search-box">
-    <input type="search" id="searchInput" placeholder="Type your search here..." autocomplete="off" />
-    <button class="voice-btn" id="voiceBtn" title="Start voice input" aria-label="Voice input">
-      <!-- Microphone SVG icon -->
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
-        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
-      </svg>
-    </button>
-  </div>
-  <div class="buttons">
-    <button id="searchBtn">🔍 Search</button>
-  </div>
-</div>
-
-<div id="results">
-  <!-- Google Custom Search Results will appear here -->
-  <div class="gcse-searchresults-only"></div>
-</div>
-
-<script>
-  function toggleDarkMode() {
-    document.body.classList.toggle('dark');
-  }
-
-  // Google Custom Search Engine Setup
-  window.__gcse = {
-    callback: function () {
-      const input = document.getElementById('searchInput');
-      const searchBtn = document.getElementById('searchBtn');
-      const voiceBtn = document.getElementById('voiceBtn');
-
-      const element = google.search.cse.element.getElement('results');
-
-      // Search button triggers search
-      searchBtn.addEventListener('click', () => {
-        const query = input.value.trim();
-        if (!query) {
-          alert('Please enter a search query.');
-          return;
-        }
-        element.execute(query);
-      });
-
-      // Enter key triggers search
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          searchBtn.click();
-        }
-      });
-
-      // Voice input using Web Speech API
-      if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-        voiceBtn.disabled = true;
-        voiceBtn.title = "Voice input not supported in this browser";
-      } else {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        voiceBtn.addEventListener('click', () => {
-          if (voiceBtn.classList.contains('listening')) {
-            recognition.stop();
-            return;
-          }
-          recognition.start();
-          voiceBtn.classList.add('listening');
-          voiceBtn.title = "Listening... Click to stop";
-        });
-
-        recognition.onresult = (event) => {
-          const speechResult = event.results[0][0].transcript;
-          input.value = speechResult;
-          element.execute(speechResult);
-        };
-
-        recognition.onspeechend = () => {
-          recognition.stop();
-          voiceBtn.classList.remove('listening');
-          voiceBtn.title = "Start voice input";
-        };
-
-        recognition.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
-          alert('Speech recognition error: ' + event.error);
-          voiceBtn.classList.remove('listening');
-          voiceBtn.title = "Start voice input";
-        };
-
-        recognition.onend = () => {
-          voiceBtn.classList.remove('listening');
-          voiceBtn.title = "Start voice input";
-        };
+    function performSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query) {
+        showAIOOverview(query);
+        google.search.cse.element.getElement('results').execute(query);
+        localStorage.setItem('lastSearch', query);
       }
     }
-  };
 
-  // Load Google CSE script with your search ID
-  (function() {
-    const cx = '8504b5117a0734987'; // Your Programmable Search Engine ID
-    const gcseScript = document.createElement('script');
-    gcseScript.type = 'text/javascript';
-    gcseScript.async = true;
-    gcseScript.src = 'https://cse.google.com/cse.js?cx=' + cx;
-    document.body.appendChild(gcseScript);
-  })();
+    function randomSurprise() {
+      const facts = [
+        "Honey never spoils.",
+        "Bananas are berries, but strawberries aren't.",
+        "Oxford University is older than the Aztec Empire.",
+        "A day on Venus is longer than its year.",
+        "You can't hum while holding your nose."
+      ];
+      alert(facts[Math.floor(Math.random() * facts.length)]);
+    }
 
-  // Render search results container after page load
-  window.onload = function () {
-    google.search.cse.element.render({
-      div: "results",
-      tag: 'searchresults-only',
-      attributes: {
-        enableHistory: true
-      },
-      gname: 'results'
-    });
-  };
-</script>
-</body>
-</html>
+    function changeTheme(theme) {
+      document.body.className = theme === 'dark' ? 'dark' : '';
+    }
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      document.getElementById('voiceBtn').onclick = () => recognition.start();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('searchInput').value = transcript;
+        performSearch();
+      };
+    }
+
+    function showAIOOverview(query) {
+      const overview = document.getElementById("aiOverview");
+      overview.style.display = "block";
+      overview.innerHTML = "<strong>AI Overview:</strong> Thinking...";
+      fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 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"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: `Give a concise answer to: ${query}` }],
+          max_tokens: 150
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const answer = data.choices?.[0]?.message?.content || "No response from AI.";
+        overview.innerHTML = `<strong>AI Overview:</strong> ${answer}`;
+      })
+      .catch(err => {
+        overview.innerHTML = "<strong>AI Overview:</strong> Error fetching AI response.";
+      });
+    }
+
+    window.__gcse = {
+      callback: function () {
+        if (localStorage.getItem('lastSearch')) {
+          google.search.cse.element.getElement('results').execute(localStorage.getItem('lastSearch'));
+        }
+      }
+    };
+    (function() {
+      const cx = '8504b5117a0734987';
+      const gcse = document.createElement('script');
+      gcse.type = 'text/javascript';
+      gcse.async = true;
+      gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+      document.body.appendChild(gcse);
+    })();
+  </script></body>
+  </html>
