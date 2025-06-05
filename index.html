@@ -2,31 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EchoSearch Advanced</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <title>EchoSearch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-light: #f4f4f4;
-      --text-light: #111;
-      --bg-dark: #121212;
-      --text-dark: #f4f4f4;
       --accent: #00cec9;
-      --bg-blur: rgba(255, 255, 255, 0.05);
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-light);
-      transition: background 0.3s, color 0.3s;
+      --bg: #ffffff;
+      --text: #000000;
     }
     body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
+      --bg: #121212;
+      --text: #f4f4f4;
     }
-
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
+    }
     header {
       text-align: center;
       padding: 2rem 1rem 1rem;
@@ -36,357 +33,159 @@
       font-size: 3rem;
       color: var(--accent);
     }
-
-    .toggle-dark {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: none;
-      border: 2px solid var(--accent);
-      padding: 0.5rem 1rem;
-      color: var(--accent);
-      cursor: pointer;
-      border-radius: 30px;
-      z-index: 10;
-    }
-
     .search-container {
       max-width: 700px;
-      margin: 0 auto;
+      margin: auto;
+      text-align: center;
       padding: 1rem;
     }
-    .search-box {
-      display: flex;
-      gap: 0.5rem;
-    }
     input[type="search"] {
-      flex-grow: 1;
-      font-size: 1.2rem;
-      padding: 0.6rem 1rem;
+      padding: 10px;
+      font-size: 1rem;
+      width: 60%;
+      max-width: 400px;
       border-radius: 30px;
       border: 2px solid var(--accent);
-      outline-offset: 2px;
+    }
+    .buttons {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
     }
     .voice-btn {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--accent);
-      border: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
+      background: var(--accent);
+      border: none;
     }
     .voice-btn svg {
-      fill: white;
       width: 24px;
       height: 24px;
+      fill: white;
     }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
+    .toggle-dark, .theme-select {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
     }
-    button.search-btn {
-      padding: 0.6rem 1.2rem;
-      border-radius: 30px;
-      border: none;
-      background: var(--accent);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    .theme-select {
+      top: 3.5rem;
     }
-    button.surprise-btn {
-      background: #ff6f61;
-      color: white;
-    }
-
-    .theme-selector {
-      margin-top: 1rem;
-      text-align: center;
-    }
-    .theme-selector select {
-      padding: 0.3rem;
-      border-radius: 10px;
-      border: 1px solid var(--accent);
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    #calculator-result {
-      max-width: 700px;
-      margin: 1rem auto 0;
-      padding: 1rem;
-      border-radius: 12px;
-      background: var(--bg-blur);
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--accent);
-      min-height: 2.2em;
-      user-select: none;
-      text-align: center;
-    }
-
-    /* Tabs styling */
-    .tabs {
-      max-width: 700px;
-      margin: 1rem auto 0;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      user-select: none;
-    }
-    .tab {
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
-      cursor: pointer;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      font-weight: 600;
-      background: transparent;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    .tab.active {
-      background: var(--accent);
-      color: white;
-    }
-
     #results {
-      max-width: 700px;
-      margin: 1rem auto 4rem;
-      padding: 0 1rem;
-      min-height: 300px;
+      margin: 2rem auto;
+      max-width: 900px;
+      padding: 1rem;
     }
   </style>
 </head>
 <body>
-  <button class="toggle-dark" aria-label="Toggle Dark Mode" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  <button class="toggle-dark" onclick="toggleDark()">🌙 Dark Mode</button>
+  <div class="theme-select">
+    <select onchange="changeTheme(this.value)">
+      <option value="">🎨 Theme</option>
+      <option value="default">Default</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
 
   <header>
     <div class="logo">EchoSearch</div>
   </header>
 
-  <main class="search-container" role="main" aria-label="Search section">
-    <div class="search-box">
-      <input type="search" id="searchInput" placeholder="Type your search..." aria-label="Search input" />
-      <button class="voice-btn" id="voiceBtn" aria-label="Voice input">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
-        </svg>
-      </button>
-    </div>
-    <div class="buttons" role="region" aria-label="Search buttons">
-      <button class="search-btn" onclick="onSearchClick()">Search</button>
-      <button class="surprise-btn" onclick="randomSurprise()">🎲 Surprise Me</button>
-    </div>
-    <div class="theme-selector" role="region" aria-label="Theme selector">
-      <label for="theme">🎨 Theme: </label>
-      <select id="theme" onchange="changeTheme(this.value)" aria-label="Select theme">
-        <option value="default">Default</option>
-        <option value="dark">Dark</option>
-        <option value="retro">Retro</option>
-        <option value="neon">Neon</option>
-      </select>
-    </div>
-  </main>
+  <div class="search-container">
+    <input type="search" id="searchInput" placeholder="Search..." />
+    <button class="voice-btn" id="voiceBtn" title="Voice input">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
+      </svg>
+    </button>
 
-  <div id="calculator-result" aria-live="polite" aria-atomic="true"></div>
+    <div class="buttons">
+      <button onclick="handleSearch()">Search</button>
+      <button onclick="surprise()">🎲 Surprise Me</button>
+    </div>
+  </div>
 
-  <nav class="tabs" role="tablist" aria-label="Search result categories">
-    <button class="tab active" role="tab" aria-selected="true" id="tab-all" aria-controls="results" onclick="switchTab('all')">All</button>
-    <button class="tab" role="tab" aria-selected="false" id="tab-images" aria-controls="results" onclick="switchTab('isch')">Images</button>
-    <button class="tab" role="tab" aria-selected="false" id="tab-news" aria-controls="results" onclick="switchTab('news')">News</button>
-  </nav>
-
-  <section id="results" aria-live="polite" aria-label="Search results">
-    <!-- Google Custom Search Results Render Here -->
+  <div id="results">
     <div class="gcse-searchresults-only"></div>
-  </section>
+  </div>
 
   <script>
-    // Dark Mode toggle
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark');
-      // Sync theme selector dropdown
-      const sel = document.getElementById('theme');
-      sel.value = document.body.classList.contains('dark') ? 'dark' : 'default';
+    // Voice Search
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('searchInput').value = transcript;
+        handleSearch();
+      };
+      document.getElementById('voiceBtn').onclick = () => recognition.start();
     }
 
-    // Theme selector changes
-    function changeTheme(value) {
-      if(value === 'dark') {
-        document.body.classList.add('dark');
-      } else {
-        document.body.classList.remove('dark');
-      }
-      if(value === 'retro') {
-        document.body.style.background = '#f0e68c';
-        document.body.style.color = '#5b4636';
-      } else if(value === 'neon') {
-        document.body.style.background = '#000000';
-        document.body.style.color = '#39ff14';
-      } else if(value === 'default' || value === 'dark') {
-        document.body.style.background = '';
-        document.body.style.color = '';
-      }
-    }
-
-    // Surprise Me facts
-    function randomSurprise() {
+    // Surprise facts
+    function surprise() {
       const facts = [
-        "Honey never spoils.",
-        "Bananas are berries, but strawberries aren't.",
-        "Oxford University is older than the Aztec Empire.",
-        "A day on Venus is longer than its year.",
-        "You can't hum while holding your nose.",
+        "Sharks existed before trees.",
         "Octopuses have three hearts.",
-        "A group of flamingos is called a flamboyance.",
+        "You blink 20 times a minute.",
+        "Your brain uses 20% of your body's energy.",
+        "Bananas are radioactive."
       ];
       alert(facts[Math.floor(Math.random() * facts.length)]);
     }
 
-    // Voice input setup
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      const voiceBtn = document.getElementById('voiceBtn');
-      voiceBtn.onclick = () => {
-        recognition.start();
-        voiceBtn.style.backgroundColor = '#00cec9cc';
-      };
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('searchInput').value = transcript;
-        onSearchClick();
-        voiceBtn.style.backgroundColor = 'var(--accent)';
-      };
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        voiceBtn.style.backgroundColor = 'var(--accent)';
-      };
-      recognition.onend = () => {
-        voiceBtn.style.backgroundColor = 'var(--accent)';
-      };
-    } else {
-      document.getElementById('voiceBtn').style.display = 'none';
+    // Toggle Dark Mode
+    function toggleDark() {
+      document.body.classList.toggle("dark");
     }
 
-    // Simple math expression test
-    function isMathExpression(input) {
-      // Allow numbers, operators, parentheses, decimal points, sqrt, sin, cos, tan, log, etc
-      const mathRegex = /^[0-9+\-*/().,\s^sqrtcosintalogpowmaxminabs]+$/i;
-      return mathRegex.test(input);
+    function changeTheme(value) {
+      document.body.className = value === "dark" ? "dark" : "";
     }
 
-    // Calculator evaluation safely
-    function evaluateMath(expr) {
+    // Run search or calculator
+    function handleSearch() {
+      const q = document.getElementById("searchInput").value.trim();
+      if (!q) return;
+
+      // If it's a math expression, calculate it
       try {
-        // Replace some math functions for JS equivalents
-        const safeExpr = expr
-          .replace(/sqrt/gi, 'Math.sqrt')
-          .replace(/sin/gi, 'Math.sin')
-          .replace(/cos/gi, 'Math.cos')
-          .replace(/tan/gi, 'Math.tan')
-          .replace(/log/gi, 'Math.log10')
-          .replace(/ln/gi, 'Math.log')
-          .replace(/abs/gi, 'Math.abs')
-          .replace(/pow/gi, 'Math.pow')
-          .replace(/max/gi, 'Math.max')
-          .replace(/min/gi, 'Math.min')
-          .replace(/,/g, '')
-          .replace(/\^/g, '**');
-
-        // eslint-disable-next-line no-new-func
-        const func = new Function('return ' + safeExpr);
-        const result = func();
-        if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
-          return result;
+        if (/^[\d\s\+\-\*\/\.]+$/.test(q)) {
+          const result = eval(q);
+          alert("Calculator result: " + result);
+          return;
         }
-        return null;
-      } catch {
-        return null;
-      }
+      } catch {}
+
+      // Else do normal search
+      google.search.cse.element.getElement("results").execute(q);
     }
 
-    // Search tab switching
-    let currentTab = 'all';
-
-    function switchTab(tab) {
-      currentTab = tab;
-      // Update tab aria-selected and active class
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      const activeTab = document.getElementById('tab-' + (tab === 'all' ? 'all' : tab === 'isch' ? 'images' : 'news'));
-      if(activeTab) {
-        activeTab.classList.add('active');
-        activeTab.setAttribute('aria-selected', 'true');
-      }
-      // Change Google Custom Search element to new tab type and rerun search if query exists
-      if(window.google && google.search && google.search.cse && google.search.cse.element) {
-        const el = google.search.cse.element.getElement('results');
-        if(el) {
-          el.setSearchType(tab === 'all' ? '' : tab);
-          const q = document.getElementById('searchInput').value.trim();
-          if(q) el.execute(q);
-        }
-      }
-    }
-
-    // Perform search (called on Search button or voice input)
-    function onSearchClick() {
-      const query = document.getElementById('searchInput').value.trim();
-      if(!query) {
-        document.getElementById('calculator-result').textContent = '';
-        return;
-      }
-
-      // Check if query looks like math
-      if(isMathExpression(query)) {
-        const calcResult = evaluateMath(query);
-        if(calcResult !== null) {
-          document.getElementById('calculator-result').textContent = `🧮 Result: ${calcResult}`;
-        } else {
-          document.getElementById('calculator-result').textContent = '';
-        }
-      } else {
-        document.getElementById('calculator-result').textContent = '';
-      }
-
-      // Run Google Custom Search
-      if(window.google && google.search && google.search.cse && google.search.cse.element) {
-        google.search.cse.element.getElement('results').execute(query);
-        localStorage.setItem('lastSearch', query);
-      }
-    }
-
-    // Load Google Custom Search Engine
+    // Render Google CSE
     window.__gcse = {
       callback: function () {
-        if (localStorage.getItem('lastSearch')) {
-          google.search.cse.element.getElement('results').execute(localStorage.getItem('lastSearch'));
-          document.getElementById('searchInput').value = localStorage.getItem('lastSearch');
-        }
+        google.search.cse.element.render({
+          div: "results",
+          tag: "searchresults-only"
+        });
       }
     };
-    (function() {
-      const cx = '8504b5117a0734987'; // Your Search Engine ID
-      const gcse = document.createElement('script');
-      gcse.type = 'text/javascript';
-      gcse.async = true;
-      gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
-      document.body.appendChild(gcse);
-    })();
   </script>
 </body>
-  </html>
+</html>
