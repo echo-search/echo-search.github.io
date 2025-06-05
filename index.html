@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,104 +11,99 @@
       --text: #000;
       --accent: #00cec9;
       --font: 'Segoe UI', sans-serif;
-    }body {
-  margin: 0;
-  font-family: var(--font);
-  background-color: var(--bg);
-  color: var(--text);
-  transition: all 0.3s;
-}
+    }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      transition: all 0.3s;
+    }
 
-header {
-  text-align: center;
-  padding: 2rem 1rem 1rem;
-}
-.logo {
-  font-size: 3rem;
-  font-family: 'Pacifico', cursive;
-  color: var(--accent);
-}
+    header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+    .logo {
+      font-size: 3rem;
+      font-family: 'Pacifico', cursive;
+      color: var(--accent);
+    }
 
-.toggle-dark {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.5rem 1rem;
-  background: none;
-  border: 2px solid var(--accent);
-  border-radius: 20px;
-  color: var(--accent);
-  cursor: pointer;
-}
+    .toggle-dark {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: none;
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      color: var(--accent);
+      cursor: pointer;
+    }
 
-.search-container {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-.search-box {
-  display: flex;
-  gap: 0.5rem;
-}
-input[type="search"] {
-  flex-grow: 1;
-  font-size: 1.2rem;
-  padding: 0.6rem 1rem;
-  border-radius: 30px;
-  border: 2px solid var(--accent);
-}
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-button {
-  padding: 0.6rem 1.2rem;
-  border-radius: 30px;
-  border: none;
-  background: var(--accent);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-.voice-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent);
-}
-.voice-btn svg {
-  fill: white;
-  width: 24px;
-  height: 24px;
-}
-.theme-selector {
-  margin-top: 1rem;
-  text-align: center;
-}
-.theme-selector select {
-  padding: 0.3rem;
-  border-radius: 10px;
-}
-
-iframe {
-  width: 100%;
-  height: 600px;
-  border: none;
-  margin-top: 2rem;
-}
-
+    .search-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+    }
+    input[type="search"] {
+      flex-grow: 1;
+      font-size: 1.2rem;
+      padding: 0.6rem 1rem;
+      border-radius: 30px;
+      border: 2px solid var(--accent);
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .voice-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+    }
+    .voice-btn svg {
+      fill: white;
+      width: 24px;
+      height: 24px;
+    }
+    .theme-selector {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .theme-selector select {
+      padding: 0.3rem;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
-  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>  <header>
+  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  <header>
     <div class="logo">EchoSearch</div>
-  </header>  <div class="search-container">
+  </header>
+  <div class="search-container">
     <div class="search-box">
       <input type="search" id="searchInput" placeholder="Type your search..." />
       <button class="voice-btn" id="voiceBtn" title="Voice input">
@@ -135,38 +131,22 @@ iframe {
         <option value="forest">Forest</option>
       </select>
     </div>
-  </div>  <iframe id="resultsFrame"></iframe>  <script>
+  </div>
+
+  <!-- 🔥 Removed the broken iframe -->
+
+  <script>
     const themes = {
-      default: {
-        '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9', '--font': 'Segoe UI, sans-serif'
-      },
-      dark: {
-        '--bg': '#121212', '--text': '#ffffff', '--accent': '#00cec9'
-      },
-      retro: {
-        '--bg': '#fdf6e3', '--text': '#586e75', '--accent': '#2aa198', '--font': 'Courier New, monospace'
-      },
-      neon: {
-        '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff', '--font': 'Orbitron, sans-serif'
-      },
-      ocean: {
-        '--bg': '#e0f7fa', '--text': '#006064', '--accent': '#0097a7'
-      },
-      midnight: {
-        '--bg': '#1a1a2e', '--text': '#e0e0e0', '--accent': '#7f00ff'
-      },
-      sunset: {
-        '--bg': 'linear-gradient(to right, #ff7e5f, #feb47b)', '--text': '#4e342e', '--accent': '#ff7043'
-      },
-      matrix: {
-        '--bg': '#000000', '--text': '#00ff00', '--accent': '#00ff00', '--font': 'Courier New, monospace'
-      },
-      cyberpunk: {
-        '--bg': '#2a2a2a', '--text': '#f50057', '--accent': '#00e5ff'
-      },
-      forest: {
-        '--bg': '#e8f5e9', '--text': '#2e7d32', '--accent': '#66bb6a', '--font': 'Georgia, serif'
-      }
+      default: { '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9', '--font': 'Segoe UI, sans-serif' },
+      dark: { '--bg': '#121212', '--text': '#ffffff', '--accent': '#00cec9' },
+      retro: { '--bg': '#fdf6e3', '--text': '#586e75', '--accent': '#2aa198', '--font': 'Courier New, monospace' },
+      neon: { '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff', '--font': 'Orbitron, sans-serif' },
+      ocean: { '--bg': '#e0f7fa', '--text': '#006064', '--accent': '#0097a7' },
+      midnight: { '--bg': '#1a1a2e', '--text': '#e0e0e0', '--accent': '#7f00ff' },
+      sunset: { '--bg': 'linear-gradient(to right, #ff7e5f, #feb47b)', '--text': '#4e342e', '--accent': '#ff7043' },
+      matrix: { '--bg': '#000000', '--text': '#00ff00', '--accent': '#00ff00', '--font': 'Courier New, monospace' },
+      cyberpunk: { '--bg': '#2a2a2a', '--text': '#f50057', '--accent': '#00e5ff' },
+      forest: { '--bg': '#e8f5e9', '--text': '#2e7d32', '--accent': '#66bb6a', '--font': 'Georgia, serif' }
     };
 
     function changeTheme(theme) {
@@ -194,28 +174,28 @@ iframe {
       }
 
       const url = `https://cse.google.com/cse?cx=8504b5117a0734987&q=${encodeURIComponent(query)}`;
-      document.getElementById('resultsFrame').src = url;
+      window.open(url, '_blank');
     }
 
     function randomSurprise() {
       const facts = [
-    "Butterflies can taste with their feet.",
-    "You can’t hum while holding your nose.",
-    "Octopuses have three hearts and blue blood.",
-    "Sharks existed before trees.",
-    "Napoleon was once attacked by bunnies during a hunt.",
-    "Wombat poop is cube-shaped.",
-    "A bolt of lightning is five times hotter than the surface of the sun.",
-    "Bananas are berries, but strawberries aren't.",
-    "Oxford University is older than the Aztec Empire.",
-    "Sloths can hold their breath longer than dolphins.",
-    "There are more stars in the universe than grains of sand on Earth.",
-    "Some turtles can breathe through their butts.",
-    "You can’t tickle yourself because your brain knows it’s coming.",
-    "People are more likely to remember emotionally charged events.",
-    "leopatra lived closer to the iPhone than to the Great Pyramid.",
-    "Your brain uses about 20% of your body’s energy.",
-    "Yawning cools down your brain.",
+        "Butterflies can taste with their feet.",
+        "You can’t hum while holding your nose.",
+        "Octopuses have three hearts and blue blood.",
+        "Sharks existed before trees.",
+        "Napoleon was once attacked by bunnies during a hunt.",
+        "Wombat poop is cube-shaped.",
+        "A bolt of lightning is five times hotter than the surface of the sun.",
+        "Bananas are berries, but strawberries aren't.",
+        "Oxford University is older than the Aztec Empire.",
+        "Sloths can hold their breath longer than dolphins.",
+        "There are more stars in the universe than grains of sand on Earth.",
+        "Some turtles can breathe through their butts.",
+        "You can’t tickle yourself because your brain knows it’s coming.",
+        "People are more likely to remember emotionally charged events.",
+        "Cleopatra lived closer to the iPhone than to the Great Pyramid.",
+        "Your brain uses about 20% of your body’s energy.",
+        "Yawning cools down your brain."
       ];
       alert(facts[Math.floor(Math.random() * facts.length)]);
     }
@@ -231,5 +211,6 @@ iframe {
         performSearch();
       };
     }
-  </script></body>
+  </script>
+</body>
 </html>
