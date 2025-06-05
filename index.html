@@ -101,7 +101,6 @@
   </style>
 </head>
 <body>
-  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
   <header>
     <div class="logo">EchoSearch</div>
   </header>
@@ -177,11 +176,6 @@
       for (const key in selected) {
         root.style.setProperty(key, selected[key]);
       }
-    }
-
-    function toggleDarkMode() {
-      changeTheme('dark');
-    }
 
     function performSearch() {
       const query = document.getElementById('searchInput').value.trim();
