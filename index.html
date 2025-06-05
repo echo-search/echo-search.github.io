@@ -2,190 +2,281 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EchoSearch</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     :root {
-      --accent: #00cec9;
       --bg: #ffffff;
       --text: #000000;
+      --accent: #00cec9;
     }
-    body.dark {
-      --bg: #121212;
-      --text: #f4f4f4;
-    }
+
     body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      transition: background 0.3s, color 0.3s;
+      transition: 0.3s;
     }
+
     header {
       text-align: center;
       padding: 2rem 1rem 1rem;
     }
+
     .logo {
-      font-family: 'Pacifico', cursive;
       font-size: 3rem;
+      font-family: 'Pacifico', cursive;
       color: var(--accent);
     }
+
+    .toggle-dark {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: 2px solid var(--accent);
+      padding: 0.5rem 1rem;
+      color: var(--accent);
+      cursor: pointer;
+      border-radius: 30px;
+    }
+
     .search-container {
       max-width: 700px;
-      margin: auto;
-      text-align: center;
-      padding: 1rem;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
+
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+    }
+
     input[type="search"] {
-      padding: 10px;
-      font-size: 1rem;
-      width: 60%;
-      max-width: 400px;
+      flex-grow: 1;
+      font-size: 1.2rem;
+      padding: 0.6rem 1rem;
       border-radius: 30px;
       border: 2px solid var(--accent);
     }
-    .buttons {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    button {
-      padding: 10px 20px;
-      background: var(--accent);
-      border: none;
-      color: white;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+
     .voice-btn {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       background: var(--accent);
       border: none;
+      cursor: pointer;
     }
+
     .voice-btn svg {
+      fill: white;
       width: 24px;
       height: 24px;
-      fill: white;
     }
-    .toggle-dark, .theme-select {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
     }
-    .theme-select {
-      top: 3.5rem;
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
+
+    .theme-selector {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .theme-selector select {
+      padding: 0.3rem;
+      border-radius: 10px;
+    }
+
+    .tabs {
+      max-width: 800px;
+      margin: 1rem auto 0;
+      text-align: center;
+    }
+
+    .tabs button {
+      background: none;
+      color: var(--text);
+      border: none;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      border-bottom: 3px solid var(--accent);
+    }
+
     #results {
+      max-width: 800px;
       margin: 2rem auto;
-      max-width: 900px;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
       padding: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-  <button class="toggle-dark" onclick="toggleDark()">🌙 Dark Mode</button>
-  <div class="theme-select">
-    <select onchange="changeTheme(this.value)">
-      <option value="">🎨 Theme</option>
-      <option value="default">Default</option>
-      <option value="dark">Dark</option>
-    </select>
-  </div>
+  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark</button>
 
   <header>
     <div class="logo">EchoSearch</div>
   </header>
 
   <div class="search-container">
-    <input type="search" id="searchInput" placeholder="Search..." />
-    <button class="voice-btn" id="voiceBtn" title="Voice input">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
-      </svg>
-    </button>
+    <div class="search-box">
+      <input type="search" id="searchInput" placeholder="Type your search...">
+      <button class="voice-btn" id="voiceBtn" title="Voice input">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
+        </svg>
+      </button>
+    </div>
 
     <div class="buttons">
-      <button onclick="handleSearch()">Search</button>
-      <button onclick="surprise()">🎲 Surprise Me</button>
+      <button onclick="performSearch()">Search</button>
+      <button onclick="randomSurprise()">🎲 Surprise Me</button>
+    </div>
+
+    <div class="theme-selector">
+      <label>Theme:</label>
+      <select onchange="changeTheme(this.value)">
+        <option value="">Select</option>
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="retro">Retro</option>
+        <option value="neon">Neon</option>
+        <option value="contrast">High Contrast</option>
+        <option value="pastel">Pastel</option>
+        <option value="terminal">Terminal</option>
+        <option value="purple">Purple Vibes</option>
+        <option value="glass">Glassmorphism</option>
+      </select>
     </div>
   </div>
 
+  <div class="tabs">
+    <button onclick="setTab('all')" class="active" id="tabAll">All</button>
+    <button onclick="setTab('images')" id="tabImages">Images</button>
+    <button onclick="setTab('news')" id="tabNews">News</button>
+  </div>
+
   <div id="results">
+    <div id="calcResult" style="font-weight:bold; font-size:1.3rem; margin-bottom:1rem;"></div>
     <div class="gcse-searchresults-only"></div>
   </div>
 
   <script>
-    // Voice Search
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('searchInput').value = transcript;
-        handleSearch();
-      };
-      document.getElementById('voiceBtn').onclick = () => recognition.start();
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
     }
 
-    // Surprise facts
-    function surprise() {
+    function performSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return;
+
+      // Check for math query
+      try {
+        if (/^[\d+\-*/().\s]+$/.test(query)) {
+          document.getElementById('calcResult').innerText = "Answer: " + eval(query);
+        } else {
+          document.getElementById('calcResult').innerText = "";
+        }
+      } catch (e) {
+        document.getElementById('calcResult').innerText = "";
+      }
+
+      google.search.cse.element.getElement('results').execute(query);
+      localStorage.setItem('lastSearch', query);
+    }
+
+    function randomSurprise() {
       const facts = [
-        "Sharks existed before trees.",
-        "Octopuses have three hearts.",
-        "You blink 20 times a minute.",
-        "Your brain uses 20% of your body's energy.",
-        "Bananas are radioactive."
+        "Honey never spoils.",
+        "Bananas are berries, strawberries aren’t.",
+        "Oxford Uni is older than the Aztec Empire.",
+        "A day on Venus is longer than a year.",
+        "You can't hum holding your nose."
       ];
       alert(facts[Math.floor(Math.random() * facts.length)]);
     }
 
-    // Toggle Dark Mode
-    function toggleDark() {
-      document.body.classList.toggle("dark");
+    function changeTheme(theme) {
+      const root = document.documentElement.style;
+      const themes = {
+        default: { '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9' },
+        dark: { '--bg': '#121212', '--text': '#f4f4f4', '--accent': '#00cec9' },
+        retro: { '--bg': '#fcf1d5', '--text': '#3e2f1c', '--accent': '#ff6f00' },
+        neon: { '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff' },
+        contrast: { '--bg': '#000', '--text': '#fff', '--accent': '#ffff00' },
+        pastel: { '--bg': '#fdf6f0', '--text': '#333', '--accent': '#f7b2ad' },
+        terminal: { '--bg': '#0d0208', '--text': '#00ff00', '--accent': '#00ff00' },
+        purple: { '--bg': '#2e003e', '--text': '#f3e5f5', '--accent': '#a020f0' },
+        glass: { '--bg': 'rgba(0,0,0,0.4)', '--text': '#ffffff', '--accent': '#ffffff' }
+      };
+      const selected = themes[theme];
+      if (selected) for (let key in selected) root.setProperty(key, selected[key]);
     }
 
-    function changeTheme(value) {
-      document.body.className = value === "dark" ? "dark" : "";
+    function setTab(tab) {
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add("active");
+      // Could filter results in the future
     }
 
-    // Run search or calculator
-    function handleSearch() {
-      const q = document.getElementById("searchInput").value.trim();
-      if (!q) return;
-
-      // If it's a math expression, calculate it
-      try {
-        if (/^[\d\s\+\-\*\/\.]+$/.test(q)) {
-          const result = eval(q);
-          alert("Calculator result: " + result);
-          return;
-        }
-      } catch {}
-
-      // Else do normal search
-      google.search.cse.element.getElement("results").execute(q);
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      document.getElementById('voiceBtn').onclick = () => recognition.start();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('searchInput').value = transcript;
+        performSearch();
+      };
     }
 
-    // Render Google CSE
     window.__gcse = {
       callback: function () {
-        google.search.cse.element.render({
-          div: "results",
-          tag: "searchresults-only"
-        });
+        const last = localStorage.getItem('lastSearch');
+        if (last) google.search.cse.element.getElement('results').execute(last);
       }
     };
+
+    (function() {
+      const cx = '8504b5117a0734987';
+      const gcse = document.createElement('script');
+      gcse.type = 'text/javascript';
+      gcse.async = true;
+      gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+      document.body.appendChild(gcse);
+    })();
   </script>
 </body>
-</html>
+  </html>
