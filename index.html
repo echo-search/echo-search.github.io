@@ -116,6 +116,7 @@
     <div class="buttons">
       <button onclick="performSearch()">🔍 Search</button>
       <button onclick="randomSurprise()">🎲 Surprise Me</button>
+      <button onclick="randomQuestion()">Questions & Answers</button>
     </div>
     <div class="theme-selector">
       <label for="theme">🎨 Theme: </label>
@@ -312,9 +313,124 @@
     <li>They practiced slash-and-burn agriculture.</li>
     <li>The Spanish conquest destroyed many temples and records.</li>
     <li>Many Maya ruins are still covered by jungle.</li>
-  </ul>
-</div>
-      ];
+ 
+];
+      
+  function randomQuestion() {
+    const questions = [
+    "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
+    "Q: What writing system did the Maya use? A: Glyph-based writing.",
+    "Q: What base did the Maya number system use? A: Base-20 (vigesimal).",
+    "Q: What calendars did the Maya have? A: Long Count, Tzolk'in, and Haab'.",
+    "Q: Name one famous Maya city. A: Chichen Itza.",
+    "Q: What food was used in Maya rituals? A: Chocolate.",
+    "Q: What extreme religious practice did the Maya do? A: Human sacrifice.",
+    "Q: What science were the Maya advanced in? A: Astronomy.",
+    "Q: What planet did the Maya track accurately? A: Venus.",
+    "Q: What kind of pyramids did the Maya build? A: Step pyramids.",
+    "Q: How did the Maya view time? A: As cyclical.",
+    "Q: What were Maya kings called? A: K’uhul ajaw.",
+    "Q: What materials did the Maya use for tools and jewelry? A: Obsidian and jade.",
+    "Q: What sport had religious ties in Maya culture? A: Ballgame.",
+    "Q: What happened to losing teams in Maya ballgames? A: Sometimes sacrificed.",
+    "Q: How did Maya buildings often appear? A: Painted in bright colors.",
+    "Q: What tools did the Maya use? A: Only stone, no metal.",
+    "Q: What connected Maya cities? A: Causeways called sacbeob.",
+    "Q: What was the Maya staple crop? A: Corn (maize).",
+    "Q: What other crops did the Maya grow? A: Beans, squash, and chili peppers.",
+    "Q: What forms of Maya art existed? A: Murals, pottery, and stelae.",
+    "Q: What did Maya carve inscriptions into? A: Stone monuments.",
+    "Q: Name a major Maya city-state. A: Copán or Palenque.",
+    "Q: What was one of the most powerful Maya cities? A: Tikal.",
+    "Q: When did Maya civilization begin? A: Around 2000 BCE.",
+    "Q: When was the Classic Period? A: 250–900 CE.",
+    "Q: What did the Maya write codices on? A: Bark paper.",
+    "Q: Who burned most Maya books? A: Spanish conquistadors.",
+    "Q: What is the Popol Vuh? A: A Maya creation myth.",
+    "Q: Who are the Hero Twins? A: Central figures in Maya mythology.",
+    "Q: What is Xibalba? A: The Maya underworld.",
+    "Q: What ritual was performed for spiritual reasons? A: Bloodletting.",
+    "Q: Who performed self-sacrifice? A: Kings and queens.",
+    "Q: What was on top of Maya pyramids? A: Temples.",
+    "Q: What did the Maya use to make bouncy balls? A: Rubber.",
+    "Q: When did Maya civilization mysteriously decline? A: Around 900 CE.",
+    "Q: Did some cities survive after the collapse? A: Yes.",
+    "Q: When did the Spanish conquest begin? A: In the 16th century.",
+    "Q: Are Maya people still alive today? A: Yes, their descendants live on.",
+    "Q: Are Maya languages still spoken? A: Yes, like Yucatec and K’iche’.",
+    "Q: What celestial objects did the Maya chart? A: Stars.",
+    "Q: What were eclipses to the Maya? A: Religious events.",
+    "Q: What roles did Maya priests have? A: Also astronomers.",
+    "Q: What did each Maya day have? A: Spiritual meaning.",
+    "Q: How many days did the Haab' calendar have? A: 365 days.",
+    "Q: How many days in the Tzolk'in calendar? A: 260 days.",
+    "Q: What did the Long Count track? A: Millions of days.",
+    "Q: Who used zero before Europeans? A: The Maya.",
+    "Q: What did the Maya make paper from? A: Fig tree bark.",
+    "Q: How did they build cities without wheels or animals? A: Manpower.",
+    "Q: What were temples aligned with? A: Solstices and equinoxes.",
+    "Q: How did kings claim authority? A: Claimed to be divine.",
+    "Q: Could women rule Maya cities? A: Yes, in some cases.",
+    "Q: Who did the Maya trade with? A: Other Mesoamerican cultures.",
+    "Q: What did they use as money? A: Cacao beans.",
+    "Q: What was more valuable than gold to the Maya? A: Jade.",
+    "Q: What were ceremonial masks used for? A: Burials.",
+    "Q: What are cenotes? A: Sacred sinkholes for offerings.",
+    "Q: What did caves represent? A: Entrances to the underworld.",
+    "Q: What did Maya gods look like? A: Animals or hybrids.",
+    "Q: Who was the Maya rain god? A: Chaac.",
+    "Q: Who was the sun god? A: Kinich Ahau.",
+    "Q: What crop had its own god? A: Maize.",
+    "Q: What did Maya sculptures show? A: Detailed rituals.",
+    "Q: Why did Maya paint faces? A: For battle and ceremonies.",
+    "Q: What features did cities have? A: Ballcourts and plazas.",
+    "Q: Where is the largest Maya structure? A: El Mirador.",
+    "Q: What is famous about the Temple of the Inscriptions? A: It’s a tomb.",
+    "Q: How many steps on Temple of Kukulkan? A: 365 steps.",
+    "Q: What happens during equinox at Kukulkan? A: Serpent shadow appears.",
+    "Q: How long did some dynasties rule? A: Centuries.",
+    "Q: What symbols were used in Maya math? A: Dots (1) and bars (5).",
+    "Q: Could they predict eclipses? A: Yes, solar and lunar.",
+    "Q: What was buried with elite rulers? A: Offerings and goods.",
+    "Q: Did the Maya have many gods? A: Yes, a complex pantheon.",
+    "Q: What happened to the soul after death? A: Journey through underworld.",
+    "Q: What nourished the gods spiritually? A: Blood.",
+    "Q: What did murals show? A: Warfare and ceremonies.",
+    "Q: Who did the Hero Twins defeat? A: Lords of the underworld.",
+    "Q: What was the goal of Maya warfare? A: Capturing prisoners.",
+    "Q: Did Maya cities compete with each other? A: Yes, for power.",
+    "Q: How big were some Maya cities? A: Tens of thousands.",
+    "Q: What environmental factors hurt them? A: Drought and deforestation.",
+    "Q: How did they manage water? A: Canals and reservoirs.",
+    "Q: What did the Milky Way represent? A: A sacred river.",
+    "Q: Are new ruins still being found? A: Yes.",
+    "Q: What did priests wear? A: Elaborate feathered costumes.",
+    "Q: Why were teeth shaped? A: For beauty.",
+    "Q: What did elite have in teeth? A: Jade inlays.",
+    "Q: What did Maya art depict? A: Musicians, dancers, scribes.",
+    "Q: What is the Dresden Codex? A: A surviving Maya book.",
+    "Q: Are Maya languages being preserved? A: Yes.",
+    "Q: What belief system did they follow? A: Animism.",
+    "Q: What did gods control? A: Rain, sun, crops, life cycles.",
+    "Q: Where were kings buried? A: Beneath temples.",
+    "Q: How were pyramids built? A: Sometimes over older ones.",
+    "Q: Did they have one empire? A: No, city-states.",
+    "Q: Name more Maya cities. A: Uxmal, Calakmul, Bonampak.",
+    "Q: What’s shown in Bonampak murals? A: Ritual bloodletting.",
+    "Q: Where was the Maya civilization located? A: Mexico, Guatemala, Belize, Honduras, El Salvador.",
+    "Q: How is Maya culture preserved today? A: Dress, food, beliefs.",
+    "Q: What protects Maya ruins? A: UNESCO World Heritage Sites.",
+    "Q: Are rituals still practiced? A: Yes.",
+    "Q: How do archaeologists find lost cities? A: Lidar scans.",
+    "Q: What was the peak population? A: Millions.",
+    "Q: What did nobles wear? A: Headdresses, jade, embroidery.",
+    "Q: What were homes made of? A: Thatched local materials.",
+    "Q: What farming method did they use? A: Slash-and-burn.",
+    "Q: Who destroyed many temples? A: The Spanish.",
+    "Q: Are ruins still hidden? A: Yes, under jungle."
+  ];
+
+      
       alert(facts[Math.floor(Math.random() * facts.length)]);
     }
 
