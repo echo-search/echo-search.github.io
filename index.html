@@ -118,6 +118,13 @@
       <button id="surpriseBtn">🎲 Surprise Me</button>
       <button id="questionBtn">Questions &amp; Answers</button>
     </div>
+    
+<div id="search-history-container" style="margin: 20px auto; max-width: 400px; font-family: Arial, sans-serif;">
+  <h3>Search History</h3>
+  <ul id="search-history" style="list-style-type: none; padding-left: 0;"></ul>
+  <button id="clear-history" style="margin-top: 8px; padding: 6px 12px; cursor: pointer;">Clear History</button>
+</div>
+    
     <div class="theme-selector">
       <label for="theme">🎨 Theme: </label>
       <select id="theme">
@@ -443,5 +450,65 @@
       }
     }
   </script>
+  const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+const historyList = document.getElementById('search-history');
+const clearBtn = document.getElementById('clear-history');
+
+// Load history from localStorage and render it
+function loadHistory() {
+  const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+  historyList.innerHTML = '';
+  history.forEach(term => {
+    const li = document.createElement('li');
+    li.textContent = term;
+    li.style.cursor = 'pointer';
+    li.style.padding = '4px 0';
+    li.style.borderBottom = '1px solid #ccc';
+    li.addEventListener('click', () => {
+      searchInput.value = term;
+      searchBtn.click();
+    });
+    historyList.appendChild(li);
+  });
+}
+
+// Save a new term to history, avoiding duplicates, max 20 items
+function saveToHistory(term) {
+  if (!term) return;
+  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+  // Remove if already exists
+  history = history.filter(t => t.toLowerCase() !== term.toLowerCase());
+  // Add to front
+  history.unshift(term);
+  // Keep max 20
+  if (history.length > 20) history = history.slice(0, 20);
+  localStorage.setItem('searchHistory', JSON.stringify(history));
+  loadHistory();
+}
+
+// Clear history button
+clearBtn.addEventListener('click', () => {
+  localStorage.removeItem('searchHistory');
+  loadHistory();
+});
+
+// When user searches, save term
+searchBtn.addEventListener('click', () => {
+  const term = searchInput.value.trim();
+  if(term) saveToHistory(term);
+});
+
+// Also save on pressing Enter
+searchInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') {
+    const term = searchInput.value.trim();
+    if(term) saveToHistory(term);
+  }
+});
+
+// Load history on page load
+loadHistory();
+</script>
 </body>
   </html>
