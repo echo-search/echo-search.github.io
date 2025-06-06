@@ -1,50 +1,55 @@
-const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('search-btn');
-const historyList = document.getElementById('search-history');
-const clearBtn = document.getElementById('clear-history');
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('search-input');     
+  const btn = document.getElementById('search-btn');        
+  const historyUL = document.getElement('search-history');
+  const clearBtn = document.getElementById('clear-history');   
 
-function loadHistory() {
-  const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-  historyList.innerHTML = '';
-  history.forEach(term => {
-    const li = document.createElement('li');
-    li.textContent = term;
-    li.style.cursor = 'pointer';
-    li.style.padding = '4px 0';
-    li.style.borderBottom = '1px solid #ccc';
-    li.addEventListener('click', () => {
-      searchInput.value = term;
-      searchBtn.click();
+  function loadHistory() {
+    const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    historyUL.innerHTML = '';  
+    history.forEach(term => {
+      const li = document.createElement('li');  
+      li.textContent = term;
+      li.onclick = () => {
+        input.value = term;            
+        alert('Search: ' + term);      
+      };
+      historyUL.appendChild(li);     
     });
-    historyList.appendChild(li);
-  });
-}
-
-function saveToHistory(term) {
-  if (!term) return;
-  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-  history = history.filter(t => t.toLowerCase() !== term.toLowerCase());
-  history.unshift(term);
-  if (history.length > 20) history = history.slice(0, 20);
-  localStorage.setItem('searchHistory', JSON.stringify(history));
-  loadHistory();
-}
-
-clearBtn.addEventListener('click', () => {
-  localStorage.removeItem('searchHistory');
-  loadHistory();
-});
-
-searchBtn.addEventListener('click', () => {
-  const term = searchInput.value.trim();
-  if(term) saveToHistory(term);
-});
-
-searchInput.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter') {
-    const term = searchInput.value.trim();
-    if(term) saveToHistory(term);
   }
-});
 
-loadHistory();
+  function saveToHistory(term) {
+    if (!term) return;  
+    let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    history = history.filter(t => t.toLowerCase() !== term.toLowerCase());
+    history.unshift(term); 
+    if (history.length > 20) history = history.slice(0, 20); 
+    localStorage.setItem('searchHistory', JSON.stringify(history)); 
+    loadHistory()
+  } 
+  
+  btn.onclick = () => {
+    const term = input.value.trim();
+    if (term) {
+      saveToHistory(term);
+      alert('Search: ' + term);
+    }
+  };
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const term = input.value.trim();
+      if (term) {
+        saveToHistory(term);
+        alert('Search: ' + term);
+      }
+    }
+  });
+
+  clearBtn.onclick = () => {
+    localStorage.removeItem('searchHistory');
+    loadHistory();
+  };
+
+  loadHistory();
+});
