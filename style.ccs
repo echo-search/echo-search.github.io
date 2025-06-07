@@ -1,3 +1,4 @@
+/* Bounce animation */
 @keyframes bounceOnly {
   0% {
     transform: translateY(0);
@@ -16,11 +17,21 @@
   }
 }
 
-.event-label {
-  margin-top: 20px;
+/* Container for the event label */
+.event-container {
+  margin: 40px auto 20px auto; /* space above and below */
+  max-width: 400px; /* box width */
+  border: 2px solid #2a9d8f;
+  border-radius: 8px;
+  padding: 15px 20px;
+  background-color: #e0f2f1; /* light teal background */
   text-align: center;
+}
+
+/* The event text itself */
+.event-label {
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: #2a9d8f;
 }
 
