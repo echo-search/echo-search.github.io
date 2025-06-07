@@ -1,0 +1,29 @@
+@keyframes bounceOnly {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.event-label {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #2a9d8f;
+}
+
+.bounce-only {
+  animation: bounceOnly 0.8s ease-out;
+}
