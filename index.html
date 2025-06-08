@@ -125,6 +125,79 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: center;
     }
+    /* 🎨 Default Theme */
+.default .result-box {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* 🌑 Dark Theme */
+.dark .result-box {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+/* 📼 Retro Theme */
+.retro .result-box {
+  background-color: #fdf6e3;
+  color: #657b83;
+}
+
+/* 💡 Neon Theme */
+.neon .result-box {
+  background-color: #000000;
+  color: #39ff14;
+  text-shadow: 0 0 5px #39ff14;
+}
+
+/* 🌊 Ocean Theme */
+.ocean .result-box {
+  background-color: #e0f7fa;
+  color: #006064;
+}
+
+/* 🌌 Midnight Theme */
+.midnight .result-box {
+  background-color: #0d1b2a;
+  color: #e0e1dd;
+}
+
+/* 🌇 Sunset Theme */
+.sunset .result-box {
+  background-color: #ffd8be;
+  color: #6a0572;
+}
+
+/* 🟩 Matrix Theme */
+.matrix .result-box {
+  background-color: #000000;
+  color: #00ff00;
+  font-family: monospace;
+}
+
+/* 🧬 Cyberpunk Theme */
+.cyberpunk .result-box {
+  background-color: #1a0033;
+  color: #ff00ff;
+  text-shadow: 0 0 3px #ff00ff;
+}
+
+/* 🌳 Forest Theme */
+.forest .result-box {
+  background-color: #e6ffe6;
+  color: #004d00;
+}
+
+/* 🧾 Shared styling for all result boxes */
+.result-box {
+  font-family: 'Pacifico', cursive;
+  padding: 15px;
+  margin: 10px auto;
+  border-radius: 15px;
+  max-width: 80%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+      }
     .gcse-searchresults-only {
       max-width: 700px;
       margin: 2rem auto;
@@ -429,8 +502,7 @@
       ];
       alert(questions[Math.floor(Math.random() * questions.length)]);
     }
-  </script>
-  <script>
+  
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = 'en-UK';
@@ -491,6 +563,22 @@
   result.textContent = "You searched for: " + input;
   resultsContainer.appendChild(result);
     }
+document.getElementById("theme-selector").addEventListener("change", function() {
+  const selectedTheme = this.value;
+  document.body.className = selectedTheme; 
+});
+
+
+function showResult() {
+  const input = document.getElementById("search-input").value;
+  if (!input.trim()) return;
+
+  const result = document.createElement("div");
+  result.className = "result-box";
+  result.textContent = `You searched for: "${input}"`;
+
+  document.getElementById("results").appendChild(result);
+}
 </script>
 </body>
   </html>
