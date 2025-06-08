@@ -198,6 +198,19 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: center;
       }
+    .version-box {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: sans-serif;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+    }
     .gcse-searchresults-only {
       max-width: 700px;
       margin: 2rem auto;
@@ -579,6 +592,7 @@ function showResult() {
 
   document.getElementById("results").appendChild(result);
 }
+    <div class="version-box">v.1.0</div>
 </script>
 </body>
   </html>
