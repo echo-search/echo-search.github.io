@@ -114,6 +114,17 @@
       padding: 0.3rem;
       border-radius: 10px;
     }
+    .result-box {
+  background-color: #f0f8ff;
+  color: #222;
+  padding: 15px;
+  margin: 10px auto;
+  border-radius: 15px;
+  font-family: 'Roboto';
+  max-width: 80%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+    }
     .gcse-searchresults-only {
       max-width: 700px;
       margin: 2rem auto;
@@ -124,6 +135,7 @@
 <body>
   <div class="search-container">
     <div class="search-box">
+      <div id="results"></div>
       <input type="search" id="searchInput" placeholder="Type your search..." />
       <button class="voice-btn" id="voiceBtn" title="Voice input">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -421,7 +433,7 @@
   <script>
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
+      recognition.lang = 'en-UK';
       recognition.interimResults = false;
       document.getElementById('voiceBtn').onclick = () => recognition.start();
       recognition.onresult = (event) => {
@@ -469,7 +481,16 @@
         root.style.setProperty(key, selected[key]);
       }
     }
-  
+  function search() {
+  const input = document.getElementById("searchInput").value;
+  const resultsContainer = document.getElementById("results");
+  resultsContainer.innerHTML = "";
+    
+  const result = document.createElement("div");
+  result.className = "result-box";
+  result.textContent = "You searched for: " + input;
+  resultsContainer.appendChild(result);
+    }
 </script>
 </body>
   </html>
