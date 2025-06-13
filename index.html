@@ -576,12 +576,6 @@ body.forest {
         performSearch();
       };
     }
-      const root = document.documentElement;
-      const selected = themes[theme];
-      for (const key in selected) {
-        root.style.setProperty(key, selected[key]);
-      }
-    }
   function search() {
   const input = document.getElementById("searchInput").value;
   const resultsContainer = document.getElementById("results");
