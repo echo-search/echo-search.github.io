@@ -129,79 +129,136 @@ body, html {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: center;
     }
-    /* 🎨 Default Theme */
-.default .result-box {
-  background-color: #ffffff;
-  color: #000000;
+/* DEFAULT */
+body.default {
+  --bg: #ffffff;
+  --text: #000000;
+  --accent: #00cec9;
+  --font: 'Segoe UI', sans-serif;
+
+  background: #ffffff;
+  color: var(--text);
+  font-family: var(--font);
 }
 
-/* 🌑 Dark Theme */
-.dark .result-box {
-  background-color: #1a1a1a;
-  color: #f0f0f0;
+/* DARK */
+body.dark {
+  --bg: #121212;
+  --text: #ffffff;
+  --accent: #00cec9;
+  --font: 'Segoe UI', sans-serif;
+
+  background: #121212;
+  color: var(--text);
+  font-family: var(--font);
 }
 
-/* 📼 Retro Theme */
-.retro .result-box {
-  background-color: #fdf6e3;
-  color: #657b83;
+/* RETRO */
+body.retro {
+  --bg: #fdf6e3;
+  --text: #586e75;
+  --accent: #2aa198;
+  --font: 'Courier New', monospace;
+
+  background: url('retro.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
 }
 
-/* 💡 Neon Theme */
-.neon .result-box {
-  background-color: #000000;
-  color: #39ff14;
-  text-shadow: 0 0 5px #39ff14;
+/* NEON */
+body.neon {
+  --bg: #000000;
+  --text: #39ff14;
+  --accent: #ff00ff;
+  --font: 'Orbitron', sans-serif;
+
+  background: url('neon.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
+  text-shadow: 0 0 5px var(--text);
 }
 
-/* 🌊 Ocean Theme */
-.ocean .result-box {
-  background-color: #e0f7fa;
-  color: #006064;
+/* OCEAN */
+body.ocean {
+  --bg: #e0f7fa;
+  --text: #006064;
+  --accent: #0097a7;
+  --font: 'Segoe UI', sans-serif;
+
+  background: url('ocean.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
 }
 
-/* 🌌 Midnight Theme */
-.midnight .result-box {
-  background-color: #0d1b2a;
-  color: #e0e1dd;
+/* MIDNIGHT */
+body.midnight {
+  --bg: #1a1a2e;
+  --text: #e0e0e0;
+  --accent: #7f00ff;
+  --font: 'Segoe UI', sans-serif;
+
+  background: url('midnight.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
 }
 
-/* 🌇 Sunset Theme */
-.sunset .result-box {
-  background-color: #ffd8be;
-  color: #6a0572;
+/* SUNSET */
+body.sunset {
+  --bg: linear-gradient(to right, #ff7e5f, #feb47b);
+  --text: #4e342e;
+  --accent: #ff7043;
+  --font: 'Segoe UI', sans-serif;
+
+  background: url('sunset.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
 }
 
-/* 🟩 Matrix Theme */
-.matrix .result-box {
-  background-color: #000000;
-  color: #00ff00;
-  font-family: monospace;
+/* MATRIX */
+body.matrix {
+  --bg: #000000;
+  --text: #00ff00;
+  --accent: #00ff00;
+  --font: 'Courier New', monospace;
+
+  background: url('matrix.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
+  text-shadow: 0 0 4px var(--text);
 }
 
-/* 🧬 Cyberpunk Theme */
-.cyberpunk .result-box {
-  background-color: #1a0033;
-  color: #ff00ff;
-  text-shadow: 0 0 3px #ff00ff;
+/* CYBERPUNK */
+body.cyberpunk {
+  --bg: #2a2a2a;
+  --text: #f50057;
+  --accent: #00e5ff;
+  --font: 'Orbitron', sans-serif;
+
+  background: url('cyberpunk.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
+  text-shadow: 0 0 6px var(--text);
 }
 
-/* 🌳 Forest Theme */
-.forest .result-box {
-  background-color: #e6ffe6;
-  color: #004d00;
-}
+/* FOREST */
+body.forest {
+  --bg: #e8f5e9;
+  --text: #2e7d32;
+  --accent: #66bb6a;
+  --font: 'Georgia, serif';
 
-/* 🧾 Shared styling for all result boxes */
-.result-box {
-  font-family: 'Pacifico', cursive;
-  padding: 15px;
-  margin: 10px auto;
-  border-radius: 15px;
-  max-width: 80%;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
-      }
+  background: url('forest.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  font-family: var(--font);
+  }
     .gcse-searchresults-only {
       max-width: 700px;
       margin: 2rem auto;
@@ -519,39 +576,6 @@ body, html {
         performSearch();
       };
     }
-    function changeTheme(theme) {
-      const themes = {
-        default: {
-          '--bg': '#ffffff', '--text': '#000000', '--accent': '#00cec9', '--font': 'Segoe UI, sans-serif'
-        },
-        dark: {
-          '--bg': '#121212', '--text': '#ffffff', '--accent': '#00cec9'
-        },
-        retro: {
-          '--bg': '#fdf6e3', '--text': '#586e75', '--accent': '#2aa198', '--font': 'Courier New, monospace'
-        },
-        neon: {
-          '--bg': '#000000', '--text': '#39ff14', '--accent': '#ff00ff', '--font': 'Orbitron, sans-serif'
-        },
-        ocean: {
-          '--bg': '#e0f7fa', '--text': '#006064', '--accent': '#0097a7'
-        },
-        midnight: {
-          '--bg': '#1a1a2e', '--text': '#e0e0e0', '--accent': '#7f00ff'
-        },
-        sunset: {
-          '--bg': 'linear-gradient(to right, #ff7e5f, #feb47b)', '--text': '#4e342e', '--accent': '#ff7043'
-        },
-        matrix: {
-          '--bg': '#000000', '--text': '#00ff00', '--accent': '#00ff00', '--font': 'Courier New, monospace'
-        },
-        cyberpunk: {
-          '--bg': '#2a2a2a', '--text': '#f50057', '--accent': '#00e5ff'
-        },
-        forest: {
-          '--bg': '#e8f5e9', '--text': '#2e7d32', '--accent': '#66bb6a', '--font': 'Georgia, serif'
-        }
-      };
       const root = document.documentElement;
       const selected = themes[theme];
       for (const key in selected) {
