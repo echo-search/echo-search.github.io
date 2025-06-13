@@ -267,6 +267,8 @@ body.forest {
   </style>
 </head>
 <body>
+<input type="text" id="searchInput" placeholder="Search...">
+<div id="searchHistory"></div>
   <img src="logo-new.png" alt="My Logo" width="275">
   <div class="search-container">
     <div class="search-box">
@@ -602,6 +604,47 @@ function showResult() {
 
   document.getElementById("results").appendChild(result);
 }
+    const searchInput = document.getElementById('searchInput');
+const searchHistoryBox = document.getElementById('searchHistory');
+
+// Save search term
+function saveSearch(term) {
+  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
+  // Remove if already in history to avoid duplicates
+  history = history.filter(item => item !== term);
+
+  // Add to top
+  history.unshift(term);
+
+  // Limit to 20
+  if (history.length > 20) history = history.slice(0, 20);
+
+  localStorage.setItem('searchHistory', JSON.stringify(history));
+  renderHistory();
+}
+
+// Render search history
+function renderHistory() {
+  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+  searchHistoryBox.innerHTML = history
+    .map(item => `<div class="history-item">${item}</div>`)
+    .join('');
+}
+
+// Trigger save on Enter
+searchInput.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    const term = searchInput.value.trim();
+    if (term) {
+      saveSearch(term);
+      searchInput.value = '';
+    }
+  }
+});
+
+// On load
+renderHistory();
 </script>
 </body>
   </html>
