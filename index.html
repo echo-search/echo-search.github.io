@@ -328,14 +328,26 @@ body.forest {
     document.getElementById("theme").addEventListener("change", (event) => changeTheme(event.target.value));
     
     function performSearch() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return;
-      if (/^[\d+\-*/().\s]+$/.test(query)) {
-        try {
-          const result = eval(query);
-          alert('Calculator Result: ' + result);
-          return;
-        } catch {}
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) return;
+
+  saveSearch(query); // ✅ THIS saves the search when you click the button
+
+  if (/^[\d+\-*/().\s]+$/.test(query)) {
+    try {
+      const result = eval(query);
+      alert('Calculator Result: ' + result);
+      return;
+    } catch {}
+  }
+
+  const element = google.search.cse.element.getElement('searchresults-only0');
+  if (element) {
+    element.execute(query);
+  } else {
+    document.querySelector('input.gsc-input').value = query;
+    document.querySelector('input.gsc-search-button').click();
+  }
       }
       const element = google.search.cse.element.getElement('searchresults-only0');
       if (element) {
