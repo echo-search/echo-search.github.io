@@ -353,15 +353,6 @@ body.forest {
     document.querySelector('input.gsc-search-button').click();
   }
       }
-      const element = google.search.cse.element.getElement('searchresults-only0');
-      if (element) {
-        element.execute(query);
-      } else {
-        document.querySelector('input.gsc-input').value = query;
-        document.querySelector('input.gsc-search-button').click();
-      }
-    }
-    
     function randomSurprise() {
       const facts = [
         "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
