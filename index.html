@@ -619,7 +619,7 @@ const searchHistoryBox = document.getElementById('searchHistory');
 
 // Save search term
 function saveSearch(term) {
-  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+  let history = JSON.parse(localStorage.getItem('search-history')) || [];
 
   // Remove if already in history to avoid duplicates
   history = history.filter(item => item !== term);
