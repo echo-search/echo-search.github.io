@@ -329,48 +329,38 @@ body.forest {
     document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
     document.getElementById("questionBtn").addEventListener("click", randomQuestion);
     document.getElementById("theme").addEventListener("change", (event) => changeTheme(event.target.value));
-    
-    function performSearch() {
+function performSearch() {
   const query = document.getElementById('searchInput').value.trim();
   if (!query) return;
 
   saveSearch(query);
 
-  // Calculator functionality (keep this as is)
+  // Calculator functionality
   if (/^[\d+\-*/().\s]+$/.test(query)) {
     try {
       const result = eval(query);
       alert('Calculator Result: ' + result);
       return;
-    } catch (e) {
-      /* Fall through to search if evaluation fails */
+    } catch (e) {}
+  }
+
+  // Wait for Google CSE to load and be ready
+  function waitForCSE() {
+    if (
+      window.google &&
+      google.search &&
+      google.search.cse &&
+      google.search.cse.element &&
+      google.search.cse.element.getElement('searchresults')
+    ) {
+      google.search.cse.element.getElement('searchresults').execute(query);
+    } else {
+      setTimeout(waitForCSE, 100); // Retry every 100ms
     }
   }
 
-  // --- MODIFIED CSE EXECUTION LOGIC ---
-  // This function will continuously attempt to execute the CSE search
-  // until the Google CSE library is fully loaded and ready.
-  const executeCseSearch = () => {
-    // Check if the Google CSE object and its element method are available
-    if (window.google && window.google.search && window.google.search.cse && window.google.search.cse.element) {
-      const element = google.search.cse.element.getElement('searchresults'); // Use the ID you set in HTML
-      if (element) {
-        element.execute(query); // Execute the search using the CSE element
-      } else {
-        // This error means the CSE script loaded, but couldn't find your 'searchresults' ID.
-        // Double-check your HTML to ensure <gcse:searchresults-only id="searchresults"></gcse:searchresults-only> is correct.
-        console.error("Google CSE element with ID 'searchresults' not found. Please check your HTML ID.");
-      }
-    } else {
-      // If the Google CSE library is not yet fully loaded, try again after a short delay.
-      // This is crucial because 'cse.js' loads asynchronously.
-      setTimeout(executeCseSearch, 100); // Retry after 100 milliseconds
-    }
-  };
-
-  executeCseSearch(); // Start the process of attempting to execute the CSE search
-}
-
+  waitForCSE();
+  }
     function randomSurprise() {
       const facts = [
         "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
