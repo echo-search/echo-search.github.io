@@ -638,7 +638,7 @@ function saveSearch(term) {
 function renderHistory() {
   let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
   searchHistoryBox.innerHTML = history
-    .map(item => `<div class="history-item">${item}</div>`)
+    .map(item => `<li class="history-item">${item}</li>`)
     .join('');
 }
 
