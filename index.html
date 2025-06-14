@@ -305,7 +305,7 @@ body.forest {
     
 <div id="search-history-container" style="margin: 20px auto; max-width: 400px; font-family: Arial, sans-serif;">
   <h3>Search History</h3>
-  <ul id="search-history" style="list-style-type: none; padding-left: 0;"></ul>
+  <ul id="searchHistory" style="list-style-type: none; padding-left: 0;"></ul>
   <button id="clear-history" style="margin-top: 8px; padding: 6px 12px; cursor: pointer;">Clear History</button>
 </div>
     
@@ -354,7 +354,7 @@ body.forest {
   const executeCseSearch = () => {
     // Check if the Google CSE object and its element method are available
     if (window.google && window.google.search && window.google.search.cse && window.google.search.cse.element) {
-      const element = google.search.cse.element.getElement('search-results'); // Use the ID you set in HTML
+      const element = google.search.cse.element.getElement('searchresults'); // Use the ID you set in HTML
       if (element) {
         element.execute(query); // Execute the search using the CSE element
       } else {
@@ -645,7 +645,7 @@ const searchHistoryBox = document.getElementById('searchHistory');
 
 // Save search term
 function saveSearch(term) {
-  let history = JSON.parse(localStorage.getItem('search-history')) || [];
+  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
 
   // Remove if already in history to avoid duplicates
   history = history.filter(item => item !== term);
