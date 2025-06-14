@@ -354,7 +354,7 @@ body.forest {
   const executeCseSearch = () => {
     // Check if the Google CSE object and its element method are available
     if (window.google && window.google.search && window.google.search.cse && window.google.search.cse.element) {
-      const element = google.search.cse.element.getElement('searchresults'); // Use the ID you set in HTML
+      const element = google.search.cse.element.getElement('search-results'); // Use the ID you set in HTML
       if (element) {
         element.execute(query); // Execute the search using the CSE element
       } else {
@@ -631,7 +631,7 @@ document.getElementById("theme").addEventListener("change", function() {
 
 
 function showResult() {
-  const input = document.getElementById("search-input").value;
+  const input = document.getElementById("searchInput").value;
   if (!input.trim()) return;
 
   const result = document.createElement("div");
