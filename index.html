@@ -653,20 +653,20 @@ renderHistory();
 
   // Wait for Google CSE to load and be ready
   function waitForCSE() {
-    if (
-      window.google &&
-      google.search &&
-      google.search.cse &&
-      google.search.cse.element &&
-      google.search.cse.element.getElement('searchresults')
-    )
-    else {
-      setTimeout(waitForCSE, 100); // Retry every 100ms
-    }
-  }
+  const query = document.getElementById('searchInput').value.trim();
 
-  waitForCSE();
+  if (
+    window.google &&
+    google.search &&
+    google.search.cse &&
+    google.search.cse.element &&
+    google.search.cse.element.getElement('searchresults')
+  ) {
+    google.search.cse.element.getElement('searchresults').execute(query);
+  } else {
+    setTimeout(waitForCSE, 100);
   }
+    }
     </script>
 <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
