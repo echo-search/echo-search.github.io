@@ -8,13 +8,19 @@
   <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
   <script>
   window.__gcse = {
-    callback: function() {
-      google.search.cse.element.render({
-        div: "searchresults",
-        tag: "searchresults-only"
-      });
+  callback: function () {
+    google.search.cse.element.render({
+      div: "searchresults",
+      tag: "searchresults-only"
+    });
+
+    // Store query if it exists and run search here
+    const query = document.getElementById('searchInput').value.trim();
+    if (query) {
+      google.search.cse.element.getElement('searchresults').execute(query);
     }
-  };
+  }
+};
   </script>
   <style>  
   .version-badge {
@@ -653,9 +659,8 @@ renderHistory();
       google.search.cse &&
       google.search.cse.element &&
       google.search.cse.element.getElement('searchresults')
-    ) {
-      google.search.cse.element.getElement('searchresults').execute(query);
-    } else {
+    )
+    else {
       setTimeout(waitForCSE, 100); // Retry every 100ms
     }
   }
