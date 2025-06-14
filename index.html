@@ -662,6 +662,20 @@ searchInput.addEventListener('keydown', function (e) {
 
 // On load
 renderHistory();
+  window.onload = function () {
+    google.load("search", "1", {
+      callback: function () {
+        const searchBox = document.getElementById("searchBtn");
+        searchBox.addEventListener("click", () => {
+          const query = document.getElementById("searchInput").value;
+          const element = google.search.cse.element.getElement("searchresults-only");
+          if (element) {
+            element.execute(query);
+          }
+        });
+      }
+    });
+  };
 </script>
 <a href="version-history.html" class="version-badge">v.1.0</a>
 </body>
