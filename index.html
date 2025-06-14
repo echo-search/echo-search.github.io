@@ -642,31 +642,26 @@ renderHistory();
 
   saveSearch(query);
 
-  // Calculator functionality
-  if (/^[\d+\-*/().\s]+$/.test(query)) {
-    try {
+  try {
+    // Check for calculator expression
+    if (/^[\d+\-*/().\s]+$/.test(query)) {
       const result = eval(query);
       alert('Calculator Result: ' + result);
       return;
-    } catch (e) {}
-  }
-
-  // Wait for Google CSE to load and be ready
-  function waitForCSE() {
-  const query = document.getElementById('searchInput').value.trim();
-
-  if (
-    window.google &&
-    google.search &&
-    google.search.cse &&
-    google.search.cse.element &&
-    google.search.cse.element.getElement('searchresults')
-  ) {
-    google.search.cse.element.getElement('searchresults').execute(query);
-  } else {
-    setTimeout(waitForCSE, 100);
-  }
     }
+
+    // Check if CSE engine is ready
+    const element = google?.search?.cse?.element?.getElement('searchresults');
+    if (element) {
+      element.execute(query);
+    } else {
+      alert("Search engine is not ready yet. Try again in a few seconds.");
+    }
+
+  } catch (err) {
+    alert("Error during search: " + err.message);
+  }
+        }
     </script>
 <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
