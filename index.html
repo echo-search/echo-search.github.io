@@ -324,7 +324,7 @@ body.forest {
         <option value="forest">Forest</option>
       </select>
     </div>
-  <gcse:searchresults-only></gcse:searchresults-only>
+  <gcse:searchresults-only id="searchresults"></gcse:searchresults-only>
   <script>
     document.getElementById("searchBtn").addEventListener("click", performSearch);
     document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
@@ -345,7 +345,7 @@ body.forest {
     } catch {}
   }
 
-  const element = google.search.cse.element.getElement('searchresults-only0');
+  const element = google.search.cse.element.getElement('searchresults');
   if (element) {
     element.execute(query);
   } else {
@@ -662,20 +662,6 @@ searchInput.addEventListener('keydown', function (e) {
 
 // On load
 renderHistory();
-  window.onload = function () {
-    google.load("search", "1", {
-      callback: function () {
-        const searchBox = document.getElementById("searchBtn");
-        searchBox.addEventListener("click", () => {
-          const query = document.getElementById("searchInput").value;
-          const element = google.search.cse.element.getElement("searchresults-only");
-          if (element) {
-            element.execute(query);
-          }
-        });
-      }
-    });
-  };
 </script>
 <a href="version-history.html" class="version-badge">v.1.0</a>
 </body>
