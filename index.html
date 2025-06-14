@@ -286,7 +286,6 @@ body.forest {
   <img src="logo-new.png" alt="My Logo" width="275">
   <div class="search-container">
     <div class="search-box">
-      <div id="results"></div>
       <input type="search" id="searchInput" placeholder="Type your search..." />
       <button class="voice-btn" id="voiceBtn" title="Voice input">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -614,32 +613,10 @@ body.forest {
         performSearch();
       };
     }
-  function search() {
-  const input = document.getElementById("searchInput").value;
-  const resultsContainer = document.getElementById("results");
-  resultsContainer.innerHTML = "";
-    
-  const result = document.createElement("div");
-  result.className = "result-box";
-  result.textContent = "You searched for: " + input;
-  resultsContainer.appendChild(result);
-    }
 document.getElementById("theme").addEventListener("change", function() {
   const selectedTheme = this.value;
   document.body.className = selectedTheme; 
 });
-
-
-function showResult() {
-  const input = document.getElementById("searchInput").value;
-  if (!input.trim()) return;
-
-  const result = document.createElement("div");
-  result.className = "result-box";
-  result.textContent = `You searched for: "${input}"`;
-
-  document.getElementById("results").appendChild(result);
-}
     const searchInput = document.getElementById('searchInput');
 const searchHistoryBox = document.getElementById('searchHistory');
 
