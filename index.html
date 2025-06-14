@@ -329,38 +329,7 @@ body.forest {
     document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
     document.getElementById("questionBtn").addEventListener("click", randomQuestion);
     document.getElementById("theme").addEventListener("change", (event) => changeTheme(event.target.value));
-function performSearch() {
-  const query = document.getElementById('searchInput').value.trim();
-  if (!query) return;
 
-  saveSearch(query);
-
-  // Calculator functionality
-  if (/^[\d+\-*/().\s]+$/.test(query)) {
-    try {
-      const result = eval(query);
-      alert('Calculator Result: ' + result);
-      return;
-    } catch (e) {}
-  }
-
-  // Wait for Google CSE to load and be ready
-  function waitForCSE() {
-    if (
-      window.google &&
-      google.search &&
-      google.search.cse &&
-      google.search.cse.element &&
-      google.search.cse.element.getElement('searchresults')
-    ) {
-      google.search.cse.element.getElement('searchresults').execute(query);
-    } else {
-      setTimeout(waitForCSE, 100); // Retry every 100ms
-    }
-  }
-
-  waitForCSE();
-  }
     function randomSurprise() {
       const facts = [
         "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
@@ -648,6 +617,38 @@ searchInput.addEventListener('keydown', function (e) {
 
 // On load
 renderHistory();
+    function performSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) return;
+
+  saveSearch(query);
+
+  // Calculator functionality
+  if (/^[\d+\-*/().\s]+$/.test(query)) {
+    try {
+      const result = eval(query);
+      alert('Calculator Result: ' + result);
+      return;
+    } catch (e) {}
+  }
+
+  // Wait for Google CSE to load and be ready
+  function waitForCSE() {
+    if (
+      window.google &&
+      google.search &&
+      google.search.cse &&
+      google.search.cse.element &&
+      google.search.cse.element.getElement('searchresults')
+    ) {
+      google.search.cse.element.getElement('searchresults').execute(query);
+    } else {
+      setTimeout(waitForCSE, 100); // Retry every 100ms
+    }
+  }
+
+  waitForCSE();
+                                                  }
 </script>
 <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
