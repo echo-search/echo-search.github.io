@@ -6,6 +6,16 @@
   <title>EchoSearch</title>
   <link rel="icon" href="favicon.png" type="image/x-icon">
   <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
+  <script>
+  window.__gcse = {
+    callback: function() {
+      google.search.cse.element.render({
+        div: "searchresults",
+        tag: "searchresults-only"
+      });
+    }
+  };
+  </script>
   <style>  
   .version-badge {
   position: fixed;
@@ -323,7 +333,7 @@ body.forest {
         <option value="forest">Forest</option>
       </select>
     </div>
-  <gcse:searchresults-only id="searchresults"></gcse:searchresults-only>
+ <div id="searchresults"></div>
   <script>
     document.getElementById("searchBtn").addEventListener("click", performSearch);
     document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
