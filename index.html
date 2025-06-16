@@ -335,7 +335,7 @@ window.__gcse = {
   }
 };
 
-function surpriseBtn 
+function randomSurprise 
 const facts = [
   "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
   "The Maya developed a complex writing system using glyphs.",
@@ -449,7 +449,7 @@ const facts = [
   "The Spanish conquest destroyed many temples and records.",
   "Many Maya ruins are still covered by jungle."
 ];
-function questionBtn 
+function randomQuestion 
 const questions = [
   "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
   "Q: What writing system did the Maya use? A: Glyph-based writing.",
@@ -563,11 +563,11 @@ const questions = [
   window.onload = function () {
   document.getElementById("searchBtn").addEventListener("click", performSearch);
 
-  document.getElementById("surpriseBtn").addEventListener("click", () => {
+  document.getElementById("randomSurprise").addEventListener("click", () => {
     alert(facts[Math.floor(Math.random() * facts.length)]);
   });
 
-  document.getElementById("questionBtn").addEventListener("click", () => {
+  document.getElementById("randomQuestion").addEventListener("click", () => {
     alert(questions[Math.floor(Math.random() * questions.length)]);
   });
 
@@ -600,38 +600,41 @@ const questions = [
   });
 
   const clearBtn = document.getElementById("clear-history");
-  if (clearBtn) {
+  if (clearBtn) {i
     clearBtn.addEventListener("click", () => {
       localStorage.removeItem("searchHistory");
       renderHistory();
     });
   }
 };
-
 function performSearch() {
   const query = document.getElementById('searchInput').value.trim();
+
   if (!query) return;
 
+  // Simple check: is it just numbers and math symbols?
+  const isMath = /^[\d+\-*/().\s]+$/.test(query);
+
+  if (isMath) {
+    try {
+      const result = Function('"use strict"; return (' + query + ')')();
+      alert('🧮 Result: ' + result);
+    } catch (e) {
+      alert('⚠️ Invalid math expression.');
+    }
+    return; // ⛔ Don't do a search
+  }
+
+  // Otherwise, run the search
   saveSearch(query);
 
-  try {
-    if (/^[\\d+\\-*/().\\s]+$/.test(query)) {
-      const result = eval(query);
-      alert('Calculator Result: ' + result);
-      return;
-    }
-
-    const element = google?.search?.cse?.element?.getElement('searchresults');
-    if (element) {
-      element.execute(query);
-    } else {
-      alert("Search engine is not ready yet. Try again in a few seconds.");
-    }
-  } catch (err) {
-    alert("Error during search: " + err.message);
+  const element = google?.search?.cse?.element?.getElement('searchresults');
+  if (element) {
+    element.execute(query);
+  } else {
+    alert("Search engine is not ready yet. Try again in a few seconds.");
   }
-}
-
+  }
 function saveSearch(term) {
   let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
   history = history.filter(item => item !== term);
