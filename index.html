@@ -7,6 +7,19 @@
   <link rel="icon" href="favicon.png" type="image/x-icon">
   <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
   <style>  
+ 
+ .bottom-warning {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  z-index: 9999;
+ }
   .version-badge {
   position: fixed;
   bottom: 10px;
@@ -652,6 +665,7 @@ function renderHistory() {
   }
 }
 </script>
+<div class="bottom-warning">Outage is happening...</div>
 <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
   </html>
