@@ -346,7 +346,7 @@ window.__gcse = {
   }
 };
 
-function randomSurprise 
+function randomSurprise {
 const facts = [
   "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
   "The Maya developed a complex writing system using glyphs.",
@@ -460,7 +460,9 @@ const facts = [
   "The Spanish conquest destroyed many temples and records.",
   "Many Maya ruins are still covered by jungle."
 ];
-function randomQuestion 
+alert(facts[Math.floor(Math.random() * facts.length)]);
+} 
+function randomQuestion {
 const questions = [
   "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
   "Q: What writing system did the Maya use? A: Glyph-based writing.",
@@ -571,6 +573,8 @@ const questions = [
   "Q: Who destroyed many temples? A: The Spanish.",
   "Q: Are ruins still hidden? A: Yes, under jungle."
 ];
+  alert(questions[Math.floor(Math.random() * questions.length)]);
+  }
   window.onload = function () {
   document.getElementById("searchBtn").addEventListener("click", performSearch);
 
