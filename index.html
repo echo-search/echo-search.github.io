@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,103 +6,43 @@
   <title>EchoSearch</title>
   <link rel="icon" href="favicon.png" type="image/x-icon">
   <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
-  <style>  
- 
- .bottom-warning {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: red;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  padding: 10px;
-  z-index: 9999;
- }
-  .version-badge {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background: #e0e0e0;
-  color: #333;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 0.9em;
-  text-decoration: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: background 0.3s;
-}
+  <style>
+    /* General Styling */
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
 
-.version-badge:hover {
-  background: #d0d0d0;
-}
-    header {
-  text-align: center;
-}
-/* Remove default margin and padding */
-body, html {
-  margin: 0;
-  padding: 0;
-}
-
-/* Header with centered logo */
-.top-center {
-  width: 100%;
-  text-align: center;
-  padding: 20px 0;
-  background-color: white; /* optional */
-}
-
-/* Logo styling */
-.logo {
-  height: 275px; /* adjust as needed */
-  width: auto;
-}
-    .event-text {
-    text-align: center;
-    margin-top: 30px;
-    font-weight: bold;
-    font-size: 1.3em;
-    color: #2a9d8f;
-  }
     :root {
       --bg: #fff;
       --text: #000;
       --accent: #00cec9;
       --font: 'Segoe UI', sans-serif;
     }
+
     body {
-      margin: 0;
       font-family: var(--font);
       background-color: var(--bg);
       color: var(--text);
       transition: all 0.3s;
     }
+
     header {
       text-align: center;
       padding: 2rem 1rem 1rem;
     }
-    .toggle-dark {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.5rem 1rem;
-      background: none;
-      border: 2px solid var(--accent);
-      border-radius: 20px;
-      color: var(--accent);
-      cursor: pointer;
-    }
+
     .search-container {
       max-width: 700px;
       margin: 0 auto;
       padding: 2rem 1rem;
     }
+
     .search-box {
       display: flex;
       gap: 0.5rem;
     }
+
     input[type="search"] {
       flex-grow: 1;
       font-size: 1.2rem;
@@ -110,13 +50,7 @@ body, html {
       border-radius: 30px;
       border: 2px solid var(--accent);
     }
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
+
     button {
       padding: 0.6rem 1.2rem;
       border-radius: 30px;
@@ -126,201 +60,131 @@ body, html {
       font-weight: bold;
       cursor: pointer;
     }
-    .voice-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent);
-    }
-    .voice-btn svg {
-      fill: white;
-      width: 45px;
-      height: 45px;
-    }
+
     .theme-selector {
       margin-top: 1rem;
       text-align: center;
     }
+
     .theme-selector select {
       padding: 0.3rem;
       border-radius: 10px;
     }
-    .result-box {
-  background-color: #f0f8ff;
-  color: #222;
-  padding: 15px;
-  margin: 10px auto;
-  border-radius: 15px;
-  font-family: 'Roboto';
-  max-width: 80%;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
+
+    .bottom-warning {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: red;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+      z-index: 9999;
     }
-/* DEFAULT */
-body.default {
-  --bg: #ffffff;
-  --text: #000000;
-  --accent: #00cec9;
-  --font: 'Segoe UI', sans-serif;
 
-  background: #ffffff;
-  color: var(--text);
-  font-family: var(--font);
-}
+    .version-badge {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: #e0e0e0;
+      color: #333;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
 
-/* DARK */
-body.dark {
-  --bg: #121212;
-  --text: #ffffff;
-  --accent: #00cec9;
-  --font: 'Segoe UI', sans-serif;
+    .version-badge:hover {
+      background: #d0d0d0;
+    }
 
-  background: #121212;
-  color: var(--text);
-  font-family: var(--font);
-}
+    /* Themes with Pictures */
+    body.default {
+      --bg: #ffffff;
+      --text: #000000;
+      --accent: #00cec9;
+      background: #ffffff;
+    }
 
-/* RETRO */
-body.retro {
-  --bg: #fdf6e3;
-  --text: #586e75;
-  --accent: #2aa198;
-  --font: 'Courier New', monospace;
+    body.dark {
+      --bg: #121212;
+      --text: #ffffff;
+      --accent: #00cec9;
+      background: #121212;
+    }
 
-  background: url('retro.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-}
+    body.retro {
+      --bg: #fdf6e3;
+      --text: #586e75;
+      --accent: #2aa198;
+      background: url('retro.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-/* NEON */
-body.neon {
-  --bg: #000000;
-  --text: #39ff14;
-  --accent: #ff00ff;
-  --font: 'Orbitron', sans-serif;
+    body.neon {
+      --bg: #000000;
+      --text: #39ff14;
+      --accent: #ff00ff;
+      background: url('neon.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-  background: url('neon.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-  text-shadow: 0 0 5px var(--text);
-}
+    body.ocean {
+      --bg: #e0f7fa;
+      --text: #006064;
+      --accent: #0097a7;
+      background: url('ocean.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-/* OCEAN */
-body.ocean {
-  --bg: #e0f7fa;
-  --text: #006064;
-  --accent: #0097a7;
-  --font: 'Segoe UI', sans-serif;
+    body.midnight {
+      --bg: #1a1a2e;
+      --text: #e0e0e0;
+      --accent: #7f00ff;
+      background: url('midnight.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-  background: url('ocean.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-}
+    body.sunset {
+      --bg: linear-gradient(to right, #ff7e5f, #feb47b);
+      --text: #4e342e;
+      --accent: #ff7043;
+      background: url('sunset.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-/* MIDNIGHT */
-body.midnight {
-  --bg: #1a1a2e;
-  --text: #e0e0e0;
-  --accent: #7f00ff;
-  --font: 'Segoe UI', sans-serif;
+    body.matrix {
+      --bg: #000000;
+      --text: #00ff00;
+      --accent: #00ff00;
+      background: url('matrix.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-  background: url('midnight.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-}
+    body.cyberpunk {
+      --bg: #2a2a2a;
+      --text: #f50057;
+      --accent: #00e5ff;
+      background: url('cyberpunk.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-/* SUNSET */
-body.sunset {
-  --bg: linear-gradient(to right, #ff7e5f, #feb47b);
-  --text: #4e342e;
-  --accent: #ff7043;
-  --font: 'Segoe UI', sans-serif;
-
-  background: url('sunset.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-}
-
-/* MATRIX */
-body.matrix {
-  --bg: #000000;
-  --text: #00ff00;
-  --accent: #00ff00;
-  --font: 'Courier New', monospace;
-
-  background: url('matrix.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-  text-shadow: 0 0 4px var(--text);
-}
-
-/* CYBERPUNK */
-body.cyberpunk {
-  --bg: #2a2a2a;
-  --text: #f50057;
-  --accent: #00e5ff;
-  --font: 'Orbitron', sans-serif;
-
-  background: url('cyberpunk.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-  text-shadow: 0 0 6px var(--text);
-}
-
-/* FOREST */
-body.forest {
-  --bg: #e8f5e9;
-  --text: #2e7d32;
-  --accent: #66bb6a;
-  --font: 'Georgia, serif';
-
-  background: url('forest.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text);
-  font-family: var(--font);
-  }
-    .gcse-searchresults-only {
-      max-width: 700px;
-      margin: 2rem auto;
+    body.forest {
+      --bg: #e8f5e9;
+      --text: #2e7d32;
+      --accent: #66bb6a;
+      background: url('forest.jpeg') no-repeat center center fixed;
+      background-size: cover;
     }
   </style>
 </head>
 <body>
-  <img src="logo-new.png" alt="My Logo" width="275">
-  <div class="search-container">
-    <div class="search-box">
-      <input type="search" id="searchInput" placeholder="Type your search..." />
-      <button class="voice-btn" id="voiceBtn" title="Voice input">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
-        </svg>
-      </button>
-    </div>
-    <div class="buttons">
-      <button id="searchBtn">🔍 Search</button>
-      <button id="surpriseBtn">🎲 Surprise Me</button>
-      <button id="questionBtn">Questions &amp; Answers</button>
-    </div>
-    <div class="event-text">
-  EVENT: Maya Civilisation Facts/Q&A
-    </div>
-    
-<div id="search-history-container" style="margin: 20px auto; max-width: 400px; font-family: Arial, sans-serif;">
-  <h3>Search History</h3>
-  <ul id="searchHistory" style="list-style-type: none; padding-left: 0;"></ul>
-  <button id="clear-history" style="margin-top: 8px; padding: 6px 12px; cursor: pointer;">Clear History</button>
-</div>
-    
+  <header>
+    <img src="logo-new.png" alt="My Logo" width="275">
     <div class="theme-selector">
       <label for="theme">🎨 Theme: </label>
       <select id="theme">
@@ -334,342 +198,79 @@ body.forest {
         <option value="matrix">Matrix</option>
         <option value="cyberpunk">Cyberpunk</option>
         <option value="forest">Forest</option>
-   </select>
-<script>
-window.__gcse = {
-  callback: function () {
-    google.search.cse.element.render({
-      div: "searchresults",
-      tag: "searchresults-only"
-    });
+      </select>
+    </div>
+  </header>
+  <div class="search-container">
+    <div class="search-box">
+      <input type="search" id="searchInput" placeholder="Type your search..." />
+      <button id="searchBtn">🔍 Search</button>
+      <button id="surpriseBtn">🎲 Surprise Me</button>
+      <button id="questionBtn">Questions &amp; Answers</button>
+    </div>
+  </div>
+  <script>
+    function randomSurprise() {
+      const facts = [
+        "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
+        "The Maya developed a complex writing system using glyphs.",
+        "They had a base-20 (vigesimal) number system.",
+        "The Maya calendar included the Long Count, Tzolk'in, and Haab'.",
+        "Chichen Itza is one of the most famous Maya cities.",
+        "The Maya used chocolate in religious rituals.",
+        "They practiced human sacrifice.",
+        "The Maya had advanced knowledge of astronomy.",
+        "They tracked Venus with incredible accuracy.",
+        "The Maya built step pyramids.",
+        "They believed in a cyclical view of time.",
+        "Maya society had kings known as “k’uhul ajaw.”",
+        "They used obsidian and jade in tools and jewelry.",
+        "Maya ballgames were often tied to religion.",
+        "Losing teams were sometimes sacrificed.",
+        "They painted their buildings in bright colors."
+        // Add further facts here...
+      ];
+      alert(facts[Math.floor(Math.random() * facts.length)]);
     }
-  }
-};
 
-function randomSurprise {
-const facts = [
-  "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
-  "The Maya developed a complex writing system using glyphs.",
-  "They had a base-20 (vigesimal) number system.",
-  "The Maya calendar included the Long Count, Tzolk'in, and Haab'.",
-  "Chichen Itza is one of the most famous Maya cities.",
-  "The Maya used chocolate in religious rituals.",
-  "They practiced human sacrifice.",
-  "The Maya had advanced knowledge of astronomy.",
-  "They tracked Venus with incredible accuracy.",
-  "The Maya built step pyramids.",
-  "They believed in a cyclical view of time.",
-  "Maya society had kings known as “k’uhul ajaw.”",
-  "They used obsidian and jade in tools and jewelry.",
-  "Maya ballgames were often tied to religion.",
-  "Losing teams were sometimes sacrificed.",
-  "They painted their buildings in bright colors.",
-  "They didn’t use metal tools — only stone.",
-  "Maya cities were connected by causeways called sacbeob.",
-  "Corn (maize) was their staple crop.",
-  "They grew beans, squash, and chili peppers.",
-  "Maya art included murals, pottery, and stelae.",
-  "They carved inscriptions into stone monuments.",
-  "Copán and Palenque were major city-states.",
-  "Tikal was one of the most powerful Maya cities.",
-  "The Maya civilization dates back to 2000 BCE.",
-  "The Classic Period lasted from 250–900 CE.",
-  "They used codices made of bark paper.",
-  "Most Maya books were burned by Spanish conquistadors.",
-  "The Popol Vuh is a surviving Maya creation myth.",
-  "The Hero Twins are central figures in Maya mythology.",
-  "Maya believed in an underworld called Xibalba.",
-  "They used ritual bloodletting for spiritual reasons.",
-  "Kings and queens often performed self-sacrifice.",
-  "Maya pyramids often had temples on top.",
-  "They used rubber to make bouncy balls.",
-  "Maya civilization declined mysteriously around 900 CE.",
-  "Some cities remained active after the collapse.",
-  "Spanish conquest began in the 16th century.",
-  "The Maya never fully disappeared — descendants still live today.",
-  "Yucatec, K’iche’, and other Maya languages are still spoken.",
-  "The Maya created detailed star charts.",
-  "Eclipses were important religious events.",
-  "Maya priests were also astronomers.",
-  "They believed each day had spiritual significance.",
-  "The Haab' calendar had 365 days.",
-  "The Tzolk'in had 260 days.",
-  "The Long Count tracked millions of days.",
-  "They used zero long before Europeans.",
-  "They made paper from fig tree bark.",
-  "They built cities without beasts of burden or wheels.",
-  "Temples were aligned with solstices and equinoxes.",
-  "Maya kings claimed to be divine.",
-  "Women could become rulers in some Maya cities.",
-  "The Maya traded with other Mesoamerican cultures.",
-  "They used cacao beans as currency.",
-  "Jade was more valuable than gold to the Maya.",
-  "They made ceremonial masks for burials.",
-  "Sacred cenotes (sinkholes) were sites of offerings.",
-  "Maya believed caves were entrances to the underworld.",
-  "They often depicted gods as animals or hybrids.",
-  "The rain god was called Chaac.",
-  "The sun god was Kinich Ahau.",
-  "They had a maize god who was central to life.",
-  "Maya sculptures show detailed rituals.",
-  "They painted their faces for battle and ceremonies.",
-  "Maya cities had ballcourts and plazas.",
-  "The largest known Maya structure is in El Mirador.",
-  "The Temple of the Inscriptions in Palenque is a famous tomb.",
-  "The Temple of Kukulkan has 365 steps.",
-  "During equinoxes, shadows form a serpent on the pyramid.",
-  "Some cities were ruled by powerful dynasties for centuries.",
-  "Maya mathematics used dots (1) and bars (5).",
-  "They could predict solar and lunar eclipses.",
-  "They buried elite rulers with offerings and goods.",
-  "They had a complex pantheon of gods.",
-  "They believed souls traveled through the underworld after death.",
-  "Blood was seen as spiritual nourishment for the gods.",
-  "Maya murals depicted warfare and ceremonies.",
-  "They believed twin heroes defeated the lords of the underworld.",
-  "Maya warfare was often for capturing prisoners, not territory.",
-  "Cities often competed with each other for power.",
-  "Some Maya cities had populations in the tens of thousands.",
-  "Drought may have contributed to their decline.",
-  "Deforestation also hurt their agriculture.",
-  "They built reservoirs and canals for water management.",
-  "They observed the Milky Way as a sacred river.",
-  "Many Maya buildings are still being discovered today.",
-  "Maya priests wore elaborate feathered costumes.",
-  "They believed teeth filed into shapes made people more beautiful.",
-  "Elite Maya sometimes had jade inlays in their teeth.",
-  "Maya art shows musicians, dancers, and scribes.",
-  "The Dresden Codex is a surviving Maya book.",
-  "Maya languages are still taught and preserved today.",
-  "The Maya believed everything had spirit (animism).",
-  "Their gods controlled rain, sun, crops, and life cycles.",
-  "Kings were buried beneath temples.",
-  "Some pyramids were built over older ones.",
-  "The Maya did not have a single empire — just city-states.",
-  "Uxmal, Calakmul, and Bonampak are key sites.",
-  "Bonampak has murals showing ritual bloodletting.",
-  "Their cities rose in modern-day Mexico, Guatemala, Belize, Honduras, and El Salvador.",
-  "Modern Maya communities preserve traditional dress, food, and beliefs.",
-  "UNESCO protects some Maya ruins as World Heritage Sites.",
-  "Some Maya rituals are still practiced today.",
-  "Archaeologists use lidar to find lost cities beneath the jungle.",
-  "Maya civilization had a peak population of millions.",
-  "Maya nobility wore headdresses, jade jewelry, and embroidered clothing.",
-  "Maya homes were often thatched huts made from local materials.",
-  "They practiced slash-and-burn agriculture.",
-  "The Spanish conquest destroyed many temples and records.",
-  "Many Maya ruins are still covered by jungle."
-];
-alert(facts[Math.floor(Math.random() * facts.length)]);
-} 
-function randomQuestion {
-const questions = [
-  "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
-  "Q: What writing system did the Maya use? A: Glyph-based writing.",
-  "Q: What base did the Maya number system use? A: Base-20 (vigesimal).",
-  "Q: Name one famous Maya city. A: Chichen Itza.",
-  "Q: What food was used in Maya rituals? A: Chocolate.",
-  "Q: What extreme religious practice did the Maya do? A: Human sacrifice.",
-  "Q: What science were the Maya advanced in? A: Astronomy.",
-  "Q: What planet did the Maya track accurately? A: Venus.",
-  "Q: What kind of pyramids did the Maya build? A: Step pyramids.",
-  "Q: What were Maya kings called? A: K’uhul ajaw.",
-  "Q: What materials did the Maya use for tools and jewelry? A: Obsidian and jade.",
-  "Q: What sport had religious ties in Maya culture? A: Ballgame.",
-  "Q: What happened to losing teams in Maya ballgames? A: Sometimes sacrificed.",
-  "Q: How did Maya buildings often appear? A: Painted in bright colors.",
-  "Q: What tools did the Maya use? A: Only stone, no metal.",
-  "Q: What connected Maya cities? A: Causeways called sacbeob.",
-  "Q: What was the Maya staple crop? A: Corn (maize).",
-  "Q: What other crops did the Maya grow? A: Beans, squash, and chili peppers.",
-  "Q: What forms of Maya art existed? A: Murals, pottery, and stelae.",
-  "Q: What did Maya carve inscriptions into? A: Stone monuments.",
-  "Q: Name a major Maya city-state. A: Copán or Palenque.",
-  "Q: What was one of the most powerful Maya cities? A: Tikal.",
-  "Q: When did Maya civilization begin? A: Around 2000 BCE.",
-  "Q: When was the Classic Period? A: 250–900 CE.",
-  "Q: What did the Maya write codices on? A: Bark paper.",
-  "Q: Who burned most Maya books? A: Spanish conquistadors.",
-  "Q: What is the Popol Vuh? A: A Maya creation myth.",
-  "Q: Who are the Hero Twins? A: Central figures in Maya mythology.",
-  "Q: What is Xibalba? A: The Maya underworld.",
-  "Q: What ritual was performed for spiritual reasons? A: Bloodletting.",
-  "Q: Who performed self-sacrifice? A: Kings and queens.",
-  "Q: What was on top of Maya pyramids? A: Temples.",
-  "Q: What did the Maya use to make bouncy balls? A: Rubber.",
-  "Q: When did Maya civilization mysteriously decline? A: Around 900 CE.",
-  "Q: Did some cities survive after the collapse? A: Yes.",
-  "Q: When did the Spanish conquest begin? A: In the 16th century.",
-  "Q: Are Maya people still alive today? A: Yes, their descendants live on.",
-  "Q: Are Maya languages still spoken? A: Yes, like Yucatec and K’iche’.",
-  "Q: What celestial objects did the Maya chart? A: Stars.",
-  "Q: What were eclipses to the Maya? A: Religious events.",
-  "Q: What roles did Maya priests have? A: Also astronomers.",
-  "Q: What did each Maya day have? A: Spiritual meaning.",
-  "Q: How many days did the Haab' calendar have? A: 365 days.",
-  "Q: How many days in the Tzolk'in calendar? A: 260 days.",
-  "Q: What did the Long Count track? A: Millions of days.",
-  "Q: Who used zero before Europeans? A: The Maya.",
-  "Q: What did the Maya make paper from? A: Fig tree bark.",
-  "Q: How did they build cities without wheels or animals? A: Manpower.",
-  "Q: What were temples aligned with? A: Solstices and equinoxes.",
-  "Q: How did kings claim authority? A: Claimed to be divine.",
-  "Q: Could women rule Maya cities? A: Yes, in some cases.",
-  "Q: Who did the Maya trade with? A: Other Mesoamerican cultures.",
-  "Q: What did they use as money? A: Cacao beans.",
-  "Q: What was more valuable than gold to the Maya? A: Jade.",
-  "Q: What were ceremonial masks used for? A: Burials.",
-  "Q: What are cenotes? A: Sacred sinkholes for offerings.",
-  "Q: What did caves represent? A: Entrances to the underworld.",
-  "Q: What did Maya gods look like? A: Animals or hybrids.",
-  "Q: Who was the Maya rain god? A: Chaac.",
-  "Q: Who was the sun god? A: Kinich Ahau.",
-  "Q: What crop had its own god? A: Maize.",
-  "Q: What did Maya sculptures show? A: Detailed rituals.",
-  "Q: Why did Maya paint faces? A: For battle and ceremonies.",
-  "Q: What features did cities have? A: Ballcourts and plazas.",
-  "Q: Where is the largest Maya structure? A: El Mirador.",
-  "Q: What is famous about the Temple of the Inscriptions? A: It’s a tomb.",
-  "Q: How many steps on Temple of Kukulkan? A: 365 steps.",
-  "Q: What happens during equinox at Kukulkan? A: Serpent shadow appears.",
-  "Q: How long did some dynasties rule? A: Centuries.",
-  "Q: What symbols were used in Maya math? A: Dots (1) and bars (5).",
-  "Q: Could they predict eclipses? A: Yes, solar and lunar.",
-  "Q: What was buried with elite rulers? A: Offerings and goods.",
-  "Q: Did the Maya have many gods? A: Yes, a complex pantheon.",
-  "Q: What happened to the soul after death? A: Journey through underworld.",
-  "Q: What nourished the gods spiritually? A: Blood.",
-  "Q: What did murals show? A: Warfare and ceremonies.",
-  "Q: Who did the Hero Twins defeat? A: Lords of the underworld.",
-  "Q: What was the goal of Maya warfare? A: Capturing prisoners.",
-  "Q: Did Maya cities compete with each other? A: Yes, for power.",
-  "Q: How big were some Maya cities? A: Tens of thousands.",
-  "Q: What environmental factors hurt them? A: Drought and deforestation.",
-  "Q: How did they manage water? A: Canals and reservoirs.",
-  "Q: What did the Milky Way represent? A: A sacred river.",
-  "Q: Are new ruins still being found? A: Yes.",
-  "Q: What did priests wear? A: Elaborate feathered costumes.",
-  "Q: Why were teeth shaped? A: For beauty.",
-  "Q: What did elite have in teeth? A: Jade inlays.",
-  "Q: What did Maya art depict? A: Musicians, dancers, scribes.",
-  "Q: What is the Dresden Codex? A: A surviving Maya book.",
-  "Q: Are Maya languages being preserved? A: Yes.",
-  "Q: What belief system did they follow? A: Animism.",
-  "Q: What did gods control? A: Rain, sun, crops, life cycles.",
-  "Q: Where were kings buried? A: Beneath temples.",
-  "Q: How were pyramids built? A: Sometimes over older ones.",
-  "Q: Did they have one empire? A: No, city-states.",
-  "Q: Name more Maya cities. A: Uxmal, Calakmul, Bonampak.",
-  "Q: What’s shown in Bonampak murals? A: Ritual bloodletting.",
-  "Q: Where was the Maya civilization located? A: Mexico, Guatemala, Belize, Honduras, and El Salvador.",
-  "Q: How is Maya culture preserved today? A: Dress, food, beliefs.",
-  "Q: What protects Maya ruins? A: UNESCO World Heritage Sites.",
-  "Q: Are rituals still practiced? A: Yes.",
-  "Q: How do archaeologists find lost cities? A: Lidar scans.",
-  "Q: What was the peak population? A: Millions.",
-  "Q: What did nobles wear? A: Headdresses, jade, embroidery.",
-  "Q: What were homes made of? A: Thatched local materials.",
-  "Q: What farming method did they use? A: Slash-and-burn.",
-  "Q: Who destroyed many temples? A: The Spanish.",
-  "Q: Are ruins still hidden? A: Yes, under jungle."
-];
-  alert(questions[Math.floor(Math.random() * questions.length)]);
-  }
-  window.onload = function () {
-  document.getElementById("searchBtn").addEventListener("click", performSearch);
+    function randomQuestion() {
+      const questions = [
+        "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
+        "Q: What writing system did the Maya use? A: Glyph-based writing.",
+        "Q: What base did the Maya number system use? A: Base-20 (vigesimal).",
+        "Q: Name one famous Maya city. A: Chichen Itza.",
+        "Q: What food was used in Maya rituals? A: Chocolate.",
+        "Q: What extreme religious practice did the Maya do? A: Human sacrifice."
+      ];
+      alert(questions[Math.floor(Math.random() * questions.length)]);
+    }
 
-  document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
-  {                                             
-  alert(facts[Math.floor(Math.random() * facts.length)]);
-  });
+    window.onload = function () {
+      document.getElementById("theme").addEventListener("change", function () {
+        document.body.className = this.value;
+      });
 
-  document.getElementById("randomQuestion").addEventListener("click", randomQuestion);
-  { 
-  alert(questions[Math.floor(Math.random() * questions.length)]);
-  });
+      document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
+      document.getElementById("questionBtn").addEventListener("click", randomQuestion);
 
-  document.getElementById("theme").addEventListener("change", function () {
-    document.body.className = this.value;
-  });
-
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-UK';
-    recognition.interimResults = false;
-    document.getElementById('voiceBtn').onclick = () => recognition.start();
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      document.getElementById('searchInput').value = transcript;
-      performSearch();
-    };
-  }
-
-  renderHistory();
-
-  document.getElementById("searchInput").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      const term = this.value.trim();
-      if (term) {
-        saveSearch(term);
-        this.value = '';
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-UK';
+        recognition.interimResults = false;
+        document.getElementById('searchBtn').onclick = () => recognition.start();
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById('searchInput').value = transcript;
+        };
+        recognition.onerror = (event) => {
+          alert('Speech recognition error: ' + event.error);
+        };
+      } else {
+        alert('Voice input is not supported in your browser.');
       }
-    }
-  });
-
-  const clearBtn = document.getElementById("clear-history");
-  if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-      localStorage.removeItem("searchHistory");
-      renderHistory();
-    });
-  }
-};
-function performSearch() {
-  const query = document.getElementById('searchInput').value.trim();
-
-  if (!query) return;
-
-  // Simple check: is it just numbers and math symbols?
-  const isMath = /^[\d+\-*/().\s]+$/.test(query);
-
-  if (isMath) {
-    try {
-      const result = Function('"use strict"; return (' + query + ')')();
-      alert('🧮 Result: ' + result);
-    } catch (e) {
-      alert('⚠️ Invalid math expression.');
-    }
-    return; // ⛔ Don't do a search
-  }
-
-  // Otherwise, run the search
-  saveSearch(query);
-
-  const element = google?.search?.cse?.element?.getElement('searchresults');
-  if (element) {
-    element.execute(query);
-  } else {
-    alert("Search engine is not ready yet. Try again in a few seconds.");
-  }
-  }
-function saveSearch(term) {
-  let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-  history = history.filter(item => item !== term);
-  history.unshift(term);
-  if (history.length > 20) history = history.slice(0, 20);
-  localStorage.setItem('searchHistory', JSON.stringify(history));
-  renderHistory();
-}
-
-function renderHistory() {
-  const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-  const list = document.getElementById('searchHistory');
-  if (list) {
-    list.innerHTML = history.map(item => `<li class="history-item">${item}</li>`).join('');
-  }
-}
-</script>
-<div class="bottom-warning">Outage is happening...</div>
-<a href="version-history.html" class="version-badge">v.1.1</a>
+    };
+  </script>
+  <div class="bottom-warning">Outage is happening...</div>
+  <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
-  </html>
+</html>   
