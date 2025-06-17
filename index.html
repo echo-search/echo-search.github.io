@@ -334,9 +334,7 @@ body.forest {
         <option value="matrix">Matrix</option>
         <option value="cyberpunk">Cyberpunk</option>
         <option value="forest">Forest</option>
-      </div>
    </select>
-
 <script>
 window.__gcse = {
   callback: function () {
@@ -576,12 +574,14 @@ const questions = [
   window.onload = function () {
   document.getElementById("searchBtn").addEventListener("click", performSearch);
 
-  document.getElementById("randomSurprise").addEventListener("click", () => {
-    alert(facts[Math.floor(Math.random() * facts.length)]);
+  document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
+  {                                             
+  alert(facts[Math.floor(Math.random() * facts.length)]);
   });
 
-  document.getElementById("randomQuestion").addEventListener("click", () => {
-    alert(questions[Math.floor(Math.random() * questions.length)]);
+  document.getElementById("randomQuestion").addEventListener("click", randomQuestion);
+  { 
+  alert(questions[Math.floor(Math.random() * questions.length)]);
   });
 
   document.getElementById("theme").addEventListener("change", function () {
@@ -613,7 +613,7 @@ const questions = [
   });
 
   const clearBtn = document.getElementById("clear-history");
-  if (clearBtn) {i
+  if (clearBtn) {
     clearBtn.addEventListener("click", () => {
       localStorage.removeItem("searchHistory");
       renderHistory();
