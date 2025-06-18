@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -207,42 +207,208 @@
       <button id="searchBtn">🔍 Search</button>
       <button id="surpriseBtn">🎲 Surprise Me</button>
       <button id="questionBtn">Questions &amp; Answers</button>
+      <button id="voiceInputButton" class="voice-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
+        </svg>
+      </button>
     </div>
   </div>
   <script>
     function randomSurprise() {
-      const facts = [
-        "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
-        "The Maya developed a complex writing system using glyphs.",
-        "They had a base-20 (vigesimal) number system.",
-        "The Maya calendar included the Long Count, Tzolk'in, and Haab'.",
-        "Chichen Itza is one of the most famous Maya cities.",
-        "The Maya used chocolate in religious rituals.",
-        "They practiced human sacrifice.",
-        "The Maya had advanced knowledge of astronomy.",
-        "They tracked Venus with incredible accuracy.",
-        "The Maya built step pyramids.",
-        "They believed in a cyclical view of time.",
-        "Maya society had kings known as “k’uhul ajaw.”",
-        "They used obsidian and jade in tools and jewelry.",
-        "Maya ballgames were often tied to religion.",
-        "Losing teams were sometimes sacrificed.",
-        "They painted their buildings in bright colors."
-        // Add further facts here...
-      ];
-      alert(facts[Math.floor(Math.random() * facts.length)]);
-    }
+  const facts = [
+    "The Maya civilisation flourished in Mesoamerica (Modern-Day Central America).",
+    "The Maya developed a complex writing system using glyphs.",
+    "They had a base-20 (vigesimal) number system.",
+    "The Maya calendar included the Long Count, Tzolk'in, and Haab'.",
+    "Chichen Itza is one of the most famous Maya cities.",
+    "The Maya used chocolate in religious rituals.",
+    "They practiced human sacrifice.",
+    "The Maya had advanced knowledge of astronomy.",
+    "They tracked Venus with incredible accuracy.",
+    "The Maya built step pyramids.",
+    "They believed in a cyclical view of time.",
+    "Maya society had kings known as “k’uhul ajaw.”",
+    "They used obsidian and jade in tools and jewelry.",
+    "Maya ballgames were often tied to religion.",
+    "Losing teams were sometimes sacrificed.",
+    "They painted their buildings in bright colors.",
+    "They didn’t use metal tools — only stone.",
+    "Maya cities were connected by causeways called sacbeob.",
+    "Corn (maize) was their staple crop.",
+    "They grew beans, squash, and chili peppers.",
+    "Maya art included murals, pottery, and stelae.",
+    "They carved inscriptions into stone monuments.",
+    "Copán and Palenque were major city-states.",
+    "Tikal was one of the most powerful Maya cities.",
+    "The Maya civilization dates back to 2000 BCE.",
+    "The Classic Period lasted from 250–900 CE.",
+    "They used codices made of bark paper.",
+    "Most Maya books were burned by Spanish conquistadors.",
+    "The Popol Vuh is a surviving Maya creation myth.",
+    "The Hero Twins are central figures in Maya mythology.",
+    "Maya believed in an underworld called Xibalba.",
+    "They used ritual bloodletting for spiritual reasons.",
+    "Kings and queens often performed self-sacrifice.",
+    "Maya pyramids often had temples on top.",
+    "They used rubber to make bouncy balls.",
+    "Maya civilization declined mysteriously around 900 CE.",
+    "Some cities remained active after the collapse.",
+    "Spanish conquest began in the 16th century.",
+    "The Maya never fully disappeared — descendants still live today.",
+    "Yucatec, K’iche’, and other Maya languages are still spoken.",
+    "The Maya created detailed star charts.",
+    "Eclipses were important religious events.",
+    "Maya priests were also astronomers.",
+    "They believed each day had spiritual significance.",
+    "The Haab' calendar had 365 days.",
+    "The Tzolk'in had 260 days.",
+    "The Long Count tracked millions of days.",
+    "They used zero long before Europeans.",
+    "They made paper from fig tree bark.",
+    "They built cities without beasts of burden or wheels.",
+    "Temples were aligned with solstices and equinoxes.",
+    "Maya kings claimed to be divine.",
+    "Women could become rulers in some Maya cities.",
+    "The Maya traded with other Mesoamerican cultures.",
+    "They used cacao beans as currency.",
+    "Jade was more valuable than gold to the Maya.",
+    "They made ceremonial masks for burials.",
+    "Sacred cenotes (sinkholes) were sites of offerings.",
+    "Maya believed caves were entrances to the underworld.",
+    "They often depicted gods as animals or hybrids.",
+    "The rain god was called Chaac.",
+    "The sun god was Kinich Ahau.",
+    "They had a maize god who was central to life.",
+    "Maya sculptures show detailed rituals.",
+    "They painted their faces for battle and ceremonies.",
+    "Maya cities had ballcourts and plazas.",
+    "The largest known Maya structure is in El Mirador.",
+    "The Temple of the Inscriptions in Palenque is a famous tomb.",
+    "The Temple of Kukulkan has 365 steps.",
+    "During equinoxes, shadows form a serpent on the pyramid.",
+    "Some cities were ruled by powerful dynasties for centuries.",
+    "Maya mathematics used dots (1) and bars (5).",
+    "They could predict solar and lunar eclipses.",
+    "They buried elite rulers with offerings and goods.",
+    "They had a complex pantheon of gods.",
+    "They believed souls traveled through the underworld after death.",
+    "Blood was seen as spiritual nourishment for the gods.",
+    "Maya murals depicted warfare and ceremonies.",
+    "They believed twin heroes defeated the lords of the underworld.",
+    "Maya warfare was often for capturing prisoners, not territory.",
+    "Cities often competed with each other for power.",
+    "Some Maya cities had populations in the tens of thousands.",
+    "Drought may have contributed to their decline.",
+    "Deforestation also hurt their agriculture.",
+    "They built reservoirs and canals for water management.",
+    "They observed the Milky Way as a sacred river.",
+    "Many Maya buildings are still being discovered today.",
+    "Maya priests wore elaborate feathered costumes.",
+    "They believed teeth filed into shapes made people more beautiful.",
+    "Elite Maya sometimes had jade inlays in their teeth.",
+    "Maya art shows musicians, dancers, and scribes.",
+    "The Dresden Codex is a surviving Maya book.",
+    "Maya languages are still taught and preserved today.",
+    "The Maya believed everything had spirit (animism).",
+    "Their gods controlled rain, sun, crops, and life cycles.",
+    "Kings were buried beneath temples.",
+    "Some pyramids were built over older ones.",
+    "The Maya did not have a single empire — just city-states.",
+    "Uxmal, Calakmul, and Bonampak are key sites.",
+    "Bonampak has murals showing ritual bloodletting.",
+    "Their cities rose in modern-day Mexico, Guatemala, Belize, Honduras, and El Salvador.",
+    "Modern Maya communities preserve traditional dress, food, and beliefs.",
+    "UNESCO protects some Maya ruins as World Heritage Sites.",
+    "Some Maya rituals are still practiced today.",
+    "Archaeologists use lidar to find lost cities beneath the jungle.",
+    "Maya civilization had a peak population of millions.",
+    "Maya nobility wore headdresses, jade jewelry, and embroidered clothing.",
+    "Maya homes were often thatched huts made from local materials.",
+    "They practiced slash-and-burn agriculture.",
+    "The Spanish conquest destroyed many temples and records.",
+    "Many Maya ruins are still covered by jungle."
+  ];
+  alert(facts[Math.floor(Math.random() * facts.length)]);
+}
 
-    function randomQuestion() {
-      const questions = [
-        "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
-        "Q: What writing system did the Maya use? A: Glyph-based writing.",
-        "Q: What base did the Maya number system use? A: Base-20 (vigesimal).",
-        "Q: Name one famous Maya city. A: Chichen Itza.",
-        "Q: What food was used in Maya rituals? A: Chocolate.",
-        "Q: What extreme religious practice did the Maya do? A: Human sacrifice."
-      ];
-      alert(questions[Math.floor(Math.random() * questions.length)]);
+function randomQuestion() {
+  const questions = [
+    "Q: What ancient civilization flourished in Mesoamerica? A: The Maya civilization.",
+    "Q: What writing system did the Maya use? A: Glyph-based writing.",
+    "Q: What base did the Maya number system use? A: Base-20 (vigesimal).",
+    "Q: Name one famous Maya city. A: Chichen Itza.",
+    "Q: What food was used in Maya rituals? A: Chocolate.",
+    "Q: What extreme religious practice did the Maya do? A: Human sacrifice.",
+    "Q: What science were the Maya advanced in? A: Astronomy.",
+    "Q: What planet did the Maya track accurately? A: Venus.",
+    "Q: What kind of pyramids did the Maya build? A: Step pyramids.",
+    "Q: What were Maya kings called? A: K’uhul ajaw.",
+    "Q: What materials did the Maya use for tools and jewelry? A: Obsidian and jade.",
+    "Q: What sport had religious ties in Maya culture? A: Ballgame.",
+    "Q: What happened to losing teams in Maya ballgames? A: Sometimes sacrificed.",
+    "Q: How did Maya buildings often appear? A: Painted in bright colors.",
+    "Q: What tools did the Maya use? A: Only stone, no metal.",
+    "Q: What connected Maya cities? A: Causeways called sacbeob.",
+    "Q: What was the Maya staple crop? A: Corn (maize).",
+    "Q: What other crops did the Maya grow? A: Beans, squash, and chili peppers.",
+    "Q: What forms of Maya art existed? A: Murals, pottery, and stelae.",
+    "Q: What did Maya carve inscriptions into? A: Stone monuments.",
+    "Q: Name a major Maya city-state. A: Copán or Palenque.",
+    "Q: What was one of the most powerful Maya cities? A: Tikal.",
+    "Q: When did Maya civilization begin? A: Around 2000 BCE.",
+    "Q: When was the Classic Period? A: 250–900 CE.",
+    "Q: What did the Maya write codices on? A: Bark paper.",
+    "Q: Who burned most Maya books? A: Spanish conquistadors.",
+    "Q: What is the Popol Vuh? A: A Maya creation myth.",
+    "Q: Who are the Hero Twins? A: Central figures in Maya mythology.",
+    "Q: What is Xibalba? A: The Maya underworld.",
+    "Q: What ritual was performed for spiritual reasons? A: Bloodletting.",
+    "Q: Who performed self-sacrifice? A: Kings and queens.",
+    "Q: What was on top of Maya pyramids? A: Temples.",
+    "Q: What did the Maya use to make bouncy balls? A: Rubber.",
+    "Q: When did Maya civilization mysteriously decline? A: Around 900 CE.",
+    "Q: Did some cities survive after the collapse? A: Yes.",
+    "Q: When did the Spanish conquest begin? A: In the 16th century.",
+    "Q: Are Maya people still alive today? A: Yes, their descendants live on.",
+    "Q: Are Maya languages still spoken? A: Yes, like Yucatec and K’iche’.",
+    "Q: What celestial objects did the Maya chart? A: Stars.",
+    "Q: What were eclipses to the Maya? A: Religious events.",
+    "Q: What roles did Maya priests have? A: Also astronomers.",
+    "Q: What did each Maya day have? A: Spiritual meaning.",
+    "Q: How many days did the Haab' calendar have? A: 365 days.",
+    "Q: How many days in the Tzolk'in calendar? A: 260 days.",
+    "Q: What did the Long Count track? A: Millions of days.",
+    "Q: Who used zero before Europeans? A: The Maya.",
+    "Q: What did the Maya make paper from? A: Fig tree bark.",
+    "Q: How did they build cities without wheels or animals? A: Manpower.",
+    "Q: What were temples aligned with? A: Solstices and equinoxes.",
+    "Q: How did kings claim authority? A: Claimed to be divine.",
+    "Q: Could women rule Maya cities? A: Yes, in some cases.",
+    "Q: Who did the Maya trade with? A: Other Mesoamerican cultures.",
+    "Q: What did they use as money? A: Cacao beans.",
+    "Q: What was more valuable than gold to the Maya? A: Jade."
+  ];
+  alert(questions[Math.floor(Math.random() * questions.length)]);
+      }
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-UK';
+      recognition.interimResults = false;
+
+      document.getElementById('voiceInputButton').onclick = () => recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('searchInput').value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        alert('Speech recognition error: ' + event.error);
+      };
+    } else {
+      alert('Voice input is not supported in your browser.');
     }
 
     window.onload = function () {
@@ -252,25 +418,9 @@
 
       document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
       document.getElementById("questionBtn").addEventListener("click", randomQuestion);
-
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-UK';
-        recognition.interimResults = false;
-        document.getElementById('searchBtn').onclick = () => recognition.start();
-        recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          document.getElementById('searchInput').value = transcript;
-        };
-        recognition.onerror = (event) => {
-          alert('Speech recognition error: ' + event.error);
-        };
-      } else {
-        alert('Voice input is not supported in your browser.');
-      }
     };
   </script>
   <div class="bottom-warning">Outage is happening...</div>
   <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
-</html>   
+</html>
