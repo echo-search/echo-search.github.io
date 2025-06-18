@@ -183,6 +183,12 @@
   </style>
 </head>
 <body>
+  <div class="search-container">
+    <input type="search" id="searchInput" placeholder="Type your search..." />
+    <button id="voiceInputButton" class="voice-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
+      </svg>
   <header>
     <img src="logo-new.png" alt="My Logo" width="275">
     <div class="theme-selector">
@@ -207,11 +213,6 @@
       <button id="searchBtn">🔍 Search</button>
       <button id="surpriseBtn">🎲 Surprise Me</button>
       <button id="questionBtn">Questions &amp; Answers</button>
-      <button id="voiceInputButton" class="voice-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"/>
-        </svg>
-      </button>
     </div>
   </div>
   <script>
@@ -390,25 +391,6 @@ function randomQuestion() {
     "Q: What was more valuable than gold to the Maya? A: Jade."
   ];
   alert(questions[Math.floor(Math.random() * questions.length)]);
-      }
-
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-UK';
-      recognition.interimResults = false;
-
-      document.getElementById('voiceInputButton').onclick = () => recognition.start();
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('searchInput').value = transcript;
-      };
-
-      recognition.onerror = (event) => {
-        alert('Speech recognition error: ' + event.error);
-      };
-    } else {
-      alert('Voice input is not supported in your browser.');
     }
 
     window.onload = function () {
@@ -418,6 +400,22 @@ function randomQuestion() {
 
       document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
       document.getElementById("questionBtn").addEventListener("click", randomQuestion);
+
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-UK';
+        recognition.interimResults = false;
+        document.getElementById('searchBtn').onclick = () => recognition.start();
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById('searchInput').value = transcript;
+        };
+        recognition.onerror = (event) => {
+          alert('Speech recognition error: ' + event.error);
+        };
+      } else {
+        alert('Voice input is not supported in your browser.');
+      }
     };
   </script>
   <div class="bottom-warning">Outage is happening...</div>
