@@ -302,6 +302,12 @@
       document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
       document.getElementById("questionBtn").addEventListener("click", randomQuestion);
     };
+    document.getElementById("searchBtn").addEventListener("click", function () {
+  var query = document.getElementById("searchInput").value;
+  if (google && google.search && google.search.cse && google.search.cse.element) {
+    google.search.cse.element.getElement("searchResults").execute(query);
+  }
+});
   </script>
   <div id="searchResults"></div>
   <div class="bottom-warning">Outage is happening...</div>
