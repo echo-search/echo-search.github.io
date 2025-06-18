@@ -5,16 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EchoSearch</title>
   <link rel="icon" href="favicon.png" type="image/x-icon">
-  <script>
-  window.__gcse = {
-    callback: function() {
-      google.search.cse.element.render({
-        div: "searchResults",
-        tag: 'searchresults-only'
-      });
-    }
-  };
-  </script>
   <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
   <style>
     /* General Styling */
@@ -302,7 +292,7 @@
       document.getElementById("questionBtn").addEventListener("click", randomQuestion);
     };
   </script>
-  <div id="searchResults"></div>
+<div class="gcse-searchresults-only"></div>
   <div class="bottom-warning">Outage is happening...</div>
   <a href="version-history.html" class="version-badge">v.1.1</a>
 </body>
