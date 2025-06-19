@@ -46,10 +46,7 @@
   max-width: 700px;
   margin: 0 auto;
   padding: 2rem 1rem;
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: 10px; 
+  text-align: center;
    } 
   
     input[type="search"] {
@@ -233,19 +230,18 @@
       </select>
     </div>
   </header>
-  <div class="search-container">
-    <div class="search-box">
+  <div class="search-box">
   <input type="search" id="searchInput" placeholder="Type your search..." />
-  <button id="voiceInputButton" class="voice-button">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0[...]"></path>
-    </svg>
-  </button>
-    </div>
-    <div class="button-group">
+  </div>
+  <div class="button-group">
       <button id="searchBtn">🔍 Search</button>
       <button id="surpriseBtn">🎲 Surprise Me</button>
       <button id="questionBtn">Questions & Answers</button>
+      <button id="voiceInputButton" class="voice-button">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0[...]"></path>
+    </svg>
+      </button>
     </div>
   </div>
   <script>
