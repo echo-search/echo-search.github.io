@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Space Quiz Challenge</title>
+  <style>
+    body {
+      background: #060621;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #game {
+      background: #14144f;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 20px cyan;
+    }
+
+    .option {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #272787;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      background-color: #3a3aad;
+    }
+
+    #score, #timer {
+      margin: 15px 0;
+      font-size: 18px;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    #start-btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00d0ff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<!-- 🌌 Space Quiz Interface --><section id="spaceQuizContainer" style="margin-top: 40px; font-family: sans-serif; color: white;"> 
+<h2>🚀 Space Facts Quiz</h2>  <!-- Difficulty selector --><label for="levelSelect">Choose difficulty:</label> <select id="levelSelect"> <option value="easy">Easy</option> <option value="medium">Medium</option> <option value="hard">Hard</option> <option value="xHard">X-Hard</option> <option value="impossible">Impossible</option> </select>
+
+  <!-- Timer and score -->  <p id="timer">⏳ Time: 60s</p>
+  <p id="score">📊 Score: 0</p>  <!-- Question text -->  <p id="question" style="font-weight: bold;">Click 'Start Game' to begin!</p>  <!-- Options -->  <div id="options">
+    <button onclick="submitAnswer(0)">Option 1</button>
+    <button onclick="submitAnswer(1)">Option 2</button>
+    <button onclick="submitAnswer(2)">Option 3</button>
+  </div>  <!-- Start button --><button onclick="startGame()">Start Game</button>
+
+</section><!-- 🚀 Auto-load the quiz logic --><script>
+  const script = document.createElement('script');
+  script.src = 'spacequiz.js';
+  document.body.appendChild(script);
+</script>
+</body>
