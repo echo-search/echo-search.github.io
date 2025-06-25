@@ -1,4 +1,4 @@
-const questions = {
+const questions = 
   easy: [
     {
       question: "How many planets are in our solar system?",
