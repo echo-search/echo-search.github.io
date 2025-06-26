@@ -52,11 +52,6 @@
       cursor: pointer;
     }
 
-    #fullscreenBtn {
-      background: orange;
-      margin-top: 1rem;
-    }
-
     #startBtn {
       background: limegreen;
       margin-top: 1rem;
@@ -115,9 +110,6 @@
         <option value="extraHard">Extra Hard</option>
         <option value="impossible">Impossible</option>
       </select>
-      <br>
-      <button id="fullscreenBtn">Fullscreen</button>
-      <br>
       <button id="startBtn">Start Game</button>
     </div>
   </div>
@@ -163,524 +155,461 @@
 
     const questionData = {
 easy: [
-    {
-      question: "How many planets are in our solar system?",
-      options: ["9", "7", "8"],
-      answer: 2
-    },
-    {
-      question: "Which planet is closest to the Sun?",
-      options: ["Venus", "Mercury", "Earth"],
-      answer: 1
-    },
-    {
-      question: "Which planet is known as the Red Planet?",
-      options: ["Jupiter", "Saturn", "Mars"],
-      answer: 2
-    },
-    {
-      question: "What is the name of the planet we live on?",
-      options: ["Venus", "Mars", "Earth"],
-      answer: 2
-    },
-    {
-      question: "Which planet is the largest in our solar system?",
-      options: ["Saturn", "Jupiter", "Neptune"],
-      answer: 1
-    },
-    {
-      question: "Which planet has rings?",
-      options: ["Venus", "Saturn", "Mercury"],
-      answer: 1
-    },
-    {
-      question: "What is the Sun?",
-      options: ["A planet", "A star", "A moon"],
-      answer: 1
-    },
-    {
-      question: "How many moons does Earth have?",
-      options: ["1", "2", "3"],
-      answer: 0
-    },
-    {
-      question: "Which planet is second from the Sun?",
-      options: ["Venus", "Earth", "Mars"],
-      answer: 0
-    },
-    {
-      question: "Which planet is farthest from the Sun?",
-      options: ["Uranus", "Saturn", "Neptune"],
-      answer: 2
-    },
-    {
-      question: "Which planet is famous for its Great Red Spot?",
-      options: ["Jupiter", "Mars", "Venus"],
-      answer: 0
-    },
-    {
-      question: "How many Earth days make a year on Earth?",
-      options: ["365", "400", "360"],
-      answer: 0
-    },
-    {
-      question: "What is Earth's only natural satellite?",
-      options: ["The Moon", "Phobos", "Titan"],
-      answer: 0
-    },
-    {
-      question: "What is the name of our galaxy?",
-      options: ["Milky Way", "Andromeda", "Orion"],
-      answer: 0
-    },
-    {
-      question: "Which planet is known for having extreme surface temperatures?",
-      options: ["Mars", "Mercury", "Venus"],
-      answer: 2
-    },
-    {
-      question: "Which planet has the shortest year?",
-      options: ["Earth", "Mars", "Mercury"],
-      answer: 2
-    },
-    {
-      question: "How long does sunlight take to reach Earth?",
-      options: ["8 minutes", "1 hour", "1 second"],
-      answer: 0
-    },
-    {
-      question: "What do we call frozen balls of dust and gas with tails?",
-      options: ["Comets", "Asteroids", "Meteors"],
-      answer: 0
-    },
-    {
-      question: "What is a shooting star really?",
-      options: ["Comet", "Meteor", "Star"],
-      answer: 1
-    },
-    {
-      question: "What protects Earth from solar radiation?",
-      options: ["Ozone layer", "Clouds", "Magnetic field"],
-      answer: 2
-    },
-    {
-      question: "Which planet is known for being icy and blue?",
-      options: ["Saturn", "Mars", "Neptune"],
-      answer: 2
-    },
-    {
-      question: "Which planet has a tilt that causes extreme seasons?",
-      options: ["Uranus", "Earth", "Venus"],
-      answer: 0
-    },
-    {
-      question: "What kind of galaxy is the Milky Way?",
-      options: ["Elliptical", "Irregular", "Spiral"],
-      answer: 2
-    },
-    {
-      question: "Which planet is called Earth's twin?",
-      options: ["Mars", "Venus", "Mercury"],
-      answer: 1
-    },
-    {
-      question: "What shape are most orbits in the solar system?",
-      options: ["Circular", "Hexagonal", "Elliptical"],
-      answer: 2
-    },
-    {
-      question: "What is the average temperature on Earth?",
-      options: ["15°C", "100°C", "-20°C"],
-      answer: 0
-    },
-    {
-      question: "Which planet is the windiest?",
-      options: ["Jupiter", "Saturn", "Neptune"],
-      answer: 2
-    },
-    {
-      question: "Which planet has the most moons (as of 2025)?",
-      options: ["Saturn", "Jupiter", "Neptune"],
-      answer: 0
-    },
-    {
-      question: "Which planet has the highest mountain in the solar system?",
-      options: ["Earth", "Mars", "Venus"],
-      answer: 1
-    },
-    {
-      question: "What is the name of NASA’s first Moon landing mission?",
-      options: ["Gemini", "Apollo 11", "Voyager"],
-      answer: 1
-    },
-    {
-      question: "What planet is famous for its storms and bands?",
-      options: ["Mars", "Jupiter", "Venus"],
-      answer: 1
-    },
-    {
-      question: "How long is a day on Earth?",
-      options: ["12 hours", "24 hours", "48 hours"],
-      answer: 1
-    },
-    {
-      question: "What is an orbit?",
-      options: ["Shooting star", "Light path", "Path of a body around another"],
-      answer: 2
-    },
-    {
-      question: "How many dwarf planets are officially recognized (as of 2025)?",
-      options: ["9", "3", "5"],
-      answer: 2
-    },
-    {
-      question: "Where is the asteroid belt located?",
-      options: ["Between Earth and Mars", "Beyond Neptune", "Between Mars and Jupiter"],
-      answer: 2
-    },
-    {
-      question: "Which planet rotates the slowest?",
-      options: ["Venus", "Neptune", "Earth"],
-      answer: 0
-    },
-    {
-      question: "Which planet is most similar in size to Earth?",
-      options: ["Mars", "Venus", "Mercury"],
-      answer: 1
-    },
-    {
-      question: "Which gas makes up most of Earth's atmosphere?",
-      options: ["Oxygen", "Nitrogen", "Carbon Dioxide"],
-      answer: 1
-    },
-    {
-      question: "What planet is tipped on its side?",
-      options: ["Saturn", "Uranus", "Mars"],
-      answer: 1
-    },
-    {
-      question: "What does NASA stand for?",
-      options: [
-        "National Aeronautics and Space Administration",
-        "North American Space Agency",
-        "National Air Space Alliance"
-      ],
-      answer: 0
-    }
-  ],
+  {
+    question: "How many planets are in our solar system?",
+    answers: ["9", "7", "8"],
+    correct: "8"
+  },
+  {
+    question: "Which planet is closest to the Sun?",
+    answers: ["Venus", "Mercury", "Earth"],
+    correct: "Mercury"
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    answers: ["Jupiter", "Saturn", "Mars"],
+    correct: "Mars"
+  },
+  {
+    question: "What is the name of the planet we live on?",
+    answers: ["Venus", "Mars", "Earth"],
+    correct: "Earth"
+  },
+  {
+    question: "Which planet is the largest in our solar system?",
+    answers: ["Saturn", "Jupiter", "Neptune"],
+    correct: "Jupiter"
+  },
+  {
+    question: "Which planet has rings?",
+    answers: ["Venus", "Saturn", "Mercury"],
+    correct: "Saturn"
+  },
+  {
+    question: "What is the Sun?",
+    answers: ["A planet", "A star", "A moon"],
+    correct: "A star"
+  },
+  {
+    question: "How many moons does Earth have?",
+    answers: ["1", "2", "3"],
+    correct: "1"
+  },
+  {
+    question: "Which planet is second from the Sun?",
+    answers: ["Venus", "Earth", "Mars"],
+    correct: "Venus"
+  },
+  {
+    question: "Which planet is farthest from the Sun?",
+    answers: ["Uranus", "Saturn", "Neptune"],
+    correct: "Neptune"
+  },
+  {
+    question: "Which planet is famous for its Great Red Spot?",
+    answers: ["Jupiter", "Mars", "Venus"],
+    correct: "Jupiter"
+  },
+  {
+    question: "How many Earth days make a year on Earth?",
+    answers: ["365", "400", "360"],
+    correct: "365"
+  },
+  {
+    question: "What is Earth's only natural satellite?",
+    answers: ["The Moon", "Phobos", "Titan"],
+    correct: "The Moon"
+  },
+  {
+    question: "What is the name of our galaxy?",
+    answers: ["Milky Way", "Andromeda", "Orion"],
+    correct: "Milky Way"
+  },
+  {
+    question: "Which planet is known for having extreme surface temperatures?",
+    answers: ["Mars", "Mercury", "Venus"],
+    correct: "Venus"
+  },
+  {
+    question: "Which planet has the shortest year?",
+    answers: ["Earth", "Mars", "Mercury"],
+    correct: "Mercury"
+  },
+  {
+    question: "How long does sunlight take to reach Earth?",
+    answers: ["8 minutes", "1 hour", "1 second"],
+    correct: "8 minutes"
+  },
+  {
+    question: "What do we call frozen balls of dust and gas with tails?",
+    answers: ["Comets", "Asteroids", "Meteors"],
+    correct: "Comets"
+  },
+  {
+    question: "What is a shooting star really?",
+    answers: ["Comet", "Meteor", "Star"],
+    correct: "Meteor"
+  },
+  {
+    question: "What protects Earth from solar radiation?",
+    answers: ["Ozone layer", "Clouds", "Magnetic field"],
+    correct: "Magnetic field"
+  },
+  {
+    question: "Which planet is known for being icy and blue?",
+    answers: ["Saturn", "Mars", "Neptune"],
+    correct: "Neptune"
+  },
+  {
+    question: "Which planet has a tilt that causes extreme seasons?",
+    answers: ["Uranus", "Earth", "Venus"],
+    correct: "Uranus"
+  },
+  {
+    question: "What kind of galaxy is the Milky Way?",
+    answers: ["Elliptical", "Irregular", "Spiral"],
+    correct: "Spiral"
+  },
+  {
+    question: "Which planet is called Earth's twin?",
+    answers: ["Mars", "Venus", "Mercury"],
+    correct: "Venus"
+  },
+  {
+    question: "What shape are most orbits in the solar system?",
+    answers: ["Circular", "Hexagonal", "Elliptical"],
+    correct: "Elliptical"
+  },
+  {
+    question: "What is the average temperature on Earth?",
+    answers: ["15°C", "100°C", "-20°C"],
+    correct: "15°C"
+  },
+  {
+    question: "Which planet is the windiest?",
+    answers: ["Jupiter", "Saturn", "Neptune"],
+    correct: "Neptune"
+  },
+  {
+    question: "Which planet has the most moons (as of 2025)?",
+    answers: ["Saturn", "Jupiter", "Neptune"],
+    correct: "Saturn"
+  },
+  {
+    question: "Which planet has the highest mountain in the solar system?",
+    answers: ["Earth", "Mars", "Venus"],
+    correct: "Mars"
+  },
+  {
+    question: "What is the name of NASA’s first Moon landing mission?",
+    answers: ["Gemini", "Apollo 11", "Voyager"],
+    correct: "Apollo 11"
+  },
+  {
+    question: "What planet is famous for its storms and bands?",
+    answers: ["Mars", "Jupiter", "Venus"],
+    correct: "Jupiter"
+  },
+  {
+    question: "How long is a day on Earth?",
+    answers: ["12 hours", "24 hours", "48 hours"],
+    correct: "24 hours"
+  },
+  {
+    question: "What is an orbit?",
+    answers: ["Shooting star", "Light path", "Path of a body around another"],
+    correct: "Path of a body around another"
+  },
+  {
+    question: "How many dwarf planets are officially recognized (as of 2025)?",
+    answers: ["9", "3", "5"],
+    correct: "5"
+  },
+  {
+    question: "Where is the asteroid belt located?",
+    answers: ["Between Earth and Mars", "Beyond Neptune", "Between Mars and Jupiter"],
+    correct: "Between Mars and Jupiter"
+  },
+  {
+    question: "Which planet rotates the slowest?",
+    answers: ["Venus", "Neptune", "Earth"],
+    correct: "Venus"
+  },
+  {
+    question: "Which planet is most similar in size to Earth?",
+    answers: ["Mars", "Venus", "Mercury"],
+    correct: "Venus"
+  },
+  {
+    question: "Which gas makes up most of Earth's atmosphere?",
+    answers: ["Oxygen", "Nitrogen", "Carbon Dioxide"],
+    correct: "Nitrogen"
+  },
+  {
+    question: "What planet is tipped on its side?",
+    answers: ["Saturn", "Uranus", "Mars"],
+    correct: "Uranus"
+  },
+  {
+    question: "What does NASA stand for?",
+    answers: [
+      "National Aeronautics and Space Administration",
+      "North American Space Agency",
+      "National Air Space Alliance"
+    ],
+    correct: "National Aeronautics and Space Administration"
+  }
+]
+
 medium: [
   {
-    question: "How many Earth days are in a year on Mars?",
-    options: ["365", "540", "687"],
-    answer: 2
+    question: "What shape are the Earth, Moon and Sun?",
+    answers: ["Flat", "Cylindrical", "Spherical"],
+    correct: "Spherical"
   },
   {
-    question: "Which planet has the longest day (rotation period)?",
-    options: ["Venus", "Mars", "Mercury"],
-    answer: 0
+    question: "How long does Earth take to rotate once on its axis?",
+    answers: ["1 day", "1 week", "1 year"],
+    correct: "1 day"
   },
   {
-    question: "What is the average surface temperature on Venus?",
-    options: ["464°C", "100°C", "300°C"],
-    answer: 0
+    question: "Which object is at the center of our solar system?",
+    answers: ["Earth", "The Moon", "The Sun"],
+    correct: "The Sun"
   },
   {
-    question: "Which planet has a moon named Titan?",
-    options: ["Saturn", "Jupiter", "Uranus"],
-    answer: 0
+    question: "What causes day and night?",
+    answers: ["The Moon’s orbit", "Earth's rotation", "Cloud cover"],
+    correct: "Earth's rotation"
   },
   {
-    question: "Which planet has the most elliptical orbit?",
-    options: ["Mercury", "Neptune", "Earth"],
-    answer: 0
+    question: "Why do shadows change length during the day?",
+    answers: [
+      "The Sun moves around the Earth",
+      "Earth spins on its axis",
+      "The Moon changes shape"
+    ],
+    correct: "Earth spins on its axis"
   },
   {
-    question: "Which planet has the highest density?",
-    options: ["Jupiter", "Earth", "Mars"],
-    answer: 1
+    question: "What causes the Moon to shine at night?",
+    answers: ["It creates its own light", "It reflects sunlight", "It glows from heat"],
+    correct: "It reflects sunlight"
   },
   {
-    question: "What is the main component of the Sun?",
-    options: ["Oxygen", "Carbon", "Hydrogen"],
-    answer: 2
+    question: "How long does it take the Earth to orbit the Sun?",
+    answers: ["24 hours", "1 month", "365.25 days"],
+    correct: "365.25 days"
   },
   {
-    question: "Which planet has the tallest volcano in the solar system?",
-    options: ["Earth", "Mars", "Venus"],
-    answer: 1
+    question: "What causes different time zones around the world?",
+    answers: [
+      "The Sun moves across Earth",
+      "Earth’s rotation",
+      "The Moon blocks the Sun"
+    ],
+    correct: "Earth’s rotation"
   },
   {
-    question: "What is the smallest planet in the solar system?",
-    options: ["Mars", "Pluto", "Mercury"],
-    answer: 2
+    question: "Which direction does the Earth rotate?",
+    answers: ["East to West", "North to South", "West to East"],
+    correct: "West to East"
   },
   {
-    question: "Which planet spins on its side?",
-    options: ["Venus", "Uranus", "Neptune"],
-    answer: 1
+    question: "Which object orbits the Earth?",
+    answers: ["The Sun", "The Moon", "Mars"],
+    correct: "The Moon"
   },
   {
-    question: "What is the term for the boundary around a black hole?",
-    options: ["Singularity", "Accretion Disk", "Event Horizon"],
-    answer: 2
+    question: "How long does it take the Moon to orbit the Earth?",
+    answers: ["1 day", "7 days", "About 28 days"],
+    correct: "About 28 days"
   },
   {
-    question: "Which planet has the highest wind speeds?",
-    options: ["Neptune", "Jupiter", "Saturn"],
-    answer: 0
+    question: "What does a lunar month represent?",
+    answers: [
+      "The time it takes the Moon to orbit the Earth",
+      "A Moon phase cycle",
+      "One spin of the Earth"
+    ],
+    correct: "The time it takes the Moon to orbit the Earth"
   },
   {
-    question: "Which planet has a storm called the Great Dark Spot?",
-    options: ["Saturn", "Jupiter", "Neptune"],
-    answer: 2
+    question: "Why does it get dark at night?",
+    answers: [
+      "The Moon blocks the Sun",
+      "The Sun turns off",
+      "The part of Earth turns away from the Sun"
+    ],
+    correct: "The part of Earth turns away from the Sun"
   },
   {
-    question: "Which is the largest moon in the solar system?",
-    options: ["Titan", "Io", "Ganymede"],
-    answer: 2
+    question: "Why does the Sun appear to move across the sky?",
+    answers: [
+      "The Sun moves around Earth",
+      "Earth rotates",
+      "The clouds make it look that way"
+    ],
+    correct: "Earth rotates"
   },
   {
-    question: "Which planet has seasons similar to Earth?",
-    options: ["Venus", "Mars", "Mercury"],
-    answer: 1
+    question: "What is the Moon?",
+    answers: ["A star", "A planet", "A natural satellite"],
+    correct: "A natural satellite"
   },
   {
-    question: "Which is the hottest planet in our solar system?",
-    options: ["Mercury", "Venus", "Jupiter"],
-    answer: 1
+    question: "How many planets orbit the Sun?",
+    answers: ["9", "8", "7"],
+    correct: "8"
   },
   {
-    question: "Which planet takes the longest to orbit the Sun?",
-    options: ["Neptune", "Uranus", "Saturn"],
-    answer: 0
+    question: "Which planet do we live on?",
+    answers: ["Mars", "Venus", "Earth"],
+    correct: "Earth"
   },
   {
-    question: "How long does it take the Moon to orbit Earth?",
-    options: ["27 days", "30 days", "24 days"],
-    answer: 0
+    question: "Which object does not make its own light?",
+    answers: ["Sun", "Stars", "Moon"],
+    correct: "Moon"
   },
   {
-    question: "What is the Kuiper Belt?",
-    options: ["A ring around Jupiter", "A part of Earth's magnetosphere", "A region of icy bodies beyond Neptune"],
-    answer: 2
+    question: "Why do we see different phases of the Moon?",
+    answers: [
+      "Because of Earth’s shadow",
+      "Because it spins quickly",
+      "Because sunlight hits it differently as it orbits Earth"
+    ],
+    correct: "Because sunlight hits it differently as it orbits Earth"
   },
   {
-    question: "Which planet has the highest number of known moons?",
-    options: ["Saturn", "Jupiter", "Uranus"],
-    answer: 0
-  },
-  {
-    question: "What type of object is Ceres?",
-    options: ["Dwarf planet", "Asteroid", "Moon"],
-    answer: 0
-  },
-medium: [
-  {
-    question: "How long does the Moon take to orbit the Earth?",
-    answers: ["About 7 days", "About 365 days", "About 27 days"],
-    correct: 2
-  },
-  {
-    question: "Why does the Sun appear to move across the sky during the day?",
-    answers: ["Because the Earth is rotating", "Because the Sun is moving", "Because the Moon blocks it"],
-    correct: 0
+    question: "What is a time zone?",
+    answers: [
+      "A country’s border",
+      "An area with the same local time",
+      "A place where it always rains"
+    ],
+    correct: "An area with the same local time"
   },
   {
     question: "Which planet is known as the 'Red Planet'?",
     answers: ["Venus", "Mars", "Jupiter"],
-    correct: 1
+    correct: "Mars"
   },
   {
-    question: "What causes the seasons on Earth?",
-    answers: ["The Moon’s gravity", "The tilt of Earth's axis", "Earth getting closer to the Sun"],
-    correct: 1
+    question: "What is the term for Earth spinning on its axis?",
+    answers: ["Revolution", "Rotation", "Orbiting"],
+    correct: "Rotation"
   },
   {
-    question: "Which planet is the largest in the Solar System?",
-    answers: ["Neptune", "Jupiter", "Saturn"],
-    correct: 1
+    question: "What do we call the path a planet follows around the Sun?",
+    answers: ["A spin", "A route", "An orbit"],
+    correct: "An orbit"
   },
   {
-    question: "What makes the Moon visible in the night sky?",
-    answers: ["It reflects sunlight", "It creates its own light", "It glows from heat"],
-    correct: 0
+    question: "Why does the Sun set in the evening?",
+    answers: [
+      "The Sun moves down",
+      "Earth rotates away from it",
+      "The Moon pulls it down"
+    ],
+    correct: "Earth rotates away from it"
   },
   {
-    question: "How long does the Earth take to orbit the Sun?",
-    answers: ["About 30 days", "About 365.25 days", "About 24 hours"],
-    correct: 1
+    question: "What tool helps us see distant planets?",
+    answers: ["Microscope", "Periscope", "Telescope"],
+    correct: "Telescope"
   },
   {
-    question: "Why does the Moon have different phases?",
-    answers: ["Because it spins quickly", "Because of how sunlight hits it", "Because of the Sun’s heat"],
-    correct: 1
+    question: "What do we mean by ‘solar system’?",
+    answers: [
+      "A collection of stars and moons",
+      "The Sun and all objects that orbit it",
+      "All the galaxies"
+    ],
+    correct: "The Sun and all objects that orbit it"
   },
   {
-    question: "What is a solar eclipse?",
-    answers: ["The Sun turns off its light", "The Moon blocks the Sun", "The Earth blocks the Moon"],
-    correct: 1
+    question: "Why are some countries waking up while others sleep?",
+    answers: [
+      "They have different laws",
+      "It’s cold there",
+      "Their parts of Earth face the Sun at different times"
+    ],
+    correct: "Their parts of Earth face the Sun at different times"
   },
   {
-    question: "What are planetary orbits called?",
-    answers: ["Spirals", "Ellipses", "Loops"],
-    correct: 1
+    question: "What is the Sun made of?",
+    answers: ["Gas", "Rock", "Metal"],
+    correct: "Gas"
   },
   {
-    question: "Which planet is hotter than Mercury, even though it’s further from the Sun?",
-    answers: ["Venus", "Mars", "Jupiter"],
-    correct: 0
+    question: "Which planet is second from the Sun?",
+    answers: ["Venus", "Earth", "Mars"],
+    correct: "Venus"
   },
   {
-    question: "What do all planets orbit?",
-    answers: ["The Moon", "The North Star", "The Sun"],
-    correct: 2
+    question: "Which planet is known for its rings?",
+    answers: ["Mars", "Jupiter", "Saturn"],
+    correct: "Saturn"
   },
   {
-    question: "Why can't we see stars during the day?",
-    answers: ["They move behind the Moon", "They disappear", "The Sun's light is too bright"],
-    correct: 2
+    question: "What force keeps planets in orbit around the Sun?",
+    answers: ["Wind", "Gravity", "Electricity"],
+    correct: "Gravity"
   },
   {
-    question: "What shape is the Earth?",
-    answers: ["Flat", "Roughly spherical", "Perfectly round"],
-    correct: 1
+    question: "Which object is smaller: Earth or the Moon?",
+    answers: ["Earth", "Moon", "They are the same size"],
+    correct: "Moon"
   },
   {
-    question: "How many planets are in our Solar System?",
-    answers: ["9", "7", "8"],
-    correct: 2
+    question: "How do astronauts travel to space?",
+    answers: ["Planes", "Satellites", "Rockets"],
+    correct: "Rockets"
   },
   {
-    question: "Which planet has a large red storm called the Great Red Spot?",
-    answers: ["Mars", "Neptune", "Jupiter"],
-    correct: 2
+    question: "How does Earth’s orbit affect seasons?",
+    answers: [
+      "The Sun changes heat levels",
+      "Earth’s tilt during orbit causes different sunlight",
+      "The Moon controls them"
+    ],
+    correct: "Earth’s tilt during orbit causes different sunlight"
   },
   {
-    question: "What is Earth’s natural satellite?",
-    answers: ["Venus", "The Moon", "The Sun"],
-    correct: 1
+    question: "When do we have the longest day in the UK?",
+    answers: ["Winter", "Spring", "Summer"],
+    correct: "Summer"
   },
   {
-    question: "How does Earth stay in orbit around the Sun?",
-    answers: ["Magnetism", "Gravity", "Wind"],
-    correct: 1
+    question: "Which celestial body causes eclipses of the Sun?",
+    answers: ["Earth", "Mars", "The Moon"],
+    correct: "The Moon"
   },
   {
-    question: "What is the Sun?",
-    answers: ["A star", "A planet", "A moon"],
-    correct: 0
+    question: "How does the Moon affect tides?",
+    answers: [
+      "With its wind",
+      "With gravity pulling on Earth’s water",
+      "By blocking the Sun"
+    ],
+    correct: "With gravity pulling on Earth’s water"
   },
   {
-    question: "What is the force that keeps planets in orbit?",
-    answers: ["Electricity", "Magnetism", "Gravity"],
-    correct: 2
+    question: "Which of these is NOT a planet?",
+    answers: ["Jupiter", "Pluto", "The Sun"],
+    correct: "The Sun"
   },
   {
-    question: "Which planet has rings made of ice and rock?",
-    answers: ["Mars", "Saturn", "Uranus"],
-    correct: 1
-  },
-  {
-    question: "What causes day and night?",
-    answers: ["Earth’s rotation", "Clouds moving", "The Moon’s orbit"],
-    correct: 0
-  },
-  {
-    question: "Why does the Moon look different throughout the month?",
-    answers: ["It changes shape", "We see different parts lit by the Sun", "It spins quickly"],
-    correct: 1
-  },
-  {
-    question: "Which planet has the shortest day?",
-    answers: ["Mercury", "Earth", "Jupiter"],
-    correct: 2
-  },
-  {
-    question: "Which is the smallest planet in the Solar System?",
-    answers: ["Mercury", "Venus", "Mars"],
-    correct: 0
-  },
-  {
-    question: "What is a star made mostly of?",
-    answers: ["Iron and nickel", "Hydrogen and helium", "Rock"],
-    correct: 1
-  },
-  {
-    question: "Which planet is closest to the Sun?",
-    answers: ["Mercury", "Earth", "Venus"],
-    correct: 0
-  },
-  {
-    question: "What is an orbit?",
-    answers: ["A ring of light", "The path one object takes around another", "A spinning motion"],
-    correct: 1
-  },
-  {
-    question: "Which planet has the most moons?",
-    answers: ["Jupiter", "Mars", "Earth"],
-    correct: 0
-  },
-  {
-    question: "What do telescopes help us do?",
-    answers: ["Hear planets", "See distant objects in space", "Land on stars"],
-    correct: 1
-  },
-  {
-    question: "How many hours are in one Earth day?",
-    answers: ["24", "48", "12"],
-    correct: 0
-  },
-  {
-    question: "Which gas is most common in the Sun?",
-    answers: ["Oxygen", "Hydrogen", "Carbon dioxide"],
-    correct: 1
-  },
-  {
-    question: "Which planet is known for its sideways rotation?",
-    answers: ["Earth", "Uranus", "Saturn"],
-    correct: 1
-  },
-  {
-    question: "How many phases does the Moon go through?",
-    answers: ["4", "2", "8"],
-    correct: 2
-  },
-  {
-    question: "Which is not a planet?",
-    answers: ["Mars", "Jupiter", "The Sun"],
-    correct: 2
-  },
-  {
-    question: "Which is further from the Sun?",
-    answers: ["Neptune", "Mars", "Earth"],
-    correct: 0
-  },
-  {
-    question: "What helps astronauts breathe in space?",
-    answers: ["Spacesuits", "Solar panels", "Helmets"],
-    correct: 0
-  },
-  {
-    question: "Which planet is often called Earth's twin?",
-    answers: ["Venus", "Mercury", "Mars"],
-    correct: 0
-  },
-  {
-    question: "Which planet has the longest year?",
-    answers: ["Neptune", "Venus", "Earth"],
-    correct: 0
-  },
-  {
-    question: "How many stars are in our Solar System?",
-    answers: ["Millions", "8", "1"],
-    correct: 2
-  },
-  {
-    question: "Which direction does Earth rotate?",
-    answers: ["From west to east", "From north to south", "From east to west"],
-    correct: 0
+    question: "Why does the Moon sometimes look different sizes?",
+    answers: [
+      "It’s changing shape",
+      "We see different lit parts",
+      "It grows and shrinks"
+    ],
+    correct: "We see different lit parts"
   }
-];
+]
 hard: [
   {
     question: "Which spacecraft was the first to successfully land on Mars?",
