@@ -6,10 +6,10 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-image: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa');
+      background-image: url('https://media.giphy.com/media/f9k1tV7HyORcngKF8v/giphy.gif');
       background-size: cover;
       background-attachment: fixed;
-      color: white;
+      color: black;
       text-align: center;
       padding: 30px;
     }
@@ -73,6 +73,24 @@
   <div id="feedback"></div>
 
   <script>
+  window.onload = function () {
+    const startBtn = document.getElementById("startBtn");
+    startBtn.onclick = startGame;
+
+    function startGame() {
+      const level = document.getElementById("levelSelect").value;
+      currentQuestions = [...questions[level]];
+      score = 0;
+      timeLeft = level === "easy" ? 40 : 60;
+      currentQuestionIndex = 0;
+      document.getElementById("score").textContent = "Score: 0";
+      document.getElementById("timer").textContent = `Time: ${timeLeft}s`;
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("quizScreen").style.display = "block";
+      showQuestion();
+      startTimer();
+    }
+    
     const questions = {
   easy: [
     {
@@ -1099,19 +1117,6 @@ impossible: [
     let currentQuestions = [];
     let timerInterval;
 
-    function startGame() {
-      const level = document.getElementById("levelSelect").value;
-      currentQuestions = [...questions[level]];
-      score = 0;
-      timeLeft = level === "easy" ? 40 : 60;
-      currentQuestionIndex = 0;
-      document.getElementById("score").textContent = "Score: 0";
-      document.getElementById("timer").textContent = `Time: ${timeLeft}s`;
-      document.getElementById("startScreen").style.display = "none";
-      document.getElementById("quizScreen").style.display = "block";
-      showQuestion();
-      startTimer();
-    }
 
     function startTimer() {
       clearInterval(timerInterval);
