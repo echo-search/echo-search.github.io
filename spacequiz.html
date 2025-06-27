@@ -1228,7 +1228,7 @@ impossible: [
       // Shuffle questions and each question's answers
       questions = shuffle([...questionData[difficulty]]).map(q => ({
         ...q,
-        answers: shuffle([...q.answers])
+        options: shuffle([...q.options])
       }));
 
       currentQuestion = 0;
