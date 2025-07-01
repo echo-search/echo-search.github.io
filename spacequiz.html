@@ -1220,7 +1220,7 @@ impossible = [
       // Shuffle questions and each question's answers
       questions = shuffle([...questionData[difficulty]]).map(q => ({
         ...q,
-        options: shuffle([...q.options || q.answers])
+        options: shuffle([...(q.answers || q.options)])
       }));
 
       currentQuestion = 0;
@@ -1241,7 +1241,7 @@ impossible = [
       questionText.textContent = q.question;
       answerButtons.innerHTML = '';
 
-      q.options.forEach(ans => {
+      (q.options || q.answers).forEach(ans => {
         const btn = document.createElement("button");
         btn.textContent = ans;
         btn.onclick = () => checkAnswer(ans, q.correct);
