@@ -136,14 +136,12 @@
     const startScreen = document.getElementById("startScreen");
     const quizScreen = document.getElementById("quizScreen");
     const startBtn = document.getElementById("startBtn");
-    const fullscreenBtn = document.getElementById("fullscreenBtn");
     const difficultySelect = document.getElementById("difficultySelect");
     const questionText = document.getElementById("questionText");
     const answerButtons = document.getElementById("answerButtons");
     const feedback = document.getElementById("feedback");
     const scoreDisplay = document.getElementById("score");
     const timerDisplay = document.getElementById("timer");
-
     const correctSound = document.getElementById("correctSound");
     const wrongSound = document.getElementById("wrongSound");
 
@@ -1305,14 +1303,6 @@ impossible = [
       return array;
     }
 
-    startBtn.onclick = startGame;
-
-    fullscreenBtn.onclick = () => {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      }
-    };
   </script>
-
 </body>
 </html>
