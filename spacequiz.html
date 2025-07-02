@@ -146,6 +146,8 @@
     const correctSound = document.getElementById("correctSound");
     const wrongSound = document.getElementById("wrongSound");
 
+    startBtn.addEventListener('click', startGame);
+
     let questions = [];
     let currentQuestion = 0;
     let score = 0;
