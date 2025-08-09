@@ -3,18 +3,9 @@
   
   <!-- Your homepage -->
   <url>
-    <loc>https://echo-search.github.io/search-engine/index.html</loc>
+    <loc>https://echo-search.github.io/search-engine/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- Add any other important pages here -->
-  <!-- Example:
-  <url>
-    <loc>https://echo-search.github.io/search-engine/about.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  -->
 
 </urlset>
