@@ -15,7 +15,7 @@
     }
   };
 </script>
-<script async src="https://www.google.com"></script>
+<script async src="https://cse.google.com/cse?cx=8504b5117a0734987"></script>
   <style>
     /* General Styling */
     body, html {
@@ -65,8 +65,8 @@
       background-color: var(--accent, #00cec9);
       border: none;
       border-radius: 50%;
-      width: 40px; /* Adjusted size */
-      height: 40px; /* Adjusted size */
+      width: 40px;
+      height: 40px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -74,8 +74,8 @@
     }
 
     .voice-button svg {
-      width: 30px; /* Adjusted icon size */
-      height: 30px; /* Adjusted icon size */
+      width: 30px;
+      height: 30px;
       fill: white;
     }
 
@@ -236,14 +236,9 @@
   <div class="button-group">
       <button id="searchBtn">🔍 Search</button>
       <button id="surpriseBtn">🎲 Surprise Me</button>
-      <a href="spacequiz.html" target="_blank">
-      <button>🧠 Space Facts Quiz</button>
-      </a>
-    <!-- 📦 This is where spacequiz.html will appear -->
-      <div id="quizMountPoint" style="margin-top: 30px;"></div>
       <button id="voiceInputButton" class="voice-button">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0[...]"></path>
+      <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"></path>
     </svg>
       </button>
     </div>
@@ -251,21 +246,109 @@
   <script>
     function randomSurprise() {
       const facts = [
-        "The Maya civilization flourished in Mesoamerica (Modern-Day Central America).",
-        "The Maya developed a complex writing system using glyphs.",
-        "They had a base-20 (vigesimal) number system.",
-        "The Maya calendar included the Long Count, Tzolk'in, and Haab'.",
-        "Chichen Itza is one of the most famous Maya cities.",
-        "The Maya used chocolate in religious rituals.",
-        "They practiced human sacrifice.",
-        "The Maya had advanced knowledge of astronomy.",
-        "They tracked Venus with incredible accuracy.",
-        "The Maya built step pyramids."
+        "Bananas are berries, but strawberries aren’t.",
+        "Honey never spoils.",
+        "Sharks existed before trees.",
+        "Octopuses have three hearts.",
+        "There are more stars in the universe than grains of sand on Earth.",
+        "Some cats are allergic to humans.",
+        "A day on Venus is longer than a year on Venus.",
+        "Pineapples take about two years to grow.",
+        "Sloths can hold their breath longer than dolphins.",
+        "Hot water freezes faster than cold water (Mpemba effect).",
+        "Wombat poop is cube-shaped.",
+        "Butterflies taste with their feet.",
+        "Humans share 60% of DNA with bananas.",
+        "Sea otters hold hands when they sleep.",
+        "Scotland has 421 words for 'snow'.",
+        "Water can boil and freeze at the same time.",
+        "Your stomach gets a new lining every 3–4 days.",
+        "Koalas have fingerprints almost identical to humans.",
+        "There’s enough DNA in your body to stretch to the sun and back — 600 times.",
+        "A cloud can weigh over a million pounds.",
+        "Sharks don’t get cancer as often as other animals.",
+        "Some frogs can freeze solid and still survive.",
+        "An ostrich’s eye is bigger than its brain.",
+        "Peanuts aren’t nuts — they’re legumes.",
+        "The Eiffel Tower grows taller in summer.",
+        "Avocados are berries.",
+        "The inventor of the Pringles can is buried in one.",
+        "You can’t burp in space.",
+        "Turtles can breathe through their butts.",
+        "Cows have best friends.",
+        "Your taste buds have a lifespan of about 10 days.",
+        "A jiffy is an actual unit of time (1/100th of a second).",
+        "Ants never sleep.",
+        "Rainbows can appear at night (moonbows).",
+        "A crocodile can’t stick out its tongue.",
+        "Goldfish can distinguish human faces.",
+        "Ice cream was once considered a luxury only for the rich.",
+        "Potatoes were the first vegetable grown in space.",
+        "Pigeons can recognize themselves in a mirror.",
+        "Some jellyfish are immortal.",
+        "Your body has more bacterial cells than human cells.",
+        "Carrots were originally purple.",
+        "Otters have a favorite rock they keep for life.",
+        "Sunflowers can clean up radioactive soil.",
+        "Some metals explode in contact with water.",
+        "Tomatoes were once thought to be poisonous.",
+        "There’s water on the Moon.",
+        "Owls can’t move their eyes.",
+        "A group of flamingos is called a 'flamboyance'.",
+        "Orcas are actually dolphins.",
+        "Your fingernails grow faster in summer.",
+        "Blue whales are the largest animals ever to live on Earth.",
+        "A sneeze travels about 100 mph.",
+        "The heart of a shrimp is in its head.",
+        "Most dust in your home is made of dead skin cells.",
+        "Cats can’t taste sweetness.",
+        "Apples float in water because they are 25% air.",
+        "Butterflies remember being caterpillars.",
+        "Dolphins have names for each other.",
+        "Polar bear skin is black.",
+        "It rains diamonds on Jupiter and Saturn.",
+        "There’s enough iron in your body to make a nail.",
+        "Sharks can live for over 400 years.",
+        "Bananas glow blue under blacklight.",
+        "A bolt of lightning is five times hotter than the Sun.",
+        "Some snails can sleep for three years.",
+        "Dogs can smell your feelings.",
+        "Spiders can’t fly, but they can balloon through the air on silk.",
+        "Crows can recognize human faces.",
+        "A blue whale’s tongue weighs as much as an elephant.",
+        "Water covers about 71% of Earth’s surface.",
+        "Elephants can’t jump.",
+        "Giraffes only need 30 minutes of sleep a day.",
+        "Your bones are stronger than steel.",
+        "There’s a species of fungus that turns ants into zombies.",
+        "Kangaroos can’t walk backward.",
+        "The smell of freshly-cut grass is a plant distress call.",
+        "Pine trees can grow inside pine cones.",
+        "Your brain uses about 20% of your body’s energy.",
+        "Bees can fly higher than Mount Everest.",
+        "Sea cucumbers eject their organs when threatened.",
+        "The Great Wall of China isn’t visible from space.",
+        "Water bears (tardigrades) can survive in space.",
+        "A day on Mercury lasts 59 Earth days.",
+        "You can’t hum while holding your nose.",
+        "Cucumbers are 96% water.",
+        "A hummingbird’s heart beats over 1,000 times a minute.",
+        "Vending machines kill more people than sharks each year.",
+        "Some fish can walk on land.",
+        "Mount Everest grows about 4mm every year.",
+        "There’s enough salt in the ocean to cover the Earth in 500 feet of it.",
+        "Humans can survive two minutes without oxygen before brain damage.",
+        "Antarctica is the driest place on Earth.",
+        "Some lizards can squirt blood from their eyes.",
+        "Newborn kangaroos are the size of a grain of rice.",
+        "Your hair grows faster during the day.",
+        "The Moon is slowly drifting away from Earth.",
+        "Venus rotates backwards compared to most planets."
       ];
       alert(facts[Math.floor(Math.random() * facts.length)]);
     }
 
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = 'en-UK';
       recognition.interimResults = false;
@@ -288,43 +371,17 @@
       document.getElementById("theme").addEventListener("change", function () {
         document.body.className = this.value;
       });
-
       document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
-      document.getElementById("questionBtn").addEventListener("click", randomQuestion);
     };
+
     document.getElementById("searchBtn").addEventListener("click", function () {
-  var query = document.getElementById("searchInput").value;
-  if (google && google.search && google.search.cse && google.search.cse.element) {
-    google.search.cse.element.getElement("gcse-searchresults-only").execute(query);
-  } else {
-    console.error("Google CSE is not properly initialized.");
-  }
-});
-    
-  function loadSpaceQuiz() {
-    const mount = document.getElementById('quizMountPoint');
-
-    // Prevent re-loading
-    if (document.getElementById('spaceQuizContainer')) return;
-
-    // Load spacequiz.html content
-    fetch('spacequiz.html')
-      .then(res => res.text())
-      .then(html => {
-        mount.innerHTML = html;
-
-        // Load the logic script if not already present
-        if (!document.querySelector('script[src="spacequiz.js"]')) {
-          const script = document.createElement('script');
-          script.src = 'spacequiz.js';
-          document.body.appendChild(script);
-        }
-      })
-      .catch(err => {
-        mount.innerHTML = '⚠️ Failed to load quiz.';
-        console.error(err);
-      });
-  }
+      var query = document.getElementById("searchInput").value;
+      if (google && google.search && google.search.cse && google.search.cse.element) {
+        google.search.cse.element.getElement("gcse-searchresults-only").execute(query);
+      } else {
+        console.error("Google CSE is not properly initialized.");
+      }
+    });
   </script>
   <div id="gcse-searchresults-only"></div>
   <div class="bottom-warning">Outage is happening...</div>
