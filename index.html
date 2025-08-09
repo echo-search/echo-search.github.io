@@ -26,6 +26,16 @@
       color: var(--text);
       transition: all 0.3s;
     }
+    /* Dark mode override (separate from theme classes) */
+    body.dark-mode {
+      --bg: #121212 !important;
+      --text: #f5f5f5 !important;
+      --accent: #00cec9 !important;
+      background: #121212 !important;
+      color: #f5f5f5 !important;
+      background-image: none !important;
+    }
+
     header {
       text-align: center;
       padding: 2rem 1rem 1rem;
@@ -62,7 +72,9 @@
       border: 2px solid var(--accent);
       width: 80%;
       outline: none;
-      transition: box-shadow 0.3s;
+      transition: box-shadow 0.3s, background 0.3s, color 0.3s;
+      background: var(--bg);
+      color: var(--text);
     }
     input[type="search"]:focus {
       box-shadow: 0 0 8px var(--accent);
@@ -149,18 +161,27 @@
     .version-badge:hover {
       background: #d0d0d0;
     }
+    /* Dark mode toggle button (top-right) */
+    #darkModeToggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 10001;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
     /* Themes with pictures */
     body.default {
       --bg: #ffffff;
       --text: #000000;
       --accent: #00cec9;
       background: #ffffff;
-    }
-    body.dark {
-      --bg: #121212;
-      --text: #ffffff;
-      --accent: #00cec9;
-      background: #121212;
     }
     body.retro {
       --bg: #fdf6e3;
@@ -227,7 +248,6 @@
       <label for="theme">🎨 Theme: </label>
       <select id="theme">
         <option value="default">Default</option>
-        <option value="dark">Dark</option>
         <option value="retro">Retro</option>
         <option value="neon">Neon</option>
         <option value="ocean">Ocean</option>
@@ -239,6 +259,9 @@
       </select>
     </div>
   </header>
+
+  <!-- Dark mode toggle button -->
+  <button id="darkModeToggle" aria-pressed="false">🌙 Dark Mode</button>
 
   <div class="search-box">
     <div class="search-container">
@@ -259,7 +282,7 @@
   <a href="version-history.html" class="version-badge">v.1.1</a>
 
   <script>
-    // Random facts array for Surprise Me
+    // === FACTS (100) ===
     const facts = [
       "Bananas are berries, but strawberries aren’t.",
       "Honey never spoils.",
@@ -361,23 +384,41 @@
       "Venus rotates backwards compared to most planets."
     ];
 
-    // Theme selector change handler
+    // === THEME HANDLING ===
     const themeSelect = document.getElementById("theme");
+    const themeNames = ['default','dark','retro','neon','ocean','midnight','sunset','matrix','cyberpunk','forest'];
+
+    function setTheme(theme) {
+      // remove old theme classes (but keep dark-mode if present)
+      themeNames.forEach(t => document.body.classList.remove(t));
+      document.body.classList.add(theme);
+      // Save selected theme
+      localStorage.setItem('selectedTheme', theme);
+      // keep dark-mode state intact (no change here)
+    }
+
+    // wire up selector
     themeSelect.addEventListener("change", (e) => {
-      document.body.className = e.target.value;
+      setTheme(e.target.value);
     });
 
-    // Surprise Me button handler
+    // load saved theme (or keep default)
+    const savedTheme = localStorage.getItem('selectedTheme');
+    if (savedTheme && themeNames.includes(savedTheme)) {
+      themeSelect.value = savedTheme;
+      setTheme(savedTheme);
+    }
+
+    // === SURPRISE FACT BUTTON ===
     document.getElementById("surpriseBtn").addEventListener("click", () => {
       const fact = facts[Math.floor(Math.random() * facts.length)];
       alert(fact);
     });
 
-    // Voice recognition setup
+    // === VOICE RECOGNITION SETUP ===
     const voiceBtn = document.getElementById("voiceBtn");
     const searchInput = document.getElementById("searchInput");
     let recognition;
-
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognition = new SpeechRecognition();
@@ -399,14 +440,14 @@
       };
 
       voiceBtn.addEventListener("click", () => {
-        recognition.start();
+        try { recognition.start(); } catch (e) { /* ignore already-started */ }
       });
     } else {
       voiceBtn.disabled = true;
       voiceBtn.title = "Voice input not supported in this browser.";
     }
 
-    // Google CSE Search setup
+    // === GOOGLE CSE SEARCH SETUP ===
     window.__gcse = {
       callback: function() {
         document.getElementById("searchBtn").addEventListener("click", function() {
@@ -420,8 +461,39 @@
             console.error("Search element not found.");
           }
         });
+
+        // optional: allow Enter key to search
+        searchInput.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            document.getElementById("searchBtn").click();
+          }
+        });
       }
     };
+
+    // === DARK MODE TOGGLE ===
+    const darkToggle = document.getElementById("darkModeToggle");
+    function applyDarkFromStorage() {
+      const d = localStorage.getItem('darkMode');
+      if (d === 'true') {
+        document.body.classList.add('dark-mode');
+        darkToggle.textContent = '☀️ Light Mode';
+        darkToggle.setAttribute('aria-pressed','true');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkToggle.textContent = '🌙 Dark Mode';
+        darkToggle.setAttribute('aria-pressed','false');
+      }
+    }
+    // toggle handler (preserves theme class)
+    darkToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+      darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      darkToggle.setAttribute('aria-pressed', String(isDark));
+    });
+    // load saved preference
+    applyDarkFromStorage();
   </script>
 </body>
-  </html>
+    </html>
