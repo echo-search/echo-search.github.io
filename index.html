@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EchoSearch</title>
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+
+  <!-- Google CSE Script -->
+  <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
+
+  <style>
+    body, html { margin: 0; padding: 0; }
+    :root { --bg: #fff; --text: #000; --accent: #00cec9; --font: 'Segoe UI', sans-serif; }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      transition: all 0.3s;
+    }
+    header { text-align: center; padding: 2rem 1rem 1rem; }
+    .search-box {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    input[type="search"] {
+      font-size: 1.2rem;
+      padding: 0.6rem 1rem;
+      border-radius: 30px;
+      border: 2px solid var(--accent);
+      width: 80%;
+    }
+    .button-group { margin-top: 1rem; text-align: center; }
+    .voice-button {
+      background-color: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 40px; height: 40px;
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer;
+    }
+    .voice-button svg { width: 30px; height: 30px; fill: white; }
+    button {
+      margin: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .theme-selector { margin-top: 1rem; text-align: center; }
+    .theme-selector select { padding: 0.3rem; border-radius: 10px; }
+    .bottom-warning {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background-color: red; color: white;
+      font-weight: bold; text-align: center; padding: 10px; z-index: 9999;
+    }
+    .version-badge {
+      position: fixed; bottom: 10px; right: 10px;
+      background: #e0e0e0; color: #333;
+      padding: 5px 10px; border-radius: 8px;
+      font-size: 0.9em; text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+    .version-badge:hover { background: #d0d0d0; }
+
+    /* Themes */
+    body.default { --bg: #fff; --text: #000; --accent: #00cec9; background: #fff; }
+    body.dark { --bg: #121212; --text: #fff; --accent: #00cec9; background: #121212; }
+    body.retro { --bg: #fdf6e3; --text: #586e75; --accent: #2aa198;
+      background: url('retro.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.neon { --bg: #000; --text: #39ff14; --accent: #ff00ff;
+      background: url('neon.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.ocean { --bg: #e0f7fa; --text: #006064; --accent: #0097a7;
+      background: url('ocean.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.midnight { --bg: #1a1a2e; --text: #e0e0e0; --accent: #7f00ff;
+      background: url('midnight.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.sunset { --bg: linear-gradient(to right, #ff7e5f, #feb47b); --text: #4e342e; --accent: #ff7043;
+      background: url('sunset.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.matrix { --bg: #000; --text: #00ff00; --accent: #00ff00;
+      background: url('matrix.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.cyberpunk { --bg: #2a2a2a; --text: #f50057; --accent: #00e5ff;
+      background: url('cyberpunk.jpeg') no-repeat center center fixed; background-size: cover; }
+    body.forest { --bg: #e8f5e9; --text: #2e7d32; --accent: #66bb6a;
+      background: url('forest.jpeg') no-repeat center center fixed; background-size: cover; }
+  </style>
+</head>
+<body class="default">
+  <header>
+    <img src="logo-new.png" alt="My Logo" width="275">
+    <div class="theme-selector">
+      <label for="theme">🎨 Theme: </label>
+      <select id="theme">
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="retro">Retro</option>
+        <option value="neon">Neon</option>
+        <option value="ocean">Ocean</option>
+        <option value="midnight">Midnight</option>
+        <option value="sunset">Sunset</option>
+        <option value="matrix">Matrix</option>
+        <option value="cyberpunk">Cyberpunk</option>
+        <option value="forest">Forest</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="search-box">
+    <input type="search" id="searchInput" placeholder="Type your search..." />
+    <div class="button-group">
+      <button id="searchBtn">🔍 Search</button>
+      <button id="surpriseBtn">🎲 Surprise Me</button>
+      <button id="voiceInputButton" class="voice-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 18.93v2.07h2v-2.07a7.001 7.001 0 0 0 5.75-6.84h-2a5.002 5.002 0 0 1-9.5 0H5.25a7 7 0 0 0 5.75 6.84z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search results at the bottom -->
+  <div id="gcse-results" style="max-width:900px; margin: 2rem auto; padding: 1rem;">
+    <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
+  </div>
+
+  <div class="bottom-warning">Outage is happening...</div>
+  <a href="version-history.html" class="version-badge">v.1.1</a>
+
+  <script>
+    // Surprise Me Facts
+    function randomSurprise() {
+      const facts = [
+        "Bananas are berries, but strawberries aren’t.",
+        "Honey never spoils.",
+        "Sharks existed before trees.",
+        "Octopuses have three hearts.",
+        "There are more stars in the universe than grains of sand on Earth.",
+        "Sea otters hold hands when they sleep.",
+        "The Eiffel Tower grows taller in summer.",
+        "Otters have a favorite rock they keep for life.",
+        "A group of flamingos is called a 'flamboyance'.",
+        "Cows have best friends."
+      ];
+      alert(facts[Math.floor(Math.random() * facts.length)]);
+    }
+
+    // Voice search
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-UK';
+      recognition.interimResults = false;
+
+      document.getElementById('voiceInputButton').onclick = () => recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('searchInput').value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        alert('Speech recognition error: ' + event.error);
+      };
+    } else {
+      alert('Voice input is not supported in your browser.');
+    }
+
+    // Theme change
+    window.onload = function () {
+      document.getElementById("theme").addEventListener("change", function () {
+        document.body.className = this.value;
+      });
+      document.getElementById("surpriseBtn").addEventListener("click", randomSurprise);
+    };
+
+    // Google Search Binding (after CSE loads)
+    window.__gcse = {
+      callback: function () {
+        const doSearch = () => {
+          var query = document.getElementById("searchInput").value.trim();
+          if (query) {
+            var searchElement = google.search.cse.element.getElement("searchbox1");
+            if (searchElement) {
+              searchElement.execute(query);
+              window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
+            }
+          }
+        };
+        document.getElementById("searchBtn").addEventListener("click", doSearch);
+        document.getElementById("searchInput").addEventListener("keydown", (e) => {
+          if (e.key === "Enter") doSearch();
+        });
+      }
+    };
+  </script>
+</body>
+</html>
