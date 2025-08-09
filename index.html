@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EchoSearch</title>
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+
+  <!-- Google CSE Script -->
+  <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --bg: #fff;
+      --text: #000;
+      --accent: #00cec9;
+      --font: 'Segoe UI', sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      transition: all 0.3s;
+    }
+    header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+    /* Theme selector styling */
+    .theme-selector {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .theme-selector select {
+      padding: 0.3rem 0.6rem;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      font-size: 1rem;
+      cursor: pointer;
+      background: white;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    /* Flex container for search + mic */
+    .search-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem 1rem 1rem;
+    }
+    input[type="search"] {
+      font-size: 1.2rem;
+      padding: 0.6rem 1rem;
+      border-radius: 30px;
+      border: 2px solid var(--accent);
+      width: 80%;
+      outline: none;
+      transition: box-shadow 0.3s;
+    }
+    input[type="search"]:focus {
+      box-shadow: 0 0 8px var(--accent);
+    }
+    /* Voice button styles */
+    .voice-btn {
+      background: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: white;
+      font-size: 1.5rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .voice-btn:hover:not(:disabled) {
+      background: #00b2af;
+    }
+    .voice-btn:active:not(:disabled) {
+      transform: scale(0.9);
+    }
+    .voice-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    /* Pulse animation when listening */
+    .listening {
+      animation: pulse 1s infinite;
+      box-shadow: 0 0 8px 3px rgba(0, 206, 201, 0.9);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 8px 3px rgba(0, 206, 201, 0.9); }
+      50% { box-shadow: 0 0 20px 6px rgba(0, 206, 201, 0.3); }
+      100% { box-shadow: 0 0 8px 3px rgba(0, 206, 201, 0.9); }
+    }
+    .button-group {
+      margin-top: 1rem;
+      text-align: center;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 1rem;
+    }
+    button {
+      margin: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #00b2af;
+    }
+    /* Results container */
+    #gcse-results {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    /* Version badge */
+    .version-badge {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: #e0e0e0;
+      color: #333;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+      z-index: 10000;
+    }
+    .version-badge:hover {
+      background: #d0d0d0;
+    }
+    /* Themes with pictures */
+    body.default {
+      --bg: #ffffff;
+      --text: #000000;
+      --accent: #00cec9;
+      background: #ffffff;
+    }
+    body.dark {
+      --bg: #121212;
+      --text: #ffffff;
+      --accent: #00cec9;
+      background: #121212;
+    }
+    body.retro {
+      --bg: #fdf6e3;
+      --text: #586e75;
+      --accent: #2aa198;
+      background: url('retro.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.neon {
+      --bg: #000000;
+      --text: #39ff14;
+      --accent: #ff00ff;
+      background: url('neon.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.ocean {
+      --bg: #e0f7fa;
+      --text: #006064;
+      --accent: #0097a7;
+      background: url('ocean.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.midnight {
+      --bg: #1a1a2e;
+      --text: #e0e0e0;
+      --accent: #7f00ff;
+      background: url('midnight.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.sunset {
+      --bg: linear-gradient(to right, #ff7e5f, #feb47b);
+      --text: #4e342e;
+      --accent: #ff7043;
+      background: url('sunset.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.matrix {
+      --bg: #000000;
+      --text: #00ff00;
+      --accent: #00ff00;
+      background: url('matrix.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.cyberpunk {
+      --bg: #2a2a2a;
+      --text: #f50057;
+      --accent: #00e5ff;
+      background: url('cyberpunk.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.forest {
+      --bg: #e8f5e9;
+      --text: #2e7d32;
+      --accent: #66bb6a;
+      background: url('forest.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="default">
+  <header>
+    <img src="logo-new.png" alt="My Logo" width="275" />
+    <div class="theme-selector">
+      <label for="theme">🎨 Theme: </label>
+      <select id="theme">
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="retro">Retro</option>
+        <option value="neon">Neon</option>
+        <option value="ocean">Ocean</option>
+        <option value="midnight">Midnight</option>
+        <option value="sunset">Sunset</option>
+        <option value="matrix">Matrix</option>
+        <option value="cyberpunk">Cyberpunk</option>
+        <option value="forest">Forest</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="search-box">
+    <div class="search-container">
+      <input type="search" id="searchInput" placeholder="Type your search..." autocomplete="off" />
+      <button class="voice-btn" id="voiceBtn" aria-label="Voice search">🎤</button>
+    </div>
+    <div class="button-group">
+      <button id="searchBtn">🔍 Search</button>
+      <button id="surpriseBtn">🎲 Surprise Me</button>
+    </div>
+  </div>
+
+  <!-- Results container -->
+  <div id="gcse-results">
+    <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
+  </div>
+
+  <a href="version-history.html" class="version-badge">v.1.1</a>
+
+  <script>
+    // Random facts array for Surprise Me
+    const facts = [
+      "Bananas are berries, but strawberries aren’t.",
+      "Honey never spoils.",
+      "Sharks existed before trees.",
+      "Octopuses have three hearts.",
+      "There are more stars in the universe than grains of sand on Earth.",
+      "Some cats are allergic to humans.",
+      "A day on Venus is longer than a year on Venus.",
+      "Pineapples take about two years to grow.",
+      "Sloths can hold their breath longer than dolphins.",
+      "Hot water freezes faster than cold water (Mpemba effect).",
+      "Wombat poop is cube-shaped.",
+      "Butterflies taste with their feet.",
+      "Humans share 60% of DNA with bananas.",
+      "Sea otters hold hands when they sleep.",
+      "Scotland has 421 words for 'snow'.",
+      "Water can boil and freeze at the same time.",
+      "Your stomach gets a new lining every 3–4 days.",
+      "Koalas have fingerprints almost identical to humans.",
+      "There’s enough DNA in your body to stretch to the sun and back — 600 times.",
+      "A cloud can weigh over a million pounds.",
+      "Sharks don’t get cancer as often as other animals.",
+      "Some frogs can freeze solid and still survive.",
+      "An ostrich’s eye is bigger than its brain.",
+      "Peanuts aren’t nuts — they’re legumes.",
+      "The Eiffel Tower grows taller in summer.",
+      "Avocados are berries.",
+      "The inventor of the Pringles can is buried in one.",
+      "You can’t burp in space.",
+      "Turtles can breathe through their butts.",
+      "Cows have best friends.",
+      "Your taste buds have a lifespan of about 10 days.",
+      "A jiffy is an actual unit of time (1/100th of a second).",
+      "Ants never sleep.",
+      "Rainbows can appear at night (moonbows).",
+      "A crocodile can’t stick out its tongue.",
+      "Goldfish can distinguish human faces.",
+      "Ice cream was once considered a luxury only for the rich.",
+      "Potatoes were the first vegetable grown in space.",
+      "Pigeons can recognize themselves in a mirror.",
+      "Some jellyfish are immortal.",
+      "Your body has more bacterial cells than human cells.",
+      "Carrots were originally purple.",
+      "Otters have a favorite rock they keep for life.",
+      "Sunflowers can clean up radioactive soil.",
+      "Some metals explode in contact with water.",
+      "Tomatoes were once thought to be poisonous.",
+      "There’s water on the Moon.",
+      "Owls can’t move their eyes.",
+      "A group of flamingos is called a 'flamboyance'.",
+      "Orcas are actually dolphins.",
+      "Your fingernails grow faster in summer.",
+      "Blue whales are the largest animals ever to live on Earth.",
+      "A sneeze travels about 100 mph.",
+      "The heart of a shrimp is in its head.",
+      "Most dust in your home is made of dead skin cells.",
+      "Cats can’t taste sweetness.",
+      "Apples float in water because they are 25% air.",
+      "Butterflies remember being caterpillars.",
+      "Dolphins have names for each other.",
+      "Polar bear skin is black.",
+      "It rains diamonds on Jupiter and Saturn.",
+      "There’s enough iron in your body to make a nail.",
+      "Sharks can live for over 400 years.",
+      "Bananas glow blue under blacklight.",
+      "A bolt of lightning is five times hotter than the Sun.",
+      "Some snails can sleep for three years.",
+      "Dogs can smell your feelings.",
+      "Spiders can’t fly, but they can balloon through the air on silk.",
+      "Crows can recognize human faces.",
+      "A blue whale’s tongue weighs as much as an elephant.",
+      "Water covers about 71% of Earth’s surface.",
+      "Elephants can’t jump.",
+      "Giraffes only need 30 minutes of sleep a day.",
+      "Your bones are stronger than steel.",
+      "There’s a species of fungus that turns ants into zombies.",
+      "Kangaroos can’t walk backward.",
+      "The smell of freshly-cut grass is a plant distress call.",
+      "Pine trees can grow inside pine cones.",
+      "Your brain uses about 20% of your body’s energy.",
+      "Bees can fly higher than Mount Everest.",
+      "Sea cucumbers eject their organs when threatened.",
+      "The Great Wall of China isn’t visible from space.",
+      "Water bears (tardigrades) can survive in space.",
+      "A day on Mercury lasts 59 Earth days.",
+      "You can’t hum while holding your nose.",
+      "Cucumbers are 96% water.",
+      "A hummingbird’s heart beats over 1,000 times a minute.",
+      "Vending machines kill more people than sharks each year.",
+      "Some fish can walk on land.",
+      "Mount Everest grows about 4mm every year.",
+      "There’s enough salt in the ocean to cover the Earth in 500 feet of it.",
+      "Humans can survive two minutes without oxygen before brain damage.",
+      "Antarctica is the driest place on Earth.",
+      "Some lizards can squirt blood from their eyes.",
+      "Newborn kangaroos are the size of a grain of rice.",
+      "Your hair grows faster during the day.",
+      "The Moon is slowly drifting away from Earth.",
+      "Venus rotates backwards compared to most planets."
+    ];
+
+    // Theme selector change handler
+    const themeSelect = document.getElementById("theme");
+    themeSelect.addEventListener("change", (e) => {
+      document.body.className = e.target.value;
+    });
+
+    // Surprise Me button handler
+    document.getElementById("surpriseBtn").addEventListener("click", () => {
+      const fact = facts[Math.floor(Math.random() * facts.length)];
+      alert(fact);
+    });
+
+    // Voice recognition setup
+    const voiceBtn = document.getElementById("voiceBtn");
+    const searchInput = document.getElementById("searchInput");
+    let recognition;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = "en-UK";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        voiceBtn.classList.add("listening");
+      };
+
+      recognition.onend = () => {
+        voiceBtn.classList.remove("listening");
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        searchInput.value = transcript;
+      };
+
+      voiceBtn.addEventListener("click", () => {
+        recognition.start();
+      });
+    } else {
+      voiceBtn.disabled = true;
+      voiceBtn.title = "Voice input not supported in this browser.";
+    }
+
+    // Google CSE Search setup
+    window.__gcse = {
+      callback: function() {
+        document.getElementById("searchBtn").addEventListener("click", function() {
+          const query = searchInput.value.trim();
+          if (!query) return;
+          const searchElement = google.search.cse.element.getElement("searchbox1");
+          if (searchElement) {
+            searchElement.execute(query);
+            window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
+          } else {
+            console.error("Search element not found.");
+          }
+        });
+      }
+    };
+  </script>
+</body>
+  </html>
