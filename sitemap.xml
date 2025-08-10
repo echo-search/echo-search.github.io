@@ -3,5 +3,7 @@
   
   <url>
     <loc>https://echo-search.github.io/search-engine/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
   </url>
 </urlset>
