@@ -14,32 +14,15 @@
       margin: auto;
     }
 
-   /* Dark mode styles */
 body.dark-mode {
-  background: #121212;
-  color: #f5f5f5;
-}
+      --bg: #121212 !important;
+      --text: #f5f5f5 !important;
+      --accent: #00cec9 !important;
+      background: #121212 !important;
+      color: #f5f5f5 !important;
+      background-image: none !important;
+    }
 
-body.dark-mode a {
-  color: #9bbcf9;
-}
-
-/* Toggle button */
-.toggle-btn {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background: #ccc;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  font-size: 14px;
-}
-body.dark-mode .toggle-btn {
-  background: #333;
-  color: #fff;
-}
     
     h1 {
       font-size: 2em;
@@ -159,21 +142,28 @@ body.dark-mode .toggle-btn {
 <a href="index.html" class="back-button">← Back to Home</a>
 
 <script>
-const toggleBtn = document.getElementById('themeToggle');
-
-function toggleDarkMode() {
-  const isDark = document.body.classList.toggle('dark-mode');
-  toggleBtn.textContent = isDark ? '☀️' : '🌙';
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-}
-
-// Apply saved theme on load
-if (localStorage.getItem('theme') === 'dark') {
-  document.body.classList.add('dark-mode');
-  toggleBtn.textContent = '☀️';
-}
-
-toggleBtn.addEventListener('click', toggleDarkMode);
+const darkToggle = document.getElementById("darkModeToggle");
+    function applyDarkFromStorage() {
+      const d = localStorage.getItem('darkMode');
+      if (d === 'true') {
+        document.body.classList.add('dark-mode');
+        darkToggle.textContent = '☀️ Light Mode';
+        darkToggle.setAttribute('aria-pressed','true');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkToggle.textContent = '🌙 Dark Mode';
+        darkToggle.setAttribute('aria-pressed','false');
+      }
+    }
+    // toggle handler (preserves theme class)
+    darkToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+      darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      darkToggle.setAttribute('aria-pressed', String(isDark));
+    });
+    // load saved preference
+    applyDarkFromStorage();
 </script>
   
 </body>
