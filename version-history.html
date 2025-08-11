@@ -12,9 +12,10 @@
       padding: 40px;
       max-width: 700px;
       margin: auto;
+      transition: background 0.3s, color 0.3s;
     }
 
-body.dark-mode {
+    body.dark-mode {
       --bg: #121212 !important;
       --text: #f5f5f5 !important;
       --accent: #00cec9 !important;
@@ -23,7 +24,6 @@ body.dark-mode {
       background-image: none !important;
     }
 
-    
     h1 {
       font-size: 2em;
       margin-bottom: 30px;
@@ -77,94 +77,119 @@ body.dark-mode {
     .back-button:hover {
       background-color: #00b3af;
     }
+
+    /* Dark mode toggle button */
+    .toggle-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #00cec9;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode .toggle-btn {
+      background: #00b3af;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
 
-<button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-  
-  <h1>Version History</h1>
+<button class="toggle-btn" id="darkModeToggle">🌙 Dark Mode</button>
 
-  <div class="version">
-    <h2>v.1.0</h2>
-    <ul>
-      <li>All 10 Themes</li>
-      <li>Voice Input added</li>
-      <li>Surprise Me button</li>
-      <li>Q&A (Event, will be removed)</li>
-      <li>Real icon and logo added</li>
-      <li>"Search on Google" button</li>
-    </ul>
-  </div>
+<h1>Version History</h1>
 
-  <div class="version">
-    <h2>v.1.1 <span class="arrow">← Current Version</span></h2>
-    <ul>
-      <li>Background images added for multiple themes</li>
-      <li>Version history page added</li>
-      <li>Version Badge</li>
-      <li>Dark Mode access made easier</li>
-    </ul>
-  </div>
+<div class="version">
+  <h2>v.1.0</h2>
+  <ul>
+    <li>All 10 Themes</li>
+    <li>Voice Input added</li>
+    <li>Surprise Me button</li>
+    <li>Q&A (Event, will be removed)</li>
+    <li>Real icon and logo added</li>
+    <li>"Search on Google" button</li>
+  </ul>
+</div>
 
-  <div class="version">
-    <h2>v.1.2</h2>
-    <ul>
-      <li>Preforms search automatically once voice input ends</li>
-      <li>Accessible on Google</li>
-    </ul>
-  </div>
+<div class="version">
+  <h2>v.1.1 <span class="arrow">← Current Version</span></h2>
+  <ul>
+    <li>Background images added for multiple themes</li>
+    <li>Version history page added</li>
+    <li>Version Badge</li>
+    <li>Dark Mode access made easier</li>
+  </ul>
+</div>
 
- <div class="version">
-    <h2>v.2.0</h2>
+<div class="version">
+  <h2>v.1.2</h2>
+  <ul>
+    <li>Performs search automatically once voice input ends</li>
+    <li>Accessible on Google</li>
+  </ul>
+</div>
+
+<div class="version">
+  <h2>v.2.0</h2>
   <ul>
     <li>Search History</li>
-    <li>'Didn't like the result? Chat on AI' button</li>  
+    <li>'Didn't like the result? Chat on AI' button</li>
     <li>Autocomplete</li>
     <li>Results appearance changed</li>
     <li>Math Solver and Unit Converter built-in</li>
     <li>Multiple Tabs</li>
   </ul>
- </div>
+</div>
 
 <div class="version">
-    <h2>v.2.1</h2>
+  <h2>v.2.1</h2>
   <ul>
-    <li>Multiple Search Result Modules (Current: Web & Image. Adding of: Videos, News, Map, Shopping.)</li>
+    <li>Multiple Search Result Modules (Current: Web & Image. Adding: Videos, News, Map, Shopping.)</li>
   </ul>
 </div>
-    
-  <div class="future-note">Planned for a future update...
-    <hr style="border: none; border-top: 1px solid #ccc; margin: 8px 0;">
+
+<div class="future-note">Planned for a future update...
+  <hr style="border: none; border-top: 1px solid #ccc; margin: 8px 0;">
   <div>(v.1.2 will come out as soon as I have got EchoSearch accessible on Google)</div>
-  </div>
+</div>
 
 <a href="index.html" class="back-button">← Back to Home</a>
 
 <script>
 const darkToggle = document.getElementById("darkModeToggle");
-    function applyDarkFromStorage() {
-      const d = localStorage.getItem('darkMode');
-      if (d === 'true') {
-        document.body.classList.add('dark-mode');
-        darkToggle.textContent = '☀️ Light Mode';
-        darkToggle.setAttribute('aria-pressed','true');
-      } else {
-        document.body.classList.remove('dark-mode');
-        darkToggle.textContent = '🌙 Dark Mode';
-        darkToggle.setAttribute('aria-pressed','false');
-      }
-    }
-    // toggle handler (preserves theme class)
-    darkToggle.addEventListener('click', () => {
-      const isDark = document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', isDark ? 'true' : 'false');
-      darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-      darkToggle.setAttribute('aria-pressed', String(isDark));
-    });
-    // load saved preference
-    applyDarkFromStorage();
+
+function applyDarkFromStorage() {
+  const d = localStorage.getItem('darkMode');
+  if (d === 'true') {
+    document.body.classList.add('dark-mode');
+    darkToggle.textContent = '☀️ Light Mode';
+    darkToggle.setAttribute('aria-pressed','true');
+  } else {
+    document.body.classList.remove('dark-mode');
+    darkToggle.textContent = '🌙 Dark Mode';
+    darkToggle.setAttribute('aria-pressed','false');
+  }
+}
+
+darkToggle.addEventListener('click', () => {
+  const isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', isDark ? 'true' : 'false');
+  darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  darkToggle.setAttribute('aria-pressed', String(isDark));
+});
+
+applyDarkFromStorage();
 </script>
-  
+
 </body>
-</html>
+  </html>
