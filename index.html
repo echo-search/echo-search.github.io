@@ -27,6 +27,33 @@
       color: var(--text);
       transition: all 0.3s;
     }
+   
+   .history-container {
+  max-width: 700px;
+  margin: 1rem auto;
+  padding: 0.5rem;
+  background: rgba(0,0,0,0.03);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+.history-container h3 {
+  margin-top: 0;
+}
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.history-list li {
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  transition: background 0.2s;
+}
+.history-list li:hover {
+  background: rgba(0,0,0,0.05);
+}
+    
     /* Dark mode override (separate from theme classes) */
     body.dark-mode {
       --bg: #121212 !important;
@@ -275,7 +302,11 @@
     </div>
   </div>
 
-  <!-- Results container -->
+  <div class="history-container" id="historyContainer" style="display:none;">
+  <h3>🔍 Search History</h3>
+  <ul class="history-list" id="historyList"></ul>
+  </div>
+
   <div id="gcse-results">
     <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
   </div>
@@ -495,6 +526,47 @@
     });
     // load saved preference
     applyDarkFromStorage();
+
+    function loadHistory() {
+  return JSON.parse(localStorage.getItem('searchHistory') || '[]');
+}
+function saveHistory(history) {
+  localStorage.setItem('searchHistory', JSON.stringify(history));
+}
+function addToHistory(query) {
+  let history = loadHistory().filter(item => item !== query);
+  history.unshift(query);
+  if (history.length > 10) history.pop();
+  saveHistory(history);
+  renderHistory();
+}
+function renderHistory() {
+  const history = loadHistory();
+  const historyContainer = document.getElementById('historyContainer');
+  const historyList = document.getElementById('historyList');
+  historyList.innerHTML = '';
+  if (!history.length) {
+    historyContainer.style.display = 'none';
+    return;
+  }
+  historyContainer.style.display = 'block';
+  history.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    li.addEventListener('click', () => {
+      document.getElementById('searchInput').value = item;
+      document.getElementById('searchBtn').click();
+    });
+    historyList.appendChild(li);
+  });
+}
+
+// Call this after each search
+// addToHistory(query);
+
+// Call this once on page load
+renderHistory();
+    
   </script>
 </body>
     </html>
