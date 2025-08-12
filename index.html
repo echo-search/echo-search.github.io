@@ -27,58 +27,6 @@
       transition: all 0.3s;
     }
    
-   .history-container {
-  max-width: 700px;
-  margin: 1rem auto;
-  padding: 0.5rem 1rem;
-  background: rgba(0,0,0,0.05);
-  border-radius: 8px;
-  font-size: 0.95rem;
-  text-align: left;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
-}
-.history-container h3 {
-  margin: 0 0 0.5rem 0;
-  font-weight: bold;
-}
-.history-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 180px;
-  overflow-y: auto;
-}
-.history-list li {
-  padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid rgba(0,0,0,0.15);
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.history-list li:hover {
-  background-color: rgba(0, 206, 201, 0.2);
-}
-#clearHistoryBtn {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-#clearHistoryBtn:hover {
-  background: #c0392b;
-}
-    
-    /* Dark mode override (separate from theme classes) */
-    body.dark-mode {
-      --bg: #121212 !important;
-      --text: #f5f5f5 !important;
-      --accent: #00cec9 !important;
-      background: #121212 !important;
-      color: #f5f5f5 !important;
-      background-image: none !important;
-    }
-
     header {
       text-align: center;
       padding: 2rem 1rem 1rem;
@@ -316,12 +264,6 @@
       <button id="surpriseBtn">🎲 Surprise Me</button>
     </div>
   </div>
-
-  <div class="history-container" id="historyContainer" style="display:none;">
-  <h3>🔍 Search History</h3>
-  <ul class="history-list" id="historyList"></ul>
-  <button id="clearHistoryBtn" style="margin-top:0.5rem; padding:0.3rem 0.8rem; cursor:pointer;">🗑 Clear History</button>
-  </div>
   
   <div id="gcse-results">
     <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
@@ -542,81 +484,6 @@
     });
     // load saved preference
     applyDarkFromStorage();
-
-    const historyContainer = document.getElementById('historyContainer');
-const historyList = document.getElementById('historyList');
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-
-function loadHistory() {
-  return JSON.parse(localStorage.getItem('searchHistory') || '[]');
-}
-
-function saveHistory(history) {
-  localStorage.setItem('searchHistory', JSON.stringify(history));
-}
-
-function addToHistory(query) {
-  if (!query) return;
-  let history = loadHistory().filter(item => item.toLowerCase() !== query.toLowerCase());
-  history.unshift(query);
-  if (history.length > 10) history.pop();
-  saveHistory(history);
-  renderHistory();
-}
-
-function renderHistory() {
-  const history = loadHistory();
-  historyList.innerHTML = '';
-  if (history.length === 0) {
-    historyContainer.style.display = 'none';
-    return;
-  }
-  historyContainer.style.display = 'block';
-  history.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = item;
-    li.addEventListener('click', () => {
-      searchInput.value = item;
-      const searchElement = google.search.cse.element.getElement("searchbox1");
-      if (searchElement) {
-        searchElement.execute(item);
-        window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
-      }
-      addToHistory(item);
-    });
-    historyList.appendChild(li);
-  });
-}
-
-// Clear history button handler
-clearHistoryBtn.addEventListener('click', () => {
-  localStorage.removeItem('searchHistory');
-  renderHistory();
-});
-
-// Hook into your existing search button click:
-searchBtn.addEventListener('click', () => {
-  const query = searchInput.value.trim();
-  if (!query) return;
-  addToHistory(query);
-  const searchElement = google.search.cse.element.getElement("searchbox1");
-  if (searchElement) {
-    searchElement.execute(query);
-    window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
-  }
-});
-
-// Support Enter key to search + add to history
-searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    searchBtn.click();
-  }
-});
-
-// Initialize history display on page load
-renderHistory();
     
   </script>
 </body>
