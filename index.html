@@ -239,6 +239,14 @@ body.dark-mode.forest {
   background: url('forest.jpeg') no-repeat center center fixed;
   background-size: cover;
 }
+
+body.dark-mode.floral {
+  --bg: #1a1a1a;           /* Dark overlay behind floral image */
+  --text: #f8f0e3;         /* Off-white text for contrast */
+  --accent: #a45a5a;       /* Muted red accents */
+  background: url('floral.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
     
     /* Themes with pictures */
     body.default {
@@ -303,6 +311,16 @@ body.dark-mode.forest {
       background: url('forest.jpeg') no-repeat center center fixed;
       background-size: cover;
     }
+
+
+body.floral {
+  --bg: #fff8f0;           /* Soft pastel background overlay */
+  --text: #3a2e2b;         /* Dark brown text */
+  --accent: #f28f8f;       /* Pink accents for buttons, borders */
+  background: url('floral.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
   </style>
 </head>
 <body class="default">
@@ -320,6 +338,7 @@ body.dark-mode.forest {
         <option value="matrix">Matrix</option>
         <option value="cyberpunk">Cyberpunk</option>
         <option value="forest">Forest</option>
+        <option value="floral">Floral</option>
       </select>
     </div>
   </header>
