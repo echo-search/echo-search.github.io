@@ -65,7 +65,7 @@ All with their own colours and background.</p>
 
 
 <h3>Advanced Usage</h3>
-<p>If you want to go above and beyond, you can let us know your ideas and you can also request to become a contributor which will hopefully help the people who want these features and will expand thr popularity of EchoSearch. Who knows, I'm not the best coder but you may be someone who we need!</p>
+<p>If you want to go above and beyond, you can let us know your idea(s) and you can also request to become a contributor which will hopefully help the people who want these features and will expand the usage of EchoSearch. Who knows, I'm not the best coder but you may be someone who we need!</p>
 
 <p>If you don't want to edit but suggest idea, post an issue on the issues tab and describe what you want. We really want to hear from you as we are stuck in our own ideas and we don't know the public's reaction to our thinking 😆</p>
 
