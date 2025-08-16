@@ -3,39 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EchoSearch README</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    line-height: 1.7;
-    margin: 20px;
-    color: #222;
-  }
-  h1, h2, h3 {
-    color: #B30000;
-  }
-  pre {
-    background: #f4f4f4;
-    padding: 10px;
-    border-radius: 5px;
-    overflow-x: auto;
-  }
-  code {
-    background: #f4f4f4;
-    padding: 2px 4px;
-    border-radius: 3px;
-  }
-  a {
-    color: #B30000;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-  ul, ol {
-    margin-left: 20px;
-  }
-</style>
 </head>
 <body>
 
