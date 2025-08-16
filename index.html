@@ -514,6 +514,18 @@ body.floral {
       recognition.onend = () => {
         voiceBtn.classList.remove("listening");
       };
+      const query = searchInput.value.trim();
+  if (query) {
+    const searchElement = google.search.cse.element.getElement("searchbox1");
+    if (searchElement) {
+      searchElement.execute(query);
+      window.scrollTo({ 
+        top: document.getElementById("gcse-results").offsetTop, 
+        behavior: "smooth" 
+      });
+    }
+  }
+};
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
