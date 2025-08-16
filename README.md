@@ -59,6 +59,10 @@
   <li>Enable or disable voice search, dark mode, or other features based on preference.</li>
 </ul>
 
+
+<p>If you don't want to edit but suggest idea, post an issue on the issues tab and describe what you want. We really want to hear from you as we are stuck in our own ideas and we don't know the public's reaction to our thinking 😆</p>
+
+
 <h2 id="version-history">Version History</h2>
 <p>Maintaining a version history is critical to understanding the growth and evolution of EchoSearch. Each update includes new features, performance improvements, bug fixes, and other refinements. Users can review the version history in the repository to track changes and understand how the platform has developed over time. Version history includes:</p>
 <ul>
@@ -86,8 +90,6 @@
 </code></pre>
 
 <p>Developers and advanced users can also implement JavaScript enhancements to automate workflows, integrate external APIs, or add advanced functionality tailored to specific use cases. This level of customization ensures that EchoSearch can adapt to both personal and organizational requirements, providing a versatile platform for a wide range of users.</p>
-
-<p>If you dont want to edit but suggest idea, post an issue on the issues tab and describe what you want. We really want to hear fro you as we are stuck in our own ideas and we dont know the public's reaction to our thinking 😆</p>
 
 <h2 id="faq">Frequently Asked Questions (FAQ)</h2>
 
