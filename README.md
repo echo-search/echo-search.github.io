@@ -16,7 +16,6 @@
 <ul>
   <li><a href="#introduction">Introduction</a></li>
   <li><a href="#features">Features</a></li>
-  <li><a href="#installation">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
   <li><a href="#version-history">Version History</a></li>
   <li><a href="#customization">Customization</a></li>
@@ -50,30 +49,6 @@
   <li><strong>Customization:</strong> Users can modify the interface, including colors, backgrounds, and button layouts, to suit personal preferences or organizational branding requirements.</li>
 </ul>
 
-<h2 id="installation">Installation</h2>
-<p>Installing EchoSearch is simple, as it does not require a backend server. Users can clone the repository, download the ZIP file, or deploy the platform online using GitHub Pages or similar services.</p>
-
-<h3>Clone via Git</h3>
-<pre><code>git clone https://github.com/yourusername/search-engine.git
-cd search-engine
-</code></pre>
-
-<h3>Direct Download</h3>
-<p>Users can download the latest release ZIP from GitHub, extract the contents, and open <code>index.html</code> in their browser to start using EchoSearch immediately.</p>
-
-<h3>Hosting Online</h3>
-<p>EchoSearch can be hosted on platforms like GitHub Pages, Netlify, or Vercel. Hosting it online allows access from any device using the URL <a href="https://echo-search.github.io/search-engine/">https://echo-search.github.io/search-engine/</a>. Example for GitHub Pages:</p>
-<pre><code>1. Navigate to the repository settings.
-2. Select "Pages".
-3. Choose the main branch and root folder.
-4. Save settings.
-5. Your live site will be available at https://echo-search.github.io/search-engine/
-</code></pre>
-
-<h2 id="usage">Usage</h2>
-<p>Using EchoSearch is extremely straightforward. Users simply navigate to <a href="https://echo-search.github.io/search-engine/">https://echo-search.github.io/search-engine/</a>, type their search query into the search bar, and either press Enter or click the search button. For hands-free searching, users can click the microphone icon and speak their query. The platform also allows users to click quick-access buttons to visit popular sites instantly.</p>
-
-<p>The interface is designed to adapt automatically to the device being used. On desktops and laptops, the full layout is visible with search options and buttons arranged for easy access. On tablets and smartphones, the layout adjusts to smaller screens, keeping functionality intact while ensuring readability and touch accessibility.</p>
 
 <h3>Advanced Usage</h3>
 <p>For advanced users, EchoSearch allows modification of HTML, CSS, and JavaScript to extend functionality:</p>
@@ -96,7 +71,7 @@ cd search-engine
 <p>This structured version tracking ensures transparency and allows users and contributors to remain informed about updates and improvements.</p>
 
 <h2 id="customization">Customization</h2>
-<p>EchoSearch is designed to be highly customizable. Users can adjust background images, color schemes, text styles, and quick-access buttons to create a personalized search environment. For example, CSS variables allow modification of background and text colors:</p>
+<p>EchoSearch is designed to be highly customizable. Users can choose their desired background images, color schemes, text styles, and quick-access buttons to create a personalized search environment. For example, EchoSearch uses CSS variables to make background and text colors:</p>
 <pre><code>body {
   --bg: #1a1a2e;
   --text: #e0e0e0;
@@ -111,6 +86,8 @@ cd search-engine
 </code></pre>
 
 <p>Developers and advanced users can also implement JavaScript enhancements to automate workflows, integrate external APIs, or add advanced functionality tailored to specific use cases. This level of customization ensures that EchoSearch can adapt to both personal and organizational requirements, providing a versatile platform for a wide range of users.</p>
+
+<p>If you dont want to edit but suggest idea, post an issue on the issues tab and describe what you want. We really want to hear fro you as we are stuck in our own ideas and we dont know the public's reaction to our thinking 😆</p>
 
 <h2 id="faq">Frequently Asked Questions (FAQ)</h2>
 
