@@ -29,6 +29,21 @@
 <h2 id="introduction">Introduction</h2>
 <p>EchoSearch was developed to address the limitations of conventional search engines. Many traditional search platforms are overloaded with advertisements, pop-ups, and unnecessary features that distract users and slow down their search experience. EchoSearch eliminates these distractions and focuses entirely on delivering relevant results quickly. This approach allows users to concentrate on the information they need without interruptions or delays.</p>
 
+<p>Another key reason EchoSearch was developed was to have multiple features that match your desire. Traditional search engines have a light/dark mode (Putting Dark Mode on them takes ages and is very complicated) but EchoSearch has 10 themes which include:
+<ul>
+ <li>Dark</li>
+ <li>Retro</li>
+ <li>Neon</li>
+ <li>Midnight</li>
+ <li>Sunset</li>
+ <li>Ocean</li>
+ <li>Matrix</li>
+ <li>Cyberpunk</li>
+ <li>Matrix</li>
+ <li>Floral</li>
+</ul>
+All with their own colours and background.</p>
+
 <p>The architecture of EchoSearch has been carefully optimized to balance minimalism with powerful functionality. Every element, from the search bar to the quick-access buttons, has been designed to ensure simplicity without sacrificing utility. Users can perform searches using text input or voice commands, access popular websites instantly through customizable buttons, and utilize dark mode for low-light conditions.</p>
 
 <p>Performance and optimization have been central to EchoSearch’s development. The platform achieves a <strong>PageSpeed Insight score of 99</strong>, which demonstrates an almost instantaneous loading time and extremely smooth interaction. Every image, CSS file, and JavaScript resource is optimized to reduce latency and improve load times. These optimizations provide an excellent user experience regardless of internet speed or device capability.</p>
