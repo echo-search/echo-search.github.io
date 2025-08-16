@@ -58,7 +58,6 @@ All with their own colours and background.</p>
   <li><strong>Dark Mode:</strong> A night-friendly interface reduces eye strain in low-light environments and improves reading comfort over extended periods.</li>
   <li><strong>Responsive Design:</strong> EchoSearch works seamlessly on desktops, laptops, tablets, and smartphones, adapting layout and functionality to fit any screen size.</li>
   <li><strong>Privacy-Focused:</strong> No user data is stored on servers. Version history and customization data remain within the platform, ensuring privacy and control for all users.</li>
-  <li><strong>Open Source:</strong> The platform is fully open-source, allowing developers and users to contribute, customize, and extend its capabilities.</li>
   <li><strong>High Performance:</strong> Optimized code and asset management ensure rapid page load times and smooth interactions across devices.</li>
   <li><strong>Version History:</strong> Detailed documentation of all updates, feature additions, and optimizations is available, allowing users to track changes over time.</li>
   <li><strong>Customization:</strong> Users can modify the interface, including colors, backgrounds, and button layouts, to suit personal preferences or organizational branding requirements.</li>
@@ -66,14 +65,7 @@ All with their own colours and background.</p>
 
 
 <h3>Advanced Usage</h3>
-<p>For advanced users, EchoSearch allows modification of HTML, CSS, and JavaScript to extend functionality:</p>
-<ul>
-  <li>Add or remove quick-access buttons for any website.</li>
-  <li>Create custom visual styles or adjust colors and backgrounds.</li>
-  <li>Integrate alternative search engines or external APIs.</li>
-  <li>Enable or disable voice search, dark mode, or other features based on preference.</li>
-</ul>
-
+<p>If you want to go above and beyond, you can let us know your ideas and you can also request to become a contributor which will hopefully help the people who want these features and will expand thr popularity of EchoSearch. Who knows, I'm not the best coder but you may be someone who we need!</p>
 
 <p>If you don't want to edit but suggest idea, post an issue on the issues tab and describe what you want. We really want to hear from you as we are stuck in our own ideas and we don't know the public's reaction to our thinking 😆</p>
 
@@ -88,6 +80,8 @@ All with their own colours and background.</p>
 </ul>
 
 <p>This structured version tracking ensures transparency and allows users and contributors to remain informed about updates and improvements.</p>
+
+<p>It is updated regularly with new ideas and maybe your ideas might be included too (If you give us an idea and we decide we will put it as a future update, we will mention your name so your contribution is noticed!).</p>
 
 <h2 id="customization">Customization</h2>
 <p>EchoSearch is designed to be highly customizable. Users can choose their desired background images, color schemes, text styles, and quick-access buttons to create a personalized search environment. For example, EchoSearch uses CSS variables to make background and text colors:</p>
@@ -124,7 +118,7 @@ All with their own colours and background.</p>
 <p>Yes. Dark mode is available and can be toggled easily. This feature reduces eye strain in low-light environments, making extended use comfortable and safe for your eyes. The dark mode is implemented with accessibility in mind, ensuring sufficient contrast ratios for all text and interface elements.</p>
 
 <h3>Am I allowed to copy all files into a repository and claim I made it?</h3>
-<p>No. You are not allowed to claim EchoSeardh is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don'thave to, but if it is the case, thsn we will take IMMIDIATE action.</p>
+<p>No. You are not allowed to claim EchoSearch is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don'thave to, but if it is the case, thsn we will take IMMIDIATE action.</p>
 
 <h2 id="performance">Performance</h2>
 <p>Performance is a cornerstone of EchoSearch. The platform has been meticulously optimized to ensure extremely fast loading times, smooth interactions, and reliable search functionality. Achieving a <strong>PageSpeed Insight score of 99</strong> demonstrates the platform’s commitment to speed and efficiency. Key performance optimizations include:</p>
