@@ -123,6 +123,9 @@ All with their own colours and background.</p>
 <h3>Does EchoSearch support dark mode?</h3>
 <p>Yes. Dark mode is available and can be toggled easily. This feature reduces eye strain in low-light environments, making extended use comfortable and safe for your eyes. The dark mode is implemented with accessibility in mind, ensuring sufficient contrast ratios for all text and interface elements.</p>
 
+<h3>Am I allowed to copy all files into a repository and claim I made it?</h3>
+<p>No. You are not allowed to claim EchoSeardh is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don'thave to, but if it is the case, thsn we will take IMMIDIATE action.</p>
+
 <h2 id="performance">Performance</h2>
 <p>Performance is a cornerstone of EchoSearch. The platform has been meticulously optimized to ensure extremely fast loading times, smooth interactions, and reliable search functionality. Achieving a <strong>PageSpeed Insight score of 99</strong> demonstrates the platform’s commitment to speed and efficiency. Key performance optimizations include:</p>
 
