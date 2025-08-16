@@ -514,6 +514,11 @@ body.floral {
       recognition.onend = () => {
         voiceBtn.classList.remove("listening");
       };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        searchInput.value = transcript;
+      
       const query = searchInput.value.trim();
   if (query) {
     const searchElement = google.search.cse.element.getElement("searchbox1");
@@ -526,11 +531,6 @@ body.floral {
     }
   }
 };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        searchInput.value = transcript;
-      };
 
       voiceBtn.addEventListener("click", () => {
         try { recognition.start(); } catch (e) { /* ignore already-started */ }
