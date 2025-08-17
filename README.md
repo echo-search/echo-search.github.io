@@ -60,14 +60,13 @@ All with their own colours and background.</p>
   <li><strong>Privacy-Focused:</strong> No user data is stored on servers. Version history and customization data remain within the platform, ensuring privacy and control for all users.</li>
   <li><strong>High Performance:</strong> Optimized code and asset management ensure rapid page load times and smooth interactions across devices.</li>
   <li><strong>Version History:</strong> Detailed documentation of all updates, feature additions, and optimizations is available, allowing users to track changes over time.</li>
-  <li><strong>Customization:</strong> Users can modify the interface, including colors, backgrounds, and button layouts, to suit personal preferences or organizational branding requirements.</li>
 </ul>
 
 
 <h3>Advanced Usage</h3>
 <p>If you want to go above and beyond, you can let us know your idea(s) and you can also request to become a contributor which will hopefully help the people who want these features and will expand the usage of EchoSearch. Who knows, I'm not the best coder but you may be someone who we need!</p>
 
-<p>If you don't want to edit but suggest idea, post an issue on the issues tab and describe what you want. We really want to hear from you as we are stuck in our own ideas and we don't know the public's reaction to our thinking 😆</p>
+<p>If you don't want to edit but suggest idea(s), post an issue on the issues tab on the Github repository and describe what you want. We really want to hear from you as we are stuck in our own ideas and we don't know the public's reaction to our thinking 😆.</p>
 
 
 <h2 id="version-history">Version History</h2>
@@ -75,7 +74,6 @@ All with their own colours and background.</p>
 <ul>
   <li>Release notes describing added features or enhancements.</li>
   <li>Documentation of bug fixes and performance improvements.</li>
-  <li>Notes on design adjustments and accessibility improvements.</li>
   <li>Information on changes to interface behavior or new customization options.</li>
 </ul>
 
@@ -84,7 +82,7 @@ All with their own colours and background.</p>
 <p>It is updated regularly with new ideas and maybe your ideas might be included too (If you give us an idea and we decide we will put it as a future update, we will mention your name so your contribution is noticed!).</p>
 
 <h2 id="customization">Customization</h2>
-<p>EchoSearch is designed to be highly customizable. Users can choose their desired background images, color schemes, text styles, and quick-access buttons to create a personalized search environment. For example, EchoSearch uses CSS variables to make background and text colors:</p>
+<p>EchoSearch is designed to be highly customizable. Users can choose their desired background images to create a personalized search environment. For example, EchoSearch uses CSS variables to make background and text colors:</p>
 <pre><code>body {
   --bg: #1a1a2e;
   --text: #e0e0e0;
@@ -94,16 +92,12 @@ All with their own colours and background.</p>
 }
 </code></pre>
 
-<p>Quick-access buttons can be edited directly in the HTML:</p>
-<pre><code>&lt;button onclick="window.open('https://www.youtube.com')">YouTube&lt;/button>
-</code></pre>
-
-<p>Developers and advanced users can also implement JavaScript enhancements to automate workflows, integrate external APIs, or add advanced functionality tailored to specific use cases. This level of customization ensures that EchoSearch can adapt to both personal and organizational requirements, providing a versatile platform for a wide range of users.</p>
+<p>Developers and advanced users can also report issues for JavaScript enhancements to automate workflows, integrate external APIs for all-of-the-best-in-one, or add advanced functionality tailored to specific use cases. This level of customization ensures that EchoSearch can adapt to both personal and organizational requirements, providing a versatile platform for a wide range of users.</p>
 
 <h2 id="faq">Frequently Asked Questions (FAQ)</h2>
 
 <h3>Is EchoSearch free?</h3>
-<p>Yes, EchoSearch is entirely free and open-source. Users can use, modify, and distribute it without any restrictions, making it accessible to everyone.</p>
+<p>Yes, EchoSearch is entirely free of charge. Users can report, contribute, and magpie ideas, which shows it is accessible to everyone.</p>
 
 <h3>Does it store my data?</h3>
 <p>No user data is sent to external servers. Version history is maintained within the repository for transparency, while user interactions remain private and local to the device.</p>
@@ -117,8 +111,8 @@ All with their own colours and background.</p>
 <h3>Does EchoSearch support dark mode?</h3>
 <p>Yes. Dark mode is available and can be toggled easily. This feature reduces eye strain in low-light environments, making extended use comfortable and safe for your eyes. The dark mode is implemented with accessibility in mind, ensuring sufficient contrast ratios for all text and interface elements.</p>
 
-<h3>Am I allowed to copy all files into a repository and claim I made it?</h3>
-<p>No. You are not allowed to claim EchoSearch is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don'thave to, but if it is the case, thsn we will take IMMIDIATE action.</p>
+<h3>Am I allowed to copy all files into a different repo and claim I made it?</h3>
+<p>No. You are not allowed to claim EchoSearch is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don't have to, but if it is the case, thsn we will take IMMIDIATE action.</p>
 
 <h2 id="performance">Performance</h2>
 <p>Performance is a cornerstone of EchoSearch. The platform has been meticulously optimized to ensure extremely fast loading times, smooth interactions, and reliable search functionality. Achieving a <strong>PageSpeed Insight score of 99</strong> demonstrates the platform’s commitment to speed and efficiency. Key performance optimizations include:</p>
