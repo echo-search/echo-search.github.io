@@ -144,7 +144,82 @@ All with their own colours and background.</p>
 <p>All pull requests are reviewed to ensure code quality, maintainability, and alignment with the project’s design principles. Contributors are encouraged to provide documentation for their changes and follow best practices for coding and accessibility.</p>
 
 <h2 id="license">License</h2>
-<p>EchoSearch is licensed under the <a href="license.txt">MIT License</a>. This license grants full freedom to use, copy, modify, and distribute the software, with minimal restrictions. Users must include the original copyright and license notices in any redistributed or modified versions of the project.</p>
+  <p>This project, <strong>EchoSearch</strong>, is licensed under the 
+  <a href="license.txt">MIT License</a>. The MIT License is widely recognized as one of the most 
+  permissive and developer-friendly open-source licenses, allowing broad freedom to use, 
+  modify, and redistribute software while preserving attribution to the original author.</p>
+
+  <p>By using EchoSearch, you gain access to a lightweight, fast, and fully transparent 
+  search engine project designed for experimentation, learning, and integration. The 
+  license ensures that you can leverage these capabilities in personal, educational, or 
+  commercial contexts with minimal restrictions.</p>
+
+  <h3>Permissions Granted</h3>
+  <p>Under the MIT License, you are granted extensive rights to work with EchoSearch, including:</p>
+  <ul>
+    <li>✅ <strong>Personal Use:</strong> You can use EchoSearch in private projects, for 
+      learning purposes, or to explore how a minimal HTML-based search engine works.</li>
+    <li>✅ <strong>Commercial Use:</strong> You are allowed to integrate EchoSearch into 
+      commercial products, apps, or services, whether sold or freely distributed.</li>
+    <li>✅ <strong>Modification:</strong> The license encourages you to fork, customize, 
+      enhance, or restructure the codebase in ways that fit your needs or your creative vision.</li>
+    <li>✅ <strong>Redistribution:</strong> You can share EchoSearch with others, either 
+      in its original form or as part of a modified version, while maintaining proper attribution.</li>
+    <li>✅ <strong>Sublicensing:</strong> You may combine EchoSearch with other projects 
+      under different licenses, as long as the original MIT license and copyright notice 
+      are preserved in your distribution.</li>
+  </ul>
+
+  <p>These permissions are intended to foster innovation, encourage learning, and enable 
+  collaboration. EchoSearch is deliberately designed to be easy to understand and integrate, 
+  and the MIT License reflects this philosophy by removing unnecessary barriers to use.</p>
+
+  <h3>Limitations and Restrictions</h3>
+  <p>While the MIT License is extremely permissive, there are a few key limitations to keep in mind:</p>
+  <ul>
+    <li>❌ <strong>No Warranty:</strong> EchoSearch is provided "as-is" without any express 
+      or implied warranties. The authors do not guarantee that the software will function 
+      perfectly in all environments or scenarios.</li>
+    <li>❌ <strong>No Liability:</strong> The authors cannot be held liable for any damages, 
+      data loss, or business interruptions that might arise from using EchoSearch.</li>
+    <li>❌ <strong>Preservation of Attribution:</strong> You must retain the copyright notice 
+      and license text in all copies or substantial portions of the software. While you may 
+      modify and redistribute the project, removing attribution is prohibited.</li>
+  </ul>
+
+  <h3>Why MIT Was Chosen</h3>
+  <p>The MIT License was selected for EchoSearch because it aligns perfectly with the goals 
+  of the project: simplicity, transparency, and accessibility. Many search engines and 
+  web tools are closed-source or heavily restricted, making it difficult for learners and 
+  developers to explore how they work. EchoSearch flips this model by being open, minimal, 
+  and adaptable.</p>
+
+  <p>This licensing choice ensures that anyone—from students exploring coding concepts to 
+  professionals integrating the project into larger platforms—can freely engage with the 
+  code without legal complications. The MIT License removes friction while still protecting 
+  the intellectual contributions of the original author.</p>
+
+  <h3>Important Considerations</h3>
+  <p>By using EchoSearch, you acknowledge that you are doing so at your own risk. The software 
+  is provided without any form of warranty, express or implied. This includes, but is not 
+  limited to, warranties of merchantability, fitness for a particular purpose, and noninfringement. 
+  While EchoSearch aims to be stable and reliable, it may not function correctly in every 
+  environment, and the authors are not responsible for fixing any issues in your deployment.</p>
+
+  <p>The license also encourages responsible attribution. Preserving the copyright notice and 
+  linking back to the original license ensures that credit is given where it is due, and it 
+  helps maintain the integrity of the open-source ecosystem that allows projects like 
+  EchoSearch to thrive.</p>
+
+  <h3>Summary</h3>
+  <p>In summary, the MIT License provides freedom and flexibility while safeguarding credit 
+  for the author. It allows developers to use, modify, redistribute, and integrate EchoSearch 
+  with minimal restrictions. By choosing MIT, EchoSearch invites collaboration, experimentation, 
+  and innovation while ensuring that anyone who builds upon the project respects the original 
+  creator’s contributions.</p>
+
+  <p>For the full legal text and official terms, please see the <a href="license.txt">license.txt</a> file.</p>
+</section>
 
 <h2 id="minimalism">Minimalism</h2>
 <p>
