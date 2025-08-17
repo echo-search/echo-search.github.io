@@ -143,7 +143,7 @@ All with their own colours and background.</p>
 <p>All pull requests are reviewed to ensure code quality, maintainability, and alignment with the project’s design principles. Contributors are encouraged to provide documentation for their changes and follow best practices for coding and accessibility.</p>
 
 <h2 id="license">License</h2>
-<p>EchoSearch is licensed under the a href="license.txt">MIT License</a>. This license grants full freedom to use, copy, modify, and distribute the software, with minimal restrictions. Users must include the original copyright and license notices in any redistributed or modified versions of the project.</p>
+<p>EchoSearch is licensed under the <a href="license.txt">MIT License</a>. This license grants full freedom to use, copy, modify, and distribute the software, with minimal restrictions. Users must include the original copyright and license notices in any redistributed or modified versions of the project.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 <p>EchoSearch is more than a search engine; it is a modern, high-performance search platform that emphasizes simplicity, usability, and reliability. The platform offers voice search, quick-access buttons, dark mode, version history, and extensive customization options, all optimized to deliver an unparalleled user experience. By maintaining a <strong>PageSpeed Insight score of 99</strong> and focusing on privacy, accessibility, and responsiveness, EchoSearch ensures that users can search the web quickly, efficiently, and safely.</p>
