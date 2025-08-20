@@ -168,7 +168,15 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     
+    #articles-link {
+  text-align: right;
+  margin: 10px 20px; /* space from edge */
+}
 
+#articles-link a {
+  color: blue;            /* blue link */
+  text-decoration: underline; 
+} 
    
 body.dark-mode.default {
   --bg: #121212;
@@ -361,6 +369,10 @@ body.floral {
   <p style="color: #b30000; font-weight: bold; text-align: center; margin-top: 10px;">
   EchoSearch is now on Google! 🎉 Next time, search <b>echo-search.github.io</b> or <b>site:echo-search.github.io</b> on Google and click EchoSearch! (If you search the first one, the access link will come around 15th or more place, but if you search the 2nd one, the result will come around 1st or 2nd place) 
   </p>
+  
+  <div id="articles-link">
+  <a href="articles.html">Articles</a>
+  </div>
   
   <div id="gcse-results">
     <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
