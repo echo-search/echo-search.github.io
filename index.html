@@ -360,7 +360,7 @@ body.floral {
 
   <div class="search-box">
     <div class="search-container">
-      <input type="search" id="searchInput" placeholder="Type your search..." autocomplete="off" />
+      <input type="search" id="searchInput" name="q" placeholder="Type your search..." autocomplete="on" />
       <button class="voice-btn" id="voiceBtn" aria-label="Voice search">🎙</button>
     </div>
     <div class="button-group">
@@ -575,6 +575,17 @@ body.floral {
           }
         });
 
+        // Run search automatically if ?q= is in URL
+const urlParams = new URLSearchParams(window.location.search);
+const queryFromUrl = urlParams.get('q');
+if (queryFromUrl) {
+  const searchElement = google.search.cse.element.getElement("searchbox1");
+  if (searchElement) {
+    searchElement.execute(queryFromUrl);
+    window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
+  }
+    }
+       
         // optional: allow Enter key to search
         searchInput.addEventListener("keydown", function(e) {
           if (e.key === "Enter") {
