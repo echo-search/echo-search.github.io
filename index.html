@@ -399,7 +399,7 @@ body.floral {
   <a href="version-history.html" class="version-badge">v.1.2</a>
 
   <div style="text-align:center; margin-top:10px;">
-  <button id="chatBtn" class="chat-btn">💬 Chat on AI</button>
+  <button id="chatBtn" class="chat-btn">💬 Didn't like the results? Chat with AI</button>
   </div>
   
   <script>
@@ -699,8 +699,23 @@ document.getElementById("searchBtn").addEventListener("click", function() {
     });
     // load saved preference
     applyDarkFromStorage();  
-    document.getElementById('chatBtn').addEventListener('click', () => {
-  window.open('https://chatgpt.com', '_blank');
+
+const searchBtn = document.getElementById("searchBtn");
+const chatBtn = document.getElementById("chatBtn");
+
+// When Search button is pressed -> show Chat button
+searchBtn.addEventListener("click", function () {
+    chatBtn.style.display = "block";
+});
+
+// When Chat button is clicked -> open ChatGPT
+chatBtn.addEventListener("click", () => {
+    window.open("https://chatgpt.com", "_blank");
+});
+
+// On page refresh/reload -> keep hidden until search is pressed
+window.addEventListener("load", () => {
+    chatBtn.style.display = "none";
 });
   </script>
 </body>
