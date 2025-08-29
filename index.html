@@ -138,22 +138,25 @@
       padding: 1rem;
     }
    .chat-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 15px;
+  position: fixed;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
   border: none;
-  background: #00cec9;
+  background: var(--accent);
   color: black;
   font-weight: bold;
   cursor: pointer;
   font-size: 1rem;
+  z-index: 10000;
   transition: background 0.2s, transform 0.1s;
 }
 .chat-btn:hover {
-  background: #ffc107;
-  transform: scale(1.05);
-} 
+  background: #00cec9;
+  transform: translateX(-50%) scale(1.05);
+  }
     /* Version badge */
     .version-badge {
       position: fixed;
