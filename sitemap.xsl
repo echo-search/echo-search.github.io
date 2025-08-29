@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:s="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <xsl:template match="/">
   <html>
@@ -24,12 +25,12 @@
           <th>Change Frequency</th>
           <th>Priority</th>
         </tr>
-        <xsl:for-each select="urlset/url">
+        <xsl:for-each select="s:urlset/s:url">
           <tr>
-            <td><a href="{loc}"><xsl:value-of select="loc"/></a></td>
-            <td><xsl:value-of select="lastmod"/></td>
-            <td><xsl:value-of select="changefreq"/></td>
-            <td><xsl:value-of select="priority"/></td>
+            <td><a href="{s:loc}"><xsl:value-of select="s:loc"/></a></td>
+            <td><xsl:value-of select="s:lastmod"/></td>
+            <td><xsl:value-of select="s:changefreq"/></td>
+            <td><xsl:value-of select="s:priority"/></td>
           </tr>
         </xsl:for-each>
       </table>
