@@ -73,6 +73,30 @@
     input[type="search"]:focus {
       box-shadow: 0 0 8px var(--accent);
     }
+    #suggestions {
+  border: 1px solid #ccc;
+  display: none;
+  position: absolute;
+  background: white;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 300px; /* Adjust to match your search bar */
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+#suggestions li {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+#suggestions li:hover {
+  background-color: #f0f0f0;
+}
     /* Voice button styles */
     .voice-btn {
       background: var(--accent);
@@ -382,6 +406,7 @@ body.floral {
   <div class="search-box">
     <div class="search-container">
       <input type="search" id="searchInput" name="q" placeholder="Type your search..." autocomplete="on" />
+      <ul id="suggestions"></ul>
       <button class="voice-btn" id="voiceBtn" aria-label="Voice search">🎙</button>
     </div>
     <div class="button-group">
@@ -680,6 +705,49 @@ document.getElementById("searchBtn").addEventListener("click", function() {
             window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
         }
     }
+});
+    const searchBar = document.getElementById('searchInput); // your existing input
+const suggestions = document.getElementById('suggestions'); // your existing <ul>
+const searchForm = document.getElementById('searchForm'); // your existing form
+
+// Fallback list of Girl Gang names
+const fallbackList = ['Jaya', 'Saffa', 'Maya', 'Halle', 'Simra', 'Javeriea'];
+
+async function getSuggestions(query) {
+  try {
+    const res = await fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    return data[1]; // array of suggestions
+  } catch {
+    // fallback to Girl Gang names
+    return fallbackList.filter(name => name.toLowerCase().includes(query.toLowerCase()));
+  }
+}
+
+searchBar.addEventListener('input', async () => {
+  const query = searchBar.value.trim();
+  suggestions.innerHTML = '';
+  if (!query) return suggestions.style.display = 'none';
+
+  const items = await getSuggestions(query);
+
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    li.addEventListener('click', () => {
+      searchBar.value = item;
+      suggestions.style.display = 'none';
+      searchForm.submit(); // automatically submit form
+    });
+    suggestions.appendChild(li);
+  });
+
+  suggestions.style.display = items.length ? 'block' : 'none';
+});
+
+// Hide suggestions when clicking outside
+document.addEventListener('click', e => {
+  if (!searchBar.contains(e.target)) suggestions.style.display = 'none';
 });
 
     // === DARK MODE TOGGLE ===
