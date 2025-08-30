@@ -427,7 +427,7 @@ body.floral {
     <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
   </div>
 
-  <a href="version-history.html" class="version-badge">v.1.2</a>
+  <a href="version-history.html" class="version-badge">v.2.0</a>
 
   <div style="margin-top:10px;">
   <button id="chatBtn" class="chat-btn">💬 Didn't like the results? Chat with AI</button>
@@ -714,7 +714,7 @@ const fallbackList = ['Jaya', 'Saffa', 'Maya', 'Halle', 'Simra', 'Javeriea'];
 
 async function getSuggestions(query) {
   try {
-    const res = await fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`);
+    const res = await fetch(`https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}`);
     const data = await res.json();
     return data[1]; // array of suggestions
   } catch {
