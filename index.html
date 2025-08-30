@@ -707,76 +707,46 @@ document.getElementById("searchBtn").addEventListener("click", function() {
     }
 });
    const searchBar = document.getElementById('searchInput');
-const suggestions = document.getElementById('suggestions');
+const suggestionsBox = document.getElementById('suggestions');
+let allSuggestions = [];
 
-const fallbackList = ['Jaya', 'Saffa', 'Maya', 'Halle', 'Simra', 'Javeriea'];
+fetch('suggestions.json')
+  .then(res => res.json())
+  .then(data => { allSuggestions = data; })
+  .catch(err => console.error('Error loading suggestions:', err));
 
-async function getSuggestions(query) {
-  try {
-    const res = await fetch(`https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-    return data.map(item => item.phrase);
-  } catch {
-    return fallbackList.filter(name => name.toLowerCase().includes(query.toLowerCase()));
-  }
-}
+searchBar.addEventListener('input', () => {
+  const query = searchBar.value.trim().toLowerCase();
+  suggestionsBox.innerHTML = '';
 
-searchBar.addEventListener('input', async () => {
-  const query = searchBar.value.trim();
-  suggestions.innerHTML = '';
   if (!query) {
-    suggestions.style.display = 'none';
+    suggestionsBox.style.display = 'none';
     return;
   }
 
-  const items = await getSuggestions(query);
+  const matches = allSuggestions.filter(item =>
+    item.toLowerCase().includes(query)
+  ).slice(0, 10);
 
-  items.forEach(item => {
+  matches.forEach(match => {
     const li = document.createElement('li');
-    li.textContent = item;
+    li.textContent = match;
     li.addEventListener('click', () => {
-      searchBar.value = item;
-      suggestions.style.display = 'none';
-      const searchElement = google.search.cse.element.getElement("searchbox1");
-      if (searchElement) {
-        searchElement.execute(item);
-        window.scrollTo({
-          top: document.getElementById("gcse-results").offsetTop,
-          behavior: "smooth"
-        });
-      }
+      searchBar.value = match;
+      suggestionsBox.style.display = 'none';
     });
-    suggestions.appendChild(li);
+    suggestionsBox.appendChild(li);
   });
 
-  suggestions.style.display = items.length ? 'block' : 'none';
+  suggestionsBox.style.display = matches.length ? 'block' : 'none';
 });
 
 document.addEventListener('click', e => {
-  if (!searchBar.contains(e.target) && !suggestions.contains(e.target)) {
-    suggestions.style.display = 'none';
+  if (!searchBar.contains(e.target) && !suggestionsBox.contains(e.target)) {
+    suggestionsBox.style.display = 'none';
   }
 });
 
-searchBar.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const topSuggestion = suggestions.querySelector('li');
-    const query = searchBar.value.trim() || (topSuggestion ? topSuggestion.textContent : '');
-    if (query) {
-      const searchElement = google.search.cse.element.getElement("searchbox1");
-      if (searchElement) {
-        searchElement.execute(query);
-        window.scrollTo({
-          top: document.getElementById("gcse-results").offsetTop,
-          behavior: "smooth"
-        });
-      }
-      suggestions.style.display = 'none';
-    }
-    e.preventDefault();
-  }
-});
-    
     const darkToggle = document.getElementById("darkModeToggle");
     function applyDarkFromStorage() {
       const d = localStorage.getItem('darkMode');
