@@ -706,19 +706,17 @@ document.getElementById("searchBtn").addEventListener("click", function() {
         }
     }
 });
-const searchBar = document.getElementById('searchInput');
-const suggestions = document.getElementById('suggestions')
+   const searchBar = document.getElementById('searchInput');
+const suggestions = document.getElementById('suggestions');
 
-// Fallback list of Girl Gang names
 const fallbackList = ['Jaya', 'Saffa', 'Maya', 'Halle', 'Simra', 'Javeriea'];
 
 async function getSuggestions(query) {
   try {
     const res = await fetch(`https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}`);
     const data = await res.json();
-    return data[1]; // array of suggestions
+    return data.map(item => item.phrase);
   } catch {
-    // fallback to Girl Gang names
     return fallbackList.filter(name => name.toLowerCase().includes(query.toLowerCase()));
   }
 }
@@ -726,7 +724,10 @@ async function getSuggestions(query) {
 searchBar.addEventListener('input', async () => {
   const query = searchBar.value.trim();
   suggestions.innerHTML = '';
-  if (!query) return suggestions.style.display = 'none';
+  if (!query) {
+    suggestions.style.display = 'none';
+    return;
+  }
 
   const items = await getSuggestions(query);
 
@@ -736,7 +737,14 @@ searchBar.addEventListener('input', async () => {
     li.addEventListener('click', () => {
       searchBar.value = item;
       suggestions.style.display = 'none';
-      searchForm.submit(); // automatically submit form
+      const searchElement = google.search.cse.element.getElement("searchbox1");
+      if (searchElement) {
+        searchElement.execute(item);
+        window.scrollTo({
+          top: document.getElementById("gcse-results").offsetTop,
+          behavior: "smooth"
+        });
+      }
     });
     suggestions.appendChild(li);
   });
@@ -744,12 +752,31 @@ searchBar.addEventListener('input', async () => {
   suggestions.style.display = items.length ? 'block' : 'none';
 });
 
-// Hide suggestions when clicking outside
 document.addEventListener('click', e => {
-  if (!searchBar.contains(e.target)) suggestions.style.display = 'none';
+  if (!searchBar.contains(e.target) && !suggestions.contains(e.target)) {
+    suggestions.style.display = 'none';
+  }
 });
 
-    // === DARK MODE TOGGLE ===
+searchBar.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const topSuggestion = suggestions.querySelector('li');
+    const query = searchBar.value.trim() || (topSuggestion ? topSuggestion.textContent : '');
+    if (query) {
+      const searchElement = google.search.cse.element.getElement("searchbox1");
+      if (searchElement) {
+        searchElement.execute(query);
+        window.scrollTo({
+          top: document.getElementById("gcse-results").offsetTop,
+          behavior: "smooth"
+        });
+      }
+      suggestions.style.display = 'none';
+    }
+    e.preventDefault();
+  }
+});
+    
     const darkToggle = document.getElementById("darkModeToggle");
     function applyDarkFromStorage() {
       const d = localStorage.getItem('darkMode');
