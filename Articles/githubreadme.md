@@ -262,5 +262,17 @@ In short, the minimalist HTML philosophy behind EchoSearch ensures that it remai
 
 <p>Visit EchoSearch today at <a href="https://echo-search.github.io/search-engine/">https://echo-search.github.io/search-engine/</a> to experience the future of web searching, where performance, privacy, and ease of use come together in a streamlined, elegant interface.</p>
 
+<a href="https://echo-search.github.io/search-engine" 
+   style="display:inline-block;
+          margin-top:40px;
+          padding:10px 20px;
+          background-color:#00cec9;
+          color:white;
+          text-decoration:none;
+          border-radius:6px;
+          font-weight:bold;">
+  ‹ Back to Home
+</a>
+
 </body>
 </html>
