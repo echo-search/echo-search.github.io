@@ -154,6 +154,46 @@
     button:hover {
       background: #00b2af;
     }
+   #historyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 700px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+#historyList li {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+#historyList li:hover {
+  background-color: #f0f0f0;
+}
+
+#historyTitle {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+#clearBtn {
+  background: #ff6b6b;
+  color: #fff;
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+#clearBtn:hover {
+  background: #ff4c4c;
+}
     /* Results container */
     #gcse-results {
       max-width: 900px;
@@ -422,6 +462,9 @@ body.floral {
   <a href="Articles/articles.html">Articles</a>
   </div>
 
+  <h3 id="historyTitle" style="display:none; margin-top:1rem;">Search History</h3>
+  <button id="clearBtn" style="display:none; margin-bottom:0.5rem;">🗑 Clear History</button>
+  <ul id="historyList"></ul>
  
   <div id="gcse-results">
     <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
@@ -769,7 +812,72 @@ document.addEventListener('click', e => {
     });
     // load saved preference
     applyDarkFromStorage();  
+const historyList = document.getElementById("historyList");
+const clearBtn = document.getElementById("clearBtn");
+const historyTitle = document.getElementById("historyTitle");
 
+let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+function renderHistory() {
+  historyList.innerHTML = "";
+
+  if (history.length === 0) {
+    historyTitle.style.display = "none";
+    clearBtn.style.display = "none";
+    return;
+  }
+
+  historyTitle.style.display = "block";
+  clearBtn.style.display = "inline-block";
+
+  history.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.addEventListener("click", () => doSearch(item));
+    historyList.appendChild(li);
+  });
+}
+
+function saveHistory() {
+  localStorage.setItem("searchHistory", JSON.stringify(history));
+}
+
+function doSearch(query) {
+  if (!query.trim()) return;
+
+  // remove duplicates & add to top
+  history = history.filter(h => h !== query);
+  history.unshift(query);
+
+  // limit to 10
+  if (history.length > 10) history.pop();
+
+  saveHistory();
+  renderHistory();
+
+  // trigger your Google CSE search
+  const searchElement = google.search.cse.element.getElement("searchbox1");
+  if (searchElement) {
+    searchElement.execute(query);
+    window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
+  }
+}
+
+// Search button already exists; hook it into history
+document.getElementById("searchBtn").addEventListener("click", () => {
+  doSearch(document.getElementById("searchInput").value);
+  document.getElementById("searchInput").value = "";
+});
+
+// Clear button
+clearBtn.addEventListener("click", () => {
+  history = [];
+  saveHistory();
+  renderHistory();
+});
+
+// render on page load
+renderHistory();
 const searchBtn = document.getElementById("searchBtn");
 const chatBtn = document.getElementById("chatBtn");
 
