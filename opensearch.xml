@@ -2,5 +2,5 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>EchoSearch</ShortName>
   <Description>Search with EchoSearch</Description>
-  <Url type="text/html" template="https://echo-search.github.io/search-engine/index.html#gsc.tab=0&ampgsc.q={searchTerms}"/>
+  <Url type="text/html" template="https://echo-search.github.io/search-engine/index.html#gsc.tab=0&amp;gsc.q={searchTerms}"/>
 </OpenSearchDescription>
