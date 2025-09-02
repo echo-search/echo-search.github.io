@@ -697,7 +697,7 @@ function handleMathConversion(query) {
     // ---- 1. Simple math ----
     try {
         // Only allow numbers, operators, parentheses, decimal
-        if (/^[0-9+\-*/().\s]+$/.test(query)) {
+        if (/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
             return "Result: " + eval(query);
         }
     } catch(e) { }
