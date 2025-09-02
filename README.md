@@ -113,7 +113,7 @@ All with their own colours and background.</p>
 <p>Yes. Dark mode is available and can be toggled easily. This feature reduces eye strain in low-light environments, making extended use comfortable and safe for your eyes. The dark mode is implemented with accessibility in mind, ensuring sufficient contrast ratios for all text and interface elements.</p>
 
 <h3>Am I allowed to copy all files into a different repo and claim I made it?</h3>
-<p>No. You are not allowed to claim EchoSearch is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don't have to, but if it is the case, thsn we will take IMMIDIATE action.</p>
+<p>No. You are not allowed to claim EchoSearch is yours. We claim full proof and we have over 10 partners where we had prove we are the sole owners of EchoSearch. You can magpie ideas, but you can't just claim you own EchoSearch. We have told Google if someone uses the exact same code, it'll not post it on Google and it'll be reported to us and we will take further action. We hope we don't have to, but if it is the case, then we will take IMMIDIATE action.</p>
 
 <p>But what you can do, is put it in a different repo and just include the credit. We are licensed under MIT (see the <a href="#license">License</a> section) for ease of usage worldwide.</p>
 
