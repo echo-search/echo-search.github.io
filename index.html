@@ -97,8 +97,7 @@
 #suggestions li:hover {
   background-color: #f0f0f0;
 }
-    /* Voice button styles */
-    .voice-btn {
+     .voice-btn {
       background: var(--accent);
       border: none;
       border-radius: 50%;
@@ -182,7 +181,25 @@
   background: #00cec9;
   transform: translateX(-50%) scale(1.05);
   }
-    /* Version badge */
+ #historyList {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 6px;
+  max-width: 400px;
+}
+
+#historyList li {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+#historyList li:hover {
+  background-color: #f0f0f0;
+}
     .version-badge {
       position: fixed;
       bottom: 10px;
@@ -422,7 +439,11 @@ body.floral {
   <div id="articles-link">
   <a href="Articles/articles.html">Articles</a>
   </div>
-  
+
+  <button id="searchBtn">Search</button>
+  <button id="clearBtn">Clear History</button>
+  <ul id="historyList"></ul>
+ 
   <div id="gcse-results">
     <div class="gcse-searchresults-only" data-gname="searchbox1"></div>
   </div>
@@ -769,7 +790,60 @@ document.addEventListener('click', e => {
     });
     // load saved preference
     applyDarkFromStorage();  
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const clearBtn = document.getElementById("clearBtn");
+const historyList = document.getElementById("historyList");
 
+let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+function renderHistory() {
+  historyList.innerHTML = "";
+  history.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.addEventListener("click", () => doSearch(item));
+    historyList.appendChild(li);
+  });
+}
+
+function saveHistory() {
+  localStorage.setItem("searchHistory", JSON.stringify(history));
+}
+
+function doSearch(query) {
+  if (!query.trim()) return;
+
+  // keep history clean
+  history = history.filter(h => h !== query);
+  history.unshift(query);
+  if (history.length > 10) history.pop();
+
+  saveHistory();
+  renderHistory();
+
+  // 🔗 wire this to your CSE
+  searchInput.value = query;
+  if (typeof google !== "undefined" && google.search && google.search.cse) {
+    google.search.cse.element.getElement("results").execute(query);
+  } else {
+    console.log("Searching:", query);
+  }
+}
+
+searchBtn.addEventListener("click", () => {
+  doSearch(searchInput.value);
+  searchInput.value = "";
+});
+
+clearBtn.addEventListener("click", () => {
+  history = [];
+  saveHistory();
+  renderHistory();
+});
+
+// initial render
+renderHistory();
 const searchBtn = document.getElementById("searchBtn");
 const chatBtn = document.getElementById("chatBtn");
 
