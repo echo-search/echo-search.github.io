@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EchoSearch Outages</title>
+  <style>
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:#fff; color:#000; }
+    h1 { text-align:center; margin-top:2rem; }
+    .outage-list { max-width:700px; margin:2rem auto; padding:0; border-radius:8px; }
+    .outage-item { border:1px solid #ccc; border-radius:6px; margin-bottom:0.5rem; overflow:hidden; }
+    .outage-header { padding:1rem; background:#f9f9f9; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+    .outage-header span { display:flex; align-items:center; gap:0.5rem; font-weight:bold; }
+    .arrow { transition: transform 0.3s; }
+    .arrow.down { transform:rotate(90deg); }
+    .outage-content { padding:1rem 1.5rem; display:none; background:#fff; }
+    .status-up { color:green; font-weight:bold; }
+    .status-down { color:red; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <h1>EchoSearch System Status</h1>
+  <div class="outage-list" id="outageList"></div>
+
+  <script>
+    async function loadStatuses() {
+      try {
+        const res = await fetch('status.json');
+        const data = await res.json();
+
+        const list = document.getElementById('outageList');
+        list.innerHTML = '';
+
+        Object.entries(data).forEach(([name, status]) => {
+          const div = document.createElement('div');
+          div.className = 'outage-item';
+
+          const arrowSpan = '<span class="arrow">▶</span>';
+          const statusSpan = status === 'up'
+            ? '<span class="status-up">✓ Operational</span>'
+            : '<span class="status-down">⚠ Issue</span>';
+
+          div.innerHTML = `
+            <div class="outage-header">
+              <span>${arrowSpan} ${name}</span>
+              ${statusSpan}
+            </div>
+            <div class="outage-content">
+              ${status === 'up' ? 'All systems normal.' : 'Currently experiencing issues.'}
+            </div>
+          `;
+          list.appendChild(div);
+        });
+
+        document.querySelectorAll('.outage-header').forEach(header => {
+          header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.arrow');
+            if (content.style.display === 'block') {
+              content.style.display = 'none';
+              arrow.classList.remove('down');
+            } else {
+              content.style.display = 'block';
+              arrow.classList.add('down');
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error('Error loading statuses:', err);
+      }
+    }
+
+    loadStatuses();
+    // Auto-refresh every 30 seconds
+    setInterval(loadStatuses, 30000);
+  </script>
+</body>
+</html>
