@@ -2,78 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EchoSearch Outages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EchoSearch Status</title>
   <style>
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:#fff; color:#000; }
-    h1 { text-align:center; margin-top:2rem; }
-    .outage-list { max-width:700px; margin:2rem auto; padding:0; border-radius:8px; }
-    .outage-item { border:1px solid #ccc; border-radius:6px; margin-bottom:0.5rem; overflow:hidden; }
-    .outage-header { padding:1rem; background:#f9f9f9; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
-    .outage-header span { display:flex; align-items:center; gap:0.5rem; font-weight:bold; }
-    .arrow { transition: transform 0.3s; }
-    .arrow.down { transform:rotate(90deg); }
-    .outage-content { padding:1rem 1.5rem; display:none; background:#fff; }
-    .status-up { color:green; font-weight:bold; }
-    .status-down { color:red; font-weight:bold; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f6f6f6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #00cec9;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .section {
+      background-color: #fff;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.3rem;
+      color: #333;
+    }
+    .section p {
+      margin: 0.2rem 0;
+      font-size: 1rem;
+    }
+    .status-indicator {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+    .operational {
+      background-color: #2ecc71;
+    }
+    .degraded {
+      background-color: #f39c12;
+    }
+    .outage {
+      background-color: #e74c3c;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    footer a {
+      color: #00cec9;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
-  <h1>EchoSearch System Status</h1>
-  <div class="outage-list" id="outageList"></div>
+  <header>
+    <h1>EchoSearch Status</h1>
+    <p>Check the status of all EchoSearch services below</p>
+  </header>
 
-  <script>
-    async function loadStatuses() {
-      try {
-        const res = await fetch('status.json');
-        const data = await res.json();
+  <main>
+    <div class="section">
+      <h2>System Status</h2>
+      <p class="status-indicator operational">All Systems Operational</p>
+      <p>No known issues at this time.</p>
+    </div>
 
-        const list = document.getElementById('outageList');
-        list.innerHTML = '';
+    <div class="section">
+      <h2>Search Engine</h2>
+      <p class="status-indicator operational">Operational</p>
+      <p>Searches working accurately. </p>
+    </div>
 
-        Object.entries(data).forEach(([name, status]) => {
-          const div = document.createElement('div');
-          div.className = 'outage-item';
+    <div class="section">
+      <h2>Surprise Me</h2>
+      <p class="status-indicator operational">Operational</p>
+      <p>Random facts are being served normally.</p>
+    </div>
 
-          const arrowSpan = '<span class="arrow">▶</span>';
-          const statusSpan = status === 'up'
-            ? '<span class="status-up">✓ Operational</span>'
-            : '<span class="status-down">⚠ Issue</span>';
+    <div class="section">
+      <h2>Voice Recognition</h2>
+      <p class="status-indicator operational">Operational</p>
+      <p>Voice search is fully functional.</p>
+    </div>
 
-          div.innerHTML = `
-            <div class="outage-header">
-              <span>${arrowSpan} ${name}</span>
-              ${statusSpan}
-            </div>
-            <div class="outage-content">
-              ${status === 'up' ? 'All systems normal.' : 'Currently experiencing issues.'}
-            </div>
-          `;
-          list.appendChild(div);
-        });
+    <div class="section">
+      <h2>Chat with AI</h2>
+      <p class="status-indicator operational">Operational</p>
+      <p>Chat feature words flawlessly. </p>
+    </div>
 
-        document.querySelectorAll('.outage-header').forEach(header => {
-          header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            const arrow = header.querySelector('.arrow');
-            if (content.style.display === 'block') {
-              content.style.display = 'none';
-              arrow.classList.remove('down');
-            } else {
-              content.style.display = 'block';
-              arrow.classList.add('down');
-            }
-          });
-        });
+    <div class="section">
+      <h2>Math & Unit Conversion</h2>
+      <p class="status-indicator operational">Operational</p>
+      <p>All conversions and calculations working.</p>
+    </div>
 
-      } catch (err) {
-        console.error('Error loading statuses:', err);
-      }
-    }
+    <div class="section">
+      <h2>Search History & Autocomplete</h2>
+      <p class="status-indicator operational">Operational</p>
+      <p>Search history and suggestions are functioning.</p>
+    </div>
+  </main>
 
-    loadStatuses();
-    // Auto-refresh every 30 seconds
-    setInterval(loadStatuses, 30000);
-  </script>
+  <footer>
+    <p>Powered by <a href="index.html">EchoSearch</a></p>
+  </footer>
 </body>
 </html>
