@@ -6,131 +6,164 @@
   <title>EchoSearch Status</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f6f6f6;
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #fafafa;
       margin: 0;
       padding: 0;
-    }
-    header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #00cec9;
-    }
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .section {
-      background-color: #fff;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .section h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.3rem;
       color: #333;
     }
-    .section p {
-      margin: 0.2rem 0;
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    header button {
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    /* Banner states */
+    .status-banner {
+      padding: 1rem;
+      margin: 1rem auto;
+      border-radius: 8px;
+      max-width: 900px;
+    }
+    .banner-operational {
+      background: #e6f9f0;
+      border: 1px solid #b8ebd3;
+      color: #2e7d32;
+    }
+    .banner-degraded {
+      background: #fff6e5;
+      border: 1px solid #ffe0b2;
+      color: #e67e22;
+    }
+    .banner-outage {
+      background: #fdecea;
+      border: 1px solid #f5c6cb;
+      color: #c0392b;
+    }
+    .status-banner h2 {
+      margin: 0 0 0.3rem;
+      font-size: 1.2rem;
+    }
+    .status-banner p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    /* System status card */
+    .system-status {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem auto;
+      max-width: 900px;
+    }
+    .component {
+      border-top: 1px solid #eee;
+      padding: 0.8rem 0;
+      cursor: pointer;
+    }
+    .component:first-child {
+      border-top: none;
+    }
+    .component-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 1rem;
     }
-    .status-indicator {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
+    .child-components {
+      margin-left: 1.5rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .child-components.active {
+      display: block;
+    }
+
+    /* Status icons */
+    .status-icon {
       font-weight: bold;
-      font-size: 0.9rem;
-      color: #fff;
+      margin-right: 0.5rem;
     }
-    .operational {
-      background-color: #2ecc71;
+    .status-operational {
+      color: #2ecc71;
     }
-    .degraded {
-      background-color: #f39c12;
+    .status-degraded {
+      color: #e67e22;
     }
-    .outage {
-      background-color: #e74c3c;
+    .status-outage {
+      color: #e74c3c;
     }
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    footer a {
-      color: #00cec9;
-      text-decoration: none;
+
+    /* History button */
+    .history-btn {
+      display: block;
+      margin: 2rem auto;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>EchoSearch Status</h1>
-    <p>Check the status of all EchoSearch services below</p>
+    <h1>EchoSearch</h1>
+    <button>Subscribe to updates</button>
   </header>
 
-  <main>
-    <div class="section">
-      <h2>System Status</h2>
-      <p class="status-indicator degraded">Most systems working.</p>
-      <p>1 issue in the Autocomplete. Please see below.</p>
-    </div>
+  <!-- Top banner (change class depending on state) -->
+  <div class="status-banner banner-operational">
+    <h2>✅ We’re fully operational</h2>
+    <p>We’re not aware of any issues affecting our systems.</p>
+  </div>
 
-    <div class="section">
-      <h2>Search Engine</h2>
-      <p class="status-indicator operational">Operational</p>
-      <p>Searches working accurately.</p>
+  <!-- System status -->
+  <div class="system-status">
+    <div class="component">
+      <div class="component-header" onclick="toggleChildren(this)">
+        <span><span class="status-icon status-operational">✅</span>Main Page</span>
+        <span>▾</span>
+      </div>
+      <div class="child-components">
+        <div><span class="status-icon status-operational">✅</span>Search Engine</div>
+        <div><span class="status-icon status-operational">✅</span>Surprise Me</div>
+        <div><span class="status-icon status-operational">✅</span>Voice Recognition</div>
+        <div><span class="status-icon status-operational">✅</span>Chat with AI</div>
+        <div><span class="status-icon status-operational">✅</span>Math & Unit Conversion</div>
+        <div><span class="status-icon status-operational">✅</span>Search History & Autocomplete</div>
+      </div>
     </div>
+  </div>
 
-    <div class="section">
-      <h2>Surprise Me</h2>
-      <p class="status-indicator operational">Operational</p>
-      <p>Random facts are being served normally.</p>
-    </div>
+  <!-- History -->
+  <button class="history-btn">📅 View history</button>
 
-    <div class="section">
-      <h2>Voice Recognition</h2>
-      <p class="status-indicator operational">Operational</p>
-      <p>Voice search is fully functional.</p>
-    </div>
-
-    <div class="section">
-      <h2>Chat with AI</h2>
-      <p class="status-indicator operational">Operational</p>
-      <p>Chat feature works flawlessly.</p>
-    </div>
-
-    <div class="section">
-      <h2>Math & Unit Conversion</h2>
-      <p class="status-indicator operational">Operational</p>
-      <p>All conversions and calculations working.</p>
-    </div>
-
-    <div class="section">
-      <h2>Search History</h2>
-      <p class="status-indicator operational">Operational</p>
-      <p>Search histoy functioning. </p>
-    </div>
-
-    <div class="section">
-      <h2>Autocomplete</h2>
-      <p class="status-indicator degraded">⚠️ Degraded</p>
-      <p>Same/Similar suggestions appearing. Our tech team is on the scene.</p>
-    </div>
-  </main>
-
-  <footer>
-    <p>Powered by <a href="index.html">EchoSearch</a></p>
-  </footer>
+  <script>
+    function toggleChildren(el) {
+      const children = el.nextElementSibling;
+      children.classList.toggle("active");
+    }
+  </script>
 </body>
-</html>
+               </html>
