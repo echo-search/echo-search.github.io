@@ -21,21 +21,6 @@
       background: #fff;
       border-bottom: 1px solid #eee;
     }
-    header h1 {
-      font-size: 1.5rem;
-      margin: 0;
-    }
-    header button {
-      background: #000;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    /* Banner states */
     .status-banner {
       padding: 1rem;
       margin: 1rem auto;
@@ -110,29 +95,31 @@
       font-size: 0.95rem;
     }
     .status-icon {
+      width: 20px; 
+      height: 20px;
+      margin-right: 0.5rem; 
       vertical-align: middle;
-      margin-right: 0.5rem;
+      display: inline-block;
+      overflow: visible;   
+      flex-shrink: 0;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>EchoSearch</h1>
-    <button>Subscribe to updates</button>
+    <img src="logo-new.png" alt="My Logo" width="275" fetchpriority=high />
   </header>
 
-  <!-- Top banner: degraded because of Autocomplete -->
   <div class="status-banner banner-degraded">
     <h2>⚠️ Partial system issues</h2>
     <p>Some services are experiencing problems. Check below for details.</p>
   </div>
 
-  <!-- System status -->
   <div class="system-status">
     <div class="component">
       <div class="component-header" onclick="toggleChildren(this)">
         <span>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#e67e22">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#e67e22">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
           </svg>
@@ -142,7 +129,7 @@
       </div>
       <div class="child-components">
         <div>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#2ecc71">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#2ecc71">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 
                      10 10 10-4.48 10-10S17.52 2 12 
@@ -152,7 +139,7 @@
           Search Engine
         </div>
         <div>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#2ecc71">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#2ecc71">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 
                      10 10 10-4.48 10-10S17.52 2 12 
@@ -162,7 +149,7 @@
           Surprise Me
         </div>
         <div>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#2ecc71">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#2ecc71">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 
                      10 10 10-4.48 10-10S17.52 2 12 
@@ -172,7 +159,7 @@
           Voice Recognition
         </div>
         <div>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#2ecc71">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#2ecc71">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 
                      10 10 10-4.48 10-10S17.52 2 12 
@@ -182,7 +169,7 @@
           Chat with AI
         </div>
         <div>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#2ecc71">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#2ecc71">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 
                      10 10 10-4.48 10-10S17.52 2 12 
@@ -192,7 +179,7 @@
           Math & Unit Conversion
         </div>
         <div>
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#2ecc71">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#2ecc71">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 
                      10 10 10-4.48 10-10S17.52 2 12 
@@ -202,8 +189,7 @@
           Search History
         </div>
         <div>
-          <!-- Orange warning triangle -->
-          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="#e67e22">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" fill="#e67e22">
             <path d="M0 0h24v24H0z" fill="none"/>
             <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
           </svg>
@@ -213,8 +199,7 @@
     </div>
   </div>
 
-  <!-- History -->
-  <button class="history-btn">📅 View history</button>
+  <button class="history-btn"><a href="status-history.html">📅 View history</a></button>
 
   <script>
     function toggleChildren(el) {
