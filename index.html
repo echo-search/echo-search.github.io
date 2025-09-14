@@ -6,7 +6,7 @@
   <title>EchoSearch</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <script async src="https://cse.google.com/cse.js?cx=8504b5117a0734987"></script>
-  <link rel="canonical" href="https://echo-search.github.io/search-engine/" />
+  <link rel="canonical" href="https://echo-search.github.io/" />
   <meta name="google-site-verification" content="sJN11c059iHf18YLv3iUkR85omWdYcAdYk9xAxiu1dU" />
   <meta name="description" content="EchoSearch is a search engine that you can use to search anything. But unlike other search engines, there are multiple features to match your desire.">
   <link rel="search" type="application/opensearchdescription+xml" 
@@ -454,10 +454,6 @@ body.floral {
       <button id="surpriseBtn">🎲 Surprise Me</button>
     </div>
   </div>
-
-  <p style="color: #b30000; font-weight: bold; text-align: center; margin-top: 10px;">
-  EchoSearch is now on Google! 🎉 Next time, search <b>echo-search.github.io</b> or <b>site:echo-search.github.io</b> on Google and click EchoSearch! (If you search the first one, the access link will come around 15th or more place, but if you search the 2nd one, the result will come around 1st or 2nd place) 
-  </p>
   
   <div id="articles-link">
   <a href="Articles/articles.html">Articles</a>
@@ -746,6 +742,22 @@ document.getElementById("searchBtn").addEventListener("click", function() {
             searchElement.execute(query);
             window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
         }
+    }
+function looksLikeDomain(query) {
+  // simple domain pattern: something.tld(/optional path)
+  return /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(query);
+}
+
+document.getElementById("searchBtn").addEventListener("click", function() {
+  const query = searchInput.value.trim();
+  if (!query) return;
+
+  // 1. Direct link accessing
+  if (/^https?:\/\//i.test(query) || looksLikeDomain(query)) {
+    // Force https if protocol missing
+    const url = /^https?:\/\//i.test(query) ? query : "https://" + query;
+    window.location.href = url;
+    return;
     }
 });
    const searchBar = document.getElementById('searchInput');
