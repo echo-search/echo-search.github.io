@@ -647,120 +647,87 @@ body.floral {
       voiceBtn.disabled = true;
       voiceBtn.title = "Voice input not supported in this browser.";
     }
-
-    // === GOOGLE CSE SEARCH SETUP ===
     window.__gcse = {
-      callback: function() {
-        document.getElementById("searchBtn").addEventListener("click", function() {
-          const query = searchInput.value.trim();
-          if (!query) return;
-          const searchElement = google.search.cse.element.getElement("searchbox1");
-          if (searchElement) {
-            searchElement.execute(query);
-            window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
-          } else {
-            console.error("Search element not found.");
-          }
-        });
-
-        // Run search automatically if ?q= is in URL
-const urlParams = new URLSearchParams(window.location.search);
-const queryFromUrl = urlParams.get('q');
-if (queryFromUrl) {
-  const searchElement = google.search.cse.element.getElement("searchbox1");
-  if (searchElement) {
-    searchElement.execute(queryFromUrl);
-    window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
-  }
+  callback: function () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const queryFromUrl = urlParams.get("q")
+    if (queryFromUrl) {
+      doSearch(queryFromUrl)
     }
-       
-        // optional: allow Enter key to search
-        searchInput.addEventListener("keydown", function(e) {
-          if (e.key === "Enter") {
-            document.getElementById("searchBtn").click();
-          }
-        });
+    searchInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        document.getElementById("searchBtn").click()
       }
-    };
+    })
+  }
+}
 
-    // === Math & Unit/Conversion Handler ===
 function handleMathConversion(query) {
-    query = query.trim();
-
-    // ---- 1. Simple math ----
-    try {
-        // Only allow numbers, operators, parentheses, decimal
-        if (/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
-            return "Result: " + eval(query);
-        }
-    } catch(e) { }
-
-    // ---- 2. Unit conversions ----
-    const units = {
-        length: { m:1, km:1000, cm:0.01, mm:0.001, in:0.0254, ft:0.3048, yd:0.9144, mi:1609.34 },
-        weight: { kg:1, g:0.001, mg:0.000001, lb:0.453592, oz:0.0283495, ton:1000 },
-        volume: { l:1, ml:0.001, m3:1000, gal:3.78541, qt:0.946353, pint:0.473176 },
-        speed: { "m/s":1, "km/h":0.277778, "mph":0.44704, "ft/s":0.3048 },
-        time: { s:1, min:60, h:3600, day:86400 },
-        area: { m2:1, km2:1e6, cm2:0.0001, mm2:1e-6, acre:4046.86, ha:10000 },
-        currency: { USD:1, EUR:0.92, GBP:0.80, JPY:145.0 } // static example rates
-    };
-
-    // Match conversion pattern "number unit1 to unit2"
-    const convMatch = query.match(/^([\d.]+)\s*([a-zA-Z\/]+)\s*to\s*([a-zA-Z\/]+)$/i);
-    if(convMatch) {
-        const value = parseFloat(convMatch[1]);
-        const from = convMatch[2].toLowerCase();
-        const to = convMatch[3].toLowerCase();
-
-        // Search through all unit categories
-        for(const cat in units){
-            const u = units[cat];
-            if(u[from] !== undefined && u[to] !== undefined){
-                const result = value * u[from] / u[to];
-                return `${value} ${from} = ${result} ${to}`;
-            }
-        }
-        return "Conversion units not recognized.";
+  query = query.trim()
+  try {
+    if (/^[0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
+      return "Result: " + eval(query)
     }
-
-    return null; // Not math/conversion
+  } catch (e) {}
+  const units = {
+    length: { m:1, km:1000, cm:0.01, mm:0.001, in:0.0254, ft:0.3048, yd:0.9144, mi:1609.34 },
+    weight: { kg:1, g:0.001, mg:0.000001, lb:0.453592, oz:0.0283495, ton:1000 },
+    volume: { l:1, ml:0.001, m3:1000, gal:3.78541, qt:0.946353, pint:0.473176 },
+    speed: { "m/s":1, "km/h":0.277778, "mph":0.44704, "ft/s":0.3048 },
+    time: { s:1, min:60, h:3600, day:86400 },
+    area: { m2:1, km2:1e6, cm2:0.0001, mm2:1e-6, acre:4046.86, ha:10000 },
+    currency: { USD:1, EUR:0.92, GBP:0.80, JPY:145.0 }
+  }
+  const convMatch = query.match(/^([\d.]+)\s*([a-zA-Z\/]+)\s*to\s*([a-zA-Z\/]+)$/i)
+  if (convMatch) {
+    const value = parseFloat(convMatch[1])
+    const from = convMatch[2].toLowerCase()
+    const to = convMatch[3].toLowerCase()
+    for (const cat in units) {
+      const u = units[cat]
+      if (u[from] !== undefined && u[to] !== undefined) {
+        const result = value * u[from] / u[to]
+        return `${value} ${from} = ${result} ${to}`
+      }
+    }
+    return "Conversion units not recognized."
+  }
+  return null
 }
 
-// --- Override Search Button ---
-document.getElementById("searchBtn").addEventListener("click", function() {
-    const query = searchInput.value.trim();
-    if(!query) return;
-
-    const result = handleMathConversion(query);
-    if(result) {
-        alert(result); // Show calculation/conversion
-    } else {
-        // Fallback to normal Google CSE search
-        const searchElement = google.search.cse.element.getElement("searchbox1");
-        if(searchElement) {
-            searchElement.execute(query);
-            window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
-        }
-    }
 function looksLikeDomain(query) {
-  // simple domain pattern: something.tld(/optional path)
-  return /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(query);
+  return /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(query)
 }
 
-document.getElementById("searchBtn").addEventListener("click", function() {
-  const query = searchInput.value.trim();
-  if (!query) return;
+function doSearch(query) {
+  if (!query) return
+  const result = handleMathConversion(query)
+  if (result) {
+    alert(result)
+    return
+  }
+  if (looksLikeDomain(query)) {
+    const url = query.startsWith("http") ? query : "https://" + query
+    window.location.href = url
+    return
+  }
+  const searchElement = google.search.cse.element.getElement("searchbox1")
+  if (searchElement) {
+    searchElement.execute(query)
+    window.scrollTo({
+      top: document.getElementById("gcse-results").offsetTop,
+      behavior: "smooth"
+    })
+  }
+}
 
-  // 1. Direct link accessing
-  if (/^https?:\/\//i.test(query) || looksLikeDomain(query)) {
-    // Force https if protocol missing
-    const url = /^https?:\/\//i.test(query) ? query : "https://" + query;
-    window.location.href = url;
-    return;
-    }
-});
-   const searchBar = document.getElementById('searchInput');
+document.getElementById("searchBtn").addEventListener("click", () => {
+  const query = searchInput.value.trim()
+  doSearch(query)
+  if (query) saveHistory(query)
+})
+
+const searchBar = document.getElementById('searchInput');
 const suggestionsBox = document.getElementById('suggestions');
 let allSuggestions = [];
 
