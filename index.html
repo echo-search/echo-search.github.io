@@ -736,7 +736,15 @@ document.getElementById("searchBtn").addEventListener("click", function() {
     if(result) {
         alert(result); // Show calculation/conversion
     } else {
-        // Fallback to normal Google CSE search
+        // 2. Direct URL handling
+if (/^[\w.-]+\.[a-z]{2,}$/i.test(query)) {
+    let url = query;
+    if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url; // default scheme
+    }
+    window.location.href = url;
+    return;
+}
         const searchElement = google.search.cse.element.getElement("searchbox1");
         if(searchElement) {
             searchElement.execute(query);
