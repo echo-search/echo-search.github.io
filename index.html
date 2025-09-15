@@ -743,22 +743,6 @@ document.getElementById("searchBtn").addEventListener("click", function() {
             window.scrollTo({ top: document.getElementById("gcse-results").offsetTop, behavior: "smooth" });
         }
     }
-function looksLikeDomain(query) {
-  // simple domain pattern: something.tld(/optional path)
-  return /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(query);
-}
-
-document.getElementById("searchBtn").addEventListener("click", function() {
-  const query = searchInput.value.trim();
-  if (!query) return;
-
-  // 1. Direct link accessing
-  if (/^https?:\/\//i.test(query) || looksLikeDomain(query)) {
-    // Force https if protocol missing
-    const url = /^https?:\/\//i.test(query) ? query : "https://" + query;
-    window.location.href = url;
-    return;
-    }
 });
    const searchBar = document.getElementById('searchInput');
 const suggestionsBox = document.getElementById('suggestions');
