@@ -11,6 +11,7 @@
     .card{width:100%;max-width:880px;background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(20,20,50,0.08);padding:22px}
     h1{margin:0 0 10px;font-size:18px}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .a{text-decoration:underline;colour:blue;}
     .full{grid-column:1/-1}
     label.button{display:inline-block;padding:10px 14px;background:#111827;color:#fff;border-radius:8px;cursor:pointer}
     input[type=file]{display:none}
@@ -30,7 +31,7 @@
 <body>
   <main class="card" role="main">
     <h1>Image → Base64 Converter</h1>
-    <p class="hint">Drop an image, choose a file, or paste an image URL. Output appears as a data URL you can copy or download.</p><section class="grid" aria-label="converter">
+    <p class="hint">Drop an image, choose a file, or paste an image URL. Output appears as a data URL you can copy or download. Do you want a Base64 to Image converter? <a href="base64toimage.html">Click Here</a></p><section class="grid" aria-label="converter">
   <div class="full">
     <div class="drop" id="dropzone">
       <div>
