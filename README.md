@@ -259,7 +259,7 @@ In short, the minimalist HTML philosophy behind EchoSearch ensures that it remai
 
 <p>In conclusion, EchoSearch is the ultimate web search experience for users seeking speed, reliability, privacy, and ease of use. Whether accessing it from a desktop, tablet, or mobile device, users can expect a clean interface, fast search results, and powerful functionality. The project represents a significant step forward in how users interact with search engines, proving that simplicity and performance can coexist in a modern, open-source platform.</p>
 
-<p>Visit EchoSearch today at <a href="https://echo-search.github.io/search-engine/">https://echo-search.github.io/search-engine/</a> to experience the future of web searching, where performance, privacy, and ease of use come together in a streamlined, elegant interface.</p>
+<p>Visit EchoSearch today at <a href="https://echo-search.github.io ">https://echo-search.github.io/</a> to experience the future of web searching, where performance, privacy, and ease of use come together in a streamlined, elegant interface.</p>
 
 </body>
 </html>
