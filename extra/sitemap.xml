@@ -8,6 +8,30 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://echo-search.github.io/extra/status.html</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://echo-search.github.io/extra/status-history.html</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://echo-search.github.io/extra/imagetobase64.html</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://echo-search.github.io/extra/base64toimage.html</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6/priority>
+  </url>
+  <url>
     <loc>https://echo-search.github.io/Articles/version-history.html</loc>
     <lastmod>2025-08-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -27,6 +51,12 @@
   </url>
   <url>
     <loc>https://echo-search.github.io/Articles/how-to-make-EchoSearch-your-default-search-engine.html</loc>
+    <lastmod>2025-08-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://echo-search.github.io/Articles/notes.html</loc>
     <lastmod>2025-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
