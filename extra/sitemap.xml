@@ -48,11 +48,6 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://echo-search.github.io/index.html</loc>
-  <lastmod>2025-09-19T18:23:48+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
   <loc>https://echo-search.github.io/Articles/Edge/edge.html</loc>
   <lastmod>2025-09-19T18:23:48+00:00</lastmod>
   <priority>0.51</priority>
@@ -63,20 +58,21 @@
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://echo-search.github.io/search-engine/</loc>
-  <lastmod>2025-09-11T18:58:22+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
-<url>
-  <loc>https://echo-search.github.io/extra/index.html</loc>
-  <lastmod>2025-09-19T18:23:48+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
-<url>
   <loc>https://echo-search.github.io/extra/status-history.html</loc>
   <lastmod>2025-09-19T18:23:48+00:00</lastmod>
   <priority>0.51</priority>
 </url>
+<url>
+  <loc>https://echo-search.github.io/extra/base64toimage.html</loc>
+  <lastmod>2025-09-19T18:23:48+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://echo-search.github.io/extra/imagetobase64.html</loc>
+  <lastmod>2025-09-19T18:23:48+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+
 
 
 </urlset>
