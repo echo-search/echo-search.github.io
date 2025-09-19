@@ -8,4 +8,5 @@ https://echo-search.github.io/extra/status.html
 https://echo-search.github.io/Articles/Edge/edge.html
 https://echo-search.github.io/Articles/Chrome/chrome.html
 https://echo-search.github.io/extra/status-history.html
-https://echo-search.github.io/extra/
+https://echo-search.github.io/extra/base64toimage.html
+https://echo-search.github.io/extra/imagetobase64.html
