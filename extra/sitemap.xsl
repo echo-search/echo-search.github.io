@@ -7,7 +7,7 @@
   <html>
     <head>
       <title>Sitemap</title>
-      <link rel="icon" href="favicon.ico" type="image/x-icon">
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
       <style>
         body { font-family: Arial, sans-serif; background: #fafafa; padding: 20px; }
         h1 { color: #333; }
