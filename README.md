@@ -118,7 +118,7 @@ All with their own colours and background.</p>
 <p>But what you can do, is put it in a different repo and just include the credit. We are licensed under MIT (see the <a href="#license">License</a> section) for ease of usage worldwide.</p>
 
 <h2 id="performance">Performance</h2>
-<p>Performance is a cornerstone of EchoSearch. The platform has been meticulously optimized to ensure extremely fast loading times, smooth interactions, and reliable search functionality. Achieving a <strong>PageSpeed Insight score of 99</strong> demonstrates the platform’s commitment to speed and efficiency. Key performance optimizations include:</p>
+<p>Performance is a cornerstone of EchoSearch. The platform has been meticulously optimized to ensure extremely fast loading times, smooth interactions, and reliable search functionality. These performance optimizations include:</p>
 
 <ul>
   <li><strong>Minimized Render-Blocking Resources:</strong> CSS and JavaScript are optimized to prevent delays in rendering the interface.</li>
