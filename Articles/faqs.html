@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ - EchoSearch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdfdfd;
+      margin: 0;
+      padding: 2rem;
+    }
+    .faq-component {
+      max-width: 900px;
+      margin: auto;
+    }
+    .faq-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .faq-child {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+      padding: 1rem;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .faq-child:hover {
+      background: #f0f0f0;
+    }
+    .faq-question {
+      font-weight: bold;
+      margin: 0;
+    }
+    .faq-answer {
+      display: none;
+      margin-top: 0.5rem;
+      color: #444;
+    }
+    .faq-child.active .faq-answer {
+      display: block;
+    }
+    .a {
+      color: blue;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="faq-component">
+    <h1 class="faq-title">Frequently Asked Questions</h1>
+
+    <div class="faq-child"><p class="faq-question">What is EchoSearch?</p><p class="faq-answer">EchoSearch is a customizable search engine with themes, voice input, and extras.</p></div>
+    <div class="faq-child"><p class="faq-question">Is EchoSearch free?</p><p class="faq-answer">Yes. EchoSearch is completely free to use.</p></div>
+    <div class="faq-child"><p class="faq-question">How do I change the theme?</p><p class="faq-answer">Use the theme selector at the top of the homepage.</p></div>
+    <div class="faq-child"><p class="faq-question">Does EchoSearch save my searches?</p><p class="faq-answer">Search history is stored locally in your browser only.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I clear my history?</p><p class="faq-answer">Yes. Use the Clear History button under the search list.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I use voice search?</p><p class="faq-answer">Yes. Click the mic button and speak your query.</p></div>
+    <div class="faq-child"><p class="faq-question">How do I make EchoSearch my default search engine?</p><p class="faq-answer">See the Articles section for Chrome, Edge, and other browsers.</p></div>
+    <div class="faq-child"><p class="faq-question">Does it work on mobile?</p><p class="faq-answer">Yes. EchoSearch is responsive and mobile-friendly.</p></div>
+    <div class="faq-child"><p class="faq-question">Does EchoSearch track me?</p><p class="faq-answer">No. It does not track or sell your data.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I add custom themes?</p><p class="faq-answer">Right now themes are pre-set, but custom uploads may come later.</p></div>
+    <div class="faq-child"><p class="faq-question">What browsers are supported?</p><p class="faq-answer">EchoSearch works in Chrome, Edge, Firefox, and most modern browsers.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I use it offline?</p><p class="faq-answer">No. You need internet for search results.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I pin favorite searches?</p><p class="faq-answer">Not yet, but it’s on the roadmap.</p></div>
+    <div class="faq-child"><p class="faq-question">What does the Surprise Me button do?</p><p class="faq-answer">It shows a random fun fact.</p></div>
+    <div class="faq-child"><p class="faq-question">Are the facts real?</p><p class="faq-answer">Yes, all facts are based on real information.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I submit a fact?</p><p class="faq-answer">A community submission feature is planned.</p></div>
+    <div class="faq-child"><p class="faq-question">What’s the chat button?</p><p class="faq-answer">It opens AI chat to refine results.</p></div>
+    <div class="faq-child"><p class="faq-question">Is there dark mode?</p><p class="faq-answer">Yes. Toggle the 🌙 button at the top-right.</p></div>
+    <div class="faq-child"><p class="faq-question">Does it support multiple languages?</p><p class="faq-answer">Voice search supports several languages depending on your browser.</p></div>
+    <div class="faq-child"><p class="faq-question">How do I report bugs?</p><p class="faq-answer">Check the Status or Notes pages for updates and reporting.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I search images?</p><p class="faq-answer">Yes. EchoSearch uses Google CSE for web and images.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I convert images to Base64?</p><p class="faq-answer">Yes. Use the extra conversion tool.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I convert Base64 back to images?</p><p class="faq-answer">Yes. Use the Base64 to Image page.</p></div>
+    <div class="faq-child"><p class="faq-question">What is the status page?</p><p class="faq-answer">It shows the live uptime of EchoSearch.</p></div>
+    <div class="faq-child"><p class="faq-question">What is the status history page?</p><p class="faq-answer">It tracks past uptime records.</p></div>
+    <div class="faq-child"><p class="faq-question">How often is EchoSearch updated?</p><p class="faq-answer">Updates are posted in the version history page.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I see new features?</p><p class="faq-answer">Yes, check the version history for details.</p></div>
+    <div class="faq-child"><p class="faq-question">Is there an articles section?</p><p class="faq-answer">Yes, with guides and how-to posts.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I learn how to set it as default?</p><p class="faq-answer">Yes, detailed steps are in the Articles section.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I use EchoSearch on tablets?</p><p class="faq-answer">Yes, it works well on tablets too.</p></div>
+    <div class="faq-child"><p class="faq-question">Is there a Chrome guide?</p><p class="faq-answer">Yes, under Articles/Chrome.</p></div>
+    <div class="faq-child"><p class="faq-question">Is there an Edge guide?</p><p class="faq-answer">Yes, under Articles/Edge.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I search videos?</p><p class="faq-answer">No, but we are trying to add that. Check our <a href="version-history.html">Version History</a> page to find out when it's launching</p></div>
+    <div class="faq-child"><p class="faq-question">Does it support keyboard shortcuts?</p><p class="faq-answer">Basic input shortcuts are supported; more may come later.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I resize the search bar?</p><p class="faq-answer">It auto-adjusts for screen size.</p></div>
+    <div class="faq-child"><p class="faq-question">Does the logo change with themes?</p><p class="faq-answer">The logo remains the same for consistency.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I submit feature requests?</p><p class="faq-answer">Yes, through the Notes page.</p></div>
+    <div class="faq-child"><p class="faq-question">Is there a privacy policy?</p><p class="faq-answer">Yes. It explains EchoSearch’s no-tracking approach.</p></div>
+    <div class="faq-child"><p class="faq-question">Does it show ads?</p><p class="faq-answer">Results may include sponsored links, but only 1</p></div>
+    <div class="faq-child"><p class="faq-question">Can I block certain results?</p><p class="faq-answer">Not yet, but filtering options are being considered.</p></div>
+    <div class="faq-child"><p class="faq-question">Is EchoSearch open-source?</p><p class="faq-answer">Not at the moment.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I contribute code?</p><p class="faq-answer">Future community contributions are possible.</p></div>
+    <div class="faq-child"><p class="faq-question">Does EchoSearch support widgets?</p><p class="faq-answer">Currently no, but add-ons may come later.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I use it without JavaScript?</p><p class="faq-answer">Some features require JavaScript.</p></div>
+    <div class="faq-child"><p class="faq-question">What if my mic doesn’t work?</p><p class="faq-answer">Check your browser’s microphone permissions.</p></div>
+    <div class="faq-child"><p class="faq-question">What if the logo doesn’t load?</p><p class="faq-answer">Check your internet connection or clear cache.</p></div>
+    <div class="faq-child"><p class="faq-question">Does it work in private mode?</p><p class="faq-answer">Yes, though history will not be saved.</p></div>
+    <div class="faq-child"><p class="faq-question">Can I change the accent color?</p><p class="faq-answer">Accent colors are tied to the theme selected.</p></div>
+    <div class="faq-child"><p class="faq-question">Is there a roadmap?</p><p class="faq-answer">Yes, updates and planned features appear in version history.</p></div>
+    <div class="faq-child"><p class="faq-question">Where can I read more?</p><p class="faq-answer">Visit the Articles section for guides and news.</p></div>
+
+  </div>
+
+  <script>
+    document.querySelectorAll(".faq-child").forEach(child => {
+      child.addEventListener("click", () => {
+        child.classList.toggle("active");
+      });
+    });
+  </script>
+</body>
+</html>
