@@ -516,7 +516,134 @@
   <a href="Articles/version-history.html" class="version-badge">v.2.0</a>
 
   <button id="chatBtn" class="chat-btn">💬 Didn't like the results? Chat with AI</button>
+<!-- EchoSearch Privacy Policy Modal -->
+<div id="privacyModal" class="modal">
+  <div class="modal-content">
+    <h2>Privacy Policy for EchoSearch</h2>
+    <div class="policy-text">
+      <p><strong>Effective Date:</strong> September 20, 2025</p>
 
+      <p>Welcome to EchoSearch. Your privacy is very important to us, and this Privacy Policy is designed to explain how we collect, use, and protect your information when you interact with our services. This policy is intentionally detailed and comprehensive, similar to other policies you may have seen elsewhere. Our goal is to remain transparent and to provide you with a clear understanding of what happens to your information when you use EchoSearch. By continuing to use our search engine, you accept the practices outlined here.</p>
+
+      <h3>1. Information We Collect</h3>
+      <p>We limit the amount of information we collect to the minimum necessary to operate EchoSearch effectively:</p>
+      <ul>
+        <li><strong>Search Queries:</strong> Text entered into the search bar. These are processed in real-time to display results. EchoSearch itself does not permanently store them.</li>
+        <li><strong>Usage Data:</strong> Interactions with features such as themes, history, or dark mode toggles. This data is stored locally in your browser whenever possible.</li>
+        <li><strong>Technical Data:</strong> Browser type, device, operating system, screen size, and language settings automatically provided when you use the site.</li>
+        <li><strong>Approximate Location:</strong> Region-level data inferred from IP address, used for relevance and abuse prevention.</li>
+        <li><strong>Cookies & Local Storage:</strong> Small files saved on your device to keep track of your preferences, such as themes, last used settings, or optional history.</li>
+      </ul>
+      <p>We do not collect your name, email, address, or other identifiers. EchoSearch does not create user profiles and does not sell data.</p>
+
+      <h3>2. How We Use Information</h3>
+      <p>Collected information is used only for:</p>
+      <ul>
+        <li>Delivering search results and operating the service.</li>
+        <li>Remembering your settings like theme or dark mode.</li>
+        <li>Improving site stability, security, and performance.</li>
+        <li>Analysing anonymised usage patterns to improve features.</li>
+      </ul>
+      <p>We never use your data for targeted advertising.</p>
+
+      <h3>3. Cookies and Local Storage</h3>
+      <p>EchoSearch uses cookies and local storage for functionality:</p>
+      <ul>
+        <li><strong>Preferences:</strong> Remembering dark mode or selected themes.</li>
+        <li><strong>Session Data:</strong> Temporary data while you browse.</li>
+        <li><strong>Search History:</strong> If enabled, stored only on your device. You can clear this at any time.</li>
+      </ul>
+      <p>Most browsers allow you to block or manage cookies; disabling them may limit functionality.</p>
+
+      <h3>4. Data Retention</h3>
+      <p>We retain almost nothing. Search history remains local to your device. Technical logs used for debugging are temporary and automatically purged. No persistent user database exists.</p>
+
+      <h3>5. Security</h3>
+      <p>EchoSearch uses reasonable security practices, including encrypted HTTPS connections, minimal technical logging, and limited administrative access. While no system is 100% secure, our design reduces risks by collecting as little as possible.</p>
+
+      <h3>6. Your Rights</h3>
+      <p>Depending on your jurisdiction, you may have rights such as:</p>
+      <ul>
+        <li>Accessing information stored locally.</li>
+        <li>Deleting cookies and local storage at any time.</li>
+        <li>Objecting to optional features that rely on cookies.</li>
+      </ul>
+      <p>You control this directly through your browser.</p>
+
+      <h3>7. Children’s Privacy</h3>
+      <p>EchoSearch is not directed at children under 13, and we do not knowingly collect their data. If you suspect a child has used the service, clear the device’s storage immediately.</p>
+
+      <h3>8. International Users</h3>
+      <p>EchoSearch may be accessed worldwide. Data may be processed in different regions depending on infrastructure. Regardless of location, we aim to handle all information under the same protective principles.</p>
+
+      <h3>9. Changes to This Policy</h3>
+      <p>We may update this policy from time to time. Any changes will be reflected by updating the “Effective Date” above. We encourage you to check periodically.</p>
+
+      <h3>10. Summary</h3>
+      <p>EchoSearch exists to provide a useful search experience with minimal data collection. Your history and preferences stay under your control. No unnecessary data is gathered or shared. This long form policy (~1000 words) is designed for transparency and completeness.</p>
+    </div>
+    <div class="modal-actions">
+      <button id="acceptPolicy">Accept</button>
+      <button id="declinePolicy">Decline</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+  }
+  .modal-content {
+    background: #fff;
+    margin: 4% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 85%;
+    max-width: 800px;
+    max-height: 80%;
+    overflow-y: auto;
+  }
+  .policy-text { font-size: 0.95rem; }
+  .modal-actions {
+    margin-top: 20px;
+    text-align: right;
+  }
+  .modal-actions button {
+    margin-left: 10px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #acceptPolicy { background: #0b6b66; color: #fff; }
+  #declinePolicy { background: #999; color: #fff; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('privacyModal');
+    const acceptBtn = document.getElementById('acceptPolicy');
+    const declineBtn = document.getElementById('declinePolicy');
+
+    if (!localStorage.getItem('privacyAccepted')) {
+      modal.style.display = 'block';
+    }
+
+    acceptBtn.addEventListener('click', function() {
+      localStorage.setItem('privacyAccepted', 'true');
+      modal.style.display = 'none';
+    });
+
+    declineBtn.addEventListener('click', function() {
+      window.location.href = 'about:blank'; // change this if needed
+    });
+  });
+</script>
   <script>
     const themeSelect = document.getElementById("theme");
     const surpriseBtn = document.getElementById("surpriseBtn");
