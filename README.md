@@ -47,7 +47,7 @@ All with their own colours and background.</p>
 
 <p>The architecture of EchoSearch has been carefully optimized to balance minimalism with powerful functionality. Every element, from the search bar to the quick-access buttons, has been designed to ensure simplicity without sacrificing utility. Users can perform searches using text input or voice commands, access popular websites instantly through customizable buttons, and utilize dark mode for low-light conditions.</p>
 
-<p>Performance and optimization have been central to EchoSearch’s development. The platform achieves a <strong>PageSpeed Insight score of 99</strong>, which demonstrates an almost instantaneous loading time and extremely smooth interaction. Every image, CSS file, and JavaScript resource is optimized to reduce latency and improve load times. These optimizations provide an excellent user experience regardless of internet speed or device capability.</p>
+<p>Performance and optimization have been central to EchoSearch’s development. Every image, CSS file, and JavaScript resource is optimized to reduce latency and improve load times. These optimizations provide an excellent user experience regardless of internet speed or device capability.</p>
 
 <h2 id="features">Features</h2>
 <p>EchoSearch includes a wide array of features designed to improve usability, performance, and user satisfaction. Below is a detailed overview of the core features:</p>
