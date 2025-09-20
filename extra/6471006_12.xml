@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://echo-search.github.io/</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/articles.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/version-history.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/how-to-make-EchoSearch-your-default-search-engine.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/githubreadme.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/notes.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/extra/status.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/Edge/edge.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/Articles/Chrome/chrome.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/extra/status-history.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/extra/base64toimage.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://echo-search.github.io/extra/imagetobase64.html</loc>
+	<lastmod>2025-09-20T11:54:50+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+</urlset>
