@@ -65,7 +65,7 @@
       margin-top: 40px;
       padding: 10px 20px;
       background-color: #00cec9;
-      color: white;
+      color: black;
       text-decoration: none;
       border-radius: 6px;
       font-weight: bold;
@@ -75,8 +75,22 @@
     .back-button:hover {
       background-color: #00b3af;
     }
-
-    /* Dark mode toggle button */
+    .table-btn {
+      position: fixed; 
+      bottom: 20px;
+      right: 20px;  
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #00cec9;
+      color: black;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .table-btn:hover {
+      background-color: #00b3af;
+    }
     .toggle-btn {
       position: fixed;
       top: 15px;
@@ -195,7 +209,8 @@
   <div>(Fun fact: All future versions shown on here are ready to launch!)</div>
 </div>
 
-<a href="https://echo-search.github.io/" class="back-button">‹ Back to Home</a>
+<a href="/index.html" class="back-button">‹ Back to Home</a>
+<a href="version-history-table.html" class="table-btn">View in a table</a>
 
 <script>
 const darkToggle = document.getElementById("darkModeToggle");
