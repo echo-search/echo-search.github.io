@@ -16,7 +16,6 @@
 <ul>
   <li><a href="#introduction">Introduction</a></li>
   <li><a href="#features">Features</a></li>
-  <li><a href="#usage">Usage</a></li>
   <li><a href="#version-history">Version History</a></li>
   <li><a href="#customization">Customization</a></li>
   <li><a href="#faq">FAQ</a></li>
