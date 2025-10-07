@@ -767,11 +767,38 @@
 
         return null;
     }
+    async function handleDictionarySearch(query) {
+  const lower = query.toLowerCase().trim();
+  const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
+  const isDictionaryQuery = triggers.some(word => lower.includes(word));
 
+  if (isDictionaryQuery) {
+    const word = lower.replace(/(meaning of|definition of|define|dictionary|meaning)/g, "").trim();
+    if (!word) return "Please enter a word to define.";
+
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) return "No definition found.";
+
+    const meaning = data[0].meanings[0].definitions[0].definition;
+    const example = data[0].meanings[0].definitions[0].example || "No example available.";
+
+    return `${word}: ${meaning}\nExample: ${example}`;
+  }
+
+  return null;
+}
     searchBtn.addEventListener("click", function() {
         const query = searchInput.value.trim();
         if(!query) return;
-
+      
+		handleDictionarySearch(query).then(def => {
+        if (def) {
+        alert(def);
+           return;
+		}
+});
         const result = handleMathConversion(query);
         if(result) {
             alert(result);
