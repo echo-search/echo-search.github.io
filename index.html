@@ -125,7 +125,7 @@
     }
 
     .voice-btn:hover:not(:disabled) {
-        background: #00b2af;
+        background: var(--hover);
     }
 
     .voice-btn:active:not(:disabled) {
@@ -177,7 +177,7 @@
     }
 
     button:hover {
-        background: #00b2af;
+        background: var(--hover);
     }
 
     search-btn {
@@ -213,8 +213,8 @@
     }
 
     #clearBtn {
-        background:    #00615e;
-        color:         #fff;
+        background:    var(--accent);
+        color:         var(--text);
         border-radius: 20px;
         padding:       0.4rem 1rem;
         border:        none;
@@ -224,7 +224,7 @@
     }
 
     #clearBtn:hover {
-        background: #00615e;
+        background: var(--hover);
     }
 
     #gcse-results {
@@ -251,7 +251,7 @@
     }
 
     .chat-btn:hover {
-        background: #00cec9;
+        background: var(--hover);
         transform:  translateX(-50%) scale(1.05);
     }
 
@@ -297,165 +297,185 @@
     #articles-link a {
         color:           blue;
         text-decoration: underline;
-    }
-
-    body.dark-mode.default {
-        --bg:             #121212;
-        --text:           #ffffff;
-        --accent:         #bb86fc;
-        background-color: var(--bg);
-    }
-
-    body.dark-mode.retro {
-        --bg:            #2b2b2b;
-        --text:          #f5deb3;
-        --accent:        #ffb347;
-        background:      url('Backgrounds/retro.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.neon {
-        --bg:            #000000;
-        --text:          #39ff14;
-        --accent:        #ff00ff;
-        background:      url('Backgrounds/neon.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.ocean {
-        --bg:            #001f29;
-        --text:          #a7e6ff;
-        --accent:        #00bcd4;
-        background:      url('Backgrounds/ocean.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.midnight {
-        --bg:            #0d0d1a;
-        --text:          #e0e0e0;
-        --accent:        #9c27b0;
-        background:      url('Backgrounds/midnight.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.sunset {
-        --bg:            linear-gradient(to right, #2c3e50, #4ca1af);
-        --text:          #ffffff;
-        --accent:        #ff7043;
-        background:      url('Backgrounds/sunset.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.matrix {
-        --bg:            #000000;
-        --text:          #00ff00;
-        --accent:        #00ff00;
-        background:      url('Backgrounds/matrix.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.cyberpunk {
-        --bg:            #1a1a1a;
-        --text:          #f50057;
-        --accent:        #00e5ff;
-        background:      url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.forest {
-        --bg:            #1b2e1b;
-        --text:          #c8e6c9;
-        --accent:        #66bb6a;
-        background:      url('Backgrounds/forest.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.dark-mode.floral {
-        --bg:            #1a1a1a;
-        --text:          #f8f0e3;
-        --accent:        #a45a5a;
-        background:      url('Backgrounds/floral.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
-
-    body.default {
-        --bg:       #ffffff;
-        --text:     #000000;
-        --accent:   #00cec9;
+	}
+	body.default {
+        --bg: #ffffff;
+        --text: #000000;
+        --accent: #00cec9;
+        --hover: #00b2af;
         background: #ffffff;
     }
 
-    body.retro {
-        --bg:            #fdf6e3;
-        --text:          #586e75;
-        --accent:        #2aa198;
-        background:      url('Backgrounds/retro.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.retro {
+  --bg: #fdf6e3;
+  --text: #586e75;
+  --accent: #2aa198;
+  --hover: #23827e;
+  background: url('Backgrounds/retro.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.neon {
-        --bg:            #000000;
-        --text:          #39ff14;
-        --accent:        #ff00ff;
-        background:      url('Backgrounds/neon.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.neon {
+  --bg: #000000;
+  --text: #39ff14;
+  --accent: #ff00ff;
+  --hover: #cc00cc;
+  background: url('Backgrounds/neon.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.ocean {
-        --bg:            #e0f7fa;
-        --text:          #006064;
-        --accent:        #0097a7;
-        background:      url('Backgrounds/ocean.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.ocean {
+  --bg: #e0f7fa;
+  --text: #006064;
+  --accent: #0097a7;
+  --hover: #00727e;
+  background: url('Backgrounds/ocean.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.midnight {
-        --bg:            #1a1a2e;
-        --text:          #e0e0e0;
-        --accent:        #7f00ff;
-        background:      url('Backgrounds/midnight.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.midnight {
+  --bg: #1a1a2e;
+  --text: #e0e0e0;
+  --accent: #7f00ff;
+  --hover: #5800b2;
+  background: url('Backgrounds/midnight.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.sunset {
-        --bg:            linear-gradient(to right, #ff7e5f, #feb47b);
-        --text:          #4e342e;
-        --accent:        #ff7043;
-        background:      url('Backgrounds/sunset.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.sunset {
+  --bg: linear-gradient(to right, #ff7e5f, #feb47b);
+  --text: #4e342e;
+  --accent: #ff7043;
+  --hover: #d85b32;
+  background: url('Backgrounds/sunset.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.matrix {
-        --bg:            #000000;
-        --text:          #000000;
-        --accent:        #00ff00;
-        background:      url('Backgrounds/matrix.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.matrix {
+  --bg: #000000;
+  --text: #00ff00;
+  --accent: #00ff00;
+  --hover: #009900;
+  background: url('Backgrounds/matrix.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.cyberpunk {
-        --bg:            #2a2a2a;
-        --text:          #f50057;
-        --accent:        #00e5ff;
-        background:      url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.cyberpunk {
+  --bg: #1a1a1a;
+  --text: #f50057;
+  --accent: #00e5ff;
+  --hover: #00a0b2;
+  background: url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.forest {
-        --bg:            #e8f5e9;
-        --text:          #2e7d32;
-        --accent:        #66bb6a;
-        background:      url('Backgrounds/forest.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.forest {
+  --bg: #1b2e1b;
+  --text: #c8e6c9;
+  --accent: #66bb6a;
+  --hover: #4a8a4d;
+  background: url('Backgrounds/forest.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 
-    body.floral {
-        --bg:            #fff8f0;
-        --text:          #3a2e2b;
-        --accent:        #f28f8f;
-        background:      url('Backgrounds/floral.jpeg') no-repeat center center fixed;
-        background-size: cover;
-    }
+body.floral {
+  --bg: #1a1a1a;
+  --text: #f8f0e3;
+  --accent: #a45a5a;
+  --hover: #7c4141;
+  background: url('Backgrounds/floral.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* === Dark Mode Themes === */
+body.dark-mode.default {
+  --bg: #121212;
+  --text: #ffffff;
+  --accent: #bb86fc;
+  --hover: #9966d9;
+  background-color: var(--bg);
+}
+
+body.dark-mode.retro {
+  --bg: #2b2b2b;
+  --text: #f5deb3;
+  --accent: #ffb347;
+  --hover: #cc8a35;
+  background: url('Backgrounds/retro.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.neon {
+  --bg: #000000;
+  --text: #39ff14;
+  --accent: #ff00ff;
+  --hover: #b300b3;
+  background: url('Backgrounds/neon.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.ocean {
+  --bg: #001f29;
+  --text: #a7e6ff;
+  --accent: #00bcd4;
+  --hover: #0090a2;
+  background: url('Backgrounds/ocean.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.midnight {
+  --bg: #0d0d1a;
+  --text: #e0e0e0;
+  --accent: #9c27b0;
+  --hover: #6d1e80;
+  background: url('Backgrounds/midnight.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.sunset {
+  --bg: linear-gradient(to right, #2c3e50, #4ca1af);
+  --text: #ffffff;
+  --accent: #ff7043;
+  --hover: #c85431;
+  background: url('Backgrounds/sunset.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.matrix {
+  --bg: #000000;
+  --text: #00ff00;
+  --accent: #00ff00;
+  --hover: #009900;
+  background: url('Backgrounds/matrix.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.cyberpunk {
+  --bg: #1a1a1a;
+  --text: #f50057;
+  --accent: #00e5ff;
+  --hover: #00a0b2;
+  background: url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.forest {
+  --bg: #1b2e1b;
+  --text: #c8e6c9;
+  --accent: #66bb6a;
+  --hover: #4a8a4d;
+  background: url('Backgrounds/forest.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.dark-mode.floral {
+  --bg: #1a1a1a;
+  --text: #f8f0e3;
+  --accent: #a45a5a;
+  --hover: #7c4141;
+  background: url('Backgrounds/floral.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
 </style>
 </head>
 <body class="default">
