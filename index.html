@@ -236,8 +236,8 @@
     .chat-btn {
 		position:      fixed;
         bottom:        20px;
-        left:          50%;
-        transform:     translateX(-50%);
+        justify-content: center;
+		align-items:   center;
         padding:       0.6rem 2.5rem;
         border-radius: 20px;
         border:        none;
@@ -252,7 +252,6 @@
 
     .chat-btn:hover {
         background: var(--hover);
-        transform:  translateX(-50%) scale(1.05);
     }
 
     .version-badge {
@@ -442,7 +441,7 @@ body.dark-mode.sunset {
 
 body.dark-mode.matrix {
   --bg: #000000;
-  --text: #00ff66;
+  --text: #000000;
   --accent: #00ff00;
   --hover: #007700;
   background: url('Backgrounds/matrix.jpeg') no-repeat center center fixed;
