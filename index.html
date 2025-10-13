@@ -13,62 +13,62 @@
       title="EchoSearch" 
       href="https://echo-search.github.io/opensearch.xml">
 <style>
-:root{--bg:#fff;--text:#000;--accent:#00cec9;--font:'Segoe UI',sans-serif;}
-body,html{margin:0;padding:0;}
-header{padding:2rem 1rem 1rem;}
-.theme-selector{margin-top:1rem;}
-.theme-selector select{padding:0.3rem 0.6rem;border-radius:10px;border:1px solid var(--accent);font-size:1rem;cursor:pointer;background:white;color:var(--text);transition:background 0.3s,color 0.3s;}
-.search-container{display:flex;gap:0.5rem;max-width:700px;margin:0 auto;padding:2rem 1rem 1rem;}
-input[type="search"]{font-size:1.2rem;padding:0.6rem 1rem;border-radius:30px;border:2px solid var(--accent);width:80%;outline:none;transition:box-shadow 0.3s,background 0.3s,color 0.3s;background:var(--bg);color:var(--text);}
-input[type="search"]:focus{box-shadow:0 0 8px var(--accent);}
-#suggestions{border:1px solid #ccc;display:none;position:absolute;background:white;list-style:none;padding:0;margin:0;width:80%;max-height:200px;overflow-y:auto;box-shadow:0 4px 6px rgba(0,0,0,0.1);border-radius:4px;z-index:1000;}
-#suggestions li{padding:8px 10px;cursor:pointer;}
-#suggestions li:hover{background-color:#f0f0f0;}
-.pri-pol{color:#545454;text-decoration:underline;}
-.pri-pol:hover{color:#545454;}
-.voice-btn{background:var(--accent);border:none;border-radius:50%;width:50px;height:50px;display:flex;initial-scale:1;cursor:pointer;color:white;font-size:1.5rem;transition:background 0.2s,transform 0.1s;}
-.voice-btn:hover:not(:disabled){background:var(--hover);}
-.voice-btn:active:not(:disabled){transform:scale(0.9);}
-.voice-btn:disabled{opacity:0.5;cursor:not-allowed;}
-.listening{animation:pulse 1s infinite;box-shadow:0 0 8px 3px rgba(0,206,201,0.9);}
-@keyframes pulse{0%{box-shadow:0 0 8px 3px rgba(0,206,201,0.9);}50%{box-shadow:0 0 20px 6px rgba(0,206,201,0.3);}100%{box-shadow:0 0 8px 3px rgba(0,206,201,0.9);}}
-.button-group{margin-top:1rem;max-width:700px;margin-left:auto;margin-right:auto;padding-bottom:1rem;}
-button{margin:0.5rem;padding:0.6rem 1.2rem;border-radius:30px;border:none;background:var(--accent);color:var(--text);font-weight:bold;cursor:pointer;transition:background 0.3s;font-size:1rem;}
-button:hover{background:var(--hover);}
-search-btn{width:1em;height:1em;}
-#historyList{list-style:none;padding:0;margin:0;max-width:100%;border:1px solid #ccc;border-radius:6px;background:#fff;}
-#historyList li{padding:8px 12px;cursor:pointer;border-bottom:1px solid #eee;}
-#historyList li:hover{background-color:#f0f0f0;}
-#historyTitle{font-size:1rem;font-weight:bold;color:var(--text);left:50%;}
-#clearBtn{background:var(--accent);color:var(--text);border-radius:20px;padding:0.4rem 1rem;border:none;cursor:pointer;font-size:0.9rem;margin-top:0.5rem;}
-#clearBtn:hover{background:var(--hover);}
-#gcse-results{max-width:900px;margin:0 auto;padding:1rem;}
-.chat-btn:hover{background:var(--hover)}
-.version-badge{position:fixed;bottom:10px;right:10px;background:#e0e0e0;color:#333;padding:5px 10px;border-radius:8px;font-size:0.9em;text-decoration:none;box-shadow:0 2px 5px rgba(0,0,0,0.2);transition:background 0.3s;z-index:10000;}
-.version-badge:hover{background:#d0d0d0;}
-#darkModeToggle{position:fixed;top:12px;right:12px;z-index:10001;padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:var(--text);cursor:pointer;font-size:0.95rem;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
-#articles-link{margin:10px 20px;}
-#articles-link a{color:blue;text-decoration:underline;}
-body.default{--bg:#ffffff;--text:#000000;--accent:#00cec9;--hover:#00b2af;background:#ffffff;}
-body.retro{--bg:#fdf6e3;--text:#586e75;--accent:#2aa198;--hover:#23827e;background:url('Backgrounds/retro.jpeg') no-repeat center center fixed;background-size:cover;}
-body.neon{--bg:#000000;--text:#39ff14;--accent:#ff00ff;--hover:#cc00cc;background:url('Backgrounds/neon.jpeg') no-repeat center center fixed;background-size:cover;}
-body.ocean{--bg:#e0f7fa;--text:#006064;--accent:#0097a7;--hover:#00727e;background:url('Backgrounds/ocean.jpeg') no-repeat center center fixed;background-size:cover;}
-body.midnight{--bg:#1a1a2e;--text:#e0e0e0;--accent:#7f00ff;--hover:#5800b2;background:url('Backgrounds/midnight.jpeg') no-repeat center center fixed;background-size:cover;}
-body.sunset{--bg:linear-gradient(to right,#ff7e5f,#feb47b);--text:#4e342e;--accent:#ff7043;--hover:#d85b32;background:url('Backgrounds/sunset.jpeg') no-repeat center center fixed;background-size:cover;}
-body.matrix{--bg:#f1fff1;--text:#003300;--accent:#00cc00;--hover:#009900;background:url('Backgrounds/matrix.jpeg') no-repeat center center fixed;background-size:cover;}
-body.cyberpunk{--bg:#1a1a1a;--text:#f50057;--accent:#00e5ff;--hover:#00a0b2;background:url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed;background-size:cover;}
-body.forest{--bg:#1b2e1b;--text:#c8e6c9;--accent:#66bb6a;--hover:#4a8a4d;background:url('Backgrounds/forest.jpeg') no-repeat center center fixed;background-size:cover;}
-body.floral{--bg:#1a1a1a;--text:#f8f0e3;--accent:#a45a5a;--hover:#7c4141;background:url('Backgrounds/floral.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.default{--bg:#121212;--text:#ffffff;--accent:#bb86fc;--hover:#9966d9;background-color:var(--bg);}
-body.dark-mode.retro{--bg:#2b2b2b;--text:#f5deb3;--accent:#ffb347;--hover:#cc8a35;background:url('Backgrounds/retro.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.neon{--bg:#000000;--text:#39ff14;--accent:#ff00ff;--hover:#b300b3;background:url('Backgrounds/neon.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.ocean{--bg:#001f29;--text:#a7e6ff;--accent:#00bcd4;--hover:#0090a2;background:url('Backgrounds/ocean.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.midnight{--bg:#0d0d1a;--text:#e0e0e0;--accent:#9c27b0;--hover:#6d1e80;background:url('Backgrounds/midnight.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.sunset{--bg:linear-gradient(to right,#2c3e50,#4ca1af);--text:#ffffff;--accent:#ff7043;--hover:#c85431;background:url('Backgrounds/sunset.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.matrix{--bg:#000000;--text:#000000;--accent:#00ff00;--hover:#007700;background:url('Backgrounds/matrix.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.cyberpunk{--bg:#1a1a1a;--text:#f50057;--accent:#00e5ff;--hover:#00a0b2;background:url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.forest{--bg:#1b2e1b;--text:#c8e6c9;--accent:#66bb6a;--hover:#4a8a4d;background:url('Backgrounds/forest.jpeg') no-repeat center center fixed;background-size:cover;}
-body.dark-mode.floral{--bg:#1a1a1a;--text:#f8f0e3;--accent:#a45a5a;--hover:#7c4141;background:url('Backgrounds/floral.jpeg') no-repeat center center fixed;background-size:cover;}
+body, html { margin: 0; padding: 0; }
+:root { --bg: #fff; --text: #000; --accent: #00cec9; --font: 'Segoe UI', sans-serif; }
+body { font-family: var(--font); background-color: var(--bg); color: black; transition: all 0.3s; }
+header { text-align: center; padding: 2rem 1rem 1rem; }
+.theme-selector { margin-top: 1rem; text-align: center; }
+.theme-selector select { padding: 0.3rem 0.6rem; border-radius: 10px; border: 1px solid var(--accent); font-size: 1rem; cursor: pointer; background: white; color: var(--text); transition: background 0.3s, color 0.3s; }
+.search-container { display: flex; align-items: center; justify-content: center; gap: 0.5rem; max-width: 700px; margin: 0 auto; padding: 2rem 1rem 1rem; }
+input[type="search"] { font-size: 1.2rem; padding: 0.6rem 1rem; border-radius: 30px; border: 2px solid var(--accent); width: 80%; outline: none; transition: box-shadow 0.3s, background 0.3s, color 0.3s; background: var(--bg); color: var(--text); }
+input[type="search"]:focus { box-shadow: 0 0 8px var(--accent); }
+#suggestions { border: 1px solid #ccc; display: none; position: absolute; background: white; list-style: none; padding: 0; margin: 0; width: 80%; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; z-index: 1000; }
+#suggestions li { padding: 8px 10px; cursor: pointer; }
+#suggestions li:hover { background-color: #f0f0f0; }
+.pri-pol { color: #545454; text-align: center; }
+.voice-btn { background: var(--accent); border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; initial-scale: 1; justify-content: center; align-items: center; cursor: pointer; color: white; font-size: 1.5rem; transition: background 0.2s, transform 0.1s; }
+.voice-btn:hover:not(:disabled) { background: var(--hover); }
+.voice-btn:active:not(:disabled) { transform: scale(0.9); }
+.voice-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.listening { animation: pulse 1s infinite; box-shadow: 0 0 8px 3px rgba(0, 206, 201, 0.9); }
+@keyframes pulse { 0% { box-shadow: 0 0 8px 3px rgba(0, 206, 201, 0.9); } 50% { box-shadow: 0 0 20px 6px rgba(0, 206, 201, 0.3); } 100% { box-shadow: 0 0 8px 3px rgba(0, 206, 201, 0.9); } }
+.button-group { margin-top: 1rem; text-align: center; max-width: 700px; margin-left: auto; margin-right: auto; padding-bottom: 1rem; }
+button { margin: 0.5rem; padding: 0.6rem 1.2rem; border-radius: 30px; border: none; background: var(--accent); color: var(--text); font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 1rem; }
+button:hover { background: var(--hover); }
+search-btn { width: 1em; height: 1em; }
+#historyList { list-style: none; padding: 0; margin: 0; max-width: 100%; border: 1px solid #ccc; border-radius: 6px; background: #fff; }
+#historyList li { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee; }
+#historyList li:hover { background-color: #f0f0f0; }
+#historyTitle { font-size: 1rem; font-weight: bold; color: var(--text); left: 50%; }
+#clearBtn { background: var(--accent); color: var(--text); border-radius: 20px; padding: 0.4rem 1rem; border: none; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; }
+#clearBtn:hover { background: var(--hover); }
+#gcse-results { max-width: 900px; margin: 0 auto; padding: 1rem; }
+.chat-btn:hover { background: var(--hover); }
+.version-badge { position: fixed; bottom: 10px; right: 10px; background: #e0e0e0; color: #333; padding: 5px 10px; border-radius: 8px; font-size: 0.9em; text-decoration: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); transition: background 0.3s; z-index: 10000; }
+.version-badge:hover { background: #d0d0d0; }
+#darkModeToggle { position: fixed; top: 12px; right: 12px; z-index: 10001; padding: 8px 12px; border-radius: 8px; border: none; background: var(--accent); color: var(--text); cursor: pointer; font-size: 0.95rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); }
+#articles-link { text-align: right; margin: 10px 20px; }
+#articles-link a { color: blue; text-decoration: underline; }
+body.default { --bg: #ffffff; --text: #000000; --accent: #00cec9; --hover: #00b2af; background: #ffffff; }
+body.retro { --bg: #fdf6e3; --text: #586e75; --accent: #2aa198; --hover: #23827e; background: url('Backgrounds/retro.jpeg') no-repeat center center fixed; background-size: cover; }
+body.neon { --bg: #000000; --text: #39ff14; --accent: #ff00ff; --hover: #cc00cc; background: url('Backgrounds/neon.jpeg') no-repeat center center fixed; background-size: cover; }
+body.ocean { --bg: #e0f7fa; --text: #006064; --accent: #0097a7; --hover: #00727e; background: url('Backgrounds/ocean.jpeg') no-repeat center center fixed; background-size: cover; }
+body.midnight { --bg: #1a1a2e; --text: #e0e0e0; --accent: #7f00ff; --hover: #5800b2; background: url('Backgrounds/midnight.jpeg') no-repeat center center fixed; background-size: cover; }
+body.sunset { --bg: linear-gradient(to right, #ff7e5f, #feb47b); --text: #4e342e; --accent: #ff7043; --hover: #d85b32; background: url('Backgrounds/sunset.jpeg') no-repeat center center fixed; background-size: cover; }
+body.matrix { --bg: #f1fff1; --text: #003300; --accent: #00cc00; --hover: #009900; background: url('Backgrounds/matrix.jpeg') no-repeat center center fixed; background-size: cover; }
+body.cyberpunk { --bg: #1a1a1a; --text: #f50057; --accent: #00e5ff; --hover: #00a0b2; background: url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed; background-size: cover; }
+body.forest { --bg: #1b2e1b; --text: #c8e6c9; --accent: #66bb6a; --hover: #4a8a4d; background: url('Backgrounds/forest.jpeg') no-repeat center center fixed; background-size: cover; }
+body.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hover: #7c4141; background: url('Backgrounds/floral.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.default { --bg: #121212; --text: #ffffff; --accent: #bb86fc; --hover: #9966d9; background-color: var(--bg); }
+body.dark-mode.retro { --bg: #2b2b2b; --text: #f5deb3; --accent: #ffb347; --hover: #cc8a35; background: url('Backgrounds/retro.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.neon { --bg: #000000; --text: #39ff14; --accent: #ff00ff; --hover: #b300b3; background: url('Backgrounds/neon.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.ocean { --bg: #001f29; --text: #a7e6ff; --accent: #00bcd4; --hover: #0090a2; background: url('Backgrounds/ocean.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.midnight { --bg: #0d0d1a; --text: #e0e0e0; --accent: #9c27b0; --hover: #6d1e80; background: url('Backgrounds/midnight.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.sunset { --bg: linear-gradient(to right, #2c3e50, #4ca1af); --text: #ffffff; --accent: #ff7043; --hover: #c85431; background: url('Backgrounds/sunset.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.matrix { --bg: #000000; --text: #000000; --accent: #00ff00; --hover: #007700; background: url('Backgrounds/matrix.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.cyberpunk { --bg: #1a1a1a; --text: #f50057; --accent: #00e5ff; --hover: #00a0b2; background: url('Backgrounds/cyberpunk.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.forest { --bg: #1b2e1b; --text: #c8e6c9; --accent: #66bb6a; --hover: #4a8a4d; background: url('Backgrounds/forest.jpeg') no-repeat center center fixed; background-size: cover; }
+body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hover: #7c4141; background: url('Backgrounds/floral.jpeg') no-repeat center center fixed; background-size: cover; }
 </style>
 </head>
 <body class="default">
