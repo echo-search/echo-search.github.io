@@ -17,7 +17,7 @@ body { font-family: var(--font); background-color: var(--bg); color: black; tran
 header { text-align: center; padding: 2rem 1rem 1rem; }
 .theme-selector { margin-top: 1rem; text-align: center; }
 .theme-selector select { padding: 0.3rem 0.6rem; border-radius: 10px; border: 1px solid var(--accent); font-size: 1rem; cursor: pointer; background: white; color: var(--text); transition: background 0.3s, color 0.3s; }
-.search-container { display: flex; align-items: center; justify-content: center; gap: 0.5rem; max-width: 700px; margin: 0 auto; padding: 2rem 1rem 1rem; }
+.search-container { display: flex; align-items: center; position: relative; justify-content: center; gap: 0.5rem; max-width: 700px; margin: 0 auto; padding: 2rem 1rem 1rem; }
 input[type="search"] { font-size: 1.2rem; padding: 0.6rem 1rem; border-radius: 30px; border: 2px solid var(--accent); width: 80%; outline: none; transition: box-shadow 0.3s, background 0.3s, color 0.3s; background: var(--bg); color: var(--text); }
 input[type="search"]:focus { box-shadow: 0 0 8px var(--accent); }
 #suggestions { border: 1px solid #ccc; display: none; background: white; list-style: none; padding: 0; margin: 0; width: 80%; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 4px; z-index: 1000; }
