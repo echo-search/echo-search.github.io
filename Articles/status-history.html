@@ -1,1 +1,137 @@
-<html><h1>Building in progress...</h1></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EchoSearch Status — History</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1720;--card:#0b1220;--text:#e6eef6;--muted:#9aa4b2;
+  --accent:#0ea5a4;--success:#16a34a;--warn:#f59e0b;--danger:#ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);
+  padding:28px;min-height:100vh;
+}
+.wrap{max-width:1100px;margin:auto;display:flex;gap:24px;align-items:flex-start}
+.sidebar{
+  width:260px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);
+  padding:18px;border-radius:10px;position:sticky;top:28px;height:fit-content;
+}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo{
+  width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#2dd4bf);
+  display:flex;align-items:center;justify-content:center;font-weight:800;color:#042024;
+}
+.brand h1{font-size:15px;font-weight:700}
+.brand p{font-size:12px;color:var(--muted)}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px dashed rgba(255,255,255,0.04)}
+.metric:first-of-type{border-top:0}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.up{background:var(--success)}.dot.warn{background:var(--warn)}.dot.down{background:var(--danger)}
+.btn{
+  display:inline-block;margin-top:12px;padding:8px 12px;border-radius:8px;
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);
+  color:var(--text);font-size:13px;text-decoration:none;font-weight:600;
+}
+.main{flex:1}
+.controls{display:flex;justify-content:space-between;align-items:end;margin-bottom:16px}
+.title{font-size:20px;font-weight:700}
+.tabs{display:flex;gap:8px}
+.tab{
+  padding:8px 12px;border-radius:8px;font-weight:600;color:var(--muted);
+  border:1px solid transparent;background:none;cursor:pointer;
+}
+.tab.active{color:var(--text);background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.05)}
+.history{
+  background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0));
+  border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:14px;
+}
+.month h2{font-size:14px;color:var(--muted);font-weight:700;margin-bottom:10px}
+.day-row{display:grid;grid-template-columns:72px 1fr;gap:18px;padding:14px;border-radius:10px}
+.day-left{font-weight:800;font-size:20px}
+.day-left .dow{display:block;font-size:12px;color:var(--muted)}
+.incident{background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:10px}
+.meta{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.badge{padding:6px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.time{font-size:13px;color:var(--muted)}
+.incident p{font-size:14px;line-height:1.4}
+.update{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.05)}
+@media(max-width:880px){.wrap{flex-direction:column}.sidebar{width:100%;position:relative;top:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">ES</div>
+      <div>
+        <h1>EchoSearch Status</h1>
+        <p>Platform-wide availability</p>
+      </div>
+    </div>
+    <div class="metric"><div><strong>All systems</strong></div><div class="dot up"></div></div>
+    <div class="metric"><div>Search</div><div class="dot up"></div></div>
+    <div class="metric"><div>Suggestions</div><div class="dot up"></div></div>
+    <a href="#" class="btn">Subscribe to updates</a>
+  </aside>
+
+  <main class="main">
+    <div class="controls">
+      <div>
+        <div class="title">History</div>
+        <div style="font-size:13px;color:var(--muted)">Past incidents, grouped by date</div>
+      </div>
+      <div class="tabs">
+        <button class="tab active">History</button>
+        <button class="tab">At a glance</button>
+      </div>
+    </div>
+
+    <div class="history">
+      <div class="month">
+        <h2>October</h2>
+        <div class="day-row">
+          <div class="day-left">19<span class="dow">Sun</span></div>
+          <div>
+            <div class="incident">
+              <div class="meta">
+                <div class="badge" style="background:rgba(14,165,164,0.12);color:var(--accent)">Investigating</div>
+                <div class="time">12:00 PM</div>
+              </div>
+              <p>We are currently investigating reports of slow response times in EchoSearch.</p>
+
+              <div class="update">
+                <div class="meta">
+                  <div class="badge" style="background:rgba(245,158,11,0.12);color:var(--warn)">Identified</div>
+                  <div class="time">12:15 PM</div>
+                </div>
+                <p>The issue has been identified as a backend cache saturation. We are implementing a fix.</p>
+              </div>
+
+              <div class="update">
+                <div class="meta">
+                  <div class="badge" style="background:rgba(245,158,11,0.12);color:var(--warn)">Monitoring</div>
+                  <div class="time">12:35 PM</div>
+                </div>
+                <p>The fix has been deployed, and we are monitoring system recovery.</p>
+              </div>
+
+              <div class="update">
+                <div class="meta">
+                  <div class="badge" style="background:rgba(22,163,74,0.12);color:var(--success)">Resolved</div>
+                  <div class="time">12:50 PM</div>
+                </div>
+                <p>All EchoSearch systems have fully recovered. This incident has been resolved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
