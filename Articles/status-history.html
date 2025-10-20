@@ -12,41 +12,46 @@
     margin: 0;
     padding: 2rem;
   }
+
   h2 {
     font-weight: 600;
     margin-bottom: 1.5rem;
   }
+
   .month {
     font-weight: 600;
-    color: #000;
     margin-top: 2rem;
     margin-bottom: 0.5rem;
   }
+
   .day-group {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     margin-top: 1.5rem;
   }
+
   .day {
     text-align: right;
     width: 50px;
     flex-shrink: 0;
   }
+
   .day .num {
     font-weight: 600;
     font-size: 1.1rem;
   }
+
   .day .weekday {
     color: #999;
     font-size: 0.9rem;
   }
+
   .incident-wrapper {
     flex: 1;
-    border-left: 2px solid #eee;
     padding-left: 1rem;
-    position: relative;
   }
+
   .incident {
     display: flex;
     justify-content: space-between;
@@ -54,74 +59,123 @@
     padding: 1rem 0;
     cursor: pointer;
     transition: background 0.15s;
+    border-radius: 6px;
     position: relative;
   }
+
   .incident:hover {
     background: #fafafa;
   }
-  .incident::before {
-    content: "";
-    position: absolute;
-    left: -1.1rem;
-    top: 1.15rem;
-    width: 10px;
-    height: 10px;
-    background: var(--dot-color, #2a8b57);
-    border: 2px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px var(--dot-color, #2a8b57);
-  }
-  .incident::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -0.97rem;
-    width: 2px;
-    height: 100%;
-    background: var(--line-color, #2a8b57);
-  }
+
   .incident strong {
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    animation: pulse 2s infinite;
+  }
+
+  .status-dot.green {
+    background: #2a8b57;
+    box-shadow: 0 0 0 0 rgba(42,139,87, 0.5);
+  }
+
+  .status-dot.yellow {
+    background: #f5a623;
+    box-shadow: 0 0 0 0 rgba(245,166,35, 0.5);
+  }
+
+  .status-dot.red {
+    background: #d93c3c;
+    box-shadow: 0 0 0 0 rgba(217,60,60, 0.5);
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0,0,0,0.3); }
+    70% { box-shadow: 0 0 0 8px rgba(0,0,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+  }
+
   .incident small {
     color: #999;
   }
+
   .incident .desc {
     color: #444;
     margin-top: 0.3rem;
   }
+
+  /* Timeline container */
   .timeline {
     display: none;
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
+    position: relative;
+    margin-top: 0.5rem;
+    margin-left: 1.5rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid #ddd;
   }
+
   .timeline.active {
     display: block;
   }
+
+  /* Each update entry */
   .entry {
     position: relative;
     margin-bottom: 1.5rem;
   }
+
+  .entry:last-child {
+    margin-bottom: 0;
+  }
+
   .entry::before {
     content: "";
     position: absolute;
-    top: 0.5rem;
-    left: -1.45rem;
-    width: 2px;
-    height: calc(100% + 1rem);
+    left: -1.2rem;
+    top: 0.45rem;
+    width: 10px;
+    height: 10px;
     background: #ccc;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #ccc;
   }
-  .entry:last-child::before {
-    height: 0.6rem;
+
+  .entry.resolved::before {
+    background: #2a8b57;
+    box-shadow: 0 0 0 2px #2a8b57;
   }
+
+  .entry.monitoring::before {
+    background: #f5a623;
+    box-shadow: 0 0 0 2px #f5a623;
+  }
+
+  .entry.identified::before,
+  .entry.investigating::before {
+    background: #d93c3c;
+    box-shadow: 0 0 0 2px #d93c3c;
+  }
+
   .entry h3 {
     font-size: 1rem;
     font-weight: 600;
     margin: 0 0 0.25rem;
   }
+
   .entry p {
     margin: 0.25rem 0;
   }
+
   .time {
     color: #888;
     font-size: 0.9rem;
@@ -143,52 +197,52 @@
     <div class="incident-wrapper">
       <div class="incident" data-status="resolved" onclick="toggleTimeline(this)">
         <div>
-          <strong>API: Placeholder incident title</strong>
+          <strong><span class="status-dot"></span>API: Placeholder incident title</strong>
           <div class="desc">All placeholder services have now fully recovered.</div>
         </div>
         <small>02:25</small>
       </div>
 
       <div class="timeline">
-        <div class="entry">
+        <div class="entry resolved">
           <h3>Resolved</h3>
           <p>[placeholder resolved message]</p>
-          <div class="time">[timestamp]</div>
+          <div class="time">Wed, 15 Oct 2025 at 02:25</div>
         </div>
 
-        <div class="entry">
+        <div class="entry monitoring">
           <h3>Monitoring</h3>
           <p>[placeholder monitoring message]</p>
-          <div class="time">[timestamp]</div>
+          <div class="time">Wed, 15 Oct 2025 at 02:08</div>
         </div>
 
-        <div class="entry">
+        <div class="entry identified">
           <h3>Identified</h3>
           <p>[placeholder identified message]</p>
-          <div class="time">[timestamp]</div>
+          <div class="time">Wed, 15 Oct 2025 at 01:43</div>
         </div>
 
-        <div class="entry">
+        <div class="entry investigating">
           <h3>Investigating</h3>
           <p>[placeholder investigating message]</p>
-          <div class="time">[timestamp]</div>
+          <div class="time">Wed, 15 Oct 2025 at 01:10</div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-  const statusColors = {
-    resolved: '#2a8b57',
-    monitoring: '#f5a623',
-    identified: '#d93c3c'
+  const colorMap = {
+    resolved: 'green',
+    monitoring: 'yellow',
+    identified: 'red',
+    investigating: 'red'
   };
 
   document.querySelectorAll('.incident').forEach(incident => {
-    const s = incident.dataset.status;
-    const c = statusColors[s] || '#2a8b57';
-    incident.style.setProperty('--line-color', c);
-    incident.style.setProperty('--dot-color', c);
+    const dot = incident.querySelector('.status-dot');
+    const status = incident.dataset.status;
+    dot.classList.add(colorMap[status] || 'green');
   });
 
   function toggleTimeline(el) {
