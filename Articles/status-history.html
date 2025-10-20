@@ -45,6 +45,7 @@
     flex: 1;
     border-left: 2px solid #eee;
     padding-left: 1rem;
+    position: relative;
   }
   .incident {
     display: flex;
@@ -61,12 +62,23 @@
   .incident::before {
     content: "";
     position: absolute;
-    top: 1.25rem;
-    left: -1.2rem;
+    left: -1.1rem;
+    top: 1.15rem;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
     background: var(--dot-color, #2a8b57);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--dot-color, #2a8b57);
+  }
+  .incident::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -0.97rem;
+    width: 2px;
+    height: 100%;
+    background: var(--line-color, #2a8b57);
   }
   .incident strong {
     font-weight: 600;
@@ -88,20 +100,19 @@
   }
   .entry {
     position: relative;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   .entry::before {
     content: "";
     position: absolute;
     top: 0.5rem;
-    left: -1.5rem;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #d33;
+    left: -1.45rem;
+    width: 2px;
+    height: calc(100% + 1rem);
+    background: #ccc;
   }
-  .entry.resolved::before {
-    background: #2a8b57;
+  .entry:last-child::before {
+    height: 0.6rem;
   }
   .entry h3 {
     font-size: 1rem;
@@ -130,7 +141,7 @@
     </div>
 
     <div class="incident-wrapper">
-      <div class="incident" style="--dot-color:#2a8b57;" onclick="toggleTimeline(this)">
+      <div class="incident" data-status="resolved" onclick="toggleTimeline(this)">
         <div>
           <strong>API: Placeholder incident title</strong>
           <div class="desc">All placeholder services have now fully recovered.</div>
@@ -139,7 +150,7 @@
       </div>
 
       <div class="timeline">
-        <div class="entry resolved">
+        <div class="entry">
           <h3>Resolved</h3>
           <p>[placeholder resolved message]</p>
           <div class="time">[timestamp]</div>
@@ -167,9 +178,23 @@
   </div>
 
 <script>
+  const statusColors = {
+    resolved: '#2a8b57',
+    monitoring: '#f5a623',
+    identified: '#d93c3c'
+  };
+
+  document.querySelectorAll('.incident').forEach(incident => {
+    const s = incident.dataset.status;
+    const c = statusColors[s] || '#2a8b57';
+    incident.style.setProperty('--line-color', c);
+    incident.style.setProperty('--dot-color', c);
+  });
+
   function toggleTimeline(el) {
+    document.querySelectorAll('.timeline').forEach(t => t.classList.remove('active'));
     const next = el.nextElementSibling;
-    next.classList.toggle("active");
+    next.classList.toggle('active');
   }
 </script>
 </body>
