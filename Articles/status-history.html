@@ -20,18 +20,53 @@
     font-weight: 600;
     color: #000;
     margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .day-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .day {
+    text-align: right;
+    width: 50px;
+    flex-shrink: 0;
+  }
+  .day .num {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .day .weekday {
+    color: #999;
+    font-size: 0.9rem;
+  }
+  .incident-wrapper {
+    flex: 1;
+    border-left: 2px solid #eee;
+    padding-left: 1rem;
   }
   .incident {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     padding: 1rem 0;
-    border-top: 1px solid #eee;
     cursor: pointer;
     transition: background 0.15s;
+    position: relative;
   }
   .incident:hover {
     background: #fafafa;
+  }
+  .incident::before {
+    content: "";
+    position: absolute;
+    top: 1.25rem;
+    left: -1.2rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--dot-color, #2a8b57);
   }
   .incident strong {
     font-weight: 600;
@@ -45,11 +80,8 @@
   }
   .timeline {
     display: none;
-    margin-left: 1rem;
-    border-left: 2px solid #eee;
     padding-left: 1.5rem;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   .timeline.active {
     display: block;
@@ -91,32 +123,46 @@
 
   <div class="month">October</div>
 
-  <div class="incident" onclick="toggleTimeline(this)">
-    <div>
-      <strong>API: Placeholder incident title</strong>
-      <div class="desc">All placeholder services have now fully recovered.</div>
-    </div>
-    <small>02:25</small>
-  </div>
-
-  <div class="timeline">
-    <div class="entry resolved">
-      <h3>Resolved</h3>
-      <p>All placeholder services have now fully recovered.</p>
-      <div class="time">Wed, 15 Oct 2025 at 02:25</div>
+  <div class="day-group">
+    <div class="day">
+      <div class="num">15</div>
+      <div class="weekday">Wed</div>
     </div>
 
-    <div class="entry">
-      <h3>Monitoring</h3>
-      <p>We have applied the mitigation and are monitoring recovery.</p>
-      <div class="time">Wed, 15 Oct 2025 at 02:08 (17 minutes earlier)</div>
-    </div>
+    <div class="incident-wrapper">
+      <div class="incident" style="--dot-color:#2a8b57;" onclick="toggleTimeline(this)">
+        <div>
+          <strong>API: Placeholder incident title</strong>
+          <div class="desc">All placeholder services have now fully recovered.</div>
+        </div>
+        <small>02:25</small>
+      </div>
 
-    <div class="entry">
-      <h3>Identified</h3>
-      <p>We have identified elevated errors in the placeholder systems.</p>
-      <p>We are working on implementing a mitigation.</p>
-      <div class="time">Wed, 15 Oct 2025 at 01:43 (25 minutes earlier)</div>
+      <div class="timeline">
+        <div class="entry resolved">
+          <h3>Resolved</h3>
+          <p>[placeholder resolved message]</p>
+          <div class="time">[timestamp]</div>
+        </div>
+
+        <div class="entry">
+          <h3>Monitoring</h3>
+          <p>[placeholder monitoring message]</p>
+          <div class="time">[timestamp]</div>
+        </div>
+
+        <div class="entry">
+          <h3>Identified</h3>
+          <p>[placeholder identified message]</p>
+          <div class="time">[timestamp]</div>
+        </div>
+
+        <div class="entry">
+          <h3>Investigating</h3>
+          <p>[placeholder investigating message]</p>
+          <div class="time">[timestamp]</div>
+        </div>
+      </div>
     </div>
   </div>
 
