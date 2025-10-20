@@ -1,53 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Status History – EchoSearch</title>
 <style>
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#222;background:#fff;margin:0;padding:2rem}
 h2{font-weight:700;margin-bottom:1.5rem}
 .month{font-weight:600;margin-top:2rem}
-.day{display:flex;align-items:baseline;gap:0.3rem;margin-top:0.75rem}
+.day{display:flex;align-items:baseline;gap:.3rem;margin-top:.75rem}
 .day .num{font-weight:700;font-size:1.3rem}
-.day .dow{color:#999;font-size:0.9rem}
+.day .dow{color:#999;font-size:.9rem}
 .incident{position:relative;margin-left:2.3rem;padding:1rem;border-radius:6px;background:#fafafa;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;cursor:pointer}
-.incident-header{display:flex;align-items:center;gap:0.5rem}
+.incident-header{display:flex;align-items:center;gap:.5rem}
 .status-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;animation:pulse 1.4s infinite ease-in-out}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(0.7);opacity:0.6}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.75);opacity:.75}}
 .status-green{background:#28a745}
 .status-yellow{background:#ffb100}
 .status-red{background:#e03131}
 .incident strong{font-weight:600}
 .incident small{color:#999;flex-shrink:0}
-.incident .desc{color:#444;margin-top:0.3rem}
+.incident .desc{color:#444;margin-top:.3rem}
 .timeline{position:relative;margin-left:3.1rem;padding-left:1.5rem;margin-top:1.25rem;display:none}
 .timeline.active{display:block}
-.timeline::before{content:"";position:absolute;left:9px;top:0;bottom:0;width:2px;background:#ddd}
-.entry{position:relative;margin-bottom:2rem}
+.timeline::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:2px;background:#ddd}
+.entry{position:relative;margin-bottom:2rem;padding-left:10px}
 .entry:last-child{margin-bottom:0}
-.entry::before{content:"";position:absolute;left:0;top:0.35rem;width:10px;height:10px;border-radius:50%;transform:translateX(-50%)}
+.entry::before{content:"";position:absolute;left:14px;top:.45rem;width:10px;height:10px;border-radius:50%;transform:translateX(-50%)}
 .entry.resolved::before{background:#28a745}
 .entry.monitoring::before{background:#ffb100}
 .entry.identified::before{background:#e03131}
 .entry.investigating::before{background:#e03131}
-.entry h3{margin:0 0 0.3rem;font-size:1rem;font-weight:600}
-.entry p{margin:0.25rem 0}
-.time{color:#888;font-size:0.9rem;margin-top:0.25rem}
+.entry h3{margin:0 0 .3rem;font-size:1rem;font-weight:600}
+.entry p{margin:.25rem 0}
+.time{color:#888;font-size:.9rem;margin-top:.25rem}
 </style>
 </head>
 <body>
 <h2>Status History</h2>
 <div class="month">October</div>
-<div class="day">
-  <div class="num">15</div>
-  <div class="dow">Wed</div>
-</div>
+<div class="day"><div class="num">15</div><div class="dow">Wed</div></div>
 
-<div class="incident" onclick="toggleTimeline(this)">
+<div class="incident" onclick="toggleTimeline(this)" aria-expanded="false">
   <div>
     <div class="incident-header">
-      <div class="status-dot status-red"></div>
+      <div class="status-dot status-red" id="parent-dot"></div>
       <strong>API Outage</strong>
     </div>
     <div class="desc">Service degradation observed.</div>
@@ -55,7 +52,7 @@ h2{font-weight:700;margin-bottom:1.5rem}
   <small>4 updates</small>
 </div>
 
-<div class="timeline">
+<div class="timeline" aria-hidden="true">
   <div class="entry investigating">
     <h3>Investigating</h3>
     <p>Our team is currently investigating this issue.</p>
@@ -77,13 +74,33 @@ h2{font-weight:700;margin-bottom:1.5rem}
     <div class="time">15 Oct, 11:40 UTC</div>
   </div>
 </div>
+
 <script>
 function toggleTimeline(el){
-  const next=el.nextElementSibling
-  const active=next.classList.contains('active')
-  document.querySelectorAll('.timeline').forEach(t=>t.classList.remove('active'))
-  if(!active) next.classList.add('active')
+  const timeline = el.nextElementSibling;
+  if(!timeline || !timeline.classList.contains('timeline')) return;
+  const opening = !timeline.classList.contains('active');
+  document.querySelectorAll('.timeline').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.incident').forEach(i=>i.setAttribute('aria-expanded','false'));
+  if(!opening){
+    timeline.classList.remove('active');
+    timeline.setAttribute('aria-hidden','true');
+    el.setAttribute('aria-expanded','false');
+  } else {
+    timeline.classList.add('active');
+    timeline.setAttribute('aria-hidden','false');
+    el.setAttribute('aria-expanded','true');
+  }
 }
+(function setParentDot(){
+  const timeline = document.querySelector('.timeline');
+  if(!timeline) return;
+  const first = timeline.querySelector('.entry');
+  const parentDot = document.getElementById('parent-dot');
+  if(first.classList.contains('resolved')){ parentDot.className = 'status-dot status-green' }
+  else if(first.classList.contains('monitoring')){ parentDot.className = 'status-dot status-yellow' }
+  else { parentDot.className = 'status-dot status-red' }
+})();
 </script>
 </body>
 </html>
