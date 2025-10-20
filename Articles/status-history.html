@@ -12,170 +12,111 @@
     margin: 0;
     padding: 2rem;
   }
-
   h2 {
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 1.5rem;
   }
-
   .month {
     font-weight: 600;
     margin-top: 2rem;
-    margin-bottom: 0.5rem;
   }
-
-  .day-group {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
   .day {
-    text-align: right;
-    width: 50px;
-    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    margin-top: 0.75rem;
   }
-
   .day .num {
-    font-weight: 600;
-    font-size: 1.1rem;
+    font-weight: 700;
+    font-size: 1.3rem;
   }
-
-  .day .weekday {
+  .day .dow {
     color: #999;
     font-size: 0.9rem;
   }
 
-  .incident-wrapper {
-    flex: 1;
-    padding-left: 1rem;
-  }
-
   .incident {
+    position: relative;
+    margin-left: 2.3rem;
+    padding: 1rem;
+    border-radius: 6px;
+    background: #fafafa;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 1rem 0;
-    cursor: pointer;
-    transition: background 0.15s;
-    border-radius: 6px;
-    position: relative;
+    gap: 1rem;
   }
-
-  .incident:hover {
-    background: #fafafa;
-  }
-
-  .incident strong {
-    font-weight: 600;
+  .incident-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 
   .status-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     flex-shrink: 0;
-    position: relative;
-    animation: pulse 2s infinite;
+    animation: pulse 1.4s infinite ease-in-out;
   }
-
-  .status-dot.green {
-    background: #2a8b57;
-    box-shadow: 0 0 0 0 rgba(42,139,87, 0.5);
-  }
-
-  .status-dot.yellow {
-    background: #f5a623;
-    box-shadow: 0 0 0 0 rgba(245,166,35, 0.5);
-  }
-
-  .status-dot.red {
-    background: #d93c3c;
-    box-shadow: 0 0 0 0 rgba(217,60,60, 0.5);
-  }
-
   @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(0,0,0,0.3); }
-    70% { box-shadow: 0 0 0 8px rgba(0,0,0,0); }
-    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.7); opacity: 0.6; }
   }
+  .status-green { background: #28a745; }
+  .status-yellow { background: #ffb100; }
+  .status-red { background: #e03131; }
 
+  .incident strong {
+    font-weight: 600;
+  }
   .incident small {
     color: #999;
+    flex-shrink: 0;
   }
-
   .incident .desc {
     color: #444;
     margin-top: 0.3rem;
   }
 
-  /* Timeline container */
   .timeline {
-    display: none;
     position: relative;
-    margin-top: 0.5rem;
-    margin-left: 1.5rem;
-    padding-left: 1.2rem;
+    margin-left: 3.1rem;
+    padding-left: 1.5rem;
     border-left: 2px solid #ddd;
+    margin-top: 1.25rem;
   }
 
-  .timeline.active {
-    display: block;
-  }
-
-  /* Each update entry */
   .entry {
     position: relative;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
-
   .entry:last-child {
     margin-bottom: 0;
   }
-
   .entry::before {
     content: "";
     position: absolute;
-    left: -1.2rem;
+    left: -1.65rem;
     top: 0.45rem;
     width: 10px;
     height: 10px;
-    background: #ccc;
     border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 2px #ccc;
+    background: #d33;
   }
-
-  .entry.resolved::before {
-    background: #2a8b57;
-    box-shadow: 0 0 0 2px #2a8b57;
-  }
-
-  .entry.monitoring::before {
-    background: #f5a623;
-    box-shadow: 0 0 0 2px #f5a623;
-  }
-
-  .entry.identified::before,
-  .entry.investigating::before {
-    background: #d93c3c;
-    box-shadow: 0 0 0 2px #d93c3c;
-  }
+  .entry.resolved::before { background: #28a745; }
+  .entry.monitoring::before { background: #ffb100; }
+  .entry.identified::before { background: #e03131; }
+  .entry.investigating::before { background: #e03131; }
 
   .entry h3 {
+    margin: 0 0 0.3rem;
     font-size: 1rem;
     font-weight: 600;
-    margin: 0 0 0.25rem;
   }
-
   .entry p {
     margin: 0.25rem 0;
   }
-
   .time {
     color: #888;
     font-size: 0.9rem;
@@ -185,66 +126,50 @@
 </head>
 <body>
   <h2>Status History</h2>
-
   <div class="month">October</div>
 
-  <div class="day-group">
-    <div class="day">
-      <div class="num">15</div>
-      <div class="weekday">Wed</div>
-    </div>
-
-    <div class="incident-wrapper">
-      <div class="incident" data-status="resolved" onclick="toggleTimeline(this)">
-        <div>
-          <strong><span class="status-dot"></span>API: Placeholder incident title</strong>
-          <div class="desc">All placeholder services have now fully recovered.</div>
-        </div>
-        <small>02:25</small>
-      </div>
-
-      <div class="timeline">
-        <div class="entry resolved">
-          <h3>Resolved</h3>
-          <p>[placeholder resolved message]</p>
-          <div class="time">Wed, 15 Oct 2025 at 02:25</div>
-        </div>
-
-        <div class="entry monitoring">
-          <h3>Monitoring</h3>
-          <p>[placeholder monitoring message]</p>
-          <div class="time">Wed, 15 Oct 2025 at 02:08</div>
-        </div>
-
-        <div class="entry identified">
-          <h3>Identified</h3>
-          <p>[placeholder identified message]</p>
-          <div class="time">Wed, 15 Oct 2025 at 01:43</div>
-        </div>
-
-        <div class="entry investigating">
-          <h3>Investigating</h3>
-          <p>[placeholder investigating message]</p>
-          <div class="time">Wed, 15 Oct 2025 at 01:10</div>
-        </div>
-      </div>
-    </div>
+  <div class="day">
+    <div class="num">15</div>
+    <div class="dow">Wed</div>
   </div>
 
+  <div class="incident">
+    <div>
+      <div class="incident-header">
+        <div class="status-dot status-green"></div>
+        <strong>API: Placeholder incident title</strong>
+      </div>
+      <div class="desc">All placeholder services have now fully recovered.</div>
+    </div>
+    <small>02:25</small>
+  </div>
+
+  <div class="timeline">
+    <div class="entry resolved">
+      <h3>Resolved</h3>
+      <p>[placeholder resolved message]</p>
+      <div class="time">02:25</div>
+    </div>
+
+    <div class="entry monitoring">
+      <h3>Monitoring</h3>
+      <p>[placeholder monitoring message]</p>
+      <div class="time">02:08</div>
+    </div>
+
+    <div class="entry identified">
+      <h3>Identified</h3>
+      <p>[placeholder identified message]</p>
+      <div class="time">01:43</div>
+    </div>
+
+    <div class="entry investigating">
+      <h3>Investigating</h3>
+      <p>[placeholder investigating message]</p>
+      <div class="time">01:10</div>
+    </div>
+  </div>
 <script>
-  const colorMap = {
-    resolved: 'green',
-    monitoring: 'yellow',
-    identified: 'red',
-    investigating: 'red'
-  };
-
-  document.querySelectorAll('.incident').forEach(incident => {
-    const dot = incident.querySelector('.status-dot');
-    const status = incident.dataset.status;
-    dot.classList.add(colorMap[status] || 'green');
-  });
-
   function toggleTimeline(el) {
     document.querySelectorAll('.timeline').forEach(t => t.classList.remove('active'));
     const next = el.nextElementSibling;
