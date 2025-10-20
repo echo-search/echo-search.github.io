@@ -23,10 +23,10 @@ h2{font-weight:700;margin-bottom:1.5rem}
 .incident .desc{color:#444;margin-top:.3rem}
 .timeline{position:relative;margin-left:3.1rem;padding-left:28px;margin-top:1.25rem;display:none}
 .timeline.active{display:block}
-.timeline::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:2px;background:#ddd;transform:translateX(-50%)}
+.timeline::before{content:"";position:absolute;left:12px;top:0;bottom:0;width:2px;background:#ddd}
 .entry{position:relative;margin-bottom:2rem}
 .entry:last-child{margin-bottom:0}
-.entry::before{content:"";position:absolute;left:14px;top:.45rem;width:10px;height:10px;border-radius:50%;transform:translateX(-50%)}
+.entry::before{content:"";position:absolute;left:-20px;top:.45rem;width:10px;height:10px;border-radius:50%}
 .entry.resolved::before{background:#28a745}
 .entry.monitoring::before{background:#ffb100}
 .entry.identified::before{background:#e03131}
@@ -42,68 +42,68 @@ h2{font-weight:700;margin-bottom:1.5rem}
 <div class="day"><div class="num">15</div><div class="dow">Wed</div></div>
 
 <div class="incident" aria-expanded="false" onclick="toggleTimeline(this)">
-  <div>
-    <div class="incident-header">
-      <div class="status-dot status-red" id="parent-dot"></div>
-      <strong>API Outage</strong>
-    </div>
-    <div class="desc">Service degradation observed.</div>
-  </div>
-  <small>4 updates</small>
+  <div>
+    <div class="incident-header">
+      <div class="status-dot status-red" id="parent-dot"></div>
+      <strong>API Outage</strong>
+    </div>
+    <div class="desc">Service degradation observed.</div>
+  </div>
+  <small>4 updates</small>
 </div>
 
 <div class="timeline" aria-hidden="true">
-  <div class="entry resolved">
-    <h3>Resolved</h3>
-    <p>All systems have returned to normal.</p>
-    <div class="time">15 Oct, 11:40 UTC</div>
-  </div>
-  <div class="entry monitoring">
-    <h3>Monitoring</h3>
-    <p>A fix has been deployed and we’re monitoring the results.</p>
-    <div class="time">15 Oct, 11:05 UTC</div>
-  </div>
-  <div class="entry identified">
-    <h3>Identified</h3>
-    <p>The root cause has been identified and a fix is in progress.</p>
-    <div class="time">15 Oct, 10:45 UTC</div>
-  </div>
-  <div class="entry investigating">
-    <h3>Investigating</h3>
-    <p>Our team is currently investigating this issue.</p>
-    <div class="time">15 Oct, 10:32 UTC</div>
-  </div>
+  <div class="entry resolved">
+    <h3>Resolved</h3>
+    <p>All systems have returned to normal.</p>
+    <div class="time">15 Oct, 11:40 UTC</div>
+  </div>
+  <div class="entry monitoring">
+    <h3>Monitoring</h3>
+    <p>A fix has been deployed and we're monitoring the results.</p>
+    <div class="time">15 Oct, 11:05 UTC</div>
+  </div>
+  <div class="entry identified">
+    <h3>Identified</h3>
+    <p>The root cause has been identified and a fix is in progress.</p>
+    <div class="time">15 Oct, 10:45 UTC</div>
+  </div>
+  <div class="entry investigating">
+    <h3>Investigating</h3>
+    <p>Our team is currently investigating this issue.</p>
+    <div class="time">15 Oct, 10:32 UTC</div>
+  </div>
 </div>
 
 <script>
 function toggleTimeline(el){
-  const next=el.nextElementSibling
-  if(!next||!next.classList.contains('timeline'))return
-  const wasActive=next.classList.contains('active')
-  document.querySelectorAll('.timeline').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-hidden','true')})
-  document.querySelectorAll('.incident').forEach(i=>i.setAttribute('aria-expanded','false'))
-  if(!wasActive){next.classList.add('active');next.setAttribute('aria-hidden','false');el.setAttribute('aria-expanded','true')}
-  updateParentDot(next)
+  const next=el.nextElementSibling
+  if(!next||!next.classList.contains('timeline'))return
+  const wasActive=next.classList.contains('active')
+  document.querySelectorAll('.timeline').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-hidden','true')})
+  document.querySelectorAll('.incident').forEach(i=>i.setAttribute('aria-expanded','false'))
+  if(!wasActive){next.classList.add('active');next.setAttribute('aria-hidden','false');el.setAttribute('aria-expanded','true')}
+  updateParentDot(next)
 }
 function updateParentDot(timeline){
-  if(!timeline)return
-  const entries=Array.from(timeline.querySelectorAll('.entry'))
-  if(entries.length===0)return
-  const latest=entries[0]
-  const parentDot=document.getElementById('parent-dot')
-  parentDot.classList.remove('status-green','status-yellow','status-red')
-  if(latest.classList.contains('resolved'))parentDot.classList.add('status-green')
-  else if(latest.classList.contains('monitoring'))parentDot.classList.add('status-yellow')
-  else parentDot.classList.add('status-red')
+  if(!timeline)return
+  const entries=Array.from(timeline.querySelectorAll('.entry'))
+  if(entries.length===0)return
+  const latest=entries[0]
+  const parentDot=document.getElementById('parent-dot')
+  parentDot.classList.remove('status-green','status-yellow','status-red')
+  if(latest.classList.contains('resolved'))parentDot.classList.add('status-green')
+  else if(latest.classList.contains('monitoring'))parentDot.classList.add('status-yellow')
+  else parentDot.classList.add('status-red')
 }
 (function init(){
-  const timeline=document.querySelector('.timeline')
-  const entries=Array.from(timeline.querySelectorAll('.entry'))
-  if(entries.length>0){
-    const ordered=entries
-    ordered.forEach(e=>timeline.appendChild(e))
-    updateParentDot(timeline)
-  }
+  const timeline=document.querySelector('.timeline')
+  const entries=Array.from(timeline.querySelectorAll('.entry'))
+  if(entries.length>0){
+    const ordered=entries
+    ordered.forEach(e=>timeline.appendChild(e))
+    updateParentDot(timeline)
+  }
 })();
 </script>
 </body>
