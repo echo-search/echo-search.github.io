@@ -45,6 +45,7 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
+    cursor: pointer;
   }
   .incident-header {
     display: flex;
@@ -67,17 +68,9 @@
   .status-yellow { background: #ffb100; }
   .status-red { background: #e03131; }
 
-  .incident strong {
-    font-weight: 600;
-  }
-  .incident small {
-    color: #999;
-    flex-shrink: 0;
-  }
-  .incident .desc {
-    color: #444;
-    margin-top: 0.3rem;
-  }
+  .incident strong { font-weight: 600; }
+  .incident small { color: #999; flex-shrink: 0; }
+  .incident .desc { color: #444; margin-top: 0.3rem; }
 
   .timeline {
     position: relative;
@@ -85,24 +78,26 @@
     padding-left: 1.5rem;
     border-left: 2px solid #ddd;
     margin-top: 1.25rem;
+    display: none;
+  }
+  .timeline.active {
+    display: block;
   }
 
   .entry {
     position: relative;
     margin-bottom: 2rem;
   }
-  .entry:last-child {
-    margin-bottom: 0;
-  }
+  .entry:last-child { margin-bottom: 0; }
+
   .entry::before {
     content: "";
     position: absolute;
-    left: -1.65rem;
-    top: 0.45rem;
+    left: -1.1rem;
+    top: 0.4rem;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #d33;
   }
   .entry.resolved::before { background: #28a745; }
   .entry.monitoring::before { background: #ffb100; }
@@ -114,9 +109,7 @@
     font-size: 1rem;
     font-weight: 600;
   }
-  .entry p {
-    margin: 0.25rem 0;
-  }
+  .entry p { margin: 0.25rem 0; }
   .time {
     color: #888;
     font-size: 0.9rem;
@@ -133,7 +126,7 @@
     <div class="dow">Wed</div>
   </div>
 
-  <div class="incident">
+  <div class="incident" onclick="toggleTimeline(this)">
     <div>
       <div class="incident-header">
         <div class="status-dot status-green"></div>
@@ -169,6 +162,7 @@
       <div class="time">01:10</div>
     </div>
   </div>
+
 <script>
   function toggleTimeline(el) {
     document.querySelectorAll('.timeline').forEach(t => t.classList.remove('active'));
