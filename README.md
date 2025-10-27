@@ -8,6 +8,9 @@
 
 <h1>EchoSearch - The Future of Web Searching Has Officially Launched!</h1>
 
+<img alt="Static Badge" src="https://img.shields.io/badge/version-v.2.1-teal">
+
+
 <p>Welcome to <strong>EchoSearch</strong>, an innovative web search platform designed to deliver speed, efficiency, and a seamless user experience. EchoSearch is not just a search engine; it is a fully optimized environment that combines high performance, minimalism, and modern design principles to provide an unmatched online search experience. Every aspect of EchoSearch has been carefully crafted to provide users with instant access to the information they need while maintaining a clean, distraction-free interface.</p>
 
 <p>The official URL for EchoSearch is: <a href="https://echo-search.github.io/">https://echo-search.github.io/</a>. By visiting this URL, users can instantly access the search interface from any device, whether it’s a desktop, tablet, or mobile phone. The interface is fully responsive and optimized to function flawlessly across all screen sizes, ensuring a consistent and reliable experience for everyone.</p>
