@@ -9,7 +9,7 @@
 <h1>EchoSearch - The Future of Web Searching Has Officially Launched!</h1>
 
 <p align="center">
-  src="https://img.shields.io/badge/version-v.2.1-teal" alt="v.2.1"
+  <img src="https://img.shields.io/badge/version-v.2.1-teal" alt="v.2.1">
 </p>
 
 
