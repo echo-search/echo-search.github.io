@@ -372,7 +372,7 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
         return null;
     }
     async function handleDictionarySearch(query) {
-  const lower = query.toLowerCase().trim();
+  const wordKey = word.trim().toUpperCase();
   const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
   const isDictionaryQuery = triggers.some(word => lower.includes(word));
 
