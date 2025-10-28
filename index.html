@@ -382,7 +382,7 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
   if (!word) return "Please enter a word to define.";
 
   try {
-    const localRes = await fetch("/json/dictionary.json");
+    const localRes = await fetch("json/dictionary.json");
     if (localRes.ok) {
       const localData = await localRes.json();
       if (localData && localData[word]) {
