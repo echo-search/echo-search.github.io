@@ -376,22 +376,37 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
   const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
   const isDictionaryQuery = triggers.some(word => lower.includes(word));
 
-  if (isDictionaryQuery) {
-    const word = lower.replace(/(meaning of|definition of|define|dictionary|meaning)/g, "").trim();
-    if (!word) return "Please enter a word to define.";
+  if (!isDictionaryQuery) return null;
 
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    const data = await res.json();
+  const word = lower.replace(/(meaning of|definition of|define|dictionary|meaning)/g, "").trim();
+  if (!word) return "Please enter a word to define.";
 
-    if (!Array.isArray(data)) return "No definition found.";
+  try {
+    const localRes = await fetch("/json/dictionary.json");
+    if (localRes.ok) {
+      const localData = await localRes.json();
+      if (localData && localData[word]) {
+        const entry = localData[word];
+        const meaning = entry.meaning || "No meaning found.";
+        const example = entry.example || "No example available.";
+        return `${word}: ${meaning}\nExample: ${example}`;
+      }
+    }
+  } catch (e) {}
 
-    const meaning = data[0].meanings[0].definitions[0].definition;
-    const example = data[0].meanings[0].definitions[0].example || "No example available.";
+  try {
+    const apiRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (Array.isArray(data) && data[0]?.meanings?.[0]?.definitions?.[0]) {
+        const meaning = data[0].meanings[0].definitions[0].definition;
+        const example = data[0].meanings[0].definitions[0].example || "No example available.";
+        return `${word}: ${meaning}\nExample: ${example}`;
+      }
+    }
+  } catch (e) {}
 
-    return `${word}: ${meaning}\nExample: ${example}`;
-  }
-
-  return null;
+  return "No definition found.";
 }
     searchBtn.addEventListener("click", function() {
         const query = searchInput.value.trim();
