@@ -2,7 +2,7 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "name": "EchoSearch",
-  "orientation": "portrait",
+  "orientation": "any",
   "scope": "/",
   "short_name": "EchoSearch",
   "start_url": "/",
@@ -12,7 +12,7 @@
     {
       "src": "android-launchericon-192-192.png",
       "sizes": "192x192",
-      "type": "image/x-icon"
+      "type": "image/png",
     }
   ]
 }
