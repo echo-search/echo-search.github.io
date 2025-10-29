@@ -8,4 +8,5 @@
   "start_url": "/",
   "theme_color": "#ffffff",
   "description": "EchoSearch is a search engine that you can use to search anything. But unlike other search engines, there are multiple features to match your desire."
+  "icons": [{"src": "favicon.ico","sizes": "512x512 64x64 32x32 24x24 16x16","type": "image/x-icon"}]
 }
