@@ -464,6 +464,7 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
         li.addEventListener('click', () => {
           searchInput.value = match;
           suggestionsBox.style.display = 'none';
+		  doSearch(match);
         });
         suggestionsBox.appendChild(li);
       });
