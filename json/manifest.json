@@ -8,4 +8,10 @@
   "start_url": "/",
   "theme_color": "#ffffff",
   "description": "EchoSearch is a search engine that you can use to search anything. But unlike other search engines, there are multiple features to match your desire."
+  "icons": [
+    {
+      "src": "android-launchericon-192-192.png",
+      "sizes": "192x192"
+    }
+  ]
 }
