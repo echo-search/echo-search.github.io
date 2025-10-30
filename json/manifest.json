@@ -5,6 +5,7 @@
   "orientation": "any",
   "scope": "/",
   "short_name": "EchoSearch",
+  "display_override": ["fullscreen", "standalone"],
   "start_url": "/",
   "theme_color": "#ffffff",
   "description": "EchoSearch is a search engine that you can use to search anything. But unlike other search engines, there are multiple features to match your desire.",
