@@ -1,119 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Themes - EchoSearch</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-    h2 { margin-bottom: 10px; }
-    #themesList { display: flex; flex-wrap: wrap; gap: 15px; }
-    .theme-card {
-      width: 140px; height: 140px; border-radius: 6px; border: 2px solid #ccc;
-      cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center;
-      position: relative;
+    :root { --bg:#f5f5f5; --card:#fff; --muted:#666; --accent:#007bff; }
+    body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:#222; padding:20px; }
+    h1 { margin:0 0 12px 0; font-size:20px; }
+    .container { max-width:900px; margin:0 auto; }
+    .panel { background:var(--card); padding:14px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.06); margin-bottom:14px; }
+    label { display:block; font-weight:600; margin-top:8px; font-size:0.95rem; }
+    .row { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+    input[type="text"], input[type="color"] { padding:8px; border-radius:6px; border:1px solid #ddd; }
+    input[type="file"] { margin-top:6px; }
+    button { cursor:pointer; border:none; border-radius:6px; padding:8px 10px; }
+    button.primary { background:var(--accent); color:#fff; }
+    button.danger { background:#dc3545; color:#fff; }
+    button.ghost { background:#f0f0f0; color:#333; }
+    #themesUL { list-style: none; padding:0; margin:0; }
+    #themesUL li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-bottom:1px solid #eee; background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4)); }
+    #themesUL li .left { display:flex; align-items:center; gap:12px; }
+    .swatch { width:52px; height:52px; border-radius:6px; border:1px solid #e6e6e6; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; text-shadow:0 1px 0 rgba(0,0,0,0.2); overflow:hidden; }
+    .meta { font-size:0.9rem; color:var(--muted); }
+    .sep { text-align:center; padding:8px; color:var(--muted); background:transparent; border-bottom:1px solid #eee; }
+    .preview { height:86px; border-radius:6px; border:1px solid #e6e6e6; margin-top:10px; display:flex; align-items:center; justify-content:center; color:#222; background:#fff; }
+    .muted { color:var(--muted); font-size:0.95rem; }
+    @media (max-width:520px) {
+      .row { flex-direction:column; }
+      .swatch { width:44px; height:44px; }
     }
-    .theme-card span {
-      position: absolute; bottom: 5px; left: 0; right: 0; text-align: center;
-      background: rgba(255,255,255,0.7); font-size: 13px;
-    }
-    #addThemeBtn { margin-top: 20px; }
-    #addPanel { display: none; margin-top: 20px; }
-    input[type=color], input[type=file] { display: block; margin: 8px 0; }
-    #preview { width: 100%; height: 100px; border: 1px solid #ccc; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>Choose a Theme</h2>
-  <div id="themesList"></div>
+  <div class="container">
+    <h1>Themes</h1>
 
-  <button id="addThemeBtn">+ Add Theme</button>
+    <div class="panel" id="createPanel">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="muted">Create a custom theme</div>
+          <label for="themeName">Theme name</label>
+          <input id="themeName" type="text" placeholder="e.g. My Minty Theme" style="width:100%;max-width:360px;" />
+        </div>
+        <div style="text-align:right;">
+          <div class="muted">Preset themes are listed below. Custom themes appear instantly in the list.</div>
+        </div>
+      </div>
 
-  <div id="addPanel">
-    <h3>Create Theme</h3>
-    <label>Primary:</label>
-    <input type="color" id="primaryColor" value="#ffffff">
-    <label>Text/Accent:</label>
-    <input type="color" id="secondaryColor" value="#000000">
-    <label>Background Image:</label>
-    <input type="file" id="bgImage" accept="image/*">
-    <div id="preview"></div>
-    <button id="saveThemeBtn">Save Theme</button>
+      <div class="row" style="margin-top:12px;">
+        <div>
+          <label for="bgColor">--bg (background)</label>
+          <input id="bgColor" type="color" value="#ffffff" />
+        </div>
+        <div>
+          <label for="accentColor">--accent (accent)</label>
+          <input id="accentColor" type="color" value="#00cec9" />
+        </div>
+        <div>
+          <label for="hoverColor">--hover (hover)</label>
+          <input id="hoverColor" type="color" value="#00b2af" />
+        </div>
+        <div>
+          <label for="textColor">--text (text)</label>
+          <input id="textColor" type="color" value="#000000" />
+        </div>
+      </div>
+
+      <label for="bgImage">Background image (optional)</label>
+      <input id="bgImage" type="file" accept="image/*" />
+
+      <div class="preview" id="preview">Preview</div>
+
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button id="saveBtn" class="primary">Save theme</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+          <strong>Available themes</strong>
+          <div class="muted">Presets first, then your custom themes (added instantly)</div>
+        </div>
+        <div>
+          <button id="clearCustoms" class="ghost" title="Remove all custom themes">Clear custom themes</button>
+        </div>
+      </div>
+
+      <ul id="themesUL" aria-live="polite"></ul>
+    </div>
   </div>
 
-  <script>
-    const themesList = document.getElementById('themesList');
-    const addBtn = document.getElementById('addThemeBtn');
-    const addPanel = document.getElementById('addPanel');
-    const primary = document.getElementById('primaryColor');
-    const secondary = document.getElementById('secondaryColor');
-    const bgInput = document.getElementById('bgImage');
-    const preview = document.getElementById('preview');
+<script>
+(function () {
+  // 11 preset theme names
+  const presetNames = [
+    'Default','Dark','Retro','Neon','Ocean',
+    'Midnight','Sunset','Matrix','Cyberpunk','Forest','Floral'
+  ];
 
-    const presetThemes = [
-      {name: 'Light', primary: '#ffffff', secondary: '#000000', bg: ''},
-      {name: 'Dark', primary: '#111111', secondary: '#ffffff', bg: ''},
-      {name: 'Ocean', primary: '#0077b6', secondary: '#caf0f8', bg: ''}
-    ];
+  // DOM refs
+  const themesUL = document.getElementById('themesUL');
+  const saveBtn = document.getElementById('saveBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const themeNameInput = document.getElementById('themeName');
+  const bgColorInput = document.getElementById('bgColor');
+  const accentInput = document.getElementById('accentColor');
+  const hoverInput = document.getElementById('hoverColor');
+  const textInput = document.getElementById('textColor');
+  const bgFileInput = document.getElementById('bgImage');
+  const preview = document.getElementById('preview');
+  const clearCustomsBtn = document.getElementById('clearCustoms');
 
-    // Load themes from storage or start empty
-    let customThemes = JSON.parse(localStorage.getItem('customThemes')) || [];
+  // Key used in localStorage
+  const STORAGE_KEY = 'customThemes';
+  // Transient marker used by homepage to apply theme if desired
+  const ACTIVE_KEY = 'activeTheme';
 
-    function renderThemes() {
-      themesList.innerHTML = '';
-      const allThemes = [...presetThemes, ...customThemes];
-      allThemes.forEach((theme, index) => {
-        const card = document.createElement('div');
-        card.className = 'theme-card';
-        card.style.background = theme.bg ? `url(${theme.bg}) center/cover` : theme.primary;
-        card.style.color = theme.secondary;
-        card.innerHTML = `<span>${theme.name}</span>`;
-        card.onclick = () => applyTheme(theme);
-        themesList.appendChild(card);
-      });
+  // helpers
+  function loadCustomThemes() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error('Failed to parse customThemes', e);
+      return [];
     }
+  }
 
-    function applyTheme(theme) {
-      localStorage.setItem('activeTheme', JSON.stringify(theme));
-      alert(`Theme "${theme.name}" applied!`);
-      window.location.href = '/';
+  function saveCustomThemes(arr) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr || []));
+    } catch (e) {
+      console.error('Failed to save customThemes', e);
     }
+  }
 
-    addBtn.onclick = () => addPanel.style.display = addPanel.style.display === 'none' ? 'block' : 'none';
+  // render the UL list: presets, separator, customs
+  function renderList() {
+    themesUL.innerHTML = '';
 
-    [primary, secondary].forEach(input => input.addEventListener('input', updatePreview));
+    // Presets
+    presetNames.forEach(name => {
+      const li = document.createElement('li');
 
-    bgInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = evt => {
-          preview.style.backgroundImage = `url('${evt.target.result}')`;
-          preview.style.backgroundSize = 'cover';
-        };
-        reader.readAsDataURL(file);
-      }
+      const left = document.createElement('div');
+      left.className = 'left';
+
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      sw.style.background = '#888';
+      sw.textContent = name[0] || '';
+      left.appendChild(sw);
+
+      const txt = document.createElement('div');
+      const title = document.createElement('div');
+      title.textContent = name;
+      title.style.fontWeight = '600';
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = 'preset';
+      txt.appendChild(title);
+      txt.appendChild(meta);
+      left.appendChild(txt);
+
+      li.appendChild(left);
+
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '8px';
+
+      const applyBtn = document.createElement('button');
+      applyBtn.className = 'primary';
+      applyBtn.textContent = 'Apply';
+      applyBtn.onclick = () => {
+        // set activeTheme marker; index.html script (if present) can detect and apply
+        localStorage.setItem(ACTIVE_KEY, JSON.stringify({ __applyPreset: true, name }));
+        // do not redirect automatically; keep behavior optional
+        alert(`Marked preset "${name}" to be applied by the homepage. (index.html will pick it up if it checks localStorage.activeTheme)`);
+      };
+      actions.appendChild(applyBtn);
+
+      li.appendChild(actions);
+      themesUL.appendChild(li);
     });
 
-    function updatePreview() {
-      preview.style.backgroundColor = primary.value;
-      preview.style.color = secondary.value;
+    // Separator
+    const sep = document.createElement('li');
+    sep.className = 'sep';
+    sep.textContent = 'Custom themes';
+    themesUL.appendChild(sep);
+
+    // Customs
+    const customs = loadCustomThemes();
+    if (!customs || customs.length === 0) {
+      const li = document.createElement('li');
+      const span = document.createElement('span');
+      span.className = 'muted';
+      span.textContent = 'No custom themes yet.';
+      li.appendChild(span);
+      themesUL.appendChild(li);
+      return;
     }
 
-    document.getElementById('saveThemeBtn').onclick = () => {
-      const newTheme = {
-        name: `Custom ${customThemes.length + 1}`,
-        primary: primary.value,
-        secondary: secondary.value,
-        bg: preview.style.backgroundImage ? preview.style.backgroundImage.slice(5, -2) : ''
-      };
-      customThemes.push(newTheme);
-      localStorage.setItem('customThemes', JSON.stringify(customThemes));
-      renderThemes();
-      addPanel.style.display = 'none';
-    };
+    customs.forEach((t, idx) => {
+      const li = document.createElement('li');
 
-    renderThemes();
-  </script>
+      const left = document.createElement('div');
+      left.className = 'left';
+
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      if (t.bgImage) {
+        sw.style.backgroundImage = `url("${t.bgImage}")`;
+        sw.style.backgroundSize = 'cover';
+        sw.style.backgroundPosition = 'center';
+      } else if (t.bgColor) {
+        sw.style.background = t.bgColor;
+      } else {
+        sw.style.background = '#ddd';
+      }
+      left.appendChild(sw);
+
+      const txt = document.createElement('div');
+      const title = document.createElement('div');
+      title.textContent = t.name || `Custom ${idx + 1}`;
+      title.style.fontWeight = '600';
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      const pieces = [];
+      if (t.accent) pieces.push(`accent: ${t.accent}`);
+      if (t.textColor) pieces.push(`text: ${t.textColor}`);
+      if (t.hover) pieces.push(`hover: ${t.hover}`);
+      meta.textContent = pieces.join(' • ');
+      txt.appendChild(title);
+      txt.appendChild(meta);
+      left.appendChild(txt);
+
+      li.appendChild(left);
+
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '8px';
+
+      const applyBtn = document.createElement('button');
+      applyBtn.className = 'primary';
+      applyBtn.textContent = 'Apply';
+      applyBtn.onclick = () => {
+        // mark activeTheme so index.html (homepage) can pick it up and add to dropdown/apply
+        localStorage.setItem(ACTIVE_KEY, JSON.stringify({ __fromThemesPage: true, data: t }));
+        alert(`Custom theme "${t.name}" marked as active. The homepage can pick this up from localStorage.activeTheme.`);
+        // optionally redirect to homepage immediately:
+        // window.location.href = '/';
+      };
+      actions.appendChild(applyBtn);
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'ghost';
+      editBtn.textContent = 'Edit';
+      editBtn.onclick = () => {
+        // populate form with this theme for quick editing
+        themeNameInput.value = t.name || '';
+        bgColorInput.value = t.bgColor || '#ffffff';
+        accentInput.value = t.accent || '#00cec9';
+        hoverInput.value = t.hover || '#00b2af';
+        textInput.value = t.textColor || '#000000';
+        if (t.bgImage) {
+          preview.style.backgroundImage = `url("${t.bgImage}")`;
+          preview.style.backgroundSize = 'cover';
+        } else {
+          preview.style.backgroundImage = '';
+        }
+        // remove the existing item so saving creates a new one in its place
+        customs.splice(idx, 1);
+        saveCustomThemes(customs);
+        renderList();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      actions.appendChild(editBtn);
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'danger';
+      delBtn.textContent = 'Delete';
+      delBtn.onclick = () => {
+        if (!confirm(`Delete custom theme "${t.name || 'Custom'}"?`)) return;
+        const arr = loadCustomThemes();
+        arr.splice(idx, 1);
+        saveCustomThemes(arr);
+        renderList();
+      };
+      actions.appendChild(delBtn);
+
+      li.appendChild(actions);
+      themesUL.appendChild(li);
+    });
+  }
+
+  // local file -> dataurl
+  function fileToDataUrl(file) {
+    return new Promise((res, rej) => {
+      if (!file) return res('');
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result);
+      reader.onerror = (e) => rej(e);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // update preview area
+  function updatePreview() {
+    preview.style.backgroundImage = '';
+    preview.style.backgroundSize = 'cover';
+    preview.style.backgroundPosition = 'center';
+    preview.style.color = textInput.value || '#000';
+    if (selectedBgDataUrl) {
+      preview.style.backgroundImage = `url("${selectedBgDataUrl}")`;
+      preview.textContent = '';
+      return;
+    }
+    const bg = bgColorInput.value || '#ffffff';
+    preview.style.background = bg;
+    preview.textContent = themeNameInput.value || 'Preview';
+  }
+
+  // state for selected file dataurl
+  let selectedBgDataUrl = '';
+
+  bgFileInput.addEventListener('change', async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) {
+      selectedBgDataUrl = '';
+      updatePreview();
+      return;
+    }
+    try {
+      selectedBgDataUrl = await fileToDataUrl(f);
+      updatePreview();
+    } catch (err) {
+      console.error('Error reading file', err);
+      selectedBgDataUrl = '';
+    }
+  });
+
+  // Save new theme
+  saveBtn.addEventListener('click', async () => {
+    const name = (themeNameInput.value || '').trim() || `Custom ${Date.now()}`;
+    // allow CSS gradients in bg if user pasted value (not only color input)
+    const newTheme = {
+      name,
+      bgColor: bgColorInput.value || '#ffffff',
+      accent: accentInput.value || '',
+      hover: hoverInput.value || '',
+      textColor: textInput.value || '',
+      bgImage: selectedBgDataUrl || ''
+    };
+    const arr = loadCustomThemes();
+    arr.push(newTheme);
+    saveCustomThemes(arr);
+    // update UI instantly
+    renderList();
+    // clear inputs but keep them usable
+    themeNameInput.value = '';
+    bgFileInput.value = '';
+    selectedBgDataUrl = '';
+    // reset preview to defaults
+    preview.style.backgroundImage = '';
+    preview.style.background = '#fff';
+    preview.textContent = 'Preview';
+    // optional: let other tabs know via storage event (storage is already set, but some browsers may not fire event in same tab)
+    try {
+      localStorage.setItem('customThemes:sync', Date.now().toString());
+    } catch (e) {}
+  });
+
+  resetBtn.addEventListener('click', () => {
+    themeNameInput.value = '';
+    bgColorInput.value = '#ffffff';
+    accentInput.value = '#00cec9';
+    hoverInput.value = '#00b2af';
+    textInput.value = '#000000';
+    bgFileInput.value = '';
+    selectedBgDataUrl = '';
+    preview.style.backgroundImage = '';
+    preview.style.background = '#fff';
+    preview.textContent = 'Preview';
+  });
+
+  clearCustomsBtn.addEventListener('click', () => {
+    if (!confirm('Remove all custom themes?')) return;
+    saveCustomThemes([]);
+    renderList();
+  });
+
+  // Expose addCustomTheme for other scripts to call to add instantly
+  window.addCustomTheme = function (themeObj) {
+    if (!themeObj || typeof themeObj !== 'object') {
+      throw new Error('addCustomTheme requires an object');
+    }
+    const arr = loadCustomThemes();
+    arr.push(themeObj);
+    saveCustomThemes(arr);
+    renderList();
+  };
+
+  // Listen for storage events (other tabs or pages)
+  window.addEventListener('storage', (e) => {
+    if (!e.key) return;
+    if (e.key === STORAGE_KEY || e.key === 'customThemes:sync' || e.key === ACTIVE_KEY) {
+      // re-render to reflect changes
+      renderList();
+    }
+  });
+
+  // initial render
+  renderList();
+  updatePreview();
+})();
+</script>
 </body>
 </html>
