@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Themes - EchoSearch</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    h2 { margin-bottom: 10px; }
+    #themesList { display: flex; flex-wrap: wrap; gap: 15px; }
+    .theme-card {
+      width: 140px; height: 140px; border-radius: 6px; border: 2px solid #ccc;
+      cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .theme-card span {
+      position: absolute; bottom: 5px; left: 0; right: 0; text-align: center;
+      background: rgba(255,255,255,0.7); font-size: 13px;
+    }
+    #addThemeBtn { margin-top: 20px; }
+    #addPanel { display: none; margin-top: 20px; }
+    input[type=color], input[type=file] { display: block; margin: 8px 0; }
+    #preview { width: 100%; height: 100px; border: 1px solid #ccc; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Choose a Theme</h2>
+  <div id="themesList"></div>
+
+  <button id="addThemeBtn">+ Add Theme</button>
+
+  <div id="addPanel">
+    <h3>Create Theme</h3>
+    <label>Primary:</label>
+    <input type="color" id="primaryColor" value="#ffffff">
+    <label>Text/Accent:</label>
+    <input type="color" id="secondaryColor" value="#000000">
+    <label>Background Image:</label>
+    <input type="file" id="bgImage" accept="image/*">
+    <div id="preview"></div>
+    <button id="saveThemeBtn">Save Theme</button>
+  </div>
+
+  <script>
+    const themesList = document.getElementById('themesList');
+    const addBtn = document.getElementById('addThemeBtn');
+    const addPanel = document.getElementById('addPanel');
+    const primary = document.getElementById('primaryColor');
+    const secondary = document.getElementById('secondaryColor');
+    const bgInput = document.getElementById('bgImage');
+    const preview = document.getElementById('preview');
+
+    const presetThemes = [
+      {name: 'Light', primary: '#ffffff', secondary: '#000000', bg: ''},
+      {name: 'Dark', primary: '#111111', secondary: '#ffffff', bg: ''},
+      {name: 'Ocean', primary: '#0077b6', secondary: '#caf0f8', bg: ''}
+    ];
+
+    // Load themes from storage or start empty
+    let customThemes = JSON.parse(localStorage.getItem('customThemes')) || [];
+
+    function renderThemes() {
+      themesList.innerHTML = '';
+      const allThemes = [...presetThemes, ...customThemes];
+      allThemes.forEach((theme, index) => {
+        const card = document.createElement('div');
+        card.className = 'theme-card';
+        card.style.background = theme.bg ? `url(${theme.bg}) center/cover` : theme.primary;
+        card.style.color = theme.secondary;
+        card.innerHTML = `<span>${theme.name}</span>`;
+        card.onclick = () => applyTheme(theme);
+        themesList.appendChild(card);
+      });
+    }
+
+    function applyTheme(theme) {
+      localStorage.setItem('activeTheme', JSON.stringify(theme));
+      alert(`Theme "${theme.name}" applied!`);
+      window.location.href = '/';
+    }
+
+    addBtn.onclick = () => addPanel.style.display = addPanel.style.display === 'none' ? 'block' : 'none';
+
+    [primary, secondary].forEach(input => input.addEventListener('input', updatePreview));
+
+    bgInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = evt => {
+          preview.style.backgroundImage = `url('${evt.target.result}')`;
+          preview.style.backgroundSize = 'cover';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function updatePreview() {
+      preview.style.backgroundColor = primary.value;
+      preview.style.color = secondary.value;
+    }
+
+    document.getElementById('saveThemeBtn').onclick = () => {
+      const newTheme = {
+        name: `Custom ${customThemes.length + 1}`,
+        primary: primary.value,
+        secondary: secondary.value,
+        bg: preview.style.backgroundImage ? preview.style.backgroundImage.slice(5, -2) : ''
+      };
+      customThemes.push(newTheme);
+      localStorage.setItem('customThemes', JSON.stringify(customThemes));
+      renderThemes();
+      addPanel.style.display = 'none';
+    };
+
+    renderThemes();
+  </script>
+</body>
+</html>
