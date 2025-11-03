@@ -383,12 +383,14 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
   const word = lower.replace(/(meaning of|definition of|define|dictionary|meaning)/g, "").trim();
   if (!word) return "Please enter a word to define.";
 
+  const wordUpper = word.toUpperCase();
+
   try {
     const localRes = await fetch("json/dictionary.json");
     if (localRes.ok) {
       const localData = await localRes.json();
-      if (localData && localData[word]) {
-        const entry = localData[word];
+      if (localData && localData[wordUpper]) {
+        const entry = localData[wordUpper];
         const meaning = entry.meaning || "No meaning found.";
         const example = entry.example || "No example available.";
         return `${word}: ${meaning}\nExample: ${example}`;
