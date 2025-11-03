@@ -240,7 +240,17 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
   "Every human started as a single cell smaller than a grain of salt."
 ];
 
-    const themeNames = ['default','dark','retro','neon','ocean','midnight','sunset','matrix','cyberpunk','forest','floral'];
+     const active = JSON.parse(localStorage.getItem('activeTheme'));
+if (active) {
+  document.body.style.backgroundColor = active.primary;
+  document.body.style.color = active.secondary;
+  if (active.bg) {
+    document.body.style.backgroundImage = `url(${active.bg})`;
+    document.body.style.backgroundSize = 'cover';
+  }
+}    
+	  
+	  const themeNames = ['default','dark','retro','neon','ocean','midnight','sunset','matrix','cyberpunk','forest','floral'];
 
     function setTheme(theme) {
       themeNames.forEach(t => document.body.classList.remove(t));
