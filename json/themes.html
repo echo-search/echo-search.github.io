@@ -95,13 +95,11 @@
 
 <script>
 (function () {
-  // 11 preset theme names
   const presetNames = [
     'Default','Dark','Retro','Neon','Ocean',
     'Midnight','Sunset','Matrix','Cyberpunk','Forest','Floral'
   ];
 
-  // DOM refs
   const themesUL = document.getElementById('themesUL');
   const saveBtn = document.getElementById('saveBtn');
   const resetBtn = document.getElementById('resetBtn');
@@ -114,12 +112,9 @@
   const preview = document.getElementById('preview');
   const clearCustomsBtn = document.getElementById('clearCustoms');
 
-  // Key used in localStorage
   const STORAGE_KEY = 'customThemes';
-  // Transient marker used by homepage to apply theme if desired
   const ACTIVE_KEY = 'activeTheme';
 
-  // helpers
   function loadCustomThemes() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -138,11 +133,9 @@
     }
   }
 
-  // render the UL list: presets, separator, customs
   function renderList() {
     themesUL.innerHTML = '';
 
-    // Presets
     presetNames.forEach(name => {
       const li = document.createElement('li');
 
@@ -176,10 +169,8 @@
       applyBtn.className = 'primary';
       applyBtn.textContent = 'Apply';
       applyBtn.onclick = () => {
-        // set activeTheme marker; index.html script (if present) can detect and apply
         localStorage.setItem(ACTIVE_KEY, JSON.stringify({ __applyPreset: true, name }));
-        // do not redirect automatically; keep behavior optional
-        alert(`Marked preset "${name}" to be applied by the homepage. (index.html will pick it up if it checks localStorage.activeTheme)`);
+        alert(`Marked preset "${name}" to be applied by the homepage. It should take a few seconds.`);
       };
       actions.appendChild(applyBtn);
 
@@ -187,13 +178,11 @@
       themesUL.appendChild(li);
     });
 
-    // Separator
     const sep = document.createElement('li');
     sep.className = 'sep';
     sep.textContent = 'Custom themes';
     themesUL.appendChild(sep);
 
-    // Customs
     const customs = loadCustomThemes();
     if (!customs || customs.length === 0) {
       const li = document.createElement('li');
@@ -249,11 +238,8 @@
       applyBtn.className = 'primary';
       applyBtn.textContent = 'Apply';
       applyBtn.onclick = () => {
-        // mark activeTheme so index.html (homepage) can pick it up and add to dropdown/apply
         localStorage.setItem(ACTIVE_KEY, JSON.stringify({ __fromThemesPage: true, data: t }));
-        alert(`Custom theme "${t.name}" marked as active. The homepage can pick this up from localStorage.activeTheme.`);
-        // optionally redirect to homepage immediately:
-        // window.location.href = '/';
+        alert(`"${t.name}" has been marked as active. You can now go to the homepage and select "${t.name}". Then, reload the page.`);
       };
       actions.appendChild(applyBtn);
 
@@ -261,7 +247,6 @@
       editBtn.className = 'ghost';
       editBtn.textContent = 'Edit';
       editBtn.onclick = () => {
-        // populate form with this theme for quick editing
         themeNameInput.value = t.name || '';
         bgColorInput.value = t.bgColor || '#ffffff';
         accentInput.value = t.accent || '#00cec9';
@@ -273,7 +258,6 @@
         } else {
           preview.style.backgroundImage = '';
         }
-        // remove the existing item so saving creates a new one in its place
         customs.splice(idx, 1);
         saveCustomThemes(customs);
         renderList();
@@ -298,7 +282,6 @@
     });
   }
 
-  // local file -> dataurl
   function fileToDataUrl(file) {
     return new Promise((res, rej) => {
       if (!file) return res('');
@@ -309,7 +292,6 @@
     });
   }
 
-  // update preview area
   function updatePreview() {
     preview.style.backgroundImage = '';
     preview.style.backgroundSize = 'cover';
@@ -325,7 +307,6 @@
     preview.textContent = themeNameInput.value || 'Preview';
   }
 
-  // state for selected file dataurl
   let selectedBgDataUrl = '';
 
   bgFileInput.addEventListener('change', async (e) => {
@@ -344,10 +325,8 @@
     }
   });
 
-  // Save new theme
   saveBtn.addEventListener('click', async () => {
     const name = (themeNameInput.value || '').trim() || `Custom ${Date.now()}`;
-    // allow CSS gradients in bg if user pasted value (not only color input)
     const newTheme = {
       name,
       bgColor: bgColorInput.value || '#ffffff',
@@ -359,17 +338,13 @@
     const arr = loadCustomThemes();
     arr.push(newTheme);
     saveCustomThemes(arr);
-    // update UI instantly
     renderList();
-    // clear inputs but keep them usable
     themeNameInput.value = '';
     bgFileInput.value = '';
     selectedBgDataUrl = '';
-    // reset preview to defaults
     preview.style.backgroundImage = '';
     preview.style.background = '#fff';
     preview.textContent = 'Preview';
-    // optional: let other tabs know via storage event (storage is already set, but some browsers may not fire event in same tab)
     try {
       localStorage.setItem('customThemes:sync', Date.now().toString());
     } catch (e) {}
@@ -394,7 +369,6 @@
     renderList();
   });
 
-  // Expose addCustomTheme for other scripts to call to add instantly
   window.addCustomTheme = function (themeObj) {
     if (!themeObj || typeof themeObj !== 'object') {
       throw new Error('addCustomTheme requires an object');
@@ -405,16 +379,13 @@
     renderList();
   };
 
-  // Listen for storage events (other tabs or pages)
   window.addEventListener('storage', (e) => {
     if (!e.key) return;
     if (e.key === STORAGE_KEY || e.key === 'customThemes:sync' || e.key === ACTIVE_KEY) {
-      // re-render to reflect changes
       renderList();
     }
   });
 
-  // initial render
   renderList();
   updatePreview();
 })();
