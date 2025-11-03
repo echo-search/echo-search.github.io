@@ -123,7 +123,6 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
 
   <div class="pri-pol">By using EchoSearch, you agree to the <a href="Articles/privacy-policy.html">Privacy Policy</a> and <a href="Articles/terms-of-conditions.html">Terms of Conditions</a>.</div>
   <script>
-    const themeSelect = document.getElementById("theme");
     const surpriseBtn = document.getElementById("surpriseBtn");
     const voiceBtn = document.getElementById("voiceBtn");
     const searchInput = document.getElementById("searchInput");
@@ -240,34 +239,245 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
   "Every human started as a single cell smaller than a grain of salt."
 ];
 
-     const active = JSON.parse(localStorage.getItem('activeTheme'));
-if (active) {
-  document.body.style.backgroundColor = active.primary;
-  document.body.style.color = active.secondary;
-  if (active.bg) {
-    document.body.style.backgroundImage = `url(${active.bg})`;
-    document.body.style.backgroundSize = 'cover';
-  }
-}    
-	  
-	  const themeNames = ['default','dark','retro','neon','ocean','midnight','sunset','matrix','cyberpunk','forest','floral'];
+// Theme integration snippet — replace your old theme handling code with this block.
+// This will:
+// - load customThemes from localStorage
+// - populate the #theme <select> with presets + custom themes
+// - apply preset class-based themes (adds the preset class to <body>)
+// - apply custom themes by setting CSS variables (--bg, --accent, --hover, --text) and optional background image
+// - persist selected theme to localStorage as JSON { type: 'preset'|'custom', nameOrIndex: ... }
+// - restore saved selection on load
 
-    function setTheme(theme) {
-      themeNames.forEach(t => document.body.classList.remove(t));
-      document.body.classList.add(theme);
-      localStorage.setItem('selectedTheme', theme);
+(function () {
+  const themeSelect = document.getElementById('theme');
+  if (!themeSelect) return;
+
+  // Define preset names (11 presets)
+  const presets = [
+    { name: 'Default', value: 'default' },
+    { name: 'Dark', value: 'dark' },
+    { name: 'Retro', value: 'retro' },
+    { name: 'Neon', value: 'neon' },
+    { name: 'Ocean', value: 'ocean' },
+    { name: 'Midnight', value: 'midnight' },
+    { name: 'Sunset', value: 'sunset' },
+    { name: 'Matrix', value: 'matrix' },
+    { name: 'Cyberpunk', value: 'cyberpunk' },
+    { name: 'Forest', value: 'forest' },
+    { name: 'Floral', value: 'floral' }
+  ];
+
+  // Load custom themes from localStorage
+  function loadCustomThemes() {
+    try {
+      const raw = localStorage.getItem('customThemes');
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error('Failed to parse customThemes:', e);
+      return [];
     }
+  }
 
-    themeSelect.addEventListener("change", (e) => {
-      setTheme(e.target.value);
+  // Save customThemes array back if needed (not used here but handy)
+  function saveCustomThemes(themes) {
+    localStorage.setItem('customThemes', JSON.stringify(themes || []));
+  }
+
+  // Build select options: first presets, then custom themes
+  function populateThemeSelect() {
+    // Clear current options
+    themeSelect.innerHTML = '';
+
+    // Preset options: value format "preset:VALUE"
+    presets.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = `preset:${p.value}`;
+      opt.textContent = p.name;
+      themeSelect.appendChild(opt);
     });
 
-    const savedTheme = localStorage.getItem('selectedTheme');
-    if (savedTheme && themeNames.includes(savedTheme)) {
-      themeSelect.value = savedTheme;
-      setTheme(savedTheme);
+    // Divider option (disabled)
+    const sep = document.createElement('option');
+    sep.disabled = true;
+    sep.textContent = '────────── Custom Themes ──────────';
+    themeSelect.appendChild(sep);
+
+    // Custom themes: value format "custom:INDEX"
+    const customs = loadCustomThemes();
+    if (customs.length === 0) {
+      const noCustom = document.createElement('option');
+      noCustom.disabled = true;
+      noCustom.textContent = 'No custom themes';
+      themeSelect.appendChild(noCustom);
+    } else {
+      customs.forEach((t, i) => {
+        const opt = document.createElement('option');
+        opt.value = `custom:${i}`;
+        opt.textContent = t.name || `Custom ${i + 1}`;
+        themeSelect.appendChild(opt);
+      });
+    }
+  }
+
+  // Apply preset theme by toggling body class
+  function applyPreset(name) {
+    // Remove all preset classes
+    const presetValues = presets.map(p => p.value);
+    presetValues.forEach(cls => document.body.classList.remove(cls));
+    // Also remove any inline custom variables/background we may have set previously
+    document.documentElement.style.removeProperty('--bg');
+    document.documentElement.style.removeProperty('--accent');
+    document.documentElement.style.removeProperty('--hover');
+    document.documentElement.style.removeProperty('--text');
+    document.body.style.backgroundImage = '';
+    // Add preset class
+    document.body.classList.add(name);
+  }
+
+  // Apply custom theme object
+  function applyCustom(themeObj) {
+    // Ensure no conflicting preset class remains
+    const presetValues = presets.map(p => p.value);
+    presetValues.forEach(cls => document.body.classList.remove(cls));
+
+    // Apply CSS variables on root so they cascade to existing styles.
+    if (themeObj.bgColor) {
+      document.documentElement.style.setProperty('--bg', themeObj.bgColor);
+    } else {
+      document.documentElement.style.removeProperty('--bg');
+    }
+    if (themeObj.textColor) {
+      document.documentElement.style.setProperty('--text', themeObj.textColor);
+    } else {
+      document.documentElement.style.removeProperty('--text');
+    }
+    if (themeObj.accent) {
+      document.documentElement.style.setProperty('--accent', themeObj.accent);
+    } else {
+      document.documentElement.style.removeProperty('--accent');
+    }
+    if (themeObj.hover) {
+      document.documentElement.style.setProperty('--hover', themeObj.hover);
+    } else {
+      document.documentElement.style.removeProperty('--hover');
     }
 
+    // Background image (data URL) if present
+    if (themeObj.bgImage) {
+      document.body.style.backgroundImage = `url("${themeObj.bgImage}")`;
+      document.body.style.backgroundSize = 'cover';
+    } else {
+      // If the bgColor is a gradient string we should allow it; otherwise remove image
+      if (!/^linear-gradient|radial-gradient/i.test(themeObj.bgColor || '')) {
+        document.body.style.backgroundImage = '';
+      }
+    }
+  }
+
+  // Save selected theme descriptor to localStorage for persistence
+  function persistSelectedTheme(descriptor) {
+    // descriptor example: { type: 'preset', name: 'default' } or { type: 'custom', index: 0 }
+    try {
+      localStorage.setItem('selectedTheme', JSON.stringify(descriptor));
+    } catch (e) {
+      console.error('Failed to save selectedTheme', e);
+    }
+  }
+
+  // Restore selected theme on load
+  function restoreSelectedTheme() {
+    try {
+      const raw = localStorage.getItem('selectedTheme');
+      if (!raw) return;
+      const desc = JSON.parse(raw);
+      if (desc.type === 'preset' && desc.name) {
+        // Mark select value
+        const v = `preset:${desc.name}`;
+        const opt = Array.from(themeSelect.options).find(o => o.value === v);
+        if (opt) themeSelect.value = v;
+        applyPreset(desc.name);
+      } else if (desc.type === 'custom' && typeof desc.index === 'number') {
+        const customs = loadCustomThemes();
+        const themeObj = customs[desc.index];
+        if (themeObj) {
+          const v = `custom:${desc.index}`;
+          const opt = Array.from(themeSelect.options).find(o => o.value === v);
+          if (opt) themeSelect.value = v;
+          applyCustom(themeObj);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to restore selectedTheme', e);
+    }
+  }
+
+  // When user changes the select
+  themeSelect.addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    if (v.startsWith('preset:')) {
+      const name = v.split(':')[1];
+      applyPreset(name);
+      persistSelectedTheme({ type: 'preset', name });
+    } else if (v.startsWith('custom:')) {
+      const index = parseInt(v.split(':')[1], 10);
+      const customs = loadCustomThemes();
+      const themeObj = customs[index];
+      if (themeObj) {
+        applyCustom(themeObj);
+        persistSelectedTheme({ type: 'custom', index });
+      }
+    }
+  });
+
+  // Initialize
+  populateThemeSelect();
+  // Delay restore to ensure select has been populated (should be immediate)
+  restoreSelectedTheme();
+
+  // Also expose a small API so other pages (themes.html) can call apply via localStorage.activeTheme
+  // If there is a localStorage.activeTheme set (from themes.html apply button), apply it now and clear it.
+  try {
+    const activeRaw = localStorage.getItem('activeTheme');
+    if (activeRaw) {
+      const theme = JSON.parse(activeRaw);
+      // If the theme object matches one of the custom themes, apply that custom and set selectedTheme.
+      // Otherwise, if it looks like a preset (has presetName), apply preset.
+      if (theme && theme.__fromThemesPage === true) {
+        // push into customThemes if not already present (so it appears in dropdown)
+        const customs = loadCustomThemes();
+        // find exact match by JSON-string compare
+        const idx = customs.findIndex(ct => JSON.stringify(ct) === JSON.stringify(theme.data));
+        let finalIndex = idx;
+        if (idx === -1) {
+          customs.push(theme.data);
+          saveCustomThemes(customs);
+          finalIndex = customs.length - 1;
+        }
+        // repopulate select then select newly added custom
+        populateThemeSelect();
+        const selectValue = `custom:${finalIndex}`;
+        const option = Array.from(themeSelect.options).find(o => o.value === selectValue);
+        if (option) themeSelect.value = selectValue;
+        applyCustom(theme.data);
+        persistSelectedTheme({ type: 'custom', index: finalIndex });
+      } else if (theme && theme.__applyPreset) {
+        populateThemeSelect();
+        const selectValue = `preset:${theme.name}`;
+        const option = Array.from(themeSelect.options).find(o => o.value === selectValue);
+        if (option) themeSelect.value = selectValue;
+        applyPreset(theme.name);
+        persistSelectedTheme({ type: 'preset', name: theme.name });
+      }
+      // clear the transient activeTheme flag (themes page used it)
+      localStorage.removeItem('activeTheme');
+    }
+  } catch (e) {
+    console.error('Error applying activeTheme from storage', e);
+  }
+
+})();
+	  
     surpriseBtn.addEventListener("click", () => {
       const fact = facts[Math.floor(Math.random() * facts.length)];
       alert(fact);
