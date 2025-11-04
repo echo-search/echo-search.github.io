@@ -440,7 +440,7 @@ async function handleDictionarySearch(query) {
   const wordUpper = word.toUpperCase();
 
   try {
-    const localRes = await fetch("essentials/dictionary.json");
+    const localRes = await fetch("/essentials/dictionary.json");
     if (localRes.ok) {
       const localData = await localRes.json();
       if (localData && localData[wordUpper]) {
@@ -500,7 +500,7 @@ searchBtn.addEventListener("click", function() {
 
 let allSuggestions = [];
 
-fetch('essentials/suggestions.json')
+fetch('/essentials/suggestions.json')
   .then(res => res.json())
   .then(data => { allSuggestions = data; })
   .catch(err => console.error('Error loading suggestions:', err));
