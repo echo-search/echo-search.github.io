@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trigonometry Tutor & Quiz</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa6b2;--accent:#60a5fa;--accent2:#7dd3fc}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial; background:linear-gradient(180deg,#071025 0%, #071828 60%);color:#e6eef6}
+    .wrap{max-width:980px;margin:28px auto;padding:22px}
+    header{display:flex;align-items:center;gap:16px}
+    h1{font-size:20px;margin:0}
+    .tabs{display:flex;gap:8px;margin-top:18px}
+    button.tab{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+    button.tab.active{background:linear-gradient(90deg,var(--accent)20%, rgba(125,211,252,0.07));color:white;border-color:transparent;box-shadow:0 6px 18px rgba(8,12,20,0.6)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:18px;margin-top:18px;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    .lesson{line-height:1.45;color:#dcecff}
+    .formula{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin:6px 0}
+    .unit-svg{width:100%;height:320px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:10px;display:flex;align-items:center;justify-content:center}
+    svg{max-width:100%;height:auto}
+    label{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+    input[type=range]{width:100%}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .btn{background:var(--accent);border:none;color:#04283a;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    .question-area{min-height:160px}
+    .mc{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .choice{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .choice:hover{transform:translateY(-2px)}
+    .result{margin-top:12px;padding:10px;border-radius:8px}
+    .result.correct{background:linear-gradient(90deg, rgba(34,197,94,0.14), rgba(34,197,94,0.04));color:#d6ffea}
+    .result.wrong{background:linear-gradient(90deg, rgba(239,68,68,0.12), rgba(239,68,68,0.03));color:#ffdede}
+    footer{margin-top:20px;color:var(--muted);font-size:13px}
+    pre{background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;overflow:auto}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.wrap{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><rect rx='8' width='44' height='44' fill='%2360a5fa'/><text x='50%' y='53%' font-size='20' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>tr</text></svg>" alt="logo" style="width:44px;height:44px;border-radius:8px;">
+      <div>
+        <h1>Trigonometry Tutor & Quiz — Learn • Practice • Test</h1>
+        <div class="small">Interactive lessons, auto-generated problems, step-by-step answers, and a short timed quiz.</div>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="learn">Learn</button>
+      <button class="tab" data-tab="practice">Practice</button>
+      <button class="tab" data-tab="quiz">Quiz</button>
+      <button class="tab" data-tab="formulas">Formula Sheet</button>
+    </div>
+
+    <section id="learn" class="card active-tab">
+      <div class="grid">
+        <div>
+          <div class="lesson">
+            <h2 style="margin-top:0">Quick lessons</h2>
+            <p>Trigonometry studies relationships between angles and sides of triangles. Start here if you want a brisk, useful refresher.</p>
+
+            <div class="formula"><strong>Basic definitions (right triangle)</strong><br>
+              For angle <em>θ</em> in a right triangle: <br>
+              sin θ = opposite / hypotenuse<br>
+              cos θ = adjacent / hypotenuse<br>
+              tan θ = opposite / adjacent
+            </div>
+
+            <div class="formula"><strong>Unit circle</strong><br>
+              On the unit circle (radius = 1): <br>
+              cos θ = x-coordinate, sin θ = y-coordinate. <br>
+              tan θ = sin θ / cos θ (where cos θ ≠ 0)
+            </div>
+
+            <div class="formula"><strong>Key identities</strong><br>
+              sin²θ + cos²θ = 1<br>
+              1 + tan²θ = sec²θ<br>
+              sin(α ± β) = sinα cosβ ± cosα sinβ<br>
+            </div>
+
+            <h3>Unit circle — try the slider</h3>
+            <div class="unit-svg card">
+              <svg id="unit" viewBox="-1.6 -1.6 3.2 3.2" aria-label="Unit circle example" role="img">
+                <defs>
+                  <filter id="glow"><feGaussianBlur stdDeviation="0.008" result="b"/></filter>
+                </defs>
+                <circle cx="0" cy="0" r="1" stroke="rgba(255,255,255,0.12)" stroke-width="0.006" fill="none"/>
+                <line id="ray" x1="0" y1="0" x2="1" y2="0" stroke="rgba(96,165,250,0.85)" stroke-width="0.009" stroke-linecap="round"/>
+                <circle id="point" cx="1" cy="0" r="0.03" fill="white"/>
+                <path id="arc" d="" fill="none" stroke="rgba(125,211,252,0.7)" stroke-width="0.006"/>
+                <text id="coords" x="0.02" y="-1.3" font-size="0.12" fill="#cfe8ff"></text>
+                <g id="axis" stroke="rgba(255,255,255,0.05)" stroke-width="0.003">
+                  <line x1="-1.6" y1="0" x2="1.6" y2="0"></line>
+                  <line x1="0" y1="-1.6" x2="0" y2="1.6"></line>
+                </g>
+              </svg>
+            </div>
+
+            <label for="angleRange">Angle (degrees): <span id="angleVal">0</span>°</label>
+            <input id="angleRange" type="range" min="-360" max="360" step="1" value="0">
+
+            <h3>Worked example</h3>
+            <p><strong>Problem:</strong> In a right triangle, the hypotenuse is 10 and the angle θ is 30°. Find opposite side.<br>
+            <strong>Solution:</strong> opposite = hypotenuse × sin θ = 10 × sin(30°) = 10 × 0.5 = 5.</p>
+
+            <details style="margin-top:8px"><summary class="small">More on converting degrees ↔ radians</summary>
+              <p class="small">Radians = degrees × π/180. Degrees = radians × 180/π.</p>
+            </details>
+          </div>
+        </div>
+
+        <aside class="card" style="height:fit-content">
+          <h3 style="margin-top:0">Cheat sheet</h3>
+          <div class="small">Remember these special angles:</div>
+          <div class="formula"><strong>0°, 30°, 45°, 60°, 90°</strong><br>
+            sin: 0, 1/2, √2/2, √3/2, 1<br>
+            cos: 1, √3/2, √2/2, 1/2, 0
+          </div>
+
+          <h4 style="margin-bottom:6px">Quick tips</h4>
+          <ul class="small" style="padding-left:18px;margin:0">
+            <li>For complementary angles: sin(90°−θ)=cos θ.</li>
+            <li>Make the triangle — labels save lives.</li>
+            <li>Use unit circle for negative angles and quadrants.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section id="practice" class="card" style="display:none">
+      <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1;min-width:260px">
+          <h2 style="margin-top:0">Practice generator</h2>
+          <label class="small">Select topic</label>
+          <select id="topicSelect">
+            <option value="sohcahtoa">Basic (SOHCAHTOA)</option>
+            <option value="unit">Unit circle coordinates</option>
+            <option value="inverse">Inverse trig (find angle)</option>
+            <option value="convert">Degrees & radians</option>
+            <option value="identities">Identities / simplify</option>
+          </select>
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="newQ">New problem</button>
+            <button class="btn" id="showSol">Show solution</button>
+          </div>
+
+          <div class="question-area" id="practiceQ" aria-live="polite"></div>
+
+          <div id="answerArea" style="margin-top:8px"></div>
+
+          <div id="practiceResult"></div>
+        </div>
+
+        <aside style="width:320px;min-width:260px">
+          <h3 style="margin-top:0">Hints & tools</h3>
+          <div class="small">Use this to check trig values quickly.</div>
+          <label class="small">Degrees</label>
+          <input type="number" id="degIn" placeholder="e.g. 30">
+          <label class="small">Radians</label>
+          <input type="text" id="radIn" placeholder="e.g. pi/6 or 0.5236">
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="convToRad">→ rad</button>
+            <button class="btn" id="convToDeg">→ deg</button>
+          </div>
+          <div id="convOut" class="small" style="margin-top:8px"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="quiz" class="card" style="display:none">
+      <h2 style="margin-top:0">Short timed quiz</h2>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label class="small">Number of questions</label>
+        <input type="number" id="numQ" value="5" min="1" max="20" style="width:80px">
+        <label class="small">Time per question (sec)</label>
+        <input type="number" id="tPer" value="30" min="5" max="300" style="width:80px">
+        <button class="btn" id="startQuiz">Start Quiz</button>
+      </div>
+
+      <div id="quizArea" style="margin-top:12px"></div>
+      <div id="quizStatus" class="small" style="margin-top:10px"></div>
+    </section>
+
+    <section id="formulas" class="card" style="display:none">
+      <h2 style="margin-top:0">Formula sheet</h2>
+      <div class="formula"><strong>Pythagorean identity</strong><br>sin²θ + cos²θ = 1</div>
+      <div class="formula"><strong>Tangent</strong><br>tan θ = sin θ / cos θ</div>
+      <div class="formula"><strong>Compound angles</strong><br>sin(a+b)=sin a cos b + cos a sin b</div>
+      <div class="formula"><strong>Reciprocal functions</strong><br>csc = 1/sin, sec = 1/cos, cot = 1/tan</div>
+      <div style="margin-top:10px" class="small">Use the Practice tab for randomised problems and the Quiz tab when you want a challenge.</div>
+    </section>
+
+    <footer>
+      Tip: if you get stuck, draw the triangle. Nobody's judging (except maybe your old math teacher).
+    </footer>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click', e=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      const tab = e.currentTarget.dataset.tab;
+      document.querySelectorAll('section').forEach(s=>s.style.display='none');
+      document.getElementById(tab).style.display='block';
+      window.dispatchEvent(new Event('resize'));
+    }));
+
+    // Unit circle interactive
+    const angleRange = document.getElementById('angleRange');
+    const angleVal = document.getElementById('angleVal');
+    const unit = document.getElementById('unit');
+    function drawUnit(angleDeg){
+      const a = angleDeg * Math.PI/180;
+      const x = Math.cos(a), y = Math.sin(a);
+      document.getElementById('ray').setAttribute('x2', x);
+      document.getElementById('ray').setAttribute('y2', -y); // SVG y is downwards; viewBox flipped
+      document.getElementById('point').setAttribute('cx', x);
+      document.getElementById('point').setAttribute('cy', -y);
+      const arc = describeArc(0,0,1,0,-angleDeg);
+      document.getElementById('arc').setAttribute('d', arc);
+      angleVal.textContent = angleDeg;
+      const coords = `cos(${angleDeg}°) = ${round(x)}, sin(${angleDeg}°) = ${round(y)}`;
+      document.getElementById('coords').textContent = coords;
+    }
+    function round(n){return Math.round(n*1000)/1000}
+    angleRange.addEventListener('input', ()=>drawUnit(parseFloat(angleRange.value)));
+    drawUnit(0);
+
+    // helper to draw arc on SVG in unit coords
+    function polarToCartesian(cx, cy, radius, angleInDegrees){
+      const angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+      return {x: cx + (radius * Math.cos(angleInRadians)), y: cy + (radius * Math.sin(angleInRadians))};
+    }
+    function describeArc(x, y, radius, startAngle, endAngle){
+      const start = polarToCartesian(x, y, radius, endAngle);
+      const end = polarToCartesian(x, y, radius, startAngle);
+      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+      return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
+    }
+
+    // Practice generator
+    const topics = document.getElementById('topicSelect');
+    const newQ = document.getElementById('newQ');
+    const practiceQ = document.getElementById('practiceQ');
+    const answerArea = document.getElementById('answerArea');
+    const practiceResult = document.getElementById('practiceResult');
+    const showSol = document.getElementById('showSol');
+
+    function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+
+    let currentProblem = null;
+
+    newQ.addEventListener('click', ()=>createProblem(topics.value));
+    showSol.addEventListener('click', ()=>{ if(currentProblem) showSolution(currentProblem); });
+
+    function createProblem(topic){
+      practiceResult.innerHTML=''; answerArea.innerHTML='';
+      if(topic==='sohcahtoa'){
+        // generate right triangle problem
+        const hyp = randInt(5,20);
+        const angle = [randInt(15,75)];
+        const which = ['sin','cos','tan'][randInt(0,2)];
+        const prob = {type:'soh',hyp,angle:angle[0],which};
+        currentProblem = prob;
+        practiceQ.innerHTML = `<div><strong>Find the ${which} of ${prob.angle}° (hypotenuse=${prob.hyp}) in decimal (3 dp).</strong></div>`;
+        answerArea.innerHTML = `<input id='ansIn' placeholder='e.g. 0.500'/> <button class='btn' id='check'>Check</button>`;
+        document.getElementById('check').addEventListener('click', ()=>checkSOH(prob));
+      } else if(topic==='unit'){
+        const angles = [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330];
+        const a = angles[randInt(0,angles.length-1)];
+        currentProblem = {type:'unit',angle:a};
+        practiceQ.innerHTML = `<div><strong>What are cos(${a}°) and sin(${a}°)? Give exact values if simple, otherwise decimal 3 dp.</strong></div>`;
+        answerArea.innerHTML = `<input id='ansIn' placeholder='cos, sin (comma separated)'/> <button class='btn' id='check'>Check</button>`;
+        document.getElementById('check').addEventListener('click', ()=>checkUnit(currentProblem));
+      } else if(topic==='inverse'){
+        const angles = [30,45,60,15,22.5];
+        const a = angles[randInt(0,angles.length-1)];
+        const val = Math.round(Math.sin(a*Math.PI/180)*1000)/1000;
+        currentProblem = {type:'inv',value:val,angle:a};
+        practiceQ.innerHTML = `<div><strong>Find θ (in degrees) if sin θ = ${val} (0° ≤ θ ≤ 90°).</strong></div>`;
+        answerArea.innerHTML = `<input id='ansIn' placeholder='degrees'/> <button class='btn' id='check'>Check</button>`;
+        document.getElementById('check').addEventListener('click', ()=>checkInverse(currentProblem));
+      } else if(topic==='convert'){
+        const deg = [30,45,60,90,120,210][randInt(0,5)];
+        currentProblem = {type:'conv',deg};
+        practiceQ.innerHTML = `<div><strong>Convert ${deg}° to radians (give exact when possible, otherwise decimal 3 dp).</strong></div>`;
+        answerArea.innerHTML = `<input id='ansIn' placeholder='e.g. pi/6 or 0.5236'/> <button class='btn' id='check'>Check</button>`;
+        document.getElementById('check').addEventListener('click', ()=>checkConv(currentProblem));
+      } else if(topic==='identities'){
+        const types = ['simplify'];
+        const t = types[0];
+        const angle = 37; // random
+        currentProblem = {type:'id',expr:'sin^2 θ + cos^2 θ'};
+        practiceQ.innerHTML = `<div><strong>Simplify: sin²θ + cos²θ</strong></div>`;
+        answerArea.innerHTML = `<input id='ansIn' placeholder='your simplification'/> <button class='btn' id='check'>Check</button>`;
+        document.getElementById('check').addEventListener('click', ()=>checkId(currentProblem));
+      }
+    }
+
+    function checkSOH(p){
+      const v = parseFloat(document.getElementById('ansIn').value);
+      if(isNaN(v)){practiceResult.innerHTML=`<div class='result wrong'>Enter a number.</div>`;return}
+      const rad = p.angle*Math.PI/180;
+      let correct;
+      if(p.which==='sin') correct = Math.sin(rad);
+      if(p.which==='cos') correct = Math.cos(rad);
+      if(p.which==='tan') correct = Math.tan(rad);
+      const corrRounded = Math.round(correct*1000)/1000;
+      const ok = Math.abs(v - corrRounded) < 0.0011;
+      practiceResult.innerHTML = ok ? `<div class='result correct'>Nice — ${p.which}(${p.angle}°) ≈ ${corrRounded}.<div class='small'>Explanation: ${p.which} = side/hypotenuse (use circle or calculator).</div></div>` : `<div class='result wrong'>Not quite — answer ≈ ${corrRounded}. <div class='small'>Try drawing the triangle: opposite = hypotenuse × sin θ.</div></div>`;
+    }
+
+    function checkUnit(p){
+      const ans = document.getElementById('ansIn').value.split(',').map(s=>s.trim());
+      if(ans.length<2){practiceResult.innerHTML=`<div class='result wrong'>Give both values separated by a comma.</div>`;return}
+      const a = p.angle*Math.PI/180; const cx=Math.cos(a), sy=Math.sin(a);
+      const c1 = parseFloat(ans[0]); const c2 = parseFloat(ans[1]);
+      if(!isNaN(c1) && !isNaN(c2)){
+        const ok = Math.abs(c1 - Math.round(cx*1000)/1000) < 0.0011 && Math.abs(c2 - Math.round(sy*1000)/1000) < 0.0011;
+        practiceResult.innerHTML = ok ? `<div class='result correct'>Good — cos=${round(cx)}, sin=${round(sy)}</div>` : `<div class='result wrong'>Answer is cos=${round(cx)}, sin=${round(sy)}</div>`;
+      } else {
+        // allow exact answers like sqrt(3)/2
+        const exact = exactTrig(p.angle);
+        const user = ans.join(',');
+        practiceResult.innerHTML = user.toLowerCase().includes(exact.cos.toLowerCase()) && user.toLowerCase().includes(exact.sin.toLowerCase()) ? `<div class='result correct'>Exact match — well done.</div>` : `<div class='result wrong'>Expected: cos=${exact.cos}, sin=${exact.sin}</div>`;
+      }
+    }
+
+    function exactTrig(angle){
+      // returns some known exact values for common angles
+      const map = {
+        0:{cos:'1',sin:'0'},30:{cos:'√3/2',sin:'1/2'},45:{cos:'√2/2',sin:'√2/2'},60:{cos:'1/2',sin:'√3/2'},90:{cos:'0',sin:'1'},
+        120:{cos:'-1/2',sin:'√3/2'},135:{cos:'-√2/2',sin:'√2/2'},150:{cos:'-√3/2',sin:'1/2'},180:{cos:'-1',sin:'0'},
+        210:{cos:'-√3/2',sin:'-1/2'},225:{cos:'-√2/2',sin:'-√2/2'},240:{cos:'-1/2',sin:'-√3/2'},270:{cos:'0',sin:'-1'},
+        300:{cos:'1/2',sin:'-√3/2'},315:{cos:'√2/2',sin:'-√2/2'},330:{cos:'√3/2',sin:'-1/2'}
+      };
+      return map[angle]||{cos:round(Math.cos(angle*Math.PI/180)),sin:round(Math.sin(angle*Math.PI/180))};
+    }
+
+    function checkInverse(p){
+      const v = parseFloat(document.getElementById('ansIn').value);
+      if(isNaN(v)){practiceResult.innerHTML=`<div class='result wrong'>Enter a number.</div>`;return}
+      const ok = Math.abs(v - p.angle) < 0.5;
+      practiceResult.innerHTML = ok ? `<div class='result correct'>Right — θ ≈ ${p.angle}°</div>` : `<div class='result wrong'>Not right — θ = ${p.angle}° (principal, 0°–90°)</div>`;
+    }
+
+    function checkConv(p){
+      const raw = document.getElementById('ansIn').value.trim().toLowerCase();
+      const deg = p.deg; const radExact = `${deg===180? 'π' : (deg%30===0 && Math.abs(deg/30)<=6 ? (deg/30)+'π/6' : Math.round(deg*Math.PI/180*10000)/10000)}`;
+      // quick check: accept common exact forms
+      const accept = {
+        30:['pi/6','π/6'],45:['pi/4','π/4'],60:['pi/3','π/3'],90:['pi/2','π/2'],120:['2pi/3','2π/3'],210:['7pi/6','7π/6']
+      };
+      const ok = (accept[deg] && accept[deg].some(x=>raw.includes(x))) || Math.abs(parseFloat(evalRad(raw)) - deg*Math.PI/180) < 1e-3;
+      practiceResult.innerHTML = ok ? `<div class='result correct'>Good — ${deg}° = ${round(deg*Math.PI/180)} rad (${radExact})</div>` : `<div class='result wrong'>Expected ${round(deg*Math.PI/180)} rad (or common exact form like pi/6).</div>`;
+    }
+    function evalRad(s){
+      // support pi and simple fractions like pi/6 or 0.523
+      try{
+        s = s.replace(/π/g,'*Math.PI').replace(/pi/g,'*Math.PI');
+        if(s.includes('*Math.PI')){
+          s = s.replace(/\*Math.PI\*/g,'*Math.PI*');
+        }
+        // replace leading *
+        s = s.replace(/^\*/,'');
+        // allow forms like 2*pi/3
+        return Function('return ('+s+')')();
+      }catch(e){return NaN}
+    }
+
+    function checkId(p){
+      const v = document.getElementById('ansIn').value.trim().toLowerCase();
+      const ok = v.includes('1') || v.includes('one');
+      practiceResult.innerHTML = ok ? `<div class='result correct'>Simplified to 1 — correct.</div>` : `<div class='result wrong'>sin²θ + cos²θ simplifies to 1.</div>`;
+    }
+
+    // conversions helpers
+    document.getElementById('convToRad').addEventListener('click', ()=>{
+      const d = parseFloat(document.getElementById('degIn').value);
+      if(isNaN(d)){document.getElementById('convOut').textContent='Enter degrees.';return}
+      document.getElementById('convOut').textContent = `${d}° = ${round(d*Math.PI/180)} rad`;
+    });
+    document.getElementById('convToDeg').addEventListener('click', ()=>{
+      const r = document.getElementById('radIn').value.trim();
+      const val = evalRad(r);
+      if(isNaN(val)){document.getElementById('convOut').textContent='Could not parse radians.';return}
+      document.getElementById('convOut').textContent = `${r} rad = ${Math.round(val*180/Math.PI*1000)/1000}°`;
+    });
+
+    // Quiz logic
+    const startQuiz = document.getElementById('startQuiz');
+    const quizArea = document.getElementById('quizArea');
+    const quizStatus = document.getElementById('quizStatus');
+    startQuiz.addEventListener('click', startQuizRun);
+
+    function startQuizRun(){
+      const N = Math.max(1,Math.min(20,parseInt(document.getElementById('numQ').value||5)));
+      const t = Math.max(5,parseInt(document.getElementById('tPer').value||30));
+      let score=0; let qIndex=0;
+      const questions = Array.from({length:N}, ()=>randomQuizQ());
+      quizArea.innerHTML=''; quizStatus.textContent = `0 / ${N}`;
+
+      function next(){
+        if(qIndex>=N){ quizArea.innerHTML = `<div class='card'><h3>Done — score ${score} / ${N}</h3><div class='small'>Refresh to try again.</div></div>`; quizStatus.textContent='Finished'; return}
+        const q = questions[qIndex];
+        quizArea.innerHTML = renderQuizQ(qIndex+1, q);
+        quizStatus.textContent = `${qIndex} / ${N}`;
+        const timerEl = document.getElementById('timer');
+        let timeLeft = t; timerEl.textContent = `${timeLeft}s`;
+        const tm = setInterval(()=>{ timeLeft--; timerEl.textContent = `${timeLeft}s`; if(timeLeft<=0){ clearInterval(tm); handleAnswer(null); } },1000);
+
+        document.getElementById('submitAns').addEventListener('click', ()=>{ clearInterval(tm); const val = document.getElementById('quizAns').value; handleAnswer(val); });
+
+        function handleAnswer(val){
+          const correct = checkQuizAnswer(q,val);
+          if(correct) score++;
+          const res = document.createElement('div'); res.className='result '+(correct? 'correct':'wrong'); res.innerHTML = (correct? 'Correct' : 'Wrong')+` — ${q.explain}`;
+          quizArea.appendChild(res);
+          qIndex++; setTimeout(next,1200);
+        }
+      }
+      next();
+    }
+
+    function randomQuizQ(){
+      const types = ['soh','unit','conv']; const t = types[randInt(0,types.length-1)];
+      if(t==='soh'){ const angle= [30,45,60,25,37][randInt(0,4)]; const which=['sin','cos','tan'][randInt(0,2)]; return {type:'soh',angle,which,explain:`${which}(${angle}°) = ${round((which==='sin'?Math.sin(angle*Math.PI/180): which==='cos'?Math.cos(angle*Math.PI/180):Math.tan(angle*Math.PI/180)))}.`}; }
+      if(t==='unit'){ const angle=[0,30,45,60,90][randInt(0,4)]; return {type:'unit',angle,explain:`cos=${exactTrig(angle).cos}, sin=${exactTrig(angle).sin}`}; }
+      if(t==='conv'){ const deg=[30,45,60,90][randInt(0,3)]; return {type:'conv',deg,explain:`${deg}° = ${round(deg*Math.PI/180)} rad`}; }
+    }
+
+    function renderQuizQ(i,q){
+      if(q.type==='soh') return `<div class='card'><strong>Q ${i}.</strong> What is ${q.which}(${q.angle}°) (3 dp)?<div style='margin-top:8px'><input id='quizAns' placeholder='e.g. 0.500'/> <button class='btn' id='submitAns'>Submit</button> <span id='timer' class='small' style='margin-left:8px'></span></div></div>`;
+      if(q.type==='unit') return `<div class='card'><strong>Q ${i}.</strong> Give cos and sin of ${q.angle}° (comma sep or exact):<div style='margin-top:8px'><input id='quizAns' placeholder='cos, sin'/> <button class='btn' id='submitAns'>Submit</button> <span id='timer' class='small' style='margin-left:8px'></span></div></div>`;
+      if(q.type==='conv') return `<div class='card'><strong>Q ${i}.</strong> Convert ${q.deg}° to radians (exact or decimal):<div style='margin-top:8px'><input id='quizAns' placeholder='e.g. pi/6 or 0.524'/> <button class='btn' id='submitAns'>Submit</button> <span id='timer' class='small' style='margin-left:8px'></span></div></div>`;
+    }
+
+    function checkQuizAnswer(q,val){
+      if(q.type==='soh'){
+        if(val===null) return false; const v=parseFloat(val); return Math.abs(v - Math.round((Math[q.which==='sin'?'sin':q.which==='cos'?'cos':'tan'](q.angle*Math.PI/180))*1000)/1000) < 0.0011;
+      }
+      if(q.type==='unit'){
+        if(!val) return false; const parts = val.split(',').map(s=>s.trim()); if(parts.length<2) return false; const a=parseFloat(parts[0]); const b=parseFloat(parts[1]); if(!isNaN(a) && !isNaN(b)){ const cx=Math.round(Math.cos(q.angle*Math.PI/180)*1000)/1000; const sy=Math.round(Math.sin(q.angle*Math.PI/180)*1000)/1000; return Math.abs(a-cx)<0.0011 && Math.abs(b-sy)<0.0011; } return val.toLowerCase().includes(exactTrig(q.angle).cos.toLowerCase()) && val.toLowerCase().includes(exactTrig(q.angle).sin.toLowerCase());
+      }
+      if(q.type==='conv'){
+        if(!val) return false; const parsed = evalRad(val); return Math.abs(parsed - q.deg*Math.PI/180) < 1e-3;
+      }
+      return false;
+    }
+
+    // Small accessibility: let Enter submit where relevant
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter'){
+        const active = document.activeElement;
+        if(active && active.closest && active.closest('#practice')){
+          const btn = document.getElementById('check'); if(btn) btn.click();
+        }
+      }
+    });
+
+    // initialize a practice problem
+    createProblem('sohcahtoa');
+  </script>
+</body>
+</html>
