@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>EchoSearch</ShortName>
-  <Description>Search instantly through EchoSearch — fast, minimal, AI-enhanced search built for creativity and exploration.</Description>
+  <Description>Search instantly through EchoSearch — fast, minimal, free search engine with a privacy-focused philosopy.</Description>
   <Url type="text/html" template="https://echo-search.github.io/#gsc.tab=0&gsc.q={searchTerms}&amp;gsc.sort="/>
   <Url type="application/x-suggestions+json" template="https://echo-search.github.io/suggestion.json"/>
   <Image height="16" width="16" type="image/x-icon">https://echo-search.github.io/favicon.ico</Image>
