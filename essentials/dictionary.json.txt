@@ -1,0 +1,2374 @@
+{
+  "LOL": {
+    "meaning": "Laughing Out Loud",
+    "example": "That meme was so funny, LOL!"
+  },
+  "BRB": {
+    "meaning": "Be Right Back",
+    "example": "BRB, someone's at the door."
+  },
+  "OMG": {
+    "meaning": "Oh My God",
+    "example": "OMG, I can't believe you got the job!"
+  },
+  "BFF": {
+    "meaning": "Best Friends Forever",
+    "example": "She's been my BFF since high school."
+  },
+  "TBH": {
+    "meaning": "To Be Honest",
+    "example": "TBH, I wasn't a fan of that restaurant."
+  },
+  "BTW": {
+    "meaning": "By The Way",
+    "example": "BTW, did you see the email I sent?"
+  },
+  "FYI": {
+    "meaning": "For Your Information",
+    "example": "FYI, the meeting got moved to 2 PM."
+  },
+  "AFK": {
+    "meaning": "Away From Keyboard",
+    "example": "I'll be AFK for about an hour."
+  },
+  "TTYL": {
+    "meaning": "Talk To You Later",
+    "example": "TTYL, I need to run some errands!"
+  },
+  "IMO": {
+    "meaning": "In My Opinion",
+    "example": "IMO, that's the best pizza place in town."
+  },
+  "IRL": {
+    "meaning": "In Real Life",
+    "example": "We finally met IRL after chatting online for months."
+  },
+  "IDC": {
+    "meaning": "I Don't Care",
+    "example": "IDC what we watch tonight, you pick."
+  },
+  "FOMO": {
+    "meaning": "Fear Of Missing Out",
+    "example": "I have such FOMO about skipping that concert."
+  },
+  "ICYMI": {
+    "meaning": "In Case You Missed It",
+    "example": "ICYMI, there's a sale happening this weekend."
+  },
+  "SMH": {
+    "meaning": "Shaking My Head",
+    "example": "He forgot his keys again, SMH."
+  },
+  "LMK": {
+    "meaning": "Let Me Know",
+    "example": "LMK if you want to grab lunch tomorrow."
+  },
+  "ASAP": {
+    "meaning": "As Soon As Possible",
+    "example": "Can you send me that document ASAP?"
+  },
+  "IDK": {
+    "meaning": "I Don't Know",
+    "example": "IDK where I left my phone."
+  },
+  "TMI": {
+    "meaning": "Too Much Information",
+    "example": "Okay, TMI dude, I didn't need to know that."
+  },
+  "RSVP": {
+    "meaning": "Répondez S'il Vous Plaît (Please Respond)",
+    "example": "Don't forget to RSVP to the wedding invitation."
+  },
+  "ETA": {
+    "meaning": "Estimated Time of Arrival",
+    "example": "What's your ETA? We're waiting for you."
+  },
+  "FAQ": {
+    "meaning": "Frequently Asked Questions",
+    "example": "Check the FAQ section on the website first."
+  },
+  "DIY": {
+    "meaning": "Do It Yourself",
+    "example": "I love watching DIY home improvement videos."
+  },
+  "YOLO": {
+    "meaning": "You Only Live Once",
+    "example": "I'm booking that trip, YOLO!"
+  },
+  "TBA": {
+    "meaning": "To Be Announced",
+    "example": "The concert date is still TBA."
+  },
+  "TBD": {
+    "meaning": "To Be Determined",
+    "example": "The location is TBD, we'll decide later."
+  },
+  "BRB": {
+    "meaning": "Be Right Back",
+    "example": "BRB, need to grab my charger."
+  },
+  "ROFL": {
+    "meaning": "Rolling On Floor Laughing",
+    "example": "That video had me ROFL for real."
+  },
+  "JK": {
+    "meaning": "Just Kidding",
+    "example": "I'm not actually mad, JK!"
+  },
+  "NVM": {
+    "meaning": "Never Mind",
+    "example": "NVM, I found it already."
+  },
+  "THX": {
+    "meaning": "Thanks",
+    "example": "THX for helping me move yesterday!"
+  },
+  "IMHO": {
+    "meaning": "In My Honest Opinion or In My Humble Opinion",
+    "example": "IMHO, we should go with the first option."
+  },
+  "WTF": {
+    "meaning": "What The Fuck",
+    "example": "WTF just happened in that movie?"
+  },
+  "OMW": {
+    "meaning": "On My Way",
+    "example": "OMW, be there in 10 minutes!"
+  },
+  "NSFW": {
+    "meaning": "Not Safe For Work",
+    "example": "Don't open that link, it's NSFW."
+  },
+  "TL;DR": {
+    "meaning": "Too Long; Didn't Read",
+    "example": "Can you give me the TL;DR version?"
+  },
+  "DM": {
+    "meaning": "Direct Message",
+    "example": "Just DM me if you have questions."
+  },
+  "FB": {
+    "meaning": "Facebook",
+    "example": "Did you see what she posted on FB?"
+  },
+  "IG": {
+    "meaning": "Instagram",
+    "example": "Follow me on IG for more updates."
+  },
+  "RT": {
+    "meaning": "Retweet",
+    "example": "RT if you agree with this!"
+  },
+  "PM": {
+    "meaning": "Private Message",
+    "example": "Send me a PM and we'll discuss it."
+  },
+  "NP": {
+    "meaning": "No Problem",
+    "example": "NP, happy to help!"
+  },
+  "GG": {
+    "meaning": "Good Game",
+    "example": "GG everyone, that was intense!"
+  },
+  "FTW": {
+    "meaning": "For The Win",
+    "example": "Pizza for dinner FTW!"
+  },
+  "BRB": {
+    "meaning": "Be Right Back",
+    "example": "BRB, doorbell just rang."
+  },
+  "GTG": {
+    "meaning": "Got To Go",
+    "example": "GTG, my bus is here!"
+  },
+  "IKR": {
+    "meaning": "I Know, Right",
+    "example": "That movie was amazing, IKR?"
+  },
+  "IIRC": {
+    "meaning": "If I Recall Correctly",
+    "example": "IIRC, the deadline is next Friday."
+  },
+  "AMA": {
+    "meaning": "Ask Me Anything",
+    "example": "I'm hosting an AMA session tomorrow."
+  },
+  "TIL": {
+    "meaning": "Today I Learned",
+    "example": "TIL that octopuses have three hearts."
+  },
+  "ELI5": {
+    "meaning": "Explain Like I'm 5",
+    "example": "Can someone ELI5 how blockchain works?"
+  },
+  "FTFY": {
+    "meaning": "Fixed That For You",
+    "example": "You meant 10 PM, not AM, FTFY."
+  },
+  "ITT": {
+    "meaning": "In This Thread",
+    "example": "ITT people sharing their favorite recipes."
+  },
+  "LMAO": {
+    "meaning": "Laughing My Ass Off",
+    "example": "LMAO, that joke was hilarious!"
+  },
+  "FWIW": {
+    "meaning": "For What It's Worth",
+    "example": "FWIW, I think you made the right choice."
+  },
+  "WFH": {
+    "meaning": "Work From Home",
+    "example": "I'm WFH today, so I'll be online."
+  },
+  "OOO": {
+    "meaning": "Out Of Office",
+    "example": "I'll be OOO next week on vacation."
+  },
+  "EOD": {
+    "meaning": "End Of Day",
+    "example": "Please submit your report by EOD."
+  },
+  "COB": {
+    "meaning": "Close Of Business",
+    "example": "I need that file by COB today."
+  },
+  "TGIF": {
+    "meaning": "Thank God It's Friday",
+    "example": "TGIF, this week has been exhausting!"
+  },
+  "ATM": {
+    "meaning": "At The Moment",
+    "example": "I'm busy ATM, can we talk later?"
+  },
+  "BFF": {
+    "meaning": "Best Friend Forever",
+    "example": "We've been BFFs since elementary school."
+  },
+  "MSG": {
+    "meaning": "Message",
+    "example": "Did you get my MSG from earlier?"
+  },
+  "PLS": {
+    "meaning": "Please",
+    "example": "Can you pls pick up some milk?"
+  },
+  "THX": {
+    "meaning": "Thanks",
+    "example": "THX for the birthday gift!"
+  },
+  "B4": {
+    "meaning": "Before",
+    "example": "Make sure to call me B4 you leave."
+  },
+  "L8R": {
+    "meaning": "Later",
+    "example": "See you L8R tonight!"
+  },
+  "PPL": {
+    "meaning": "People",
+    "example": "So many PPL showed up to the party."
+  },
+  "SOS": {
+    "meaning": "Save Our Souls or distress signal",
+    "example": "SOS, I need help with this homework!"
+  },
+  "VIP": {
+    "meaning": "Very Important Person",
+    "example": "She got VIP tickets to the concert."
+  },
+  "BYOB": {
+    "meaning": "Bring Your Own Bottle or Bring Your Own Beer",
+    "example": "The party is BYOB, so don't forget drinks."
+  },
+  "CEO": {
+    "meaning": "Chief Executive Officer",
+    "example": "The CEO announced the new company strategy."
+  },
+  "CFO": {
+    "meaning": "Chief Financial Officer",
+    "example": "The CFO presented the quarterly earnings report."
+  },
+  "CTO": {
+    "meaning": "Chief Technology Officer",
+    "example": "Our CTO is leading the digital transformation."
+  },
+  "HR": {
+    "meaning": "Human Resources",
+    "example": "You need to submit that form to HR."
+  },
+  "PR": {
+    "meaning": "Public Relations",
+    "example": "The PR team handled the media response well."
+  },
+  "IT": {
+    "meaning": "Information Technology",
+    "example": "Call IT if you're having computer problems."
+  },
+  "AI": {
+    "meaning": "Artificial Intelligence",
+    "example": "AI is transforming many industries."
+  },
+  "API": {
+    "meaning": "Application Programming Interface",
+    "example": "We need to integrate their API into our system."
+  },
+  "URL": {
+    "meaning": "Uniform Resource Locator",
+    "example": "Copy and paste the URL into your browser."
+  },
+  "HTTP": {
+    "meaning": "Hypertext Transfer Protocol",
+    "example": "Make sure the website uses HTTPS, not just HTTP."
+  },
+  "HTML": {
+    "meaning": "Hypertext Markup Language",
+    "example": "I'm learning HTML to build my own website."
+  },
+  "CSS": {
+    "meaning": "Cascading Style Sheets",
+    "example": "CSS is used to style the layout of web pages."
+  },
+  "SQL": {
+    "meaning": "Structured Query Language",
+    "example": "You'll need to know SQL to work with databases."
+  },
+  "PDF": {
+    "meaning": "Portable Document Format",
+    "example": "Can you send me that file as a PDF?"
+  },
+  "JPEG": {
+    "meaning": "Joint Photographic Experts Group",
+    "example": "Save the image as a JPEG file."
+  },
+  "PNG": {
+    "meaning": "Portable Network Graphics",
+    "example": "PNG files support transparent backgrounds."
+  },
+  "GIF": {
+    "meaning": "Graphics Interchange Format",
+    "example": "That GIF perfectly captures my reaction."
+  },
+  "USB": {
+    "meaning": "Universal Serial Bus",
+    "example": "Plug the USB drive into your computer."
+  },
+  "RAM": {
+    "meaning": "Random Access Memory",
+    "example": "You need more RAM to run that software smoothly."
+  },
+  "ROM": {
+    "meaning": "Read-Only Memory",
+    "example": "The ROM chip stores the system's firmware."
+  },
+  "CPU": {
+    "meaning": "Central Processing Unit",
+    "example": "The CPU is the brain of the computer."
+  },
+  "GPU": {
+    "meaning": "Graphics Processing Unit",
+    "example": "A good GPU is essential for gaming."
+  },
+  "SSD": {
+    "meaning": "Solid State Drive",
+    "example": "Upgrading to an SSD made my computer much faster."
+  },
+  "HDD": {
+    "meaning": "Hard Disk Drive",
+    "example": "HDDs offer more storage space for less money."
+  },
+  "VPN": {
+    "meaning": "Virtual Private Network",
+    "example": "Use a VPN when connecting to public WiFi."
+  },
+  "WiFi": {
+    "meaning": "Wireless Fidelity",
+    "example": "What's the WiFi password here?"
+  },
+  "LAN": {
+    "meaning": "Local Area Network",
+    "example": "All the office computers are connected via LAN."
+  },
+  "WAN": {
+    "meaning": "Wide Area Network",
+    "example": "The company uses a WAN to connect all branches."
+  },
+  "ISP": {
+    "meaning": "Internet Service Provider",
+    "example": "I'm switching to a new ISP for faster speeds."
+  },
+  "DNS": {
+    "meaning": "Domain Name System",
+    "example": "DNS issues can prevent websites from loading."
+  },
+  "IP": {
+    "meaning": "Internet Protocol",
+    "example": "Every device has a unique IP address."
+  },
+  "MAC": {
+    "meaning": "Media Access Control",
+    "example": "You can filter devices by their MAC address."
+  },
+  "FTP": {
+    "meaning": "File Transfer Protocol",
+    "example": "Use FTP to upload files to the server."
+  },
+  "SSH": {
+    "meaning": "Secure Shell",
+    "example": "Connect to the server using SSH."
+  },
+  "GUI": {
+    "meaning": "Graphical User Interface",
+    "example": "The new GUI makes the software easier to use."
+  },
+  "OS": {
+    "meaning": "Operating System",
+    "example": "Which OS do you prefer, Windows or Mac?"
+  },
+  "iOS": {
+    "meaning": "iPhone Operating System",
+    "example": "The latest iOS update fixed several bugs."
+  },
+  "APP": {
+    "meaning": "Application",
+    "example": "I just downloaded a new fitness app."
+  },
+  "GPS": {
+    "meaning": "Global Positioning System",
+    "example": "Turn on GPS so I can find your location."
+  },
+  "SMS": {
+    "meaning": "Short Message Service",
+    "example": "I'll send you an SMS with the details."
+  },
+  "MMS": {
+    "meaning": "Multimedia Messaging Service",
+    "example": "Send me that photo via MMS."
+  },
+  "PIN": {
+    "meaning": "Personal Identification Number",
+    "example": "Enter your PIN to complete the transaction."
+  },
+  "ATM": {
+    "meaning": "Automated Teller Machine",
+    "example": "I need to stop at an ATM to get cash."
+  },
+  "ROI": {
+    "meaning": "Return On Investment",
+    "example": "We need to calculate the ROI for this project."
+  },
+  "KPI": {
+    "meaning": "Key Performance Indicator",
+    "example": "What are our main KPIs for this quarter?"
+  },
+  "B2B": {
+    "meaning": "Business To Business",
+    "example": "Our company focuses on B2B sales."
+  },
+  "B2C": {
+    "meaning": "Business To Consumer",
+    "example": "B2C marketing requires a different approach."
+  },
+  "LLC": {
+    "meaning": "Limited Liability Company",
+    "example": "We registered our startup as an LLC."
+  },
+  "Inc": {
+    "meaning": "Incorporated",
+    "example": "Apple Inc. is one of the biggest tech companies."
+  },
+  "IPO": {
+    "meaning": "Initial Public Offering",
+    "example": "The company went public with an IPO last year."
+  },
+  "R&D": {
+    "meaning": "Research and Development",
+    "example": "We're investing heavily in R&D this year."
+  },
+  "QA": {
+    "meaning": "Quality Assurance",
+    "example": "The QA team found several bugs before launch."
+  },
+  "RFP": {
+    "meaning": "Request For Proposal",
+    "example": "We submitted our RFP for the government contract."
+  },
+  "NDA": {
+    "meaning": "Non-Disclosure Agreement",
+    "example": "You'll need to sign an NDA before the meeting."
+  },
+  "SOP": {
+    "meaning": "Standard Operating Procedure",
+    "example": "Follow the SOP when handling customer complaints."
+  },
+  "ERP": {
+    "meaning": "Enterprise Resource Planning",
+    "example": "We're implementing a new ERP system next month."
+  },
+  "CRM": {
+    "meaning": "Customer Relationship Management",
+    "example": "Our CRM software helps track all customer interactions."
+  },
+  "SEO": {
+    "meaning": "Search Engine Optimization",
+    "example": "Good SEO will help your website rank higher."
+  },
+  "PPC": {
+    "meaning": "Pay Per Click",
+    "example": "We're running a PPC campaign on Google."
+  },
+  "CTR": {
+    "meaning": "Click-Through Rate",
+    "example": "Our email campaign has a high CTR."
+  },
+  "CTA": {
+    "meaning": "Call To Action",
+    "example": "Every landing page needs a strong CTA."
+  },
+  "ROI": {
+    "meaning": "Return On Investment",
+    "example": "The marketing campaign had an excellent ROI."
+  },
+  "MVP": {
+    "meaning": "Minimum Viable Product",
+    "example": "Let's launch the MVP and get user feedback."
+  },
+  "UI": {
+    "meaning": "User Interface",
+    "example": "The app has a beautiful UI design."
+  },
+  "UX": {
+    "meaning": "User Experience",
+    "example": "Good UX keeps users coming back."
+  },
+  "SaaS": {
+    "meaning": "Software as a Service",
+    "example": "Most modern apps use a SaaS business model."
+  },
+  "PaaS": {
+    "meaning": "Platform as a Service",
+    "example": "PaaS solutions simplify app deployment."
+  },
+  "IaaS": {
+    "meaning": "Infrastructure as a Service",
+    "example": "AWS offers IaaS solutions for businesses."
+  },
+  "AWS": {
+    "meaning": "Amazon Web Services",
+    "example": "Our entire infrastructure runs on AWS."
+  },
+  "CMS": {
+    "meaning": "Content Management System",
+    "example": "WordPress is a popular CMS platform."
+  },
+  "WYSIWYG": {
+    "meaning": "What You See Is What You Get",
+    "example": "The editor has a WYSIWYG interface."
+  },
+  "JSON": {
+    "meaning": "JavaScript Object Notation",
+    "example": "The API returns data in JSON format."
+  },
+  "XML": {
+    "meaning": "Extensible Markup Language",
+    "example": "XML is used for structured data exchange."
+  },
+  "AJAX": {
+    "meaning": "Asynchronous JavaScript and XML",
+    "example": "AJAX allows pages to update without reloading."
+  },
+  "SDK": {
+    "meaning": "Software Development Kit",
+    "example": "Download the SDK to start building apps."
+  },
+  "IDE": {
+    "meaning": "Integrated Development Environment",
+    "example": "Visual Studio Code is my favorite IDE."
+  },
+  "CRUD": {
+    "meaning": "Create, Read, Update, Delete",
+    "example": "This app performs basic CRUD operations."
+  },
+  "OOP": {
+    "meaning": "Object-Oriented Programming",
+    "example": "Java is an OOP language."
+  },
+  "ML": {
+    "meaning": "Machine Learning",
+    "example": "ML algorithms can predict customer behavior."
+  },
+  "DL": {
+    "meaning": "Deep Learning",
+    "example": "DL models require large amounts of data."
+  },
+  "NLP": {
+    "meaning": "Natural Language Processing",
+    "example": "NLP helps computers understand human language."
+  },
+  "IoT": {
+    "meaning": "Internet of Things",
+    "example": "IoT devices are making homes smarter."
+  },
+  "AR": {
+    "meaning": "Augmented Reality",
+    "example": "The AR app overlays graphics on the real world."
+  },
+  "VR": {
+    "meaning": "Virtual Reality",
+    "example": "VR gaming provides an immersive experience."
+  },
+  "QR": {
+    "meaning": "Quick Response",
+    "example": "Scan this QR code to visit our website."
+  },
+  "2FA": {
+    "meaning": "Two-Factor Authentication",
+    "example": "Enable 2FA for better account security."
+  },
+  "SSL": {
+    "meaning": "Secure Sockets Layer",
+    "example": "SSL certificates encrypt website data."
+  },
+  "TLS": {
+    "meaning": "Transport Layer Security",
+    "example": "TLS is the successor to SSL."
+  },
+  "DoS": {
+    "meaning": "Denial of Service",
+    "example": "The website suffered a DoS attack."
+  },
+  "DDoS": {
+    "meaning": "Distributed Denial of Service",
+    "example": "DDoS attacks overwhelm servers with traffic."
+  },
+  "CAPTCHA": {
+    "meaning": "Completely Automated Public Turing test to tell Computers and Humans Apart",
+    "example": "Solve the CAPTCHA to prove you're human."
+  },
+  "GDPR": {
+    "meaning": "General Data Protection Regulation",
+    "example": "GDPR protects EU citizens' data privacy."
+  },
+  "HIPAA": {
+    "meaning": "Health Insurance Portability and Accountability Act",
+    "example": "Healthcare providers must comply with HIPAA."
+  },
+  "PHI": {
+    "meaning": "Protected Health Information",
+    "example": "Never share PHI without proper authorization."
+  },
+  "PII": {
+    "meaning": "Personally Identifiable Information",
+    "example": "We encrypt all PII in our database."
+  },
+  "EULA": {
+    "meaning": "End User License Agreement",
+    "example": "Read the EULA before installing software."
+  },
+  "T&C": {
+    "meaning": "Terms and Conditions",
+    "example": "Accept the T&C to create an account."
+  },
+  "ToS": {
+    "meaning": "Terms of Service",
+    "example": "Violating the ToS can get you banned."
+  },
+  "PP": {
+    "meaning": "Privacy Policy",
+    "example": "Check the PP to see how they use your data."
+  },
+  "CC": {
+    "meaning": "Carbon Copy",
+    "example": "CC your manager on that email."
+  },
+  "BCC": {
+    "meaning": "Blind Carbon Copy",
+    "example": "Use BCC when emailing multiple people."
+  },
+  "RE": {
+    "meaning": "Reply or Regarding",
+    "example": "RE: Your question about the project deadline."
+  },
+  "FWD": {
+    "meaning": "Forward",
+    "example": "FWD this email to the team."
+  },
+  "OOT": {
+    "meaning": "Out Of Town",
+    "example": "I'll be OOT next week for a conference."
+  },
+  "OOH": {
+    "meaning": "Out Of Home",
+    "example": "OOH advertising includes billboards and posters."
+  },
+  "ROA": {
+    "meaning": "Return On Assets",
+    "example": "The company's ROA has improved this quarter."
+  },
+  "EBITDA": {
+    "meaning": "Earnings Before Interest, Taxes, Depreciation, and Amortization",
+    "example": "EBITDA is a key measure of profitability."
+  },
+  "P&L": {
+    "meaning": "Profit and Loss",
+    "example": "Review the P&L statement before the meeting."
+  },
+  "YTD": {
+    "meaning": "Year To Date",
+    "example": "Our YTD revenue is up 15%."
+  },
+  "QTD": {
+    "meaning": "Quarter To Date",
+    "example": "Check the QTD sales figures."
+  },
+  "MTD": {
+    "meaning": "Month To Date",
+    "example": "MTD expenses are higher than expected."
+  },
+  "YOY": {
+    "meaning": "Year Over Year",
+    "example": "We saw 20% YOY growth."
+  },
+  "MOM": {
+    "meaning": "Month Over Month",
+    "example": "Traffic increased 5% MOM."
+  },
+  "QOQ": {
+    "meaning": "Quarter Over Quarter",
+    "example": "Profits rose 8% QOQ."
+  },
+  "FTE": {
+    "meaning": "Full-Time Equivalent",
+    "example": "We have 50 FTE employees."
+  },
+  "PTO": {
+    "meaning": "Paid Time Off",
+    "example": "I'm using my PTO for a vacation."
+  },
+  "OT": {
+    "meaning": "Overtime",
+    "example": "I worked 10 hours of OT this week."
+  },
+  "WFH": {
+    "meaning": "Work From Home",
+    "example": "I'm WFH today due to bad weather."
+  },
+  "OOO": {
+    "meaning": "Out Of Office",
+    "example": "Set your OOO message before vacation."
+  },
+  "SCRUM": {
+    "meaning": "Agile project management framework",
+    "example": "Our team follows the SCRUM methodology."
+  },
+  "JIRA": {
+    "meaning": "Project management tool",
+    "example": "Track all bugs in JIRA."
+  },
+  "SWOT": {
+    "meaning": "Strengths, Weaknesses, Opportunities, Threats",
+    "example": "Let's do a SWOT analysis of our competition."
+  },
+  "OKR": {
+    "meaning": "Objectives and Key Results",
+    "example": "Set your OKRs for the quarter."
+  },
+  "KYC": {
+    "meaning": "Know Your Customer",
+    "example": "KYC procedures prevent fraud."
+  },
+  "AML": {
+    "meaning": "Anti-Money Laundering",
+    "example": "Banks must follow AML regulations."
+  },
+  "APR": {
+    "meaning": "Annual Percentage Rate",
+    "example": "This credit card has a 20% APR."
+  },
+  "APY": {
+    "meaning": "Annual Percentage Yield",
+    "example": "The savings account offers 2% APY."
+  },
+  "ETF": {
+    "meaning": "Exchange-Traded Fund",
+    "example": "I invest in several ETFs for diversification."
+  },
+  "IRA": {
+    "meaning": "Individual Retirement Account",
+    "example": "Max out your IRA contributions each year."
+  },
+  "401k": {
+    "meaning": "Employer-sponsored retirement plan",
+    "example": "My company matches 401k contributions."
+  },
+  "HSA": {
+    "meaning": "Health Savings Account",
+    "example": "Use your HSA for medical expenses."
+  },
+  "FSA": {
+    "meaning": "Flexible Spending Account",
+    "example": "FSA funds expire at year end."
+  },
+  "LLC": {
+    "meaning": "Limited Liability Company",
+    "example": "I registered my business as an LLC."
+  },
+  "DBA": {
+    "meaning": "Doing Business As",
+    "example": "The company operates DBA Smith Consulting."
+  },
+  "EIN": {
+    "meaning": "Employer Identification Number",
+    "example": "You need an EIN to hire employees."
+  },
+  "W2": {
+    "meaning": "Wage and Tax Statement",
+    "example": "My employer sent my W2 in January."
+  },
+  "W9": {
+    "meaning": "Request for Taxpayer Identification",
+    "example": "Fill out a W9 form for tax purposes."
+  },
+  "1099": {
+    "meaning": "Miscellaneous Income form",
+    "example": "Freelancers receive 1099 forms instead of W2s."
+  },
+  "CPA": {
+    "meaning": "Certified Public Accountant",
+    "example": "My CPA helps with my taxes every year."
+  },
+  "IRS": {
+    "meaning": "Internal Revenue Service",
+    "example": "The IRS audited the company last year."
+  },
+  "VAT": {
+    "meaning": "Value Added Tax",
+    "example": "VAT is included in the price in Europe."
+  },
+  "GST": {
+    "meaning": "Goods and Services Tax",
+    "example": "GST applies to most purchases."
+  },
+  "SLA": {
+    "meaning": "Service Level Agreement",
+    "example": "The SLA guarantees 99.9% uptime."
+  },
+  "SOW": {
+    "meaning": "Statement of Work",
+    "example": "Review the SOW before signing the contract."
+  },
+  "RFQ": {
+    "meaning": "Request For Quotation",
+    "example": "Send an RFQ to three vendors."
+  },
+  "PO": {
+    "meaning": "Purchase Order",
+    "example": "Issue a PO for the office supplies."
+  },
+  "EOM": {
+    "meaning": "End Of Month",
+    "example": "Submit your reports by EOM."
+  },
+  "EOY": {
+    "meaning": "End Of Year",
+    "example": "EOY bonuses will be announced next week."
+  },
+  "Q1": {
+    "meaning": "First Quarter",
+    "example": "Q1 results exceeded our expectations."
+  },
+  "Q2": {
+    "meaning": "Second Quarter",
+    "example": "We're launching the product in Q2."
+  },
+  "Q3": {
+    "meaning": "Third Quarter",
+    "example": "Q3 is typically our busiest season."
+  },
+  "Q4": {
+    "meaning": "Fourth Quarter",
+    "example": "Q4 includes the holiday shopping season."
+  },
+  "YTD": {
+    "meaning": "Year To Date",
+    "example": "YTD sales are up 25%."
+  },
+  "EPS": {
+    "meaning": "Earnings Per Share",
+    "example": "The company's EPS increased this quarter."
+  },
+  "IPR": {
+    "meaning": "Intellectual Property Rights",
+    "example": "Protect your IPR with patents and trademarks."
+  },
+  "NDA": {
+    "meaning": "Non-Disclosure Agreement",
+    "example": "Sign the NDA before seeing the prototype."
+  },
+  "MOU": {
+    "meaning": "Memorandum Of Understanding",
+    "example": "Both parties signed the MOU yesterday."
+  },
+  "RMA": {
+    "meaning": "Return Merchandise Authorization",
+    "example": "You need an RMA number to return the product."
+  },
+  "SKU": {
+    "meaning": "Stock Keeping Unit",
+    "example": "Each product has a unique SKU."
+  },
+  "UPC": {
+    "meaning": "Universal Product Code",
+    "example": "Scan the UPC barcode at checkout."
+  },
+  "EAN": {
+    "meaning": "European Article Number",
+    "example": "EAN codes are used in Europe for products."
+  },
+  "ISBN": {
+    "meaning": "International Standard Book Number",
+    "example": "Every published book has an ISBN."
+  },
+  "ISSN": {
+    "meaning": "International Standard Serial Number",
+    "example": "Magazines and journals have ISSN numbers."
+  },
+  "DOI": {
+    "meaning": "Digital Object Identifier",
+    "example": "Cite the DOI when referencing research papers."
+  },
+  "MOOC": {
+    "meaning": "Massive Open Online Course",
+    "example": "I'm taking a MOOC on data science."
+  },
+  "GPA": {
+    "meaning": "Grade Point Average",
+    "example": "She maintained a 4.0 GPA throughout college."
+  },
+  "SAT": {
+    "meaning": "Scholastic Assessment Test",
+    "example": "High SAT scores help with college admissions."
+  },
+  "ACT": {
+    "meaning": "American College Testing",
+    "example": "Some schools accept ACT scores instead of SAT."
+  },
+  "GED": {
+    "meaning": "General Educational Development",
+    "example": "He earned his GED after leaving high school."
+  },
+  "PhD": {
+    "meaning": "Doctor of Philosophy",
+    "example": "She's pursuing a PhD in neuroscience."
+  },
+  "MBA": {
+    "meaning": "Master of Business Administration",
+    "example": "An MBA can boost your career prospects."
+  },
+  "MS": {
+    "meaning": "Master of Science",
+    "example": "I'm getting my MS in computer science."
+  },
+  "MA": {
+    "meaning": "Master of Arts",
+    "example": "She has an MA in English literature."
+  },
+  "BA": {
+    "meaning": "Bachelor of Arts",
+    "example": "I earned my BA in psychology."
+  },
+  "BS": {
+    "meaning": "Bachelor of Science",
+    "example": "He has a BS in engineering."
+  },
+  "AA": {
+    "meaning": "Associate of Arts",
+    "example": "She completed her AA at community college."
+  },
+  "AS": {
+    "meaning": "Associate of Science",
+    "example": "An AS degree takes two years to complete."
+  },
+  "JD": {
+    "meaning": "Juris Doctor",
+    "example": "You need a JD to practice law."
+  },
+  "MD": {
+    "meaning": "Doctor of Medicine",
+    "example": "After eight years, she finally got her MD."
+  },
+  "RN": {
+    "meaning": "Registered Nurse",
+    "example": "My sister is an RN at the local hospital."
+  },
+  "LPN": {
+    "meaning": "Licensed Practical Nurse",
+    "example": "LPNs provide basic patient care."
+  },
+  "PA": {
+    "meaning": "Physician Assistant",
+    "example": "The PA examined me before the doctor arrived."
+  },
+  "EMT": {
+    "meaning": "Emergency Medical Technician",
+    "example": "EMTs arrived within five minutes."
+  },
+  "CPR": {
+    "meaning": "Cardiopulmonary Resuscitation",
+    "example": "Everyone should learn CPR."
+  },
+  "AED": {
+    "meaning": "Automated External Defibrillator",
+    "example": "The AED is mounted on the wall near the exit."
+  },
+  "ER": {
+    "meaning": "Emergency Room",
+    "example": "He was rushed to the ER after the accident."
+  },
+  "ICU": {
+    "meaning": "Intensive Care Unit",
+    "example": "She's recovering in the ICU."
+  },
+  "OR": {
+    "meaning": "Operating Room",
+    "example": "The surgery in the OR lasted four hours."
+  },
+  "MRI": {
+    "meaning": "Magnetic Resonance Imaging",
+    "example": "The doctor ordered an MRI of my knee."
+  },
+  "CT": {
+    "meaning": "Computed Tomography",
+    "example": "A CT scan showed no internal bleeding."
+  },
+  "EKG": {
+    "meaning": "Electrocardiogram",
+    "example": "The EKG showed a normal heart rhythm."
+  },
+  "BP": {
+    "meaning": "Blood Pressure",
+    "example": "The nurse checked my BP during the visit."
+  },
+  "BMI": {
+    "meaning": "Body Mass Index",
+    "example": "Calculate your BMI to assess healthy weight."
+  },
+  "OTC": {
+    "meaning": "Over The Counter",
+    "example": "You can buy OTC medications without a prescription."
+  },
+  "Rx": {
+    "meaning": "Prescription",
+    "example": "This is an Rx drug that requires doctor approval."
+  },
+  "PRN": {
+    "meaning": "Pro Re Nata (as needed)",
+    "example": "Take this medication PRN for pain."
+  },
+  "BID": {
+    "meaning": "Bis In Die (twice daily)",
+    "example": "Take one pill BID with meals."
+  },
+  "TID": {
+    "meaning": "Ter In Die (three times daily)",
+    "example": "The dosage is TID for seven days."
+  },
+  "QID": {
+    "meaning": "Quater In Die (four times daily)",
+    "example": "Apply the ointment QID."
+  },
+  "AC": {
+    "meaning": "Ante Cibum (before meals)",
+    "example": "Take this medication AC."
+  },
+  "PC": {
+    "meaning": "Post Cibum (after meals)",
+    "example": "Take the pill PC to avoid nausea."
+  },
+  "HS": {
+    "meaning": "Hora Somni (at bedtime)",
+    "example": "Take one tablet HS."
+  },
+  "STAT": {
+    "meaning": "Immediately",
+    "example": "We need those test results STAT."
+  },
+  "NPO": {
+    "meaning": "Nil Per Os (nothing by mouth)",
+    "example": "The patient is NPO before surgery."
+  },
+  "DNR": {
+    "meaning": "Do Not Resuscitate",
+    "example": "He has a DNR order in his medical file."
+  },
+  "STD": {
+    "meaning": "Sexually Transmitted Disease",
+    "example": "Regular STD testing is important."
+  },
+  "HIV": {
+    "meaning": "Human Immunodeficiency Virus",
+    "example": "HIV treatment has improved significantly."
+  },
+  "AIDS": {
+    "meaning": "Acquired Immune Deficiency Syndrome",
+    "example": "AIDS is caused by untreated HIV."
+  },
+  "CDC": {
+    "meaning": "Centers for Disease Control and Prevention",
+    "example": "The CDC issued new health guidelines."
+  },
+  "FDA": {
+    "meaning": "Food and Drug Administration",
+    "example": "The FDA approved the new medication."
+  },
+  "WHO": {
+    "meaning": "World Health Organization",
+    "example": "WHO coordinates international health responses."
+  },
+  "PPE": {
+    "meaning": "Personal Protective Equipment",
+    "example": "Healthcare workers need adequate PPE."
+  },
+  "COVID": {
+    "meaning": "Coronavirus Disease",
+    "example": "COVID-19 changed how we work and live."
+  },
+  "PCR": {
+    "meaning": "Polymerase Chain Reaction",
+    "example": "PCR tests detect viral RNA."
+  },
+  "CDC": {
+    "meaning": "Centers for Disease Control",
+    "example": "Follow CDC guidelines for vaccination."
+  },
+  "OSHA": {
+    "meaning": "Occupational Safety and Health Administration",
+    "example": "OSHA sets workplace safety standards."
+  },
+  "EPA": {
+    "meaning": "Environmental Protection Agency",
+    "example": "The EPA regulates air and water quality."
+  },
+  "DMV": {
+    "meaning": "Department of Motor Vehicles",
+    "example": "I need to renew my license at the DMV."
+  },
+  "FBI": {
+    "meaning": "Federal Bureau of Investigation",
+    "example": "The FBI is investigating the case."
+  },
+  "CIA": {
+    "meaning": "Central Intelligence Agency",
+    "example": "The CIA handles foreign intelligence."
+  },
+  "NSA": {
+    "meaning": "National Security Agency",
+    "example": "The NSA focuses on signals intelligence."
+  },
+  "NASA": {
+    "meaning": "National Aeronautics and Space Administration",
+    "example": "NASA launched a new Mars rover."
+  },
+  "NOAA": {
+    "meaning": "National Oceanic and Atmospheric Administration",
+    "example": "NOAA issues weather forecasts and warnings."
+  },
+  "USDA": {
+    "meaning": "United States Department of Agriculture",
+    "example": "USDA certifies organic products."
+  },
+  "DOE": {
+    "meaning": "Department of Energy",
+    "example": "The DOE manages nuclear energy programs."
+  },
+  "DOD": {
+    "meaning": "Department of Defense",
+    "example": "DOD oversees all military branches."
+  },
+  "VA": {
+    "meaning": "Veterans Affairs",
+    "example": "The VA provides healthcare for veterans."
+  },
+  "FEMA": {
+    "meaning": "Federal Emergency Management Agency",
+    "example": "FEMA responds to natural disasters."
+  },
+  "TSA": {
+    "meaning": "Transportation Security Administration",
+    "example": "TSA screens passengers at airports."
+  },
+  "ICE": {
+    "meaning": "Immigration and Customs Enforcement",
+    "example": "ICE handles immigration enforcement."
+  },
+  "IRS": {
+    "meaning": "Internal Revenue Service",
+    "example": "File your taxes with the IRS by April 15."
+  },
+  "SSN": {
+    "meaning": "Social Security Number",
+    "example": "Never share your full SSN online."
+  },
+  "SSA": {
+    "meaning": "Social Security Administration",
+    "example": "Apply for benefits through the SSA."
+  },
+  "FAFSA": {
+    "meaning": "Free Application for Federal Student Aid",
+    "example": "Submit your FAFSA to get financial aid."
+  },
+  "COBRA": {
+    "meaning": "Consolidated Omnibus Budget Reconciliation Act",
+    "example": "COBRA lets you keep insurance after leaving a job."
+  },
+  "ACA": {
+    "meaning": "Affordable Care Act",
+    "example": "The ACA expanded healthcare coverage."
+  },
+  "HMO": {
+    "meaning": "Health Maintenance Organization",
+    "example": "My HMO requires referrals for specialists."
+  },
+  "PPO": {
+    "meaning": "Preferred Provider Organization",
+    "example": "PPO plans offer more flexibility."
+  },
+  "FSA": {
+    "meaning": "Flexible Spending Account",
+    "example": "Use your FSA before it expires."
+  },
+  "NATO": {
+    "meaning": "North Atlantic Treaty Organization",
+    "example": "NATO is a military alliance of 30 countries."
+  },
+  "UN": {
+    "meaning": "United Nations",
+    "example": "The UN promotes international cooperation."
+  },
+  "EU": {
+    "meaning": "European Union",
+    "example": "The EU facilitates trade among member nations."
+  },
+  "UK": {
+    "meaning": "United Kingdom",
+    "example": "The UK includes England, Scotland, Wales, and Northern Ireland."
+  },
+  "USA": {
+    "meaning": "United States of America",
+    "example": "The USA has 50 states."
+  },
+  "UAE": {
+    "meaning": "United Arab Emirates",
+    "example": "Dubai is a city in the UAE."
+  },
+  "GDP": {
+    "meaning": "Gross Domestic Product",
+    "example": "GDP measures a country's economic output."
+  },
+  "GNP": {
+    "meaning": "Gross National Product",
+    "example": "GNP includes overseas production."
+  },
+  "CPI": {
+    "meaning": "Consumer Price Index",
+    "example": "CPI tracks inflation over time."
+  },
+  "NYSE": {
+    "meaning": "New York Stock Exchange",
+    "example": "The company went public on the NYSE."
+  },
+  "NASDAQ": {
+    "meaning": "National Association of Securities Dealers Automated Quotations",
+    "example": "Most tech stocks trade on NASDAQ."
+  },
+  "S&P": {
+    "meaning": "Standard and Poor's",
+    "example": "The S&P 500 tracks large US companies."
+  },
+  "DOW": {
+    "meaning": "Dow Jones Industrial Average",
+    "example": "The DOW closed up 200 points today."
+  },
+  "IMF": {
+    "meaning": "International Monetary Fund",
+    "example": "The IMF provides financial assistance to countries."
+  },
+  "WTO": {
+    "meaning": "World Trade Organization",
+    "example": "WTO oversees global trade agreements."
+  },
+  "OPEC": {
+    "meaning": "Organization of Petroleum Exporting Countries",
+    "example": "OPEC influences global oil prices."
+  },
+  "NGO": {
+    "meaning": "Non-Governmental Organization",
+    "example": "She works for an environmental NGO."
+  },
+  "NPO": {
+    "meaning": "Non-Profit Organization",
+    "example": "Donations to NPOs are often tax-deductible."
+  },
+  "PTA": {
+    "meaning": "Parent Teacher Association",
+    "example": "Join the PTA to support your child's school."
+  },
+  "HOA": {
+    "meaning": "Homeowners Association",
+    "example": "The HOA sets rules for the neighborhood."
+  },
+  "RSVP": {
+    "meaning": "Répondez S'il Vous Plaît",
+    "example": "Please RSVP by next Friday."
+  },
+  "RSVP": {
+    "meaning": "Please Respond",
+    "example": "RSVP to the wedding invitation."
+  },
+  "PS": {
+    "meaning": "Postscript",
+    "example": "PS: Don't forget to bring dessert!"
+  },
+  "PPS": {
+    "meaning": "Post-Postscript",
+    "example": "PPS: The party starts at 7, not 8."
+  },
+  "AKA": {
+    "meaning": "Also Known As",
+    "example": "Robert, AKA Bob, is the team leader."
+  },
+  "TBD": {
+    "meaning": "To Be Determined",
+    "example": "The venue is TBD."
+  },
+  "TBA": {
+    "meaning": "To Be Announced",
+    "example": "The guest speaker is TBA."
+  },
+  "TBC": {
+    "meaning": "To Be Confirmed",
+    "example": "The meeting time is TBC."
+  },
+  "ETC": {
+    "meaning": "Et Cetera",
+    "example": "Bring snacks, drinks, etc. to the picnic."
+  },
+  "IE": {
+    "meaning": "Id Est (that is)",
+    "example": "I love citrus fruits, i.e., oranges and lemons."
+  },
+  "EG": {
+    "meaning": "Exempli Gratia (for example)",
+    "example": "I enjoy outdoor activities, e.g., hiking and biking."
+  },
+  "VS": {
+    "meaning": "Versus",
+    "example": "It's the championship game: Lakers vs. Celtics."
+  },
+  "VIP": {
+    "meaning": "Very Important Person",
+    "example": "VIP guests get backstage access."
+  },
+  "MVP": {
+    "meaning": "Most Valuable Player",
+    "example": "She was named MVP of the tournament."
+  },
+  "CEO": {
+    "meaning": "Chief Executive Officer",
+    "example": "The CEO announced a major restructuring."
+  },
+  "COO": {
+    "meaning": "Chief Operating Officer",
+    "example": "The COO manages daily operations."
+  },
+  "CMO": {
+    "meaning": "Chief Marketing Officer",
+    "example": "The CMO is launching a new campaign."
+  },
+  "CIO": {
+    "meaning": "Chief Information Officer",
+    "example": "The CIO oversees IT infrastructure."
+  },
+  "CSO": {
+    "meaning": "Chief Security Officer",
+    "example": "The CSO implements cybersecurity measures."
+  },
+  "CCO": {
+    "meaning": "Chief Compliance Officer",
+    "example": "The CCO ensures regulatory compliance."
+  },
+  "VP": {
+    "meaning": "Vice President",
+    "example": "She was promoted to VP of sales."
+  },
+  "SVP": {
+    "meaning": "Senior Vice President",
+    "example": "The SVP reports directly to the CEO."
+  },
+  "EVP": {
+    "meaning": "Executive Vice President",
+    "example": "The EVP oversees multiple departments."
+  },
+  "GM": {
+    "meaning": "General Manager",
+    "example": "The GM handles all store operations."
+  },
+  "AM": {
+    "meaning": "Account Manager",
+    "example": "Your AM will help with any questions."
+  },
+  "PM": {
+    "meaning": "Project Manager",
+    "example": "The PM coordinates the development team."
+  },
+  "BA": {
+    "meaning": "Business Analyst",
+    "example": "The BA gathered requirements from stakeholders."
+  },
+  "QA": {
+    "meaning": "Quality Assurance",
+    "example": "QA testing revealed several bugs."
+  },
+  "UX": {
+    "meaning": "User Experience",
+    "example": "Good UX design keeps users engaged."
+  },
+  "UI": {
+    "meaning": "User Interface",
+    "example": "The UI needs to be more intuitive."
+  },
+  "DBA": {
+    "meaning": "Database Administrator",
+    "example": "The DBA optimized query performance."
+  },
+  "SRE": {
+    "meaning": "Site Reliability Engineer",
+    "example": "SREs ensure system uptime and performance."
+  },
+  "DevOps": {
+    "meaning": "Development and Operations",
+    "example": "DevOps practices speed up deployment."
+  },
+  "CI": {
+    "meaning": "Continuous Integration",
+    "example": "CI automatically tests code changes."
+  },
+  "CD": {
+    "meaning": "Continuous Deployment",
+    "example": "CD pipelines automate releases."
+  },
+  "POC": {
+    "meaning": "Proof of Concept",
+    "example": "We built a POC to test the idea."
+  },
+  "UAT": {
+    "meaning": "User Acceptance Testing",
+    "example": "UAT confirmed the software meets requirements."
+  },
+  "SIT": {
+    "meaning": "System Integration Testing",
+    "example": "SIT verifies different components work together."
+  },
+  "E2E": {
+    "meaning": "End to End",
+    "example": "E2E testing covers the entire workflow."
+  },
+  "A/B": {
+    "meaning": "A/B Testing",
+    "example": "Run an A/B test to compare the designs."
+  },
+  "PR": {
+    "meaning": "Pull Request",
+    "example": "Submit a PR for code review."
+  },
+  "MR": {
+    "meaning": "Merge Request",
+    "example": "Approve the MR to merge the changes."
+  },
+  "WIP": {
+    "meaning": "Work In Progress",
+    "example": "This feature is still WIP."
+  },
+  "RFC": {
+    "meaning": "Request For Comments",
+    "example": "I posted an RFC for the new architecture."
+  },
+  "LTS": {
+    "meaning": "Long Term Support",
+    "example": "Use the LTS version for stability."
+  },
+  "GA": {
+    "meaning": "General Availability",
+    "example": "The software reached GA last month."
+  },
+  "EOL": {
+    "meaning": "End Of Life",
+    "example": "This product reaches EOL next year."
+  },
+  "ASAP": {
+    "meaning": "As Soon As Possible",
+    "example": "I need that report ASAP."
+  },
+  "ETA": {
+    "meaning": "Estimated Time of Arrival",
+    "example": "What's your ETA?"
+  },
+  "ETD": {
+    "meaning": "Estimated Time of Departure",
+    "example": "The ETD is 3 PM."
+  },
+  "GMT": {
+    "meaning": "Greenwich Mean Time",
+    "example": "The call is at 2 PM GMT."
+  },
+  "UTC": {
+    "meaning": "Coordinated Universal Time",
+    "example": "All timestamps are in UTC."
+  },
+  "EST": {
+    "meaning": "Eastern Standard Time",
+    "example": "The event starts at 9 AM EST."
+  },
+  "PST": {
+    "meaning": "Pacific Standard Time",
+    "example": "We're launching at midnight PST."
+  },
+  "CST": {
+    "meaning": "Central Standard Time",
+    "example": "The meeting is at 11 AM CST."
+  },
+  "MST": {
+    "meaning": "Mountain Standard Time",
+    "example": "Denver is in the MST zone."
+  },
+  "AM": {
+    "meaning": "Ante Meridiem (before noon)",
+    "example": "Let's meet at 10 AM."
+  },
+  "PM": {
+    "meaning": "Post Meridiem (after noon)",
+    "example": "The flight departs at 6 PM."
+  },
+  "24/7": {
+    "meaning": "24 hours a day, 7 days a week",
+    "example": "Customer support is available 24/7."
+  },
+  "DOB": {
+    "meaning": "Date of Birth",
+    "example": "Enter your DOB on the form."
+  },
+  "SSN": {
+    "meaning": "Social Security Number",
+    "example": "Provide your SSN for verification."
+  },
+  "ZIP": {
+    "meaning": "Zone Improvement Plan",
+    "example": "What's your ZIP code?"
+  },
+  "PO": {
+    "meaning": "Post Office",
+    "example": "Mail it to my PO box."
+  },
+  "APT": {
+    "meaning": "Apartment",
+    "example": "I live in Apt 3B."
+  },
+  "BLVD": {
+    "meaning": "Boulevard",
+    "example": "The office is on Main Blvd."
+  },
+  "AVE": {
+    "meaning": "Avenue",
+    "example": "Turn right on Park Ave."
+  },
+  "ST": {
+    "meaning": "Street",
+    "example": "They live on Elm St."
+  },
+  "RD": {
+    "meaning": "Road",
+    "example": "Take Oak Rd to get there."
+  },
+  "DR": {
+    "meaning": "Drive",
+    "example": "The house is on Sunset Dr."
+  },
+  "LN": {
+    "meaning": "Lane",
+    "example": "It's on Maple Ln."
+  },
+  "CT": {
+    "meaning": "Court",
+    "example": "They moved to Cherry Ct."
+  },
+  "PL": {
+    "meaning": "Place",
+    "example": "The restaurant is on Market Pl."
+  },
+  "SQ": {
+    "meaning": "Square",
+    "example": "Meet me at Union Sq."
+  },
+  "PKWY": {
+    "meaning": "Parkway",
+    "example": "Take the scenic Pkwy route."
+  },
+  "HWY": {
+    "meaning": "Highway",
+    "example": "Exit Hwy 101 at the next ramp."
+  },
+  "FWY": {
+    "meaning": "Freeway",
+    "example": "Traffic is heavy on the Fwy."
+  },
+  "XING": {
+    "meaning": "Crossing",
+    "example": "Watch for the deer Xing sign."
+  },
+  "MPH": {
+    "meaning": "Miles Per Hour",
+    "example": "The speed limit is 65 MPH."
+  },
+  "MPG": {
+    "meaning": "Miles Per Gallon",
+    "example": "This car gets 35 MPG."
+  },
+  "HP": {
+    "meaning": "Horsepower",
+    "example": "The engine produces 300 HP."
+  },
+  "RPM": {
+    "meaning": "Revolutions Per Minute",
+    "example": "The engine idles at 800 RPM."
+  },
+  "SUV": {
+    "meaning": "Sport Utility Vehicle",
+    "example": "We bought a new SUV for road trips."
+  },
+  "RV": {
+    "meaning": "Recreational Vehicle",
+    "example": "They travel the country in an RV."
+  },
+  "ATV": {
+    "meaning": "All-Terrain Vehicle",
+    "example": "Riding ATVs is fun on the trails."
+  },
+  "GPS": {
+    "meaning": "Global Positioning System",
+    "example": "Use GPS to navigate to the address."
+  },
+  "AC": {
+    "meaning": "Air Conditioning",
+    "example": "Turn on the AC, it's hot in here."
+  },
+  "DC": {
+    "meaning": "Direct Current",
+    "example": "Batteries provide DC power."
+  },
+  "AC": {
+    "meaning": "Alternating Current",
+    "example": "Home outlets use AC electricity."
+  },
+  "LED": {
+    "meaning": "Light Emitting Diode",
+    "example": "LED bulbs use less energy."
+  },
+  "LCD": {
+    "meaning": "Liquid Crystal Display",
+    "example": "The LCD screen is very clear."
+  },
+  "OLED": {
+    "meaning": "Organic Light Emitting Diode",
+    "example": "OLED displays have better contrast."
+  },
+  "HD": {
+    "meaning": "High Definition",
+    "example": "Stream movies in HD quality."
+  },
+  "UHD": {
+    "meaning": "Ultra High Definition",
+    "example": "UHD TVs offer stunning picture quality."
+  },
+  "4K": {
+    "meaning": "4000 pixels resolution",
+    "example": "This camera shoots in 4K."
+  },
+  "8K": {
+    "meaning": "8000 pixels resolution",
+    "example": "8K displays are incredibly sharp."
+  },
+  "FPS": {
+    "meaning": "Frames Per Second",
+    "example": "The game runs at 60 FPS."
+  },
+  "DPI": {
+    "meaning": "Dots Per Inch",
+    "example": "Print at 300 DPI for best quality."
+  },
+  "PPI": {
+    "meaning": "Pixels Per Inch",
+    "example": "The display has 400 PPI."
+  },
+  "KB": {
+    "meaning": "Kilobyte",
+    "example": "The file is only 50 KB."
+  },
+  "MB": {
+    "meaning": "Megabyte",
+    "example": "The photo is 5 MB."
+  },
+  "GB": {
+    "meaning": "Gigabyte",
+    "example": "This phone has 128 GB storage."
+  },
+  "TB": {
+    "meaning": "Terabyte",
+    "example": "The hard drive holds 2 TB of data."
+  },
+  "PB": {
+    "meaning": "Petabyte",
+    "example": "Data centers store petabytes of information."
+  },
+  "KBPS": {
+    "meaning": "Kilobits Per Second",
+    "example": "The connection speed is 500 Kbps."
+  },
+  "MBPS": {
+    "meaning": "Megabits Per Second",
+    "example": "I have 100 Mbps internet."
+  },
+  "GBPS": {
+    "meaning": "Gigabits Per Second",
+    "example": "Fiber optic offers Gbps speeds."
+  },
+  "MHz": {
+    "meaning": "Megahertz",
+    "example": "The processor runs at 3000 MHz."
+  },
+  "GHz": {
+    "meaning": "Gigahertz",
+    "example": "Modern CPUs operate at several GHz."
+  },
+  "mAh": {
+    "meaning": "Milliampere Hour",
+    "example": "The battery is 5000 mAh."
+  },
+  "W": {
+    "meaning": "Watt",
+    "example": "Use a 60W light bulb."
+  },
+  "kW": {
+    "meaning": "Kilowatt",
+    "example": "The generator produces 10 kW."
+  },
+  "kWh": {
+    "meaning": "Kilowatt Hour",
+    "example": "We used 500 kWh last month."
+  },
+  "V": {
+    "meaning": "Volt",
+    "example": "Standard outlets are 120V."
+  },
+  "A": {
+    "meaning": "Ampere",
+    "example": "The circuit is rated for 15A."
+  },
+  "Hz": {
+    "meaning": "Hertz",
+    "example": "The monitor refreshes at 60 Hz."
+  },
+  "dB": {
+    "meaning": "Decibel",
+    "example": "The noise level is 85 dB."
+  },
+  "PSI": {
+    "meaning": "Pounds per Square Inch",
+    "example": "Inflate the tires to 32 PSI."
+  },
+  "LBS": {
+    "meaning": "Pounds",
+    "example": "The package weighs 5 lbs."
+  },
+  "OZ": {
+    "meaning": "Ounce",
+    "example": "Add 8 oz of water."
+  },
+  "GAL": {
+    "meaning": "Gallon",
+    "example": "Fill up with 15 gal of gas."
+  },
+  "QT": {
+    "meaning": "Quart",
+    "example": "Use 2 qt of milk."
+  },
+  "PT": {
+    "meaning": "Pint",
+    "example": "A pint is 16 oz."
+  },
+  "TSP": {
+    "meaning": "Teaspoon",
+    "example": "Add 1 tsp of salt."
+  },
+  "TBSP": {
+    "meaning": "Tablespoon",
+    "example": "Mix in 2 tbsp of butter."
+  },
+  "CUP": {
+    "meaning": "Cup measurement",
+    "example": "Use 1 cup of flour."
+  },
+  "FT": {
+    "meaning": "Feet",
+    "example": "The room is 12 ft wide."
+  },
+  "IN": {
+    "meaning": "Inch",
+    "example": "The screen is 15 in diagonally."
+  },
+  "YD": {
+    "meaning": "Yard",
+    "example": "Buy 3 yd of fabric."
+  },
+  "MI": {
+    "meaning": "Mile",
+    "example": "The store is 5 mi away."
+  },
+  "KM": {
+    "meaning": "Kilometer",
+    "example": "I ran 10 km today."
+  },
+  "M": {
+    "meaning": "Meter",
+    "example": "The pool is 25 m long."
+  },
+  "CM": {
+    "meaning": "Centimeter",
+    "example": "The phone is 15 cm tall."
+  },
+  "MM": {
+    "meaning": "Millimeter",
+    "example": "Use a 10 mm wrench."
+  },
+  "KG": {
+    "meaning": "Kilogram",
+    "example": "I weigh 70 kg."
+  },
+  "G": {
+    "meaning": "Gram",
+    "example": "Add 250 g of sugar."
+  },
+  "MG": {
+    "meaning": "Milligram",
+    "example": "Take 500 mg of the medication."
+  },
+  "L": {
+    "meaning": "Liter",
+    "example": "Buy a 2 L bottle of soda."
+  },
+  "ML": {
+    "meaning": "Milliliter",
+    "example": "Add 50 ml of water."
+  },
+  "SQ": {
+    "meaning": "Square",
+    "example": "The area is 100 sq ft."
+  },
+  "SQFT": {
+    "meaning": "Square Feet",
+    "example": "The apartment is 800 sqft."
+  },
+  "SQMI": {
+    "meaning": "Square Mile",
+    "example": "The city covers 50 sqmi."
+  },
+  "ACRE": {
+    "meaning": "Unit of land area",
+    "example": "They own 10 acres of land."
+  },
+  "BBQ": {
+    "meaning": "Barbecue",
+    "example": "Come over for a BBQ this weekend."
+  },
+  "BLT": {
+    "meaning": "Bacon, Lettuce, and Tomato",
+    "example": "I'll have a BLT sandwich for lunch."
+  },
+  "PB&J": {
+    "meaning": "Peanut Butter and Jelly",
+    "example": "PB&J is a classic sandwich."
+  },
+  "BYO": {
+    "meaning": "Bring Your Own",
+    "example": "This is a BYO restaurant."
+  },
+  "ASAP": {
+    "meaning": "As Soon As Possible",
+    "example": "Reply ASAP please."
+  },
+  "RSVP": {
+    "meaning": "Please Respond",
+    "example": "RSVP by Friday."
+  },
+  "DIY": {
+    "meaning": "Do It Yourself",
+    "example": "I love DIY projects."
+  },
+  "FAQ": {
+    "meaning": "Frequently Asked Questions",
+    "example": "Check the FAQ page first."
+  },
+  "TBD": {
+    "meaning": "To Be Determined",
+    "example": "The venue is TBD."
+  },
+  "TBA": {
+    "meaning": "To Be Announced",
+    "example": "The headliner is TBA."
+  },
+  "ETA": {
+    "meaning": "Estimated Time of Arrival",
+    "example": "My ETA is 10 minutes."
+  },
+  "FYI": {
+    "meaning": "For Your Information",
+    "example": "FYI, the meeting moved to Tuesday."
+  },
+  "BTW": {
+    "meaning": "By The Way",
+    "example": "BTW, I saw your brother yesterday."
+  },
+  "IMO": {
+    "meaning": "In My Opinion",
+    "example": "IMO, that's the best option."
+  },
+  "IMHO": {
+    "meaning": "In My Honest Opinion",
+    "example": "IMHO, we should wait."
+  },
+  "TBH": {
+    "meaning": "To Be Honest",
+    "example": "TBH, I'm not sure about this."
+  },
+  "IRL": {
+    "meaning": "In Real Life",
+    "example": "Let's meet IRL sometime."
+  },
+  "AFK": {
+    "meaning": "Away From Keyboard",
+    "example": "I'll be AFK for an hour."
+  },
+  "BRB": {
+    "meaning": "Be Right Back",
+    "example": "BRB, getting coffee."
+  },
+  "GTG": {
+    "meaning": "Got To Go",
+    "example": "GTG, my ride is here."
+  },
+  "TTYL": {
+    "meaning": "Talk To You Later",
+    "example": "TTYL, have a great day!"
+  },
+  "IDK": {
+    "meaning": "I Don't Know",
+    "example": "IDK where I put my keys."
+  },
+  "IDC": {
+    "meaning": "I Don't Care",
+    "example": "IDC what movie we watch."
+  },
+  "NVM": {
+    "meaning": "Never Mind",
+    "example": "NVM, I found it."
+  },
+  "JK": {
+    "meaning": "Just Kidding",
+    "example": "JK, I'm totally messing with you."
+  },
+  "LOL": {
+    "meaning": "Laughing Out Loud",
+    "example": "LOL, that's hilarious!"
+  },
+  "LMAO": {
+    "meaning": "Laughing My Ass Off",
+    "example": "LMAO at that video."
+  },
+  "ROFL": {
+    "meaning": "Rolling On Floor Laughing",
+    "example": "ROFL, I can't stop laughing."
+  },
+  "SMH": {
+    "meaning": "Shaking My Head",
+    "example": "SMH at that terrible decision."
+  },
+  "OMG": {
+    "meaning": "Oh My God",
+    "example": "OMG, you scared me!"
+  },
+  "WTF": {
+    "meaning": "What The Fuck",
+    "example": "WTF is going on here?"
+  },
+  "BFF": {
+    "meaning": "Best Friends Forever",
+    "example": "She's my BFF from college."
+  },
+  "FOMO": {
+    "meaning": "Fear Of Missing Out",
+    "example": "I have major FOMO about that party."
+  },
+  "YOLO": {
+    "meaning": "You Only Live Once",
+    "example": "YOLO, let's book the trip!"
+  },
+  "TMI": {
+    "meaning": "Too Much Information",
+    "example": "TMI, I didn't need to know that."
+  },
+  "NSFW": {
+    "meaning": "Not Safe For Work",
+    "example": "That link is definitely NSFW."
+  },
+  "TLDR": {
+    "meaning": "Too Long Didn't Read",
+    "example": "TLDR: The meeting got postponed."
+  },
+  "DM": {
+    "meaning": "Direct Message",
+    "example": "DM me for more details."
+  },
+  "PM": {
+    "meaning": "Private Message",
+    "example": "Send me a PM about it."
+  },
+  "RT": {
+    "meaning": "Retweet",
+    "example": "RT if you agree!"
+  },
+  "LMK": {
+    "meaning": "Let Me Know",
+    "example": "LMK if you can make it."
+  },
+  "NP": {
+    "meaning": "No Problem",
+    "example": "NP, happy to help!"
+  },
+  "THX": {
+    "meaning": "Thanks",
+    "example": "THX for the invite!"
+  },
+  "PLS": {
+    "meaning": "Please",
+    "example": "Can you pls send that file?"
+  },
+  "OMW": {
+    "meaning": "On My Way",
+    "example": "OMW, be there in 5."
+  },
+  "ATM": {
+    "meaning": "At The Moment",
+    "example": "I'm busy ATM."
+  },
+  "IIRC": {
+    "meaning": "If I Recall Correctly",
+    "example": "IIRC, the deadline is Friday."
+  },
+  "IKR": {
+    "meaning": "I Know Right",
+    "example": "IKR? That's exactly what I thought."
+  },
+  "ICYMI": {
+    "meaning": "In Case You Missed It",
+    "example": "ICYMI, here's the announcement."
+  },
+  "TIL": {
+    "meaning": "Today I Learned",
+    "example": "TIL that bees can recognize faces."
+  },
+  "AMA": {
+    "meaning": "Ask Me Anything",
+    "example": "I'm doing an AMA session tomorrow."
+  },
+  "ELI5": {
+    "meaning": "Explain Like I'm 5",
+    "example": "Can someone ELI5 quantum physics?"
+  },
+  "FTFY": {
+    "meaning": "Fixed That For You",
+    "example": "You said Tuesday, but it's Wednesday, FTFY."
+  },
+  "FWIW": {
+    "meaning": "For What It's Worth",
+    "example": "FWIW, I think you're right."
+  },
+  "FTW": {
+    "meaning": "For The Win",
+    "example": "Tacos for dinner FTW!"
+  },
+  "GG": {
+    "meaning": "Good Game",
+    "example": "GG everyone, that was fun!"
+  },
+  "GL": {
+    "meaning": "Good Luck",
+    "example": "GL on your exam tomorrow!"
+  },
+  "HF": {
+    "meaning": "Have Fun",
+    "example": "HF at the concert tonight!"
+  },
+  "GLHF": {
+    "meaning": "Good Luck Have Fun",
+    "example": "GLHF in the tournament!"
+  },
+  "GJ": {
+    "meaning": "Good Job",
+    "example": "GJ on finishing the project!"
+  },
+  "WP": {
+    "meaning": "Well Played",
+    "example": "WP, you totally outplayed me."
+  },
+  "TTYL": {
+    "meaning": "Talk To You Later",
+    "example": "TTYL, gotta run!"
+  },
+  "B4": {
+    "meaning": "Before",
+    "example": "Call me B4 you leave."
+  },
+  "L8R": {
+    "meaning": "Later",
+    "example": "See you L8R!"
+  },
+  "PPL": {
+    "meaning": "People",
+    "example": "So many PPL showed up."
+  },
+  "MSG": {
+    "meaning": "Message",
+    "example": "Did you get my MSG?"
+  },
+  "PIC": {
+    "meaning": "Picture",
+    "example": "Send me a pic of that."
+  },
+  "VID": {
+    "meaning": "Video",
+    "example": "Check out this vid I made."
+  },
+  "INFO": {
+    "meaning": "Information",
+    "example": "I need more info about that."
+  },
+  "APPROX": {
+    "meaning": "Approximately",
+    "example": "It'll take approx 2 hours."
+  },
+  "MAX": {
+    "meaning": "Maximum",
+    "example": "The max capacity is 50 people."
+  },
+  "MIN": {
+    "meaning": "Minimum",
+    "example": "The min age requirement is 18."
+  },
+  "AVG": {
+    "meaning": "Average",
+    "example": "The avg temperature is 75 degrees."
+  },
+  "DEPT": {
+    "meaning": "Department",
+    "example": "Contact the HR dept for help."
+  },
+  "MGMT": {
+    "meaning": "Management",
+    "example": "Submit that to mgmt for approval."
+  },
+  "GOVT": {
+    "meaning": "Government",
+    "example": "The govt issued new guidelines."
+  },
+  "INTL": {
+    "meaning": "International",
+    "example": "We offer intl shipping."
+  },
+  "NATL": {
+    "meaning": "National",
+    "example": "It's a natl holiday tomorrow."
+  },
+  "CORP": {
+    "meaning": "Corporation",
+    "example": "XYZ Corp is hiring."
+  },
+  "CO": {
+    "meaning": "Company",
+    "example": "Smith & Co. has been around for decades."
+  },
+  "LTD": {
+    "meaning": "Limited",
+    "example": "ABC Ltd. is expanding overseas."
+  },
+  "BROS": {
+    "meaning": "Brothers",
+    "example": "Johnson Bros. runs the shop."
+  },
+  "ASSOC": {
+    "meaning": "Associates or Association",
+    "example": "Join the alumni assoc today."
+  },
+  "ORG": {
+    "meaning": "Organization",
+    "example": "Our org supports local charities."
+  },
+  "INST": {
+    "meaning": "Institute",
+    "example": "She works at a research inst."
+  },
+  "UNIV": {
+    "meaning": "University",
+    "example": "He teaches at State Univ."
+  },
+  "COLL": {
+    "meaning": "College",
+    "example": "I went to community coll first."
+  },
+  "HS": {
+    "meaning": "High School",
+    "example": "We met in HS."
+  },
+  "ELEM": {
+    "meaning": "Elementary",
+    "example": "My kids go to Lincoln Elem."
+  },
+  "JR": {
+    "meaning": "Junior",
+    "example": "He's John Smith Jr."
+  },
+  "SR": {
+    "meaning": "Senior",
+    "example": "His dad is John Smith Sr."
+  },
+  "DR": {
+    "meaning": "Doctor",
+    "example": "Dr. Brown will see you now."
+  },
+  "MR": {
+    "meaning": "Mister",
+    "example": "Mr. Johnson called earlier."
+  },
+  "MRS": {
+    "meaning": "Missus",
+    "example": "Mrs. Williams is our teacher."
+  },
+  "MS": {
+    "meaning": "Miss or Ms.",
+    "example": "Ms. Davis runs the department."
+  },
+  "PROF": {
+    "meaning": "Professor",
+    "example": "Prof. Lee teaches chemistry."
+  },
+  "REV": {
+    "meaning": "Reverend",
+    "example": "Rev. Martin officiated the ceremony."
+  },
+  "GEN": {
+    "meaning": "General",
+    "example": "Gen. Smith commanded the troops."
+  },
+  "COL": {
+    "meaning": "Colonel",
+    "example": "Col. Thompson was promoted."
+  },
+  "CPT": {
+    "meaning": "Captain",
+    "example": "Cpt. Rodriguez leads the team."
+  },
+  "LT": {
+    "meaning": "Lieutenant",
+    "example": "Lt. Baker reported for duty."
+  },
+  "SGT": {
+    "meaning": "Sergeant",
+    "example": "Sgt. Miller trained the recruits."
+  },
+  "PVT": {
+    "meaning": "Private",
+    "example": "Pvt. Jones just enlisted."
+  },
+  "GOVT": {
+    "meaning": "Government",
+    "example": "Govt officials met yesterday."
+  },
+  "FED": {
+    "meaning": "Federal",
+    "example": "Fed regulations apply here."
+  },
+  "STATE": {
+    "meaning": "State government",
+    "example": "State funding was approved."
+  },
+  "NATL": {
+    "meaning": "National",
+    "example": "It's a natl emergency."
+  },
+  "INTL": {
+    "meaning": "International",
+    "example": "Intl flights are delayed."
+  },
+  "MISC": {
+    "meaning": "Miscellaneous",
+    "example": "File that under misc expenses."
+  },
+  "EST": {
+    "meaning": "Established or Estimated",
+    "example": "The company was est. in 1995."
+  },
+  "APPROX": {
+    "meaning": "Approximately",
+    "example": "Approx 100 people attended."
+  },
+  "REF": {
+    "meaning": "Reference",
+    "example": "See ref number 12345."
+  },
+  "NO": {
+    "meaning": "Number",
+    "example": "Apartment No. 5 is vacant."
+  },
+  "VOL": {
+    "meaning": "Volume",
+    "example": "Read Vol. 2 of the series."
+  },
+  "CH": {
+    "meaning": "Chapter",
+    "example": "Start with Ch. 1."
+  },
+  "PG": {
+    "meaning": "Page",
+    "example": "Turn to pg. 42."
+  },
+  "ED": {
+    "meaning": "Edition or Editor",
+    "example": "This is the 3rd ed."
+  },
+  "REV": {
+    "meaning": "Revised or Revision",
+    "example": "Read the rev. version."
+  },
+  "VER": {
+    "meaning": "Version",
+    "example": "Download ver. 2.0."
+  },
+  "SER": {
+    "meaning": "Series",
+    "example": "This is ser. 3 of the collection."
+  },
+  "happy": {
+    "meaning": "To feel good inside",
+    "example": "It was a happy wedding",
+  }
+}
