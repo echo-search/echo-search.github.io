@@ -1,1 +1,0 @@
-This directory contains articles about the Google Chrome browser.
