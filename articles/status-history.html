@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status History – EchoSearch</title>
+<style>
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#222;background:#fff;margin:0;padding:2rem}
+h2{font-weight:700;margin-bottom:1.5rem}
+.month{font-weight:600;margin-top:2rem}
+.day{display:flex;align-items:baseline;gap:.3rem;margin-top:.75rem}
+.day .num{font-weight:700;font-size:1.3rem}
+.day .dow{color:#999;font-size:.9rem}
+.incident{position:relative;margin-left:2.3rem;padding:1rem;border-radius:6px;background:#fafafa;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;cursor:pointer}
+.incident-header{display:flex;align-items:center;gap:.5rem}
+.status-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;animation:pulse 1.4s infinite ease-in-out}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.75);opacity:.75}}
+.status-green{background:#28a745}
+.status-yellow{background:#ffb100}
+.status-red{background:#e03131}
+.incident strong{font-weight:600}
+.incident small{color:#999;flex-shrink:0}
+.incident .desc{color:#444;margin-top:.3rem}
+.timeline{position:relative;margin-left:3.1rem;padding-left:28px;margin-top:1.25rem;display:none}
+.timeline.active{display:block}
+.timeline::before{content:"";position:absolute;left:12px;top:0;bottom:0;width:2px;background:#ddd}
+.entry{position:relative;margin-bottom:2rem}
+.entry:last-child{margin-bottom:0}
+.entry::before{content:"";position:absolute;left:-20px;top:.45rem;width:10px;height:10px;border-radius:50%}
+.entry.resolved::before{background:#28a745}
+.entry.monitoring::before{background:#ffb100}
+.entry.identified::before{background:#e03131}
+.entry.investigating::before{background:#e03131}
+.entry h3{margin:0 0 .3rem;font-size:1rem;font-weight:600}
+.entry p{margin:.25rem 0}
+.time{color:#888;font-size:.9rem;margin-top:.25rem}
+.back-button{display: inline-block;margin-top: 40px;padding: 10px 20px;background-color: #00cec9;color: black;margin: 20px;text-decoration: none;border-radius: 6px;font-weight: bold;transition: background 0.3s ease;}
+</style>
+</head>
+<body>
+<h2>Status History</h2>
+<div class="month">October</div>
+<div class="day"><div class="num">15</div><div class="dow">Wed</div></div>
+
+<div class="incident" aria-expanded="false" onclick="toggleTimeline(this)">
+  <div>
+    <div class="incident-header">
+      <div class="status-dot status-red" id="parent-dot"></div>
+      <strong>Redirection issue</strong>
+    </div>
+    <div class="desc">This service is back to its expected level</div>
+  </div>
+  <small>18:43 UTC</small>
+</div>
+
+<div class="timeline" aria-hidden="true">
+  <div class="entry resolved">
+    <h3>Resolved</h3>
+    <p>This feature have returned to its expected level.</p>
+    <div class="time">18:43 UTC</div>
+  </div>
+  <div class="entry monitoring">
+    <h3>Monitoring</h3>
+    <p>A fix has been deployed and we're monitoring the results.</p>
+    <div class="time">18:37 UTC</div>
+  </div>
+  <div class="entry identified">
+    <h3>Identified</h3>
+    <p>The root cause has been identified and a fix is in progress.</p>
+    <div class="time">18:05 UTC</div>
+  </div>
+  <div class="entry investigating">
+    <h3>Investigating</h3>
+    <p>Our team is currently investigating this issue.</p>
+    <div class="time">17:45 UTC</div>
+  </div>
+</div>
+
+<a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
+
+<script>
+function toggleTimeline(el){
+  const next=el.nextElementSibling
+  if(!next||!next.classList.contains('timeline'))return
+  const wasActive=next.classList.contains('active')
+  document.querySelectorAll('.timeline').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-hidden','true')})
+  document.querySelectorAll('.incident').forEach(i=>i.setAttribute('aria-expanded','false'))
+  if(!wasActive){next.classList.add('active');next.setAttribute('aria-hidden','false');el.setAttribute('aria-expanded','true')}
+  updateParentDot(next)
+}
+function updateParentDot(timeline){
+  if(!timeline)return
+  const entries=Array.from(timeline.querySelectorAll('.entry'))
+  if(entries.length===0)return
+  const latest=entries[0]
+  const parentDot=document.getElementById('parent-dot')
+  parentDot.classList.remove('status-green','status-yellow','status-red')
+  if(latest.classList.contains('resolved'))parentDot.classList.add('status-green')
+  else if(latest.classList.contains('monitoring'))parentDot.classList.add('status-yellow')
+  else parentDot.classList.add('status-red')
+}
+(function init(){
+  const timeline=document.querySelector('.timeline')
+  const entries=Array.from(timeline.querySelectorAll('.entry'))
+  if(entries.length>0){
+    const ordered=entries
+    ordered.forEach(e=>timeline.appendChild(e))
+    updateParentDot(timeline)
+  }
+})();
+</script>
+</body>
+</html>
