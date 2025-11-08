@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Download — AFKBuilder App</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:28px;color:#111}
+    .wrap{max-width:900px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;font-size:1.4rem}
+    p.lead{color:#444;margin-top:6px}
+    .card{background:#fbfbfb;border:1px solid #eee;padding:18px;border-radius:10px;margin-top:20px}
+    .btn{
+      display:inline-block;padding:10px 16px;border-radius:8px;background:#0b6cff;color:white;text-decoration:none;font-weight:600;
+      box-shadow:0 4px 12px rgba(11,108,255,.12);
+    }
+    pre{background:#0f1724;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto}
+    details{margin-top:12px}
+    summary{cursor:pointer;font-weight:600}
+    .note{font-size:.92rem;color:#666;margin-top:8px}
+    footer{margin-top:28px;color:#666;font-size:.88rem}
+    .copy{font-size:.9rem;padding:8px 10px;border-radius:6px;border:1px dashed #ddd;background:#fff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect width="24" height="24" rx="6" fill="#0b6cff"></rect>
+        <path d="M7 12h10M7 16h10M7 8h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h1>AFKBuilder — Download package</h1>
+        <p class="lead">Click to download the app bundle (.zip). Instructions below show how to extract and run it on Windows / macOS / Linux.</p>
+      </div>
+    </header>
+
+    <div class="card" role="region" aria-label="download">
+      <!-- Update href to the path of your zip in the repo (relative or absolute). -->
+      <a class="btn" id="downloadBtn" href="afkbuilder-app.zip" download>Download afkbuilder-app.zip</a>
+      <p class="note">If that button doesn't work (e.g., GitHub shows the archive instead of forcing download), right-click the link and choose "Save link as...".</p>
+
+      <details>
+        <summary>SHA256 checksum (optional)</summary>
+        <p class="note">When you upload the .zip to the repo, you can calculate a SHA256 and paste it here so users can verify integrity.</p>
+        <pre class="copy" id="checksum">SHA256: <em>paste checksum here</em></pre>
+      </details>
+    </div>
+
+    <div class="card" id="instructions">
+      <h2 style="margin-top:0">Quick usage instructions</h2>
+
+      <h3>1) Where to place the file in your repo</h3>
+      <p class="note">Add the zip to the repository (for example: <code>/releases/afkbuilder-app.zip</code>), or attach it to a GitHub release. Update the download link above if its path/name changes.</p>
+
+      <h3>2) Extracting the zip</h3>
+      <p class="note">Common commands — run in a terminal/PowerShell where the downloaded file is located.</p>
+      <h4>Windows (PowerShell):</h4>
+      <pre># Extract to folder named "afkbuilder-app"
+Expand-Archive -Path .\afkbuilder-app.zip -DestinationPath .\afkbuilder-app</pre>
+
+      <h4>macOS / Linux (terminal):</h4>
+      <pre># Extract to folder named "afkbuilder-app"
+unzip afkbuilder-app.zip -d afkbuilder-app</pre>
+
+      <h3>3) What to expect inside</h3>
+      <p class="note">Common contents &amp; how to run them. Pick the section that matches your package.</p>
+
+      <details>
+        <summary>Static site (no build required)</summary>
+        <p class="note">If the extracted folder contains an <code>index.html</code> and static assets:</p>
+        <ol>
+          <li>Open <code>afkbuilder-app/index.html</code> in your browser.</li>
+          <li>Or run a simple local server (recommended for modern features):</li>
+        </ol>
+        <pre># Python 3 (quick local server)
+cd afkbuilder-app
+python -m http.server 8000
+# Then open http://localhost:8000</pre>
+      </details>
+
+      <details>
+        <summary>Node / npm project (has package.json)</summary>
+        <p class="note">If you see <code>package.json</code> and a <code>README.md</code> with build/run scripts:</p>
+        <pre>cd afkbuilder-app
+# install dependencies
+npm install
+
+# start in dev mode (if script exists)
+npm start
+
+# or build + preview
+npm run build
+# then serve the generated build folder (commands vary by project)</pre>
+      </details>
+
+      <details>
+        <summary>Electron / Desktop app</summary>
+        <p class="note">If the package contains an electron app or platform-specific executables, check the included README for platform install steps.</p>
+      </details>
+
+      <h3>4) Verifying the download (optional)</h3>
+      <p class="note">Compare the SHA256 printed above with a locally computed one.</p>
+      <pre># Linux / macOS
+shasum -a 256 afkbuilder-app.zip
+
+# Windows (PowerShell)
+Get-FileHash .\afkbuilder-app.zip -Algorithm SHA256</pre>
+
+      <h3>5) Troubleshooting & tips</h3>
+      <ul>
+        <li class="note">If files are blocked on Windows after download, right-click the zip &gt; Properties &gt; "Unblock".</li>
+        <li class="note">If a project needs credentials (API keys, etc.), they will usually be documented in the included README. Never paste private keys into public repos.</li>
+        <li class="note">If you plan to ship releases, consider using GitHub Releases so users get a clear download link and integrity metadata.</li>
+      </ul>
+    </div>
+
+    <footer>
+      <div>Questions about the package contents? Drop a README in the zip with precise commands and required versions (Node, Python, etc.) — that saves everyone time.</div>
+    </footer>
+  </div>
+</body>
+</html>
