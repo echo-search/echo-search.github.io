@@ -19,13 +19,13 @@
     button.danger { background:#dc3545; color:#fff; }
     button.ghost { background:#f0f0f0; color:#333; }
     #themesUL { list-style: none; padding:0; margin:0; }
-    #themesUL li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-bottom:1px solid #eee; background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4)); }
+    #themesUL li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-bottom:1px solid #eee; background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba[...]
     #themesUL li .left { display:flex; align-items:center; gap:12px; }
-    .swatch { width:52px; height:52px; border-radius:6px; border:1px solid #e6e6e6; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; text-shadow:0 1px 0 rgba(0,0,0,0.2); overflow:hidden; }
+    .swatch { width:52px; height:52px; border-radius:6px; border:1px solid #e6e6e6; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; text-shadow:0 1[...]
     .meta { font-size:0.9rem; color:var(--muted); }
     .sep { text-align:center; padding:8px; color:var(--muted); background:transparent; border-bottom:1px solid #eee; }
     .preview { height:86px; border-radius:6px; border:1px solid #e6e6e6; margin-top:10px; display:flex; align-items:center; justify-content:center; color:#222; background:#fff; }
-    .back-button { display: inline-block; margin-top: 40px; padding: 10px 20px; background-color: #00cec9; color: black; margin: 20px; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background 0.3s ease; }
+    .back-button { display: inline-block; margin-top: 40px; padding: 10px 20px; background-color: #00cec9; color: black; margin: 20px; text-decoration: none; border-radius: 6px; font-weight: bold; tra[...]
     .muted { color:var(--muted); font-size:0.95rem; }
     @media (max-width:520px) {
       .row { flex-direction:column; }
@@ -45,7 +45,7 @@
           <input id="themeName" type="text" placeholder="e.g. My Minty Theme" style="width:100%;max-width:360px;" />
         </div>
         <div style="text-align:right;">
-          <div class="muted">Preset themes are listed below. Custom themes appear instantly in the list.</div>
+          <div class="muted">Your custom themes appear below.</div>
         </div>
       </div>
 
@@ -82,8 +82,8 @@
     <div class="panel">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div>
-          <strong>Available themes</strong>
-          <div class="muted">Presets first, then your custom themes (added instantly)</div>
+          <strong>Custom themes</strong>
+          <div class="muted">Your custom themes</div>
         </div>
         <div>
           <button id="clearCustoms" class="ghost" title="Remove all custom themes">Clear custom themes</button>
@@ -93,16 +93,12 @@
       <ul id="themesUL" aria-live="polite"></ul>
     </div>
 
-    <a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
+    <a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:s[...]
     
   </div>
 
 <script>
 (function () {
-  const presetNames = [
-    'Default','Dark','Retro','Neon','Ocean',
-    'Midnight','Sunset','Matrix','Cyberpunk','Forest','Floral'
-  ];
 
   const themesUL = document.getElementById('themesUL');
   const saveBtn = document.getElementById('saveBtn');
@@ -140,48 +136,7 @@
   function renderList() {
     themesUL.innerHTML = '';
 
-    presetNames.forEach(name => {
-      const li = document.createElement('li');
-
-      const left = document.createElement('div');
-      left.className = 'left';
-
-      const sw = document.createElement('div');
-      sw.className = 'swatch';
-      sw.style.background = '#888';
-      sw.textContent = name[0] || '';
-      left.appendChild(sw);
-
-      const txt = document.createElement('div');
-      const title = document.createElement('div');
-      title.textContent = name;
-      title.style.fontWeight = '600';
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      meta.textContent = 'preset';
-      txt.appendChild(title);
-      txt.appendChild(meta);
-      left.appendChild(txt);
-
-      li.appendChild(left);
-
-      const actions = document.createElement('div');
-      actions.style.display = 'flex';
-      actions.style.gap = '8px';
-
-      const applyBtn = document.createElement('button');
-      applyBtn.className = 'primary';
-      applyBtn.textContent = 'Apply';
-      applyBtn.onclick = () => {
-        localStorage.setItem(ACTIVE_KEY, JSON.stringify({ __applyPreset: true, name }));
-        alert(`Marked preset "${name}" to be applied by the homepage. It should take a few seconds.`);
-      };
-      actions.appendChild(applyBtn);
-
-      li.appendChild(actions);
-      themesUL.appendChild(li);
-    });
-
+    // Section header for custom themes
     const sep = document.createElement('li');
     sep.className = 'sep';
     sep.textContent = 'Custom themes';
@@ -238,15 +193,8 @@
       actions.style.display = 'flex';
       actions.style.gap = '8px';
 
-      const applyBtn = document.createElement('button');
-      applyBtn.className = 'primary';
-      applyBtn.textContent = 'Apply';
-      applyBtn.onclick = () => {
-        localStorage.setItem(ACTIVE_KEY, JSON.stringify({ __fromThemesPage: true, data: t }));
-        alert(`"${t.name}" has been marked as active. You can now go to the homepage and select "${t.name}". Then, reload the page.`);
-      };
-      actions.appendChild(applyBtn);
-
+      // Removed "Apply" button because it was unused.
+      // Keep Edit and Delete functionality.
       const editBtn = document.createElement('button');
       editBtn.className = 'ghost';
       editBtn.textContent = 'Edit';
