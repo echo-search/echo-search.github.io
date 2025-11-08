@@ -17,9 +17,10 @@ body, html { margin: 0; padding: 0; }
 :root { --bg: #fff; --text: #000; --accent: #00cec9; --hover: #00b2af; --font: 'Segoe UI', sans-serif; }
 body { font-family: var(--font); background-color: var(--bg); color: black; transition: all 0.3s; }
 header { text-align: center; padding: 2rem 1rem 1rem; }
+a { color: blue; text-decoration: underline; }
 a:hover { color: blue; text-decoration: underline; }
 .theme-selector { margin-top: 1rem; text-align: center; }
-.theme-selector select { padding: 0.3rem 0.6rem; border-radius: 10px; border: 1px solid var(--hover); font-size: 1rem; cursor: pointer; background: var(--accent); color: var(--text); transition: background 0.3s, color 0.3s; width: 150px; height: 36px; }
+.theme-selector select { padding: 0.3rem 0.6rem; border-radius: 10px; border: 1px solid var(--hover); font-size: 1rem; cursor: pointer; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; width: 150px; height: 36px; }
 .search-container { display: flex; align-items: center; position: relative; justify-content: center; gap: 0.5rem; max-width: 700px; margin: 0 auto; padding: 2rem 1rem 1rem; }
 input[type="search"] { font-size: 1.2rem; padding: 0.6rem 1rem; border-radius: 30px; border: 2px solid var(--accent); width: 80%; outline: none; transition: box-shadow 0.3s, background 0.3s, color 0.3s; background: var(--bg); color: var(--text); }
 input[type="search"]:focus { box-shadow: 0 0 8px var(--accent); }
