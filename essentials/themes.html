@@ -1,346 +1,575 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Themes - EchoSearch</title>
+  <title>Themes — EchoSearch</title>
+
+  <!--
+    Tidied visual design (web-facing):
+    - Cleaner spacing, better typography and card-like list items
+    - Icon buttons for Edit/Delete for compactness
+    - Clear empty state and helpful copy
+    - Inline comments added so future maintainers can understand structure quickly
+  -->
+
   <style>
-    :root { --bg:#f5f5f5; --card:#fff; --muted:#666; --accent:#007bff; }
-    body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:#222; padding:20px; }
-    h1 { margin:0 0 12px 0; font-size:20px; }
-    .container { max-width:900px; margin:0 auto; }
-    .panel { background:var(--card); padding:14px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.06); margin-bottom:14px; }
-    label { display:block; font-weight:600; margin-top:8px; font-size:0.95rem; }
-    .row { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
-    input[type="text"], input[type="color"] { padding:8px; border-radius:6px; border:1px solid #ddd; }
-    input[type="file"] { margin-top:6px; }
-    button { cursor:pointer; border:none; border-radius:6px; padding:8px 10px; }
-    button.primary { background:var(--accent); color:#fff; }
-    button.danger { background:#dc3545; color:#fff; }
-    button.ghost { background:#f0f0f0; color:#333; }
-    #themesUL { list-style: none; padding:0; margin:0; }
-    #themesUL li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-bottom:1px solid #eee; background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba[...]
-    #themesUL li .left { display:flex; align-items:center; gap:12px; }
-    .swatch { width:52px; height:52px; border-radius:6px; border:1px solid #e6e6e6; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; text-shadow:0 1[...]
-    .meta { font-size:0.9rem; color:var(--muted); }
-    .sep { text-align:center; padding:8px; color:var(--muted); background:transparent; border-bottom:1px solid #eee; }
-    .preview { height:86px; border-radius:6px; border:1px solid #e6e6e6; margin-top:10px; display:flex; align-items:center; justify-content:center; color:#222; background:#fff; }
-    .back-button { display: inline-block; margin-top: 40px; padding: 10px 20px; background-color: #00cec9; color: black; margin: 20px; text-decoration: none; border-radius: 6px; font-weight: bold; tra[...]
-    .muted { color:var(--muted); font-size:0.95rem; }
-    @media (max-width:520px) {
-      .row { flex-direction:column; }
-      .swatch { width:44px; height:44px; }
+    :root{
+      --bg: #f5f7f9;
+      --card: #ffffff;
+      --muted: #666d75;
+      --accent: #00b7b0; /* main accent */
+      --accent-dark: #009688;
+      --danger: #dc3545;
+      --radius: 10px;
+      --shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      --gap: 14px;
+      --max-w: 980px;
+      --ui-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* Page layout */
+    html,body { height:100%; }
+    body{
+      margin:0;
+      font-family: var(--ui-font);
+      background: linear-gradient(180deg, var(--bg), #eef2f5);
+      color:#111827;
+      padding:28px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:var(--gap);
+      margin-bottom:18px;
+    }
+
+    h1 { margin:0; font-size:20px; letter-spacing:-0.2px; }
+    .subtitle { color:var(--muted); font-size:0.95rem; margin-top:4px; }
+
+    /* Panels */
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: var(--shadow);
+      margin-bottom:18px;
+      border:1px solid rgba(16,24,40,0.03);
+    }
+
+    /* Create area */
+    .create-grid {
+      display:grid;
+      grid-template-columns: 1fr 220px;
+      gap:18px;
+      align-items:start;
+    }
+
+    .controls { display:flex; flex-direction:column; gap:10px; }
+    label { display:block; font-weight:600; color:#111827; font-size:0.92rem; margin-bottom:6px; }
+    .inputs { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    input[type="text"]{
+      padding:9px 10px;
+      border-radius:8px;
+      border:1px solid #e6e9ee;
+      width:100%;
+      box-sizing:border-box;
+      font-size:0.95rem;
+      background:#fff;
+    }
+    input[type="color"]{
+      width:46px;
+      height:38px;
+      padding:0;
+      border-radius:8px;
+      border:1px solid #e6e9ee;
+      cursor:pointer;
+    }
+    input[type="file"] { font-size:0.9rem; }
+
+    .preview {
+      min-height:120px;
+      border-radius:8px;
+      border:1px solid #e6e9ee;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      color:#0f1724;
+      font-weight:600;
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 2px 8px rgba(16,24,40,0.03);
+    }
+
+    .preview .title {
+      background: rgba(255,255,255,0.6);
+      padding:6px 10px;
+      border-radius:6px;
+      font-size:0.98rem;
+    }
+
+    .btn-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; cursor:pointer; }
+    .btn-primary { background:var(--accent); color:#fff; box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
+    .btn-ghost { background:#f7fafc; color:#111827; border:1px solid #eef2f4; }
+    .btn-danger { background:var(--danger); color:#fff; }
+
+    /* Themes list */
+    #themesUL { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+    .theme-item {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:12px;
+      border-radius:10px;
+      background:white;
+      border:1px solid rgba(16,24,40,0.03);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    }
+
+    .left-col { display:flex; gap:12px; align-items:center; min-width:0; }
+    .swatch {
+      width:64px;
+      height:64px;
+      border-radius:8px;
+      border:1px solid #eef2f4;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:#fff;
+      font-size:14px;
+      overflow:hidden;
+      flex-shrink:0;
+      background:#d1d5db;
+    }
+    .meta {
+      font-size:0.95rem;
+      color:var(--muted);
+      margin-top:4px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:420px;
+    }
+    .title {
+      font-weight:700;
+      color:#0b1220;
+    }
+
+    .actions {
+      margin-left:auto;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    /* icon-button */
+    .icon-btn {
+      width:40px;
+      height:40px;
+      display:inline-grid;
+      place-items:center;
+      border-radius:8px;
+      border:1px solid transparent;
+      background:transparent;
+      cursor:pointer;
+    }
+    .icon-btn:hover { background:#f8fafc; border-color:#eef2f4; }
+    .icon-edit { color: #0b1220; }
+    .icon-delete { color: var(--danger); }
+
+    .empty {
+      padding:28px;
+      text-align:center;
+      color:var(--muted);
+      border-radius:8px;
+      background:linear-gradient(180deg, rgba(0,0,0,0.01), transparent);
+      border:1px dashed rgba(16,24,40,0.04);
+    }
+
+    .toolbar {
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .back-button {
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:8px;
+      background:transparent;
+      color:var(--muted);
+      text-decoration:none;
+      border:1px solid transparent;
+      font-weight:600;
+    }
+
+    @media (max-width:880px) {
+      .create-grid { grid-template-columns: 1fr; }
+      .swatch { width:52px; height:52px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Themes</h1>
 
-    <div class="panel" id="createPanel">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div class="muted">Create a custom theme</div>
-          <label for="themeName">Theme name</label>
-          <input id="themeName" type="text" placeholder="e.g. My Minty Theme" style="width:100%;max-width:360px;" />
+    <header>
+      <div>
+        <h1>Themes</h1>
+        <div class="subtitle">Create and manage your site's custom themes. Presets are not shown.</div>
+      </div>
+
+      <div class="toolbar" aria-hidden="false">
+        <a class="back-button" href="/">‹ Back to Home</a>
+      </div>
+    </header>
+
+    <!-- Create/edit panel -->
+    <section class="panel" aria-labelledby="createHeading">
+      <div class="create-grid">
+        <!-- Left: inputs -->
+        <div class="controls">
+          <div>
+            <div id="createHeading" style="font-weight:700;margin-bottom:6px">Create a custom theme</div>
+            <input id="themeName" type="text" placeholder="e.g. My Minty Theme" aria-label="Theme name"/>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px">
+            <div>
+              <label for="bgColor">Background</label>
+              <input id="bgColor" type="color" value="#ffffff" aria-label="Background color"/>
+            </div>
+
+            <div>
+              <label for="accentColor">Accent</label>
+              <input id="accentColor" type="color" value="#00cec9" aria-label="Accent color"/>
+            </div>
+
+            <div>
+              <label for="hoverColor">Hover</label>
+              <input id="hoverColor" type="color" value="#00b2af" aria-label="Hover color"/>
+            </div>
+
+            <div>
+              <label for="textColor">Text</label>
+              <input id="textColor" type="color" value="#000000" aria-label="Text color"/>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label for="bgImage">Background image (optional)</label>
+            <input id="bgImage" type="file" accept="image/*"/>
+          </div>
+
+          <div class="btn-row">
+            <button id="saveBtn" class="btn-primary" type="button">Save theme</button>
+            <button id="resetBtn" class="btn-ghost" type="button">Reset</button>
+          </div>
+
+          <div style="margin-top:6px;color:var(--muted);font-size:0.92rem">
+            Tip: saved themes are stored in your browser (localStorage). You can edit or delete them below.
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div class="muted">Your custom themes appear below.</div>
+
+        <!-- Right: preview -->
+        <aside>
+          <div class="preview" id="preview" aria-hidden="false"><div class="title">Preview</div></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Themes list -->
+    <section class="panel" aria-labelledby="listHeading">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <strong id="listHeading">Custom themes</strong>
+          <div class="subtitle" style="margin-top:4px">Only your saved themes appear here.</div>
+        </div>
+        <div>
+          <button id="clearCustoms" class="btn-ghost" type="button" title="Remove all custom themes">Clear all</button>
         </div>
       </div>
 
-      <div class="row" style="margin-top:12px;">
-        <div>
-          <label for="bgColor">Background (fallback for Bg Image)</label>
-          <input id="bgColor" type="color" value="#ffffff" />
-        </div>
-        <div>
-          <label for="accentColor">Background (buttons)</label>
-          <input id="accentColor" type="color" value="#00cec9" />
-        </div>
-        <div>
-          <label for="hoverColor">Background (button, when clicked)</label>
-          <input id="hoverColor" type="color" value="#00b2af" />
-        </div>
-        <div>
-          <label for="textColor">Text</label>
-          <input id="textColor" type="color" value="#000000" />
-        </div>
-      </div>
+      <ul id="themesUL" aria-live="polite" aria-relevant="additions removals"></ul>
+    </section>
 
-      <label for="bgImage">Background Image (optional, replaces 'Background')</label>
-      <input id="bgImage" type="file" accept="image/*" />
+    <!-- NOTE: script contains helpful inline comments for maintainers -->
+    <script>
+    (function () {
+      'use strict';
 
-      <div class="preview" id="preview">Preview</div>
+      /* --- Configuration / keys --- */
+      // custom themes stored here as JSON array
+      const STORAGE_KEY = 'customThemes';
 
-      <div style="margin-top:12px; display:flex; gap:8px;">
-        <button id="saveBtn" class="primary">Save theme</button>
-        <button id="resetBtn" class="ghost">Reset</button>
-      </div>
-    </div>
+      /* --- Elements --- */
+      const themesUL = document.getElementById('themesUL');
+      const saveBtn = document.getElementById('saveBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const themeNameInput = document.getElementById('themeName');
+      const bgColorInput = document.getElementById('bgColor');
+      const accentInput = document.getElementById('accentColor');
+      const hoverInput = document.getElementById('hoverColor');
+      const textInput = document.getElementById('textColor');
+      const bgFileInput = document.getElementById('bgImage');
+      const preview = document.getElementById('preview');
+      const clearCustomsBtn = document.getElementById('clearCustoms');
 
-    <div class="panel">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <div>
-          <strong>Custom themes</strong>
-          <div class="muted">Your custom themes</div>
-        </div>
-        <div>
-          <button id="clearCustoms" class="ghost" title="Remove all custom themes">Clear custom themes</button>
-        </div>
-      </div>
-
-      <ul id="themesUL" aria-live="polite"></ul>
-    </div>
-
-    <a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:s[...]
-    
-  </div>
-
-<script>
-(function () {
-
-  const themesUL = document.getElementById('themesUL');
-  const saveBtn = document.getElementById('saveBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const themeNameInput = document.getElementById('themeName');
-  const bgColorInput = document.getElementById('bgColor');
-  const accentInput = document.getElementById('accentColor');
-  const hoverInput = document.getElementById('hoverColor');
-  const textInput = document.getElementById('textColor');
-  const bgFileInput = document.getElementById('bgImage');
-  const preview = document.getElementById('preview');
-  const clearCustomsBtn = document.getElementById('clearCustoms');
-
-  const STORAGE_KEY = 'customThemes';
-  const ACTIVE_KEY = 'activeTheme';
-
-  function loadCustomThemes() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      console.error('Failed to parse customThemes', e);
-      return [];
-    }
-  }
-
-  function saveCustomThemes(arr) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr || []));
-    } catch (e) {
-      console.error('Failed to save customThemes', e);
-    }
-  }
-
-  function renderList() {
-    themesUL.innerHTML = '';
-
-    // Section header for custom themes
-    const sep = document.createElement('li');
-    sep.className = 'sep';
-    sep.textContent = 'Custom themes';
-    themesUL.appendChild(sep);
-
-    const customs = loadCustomThemes();
-    if (!customs || customs.length === 0) {
-      const li = document.createElement('li');
-      const span = document.createElement('span');
-      span.className = 'muted';
-      span.textContent = 'No custom themes yet.';
-      li.appendChild(span);
-      themesUL.appendChild(li);
-      return;
-    }
-
-    customs.forEach((t, idx) => {
-      const li = document.createElement('li');
-
-      const left = document.createElement('div');
-      left.className = 'left';
-
-      const sw = document.createElement('div');
-      sw.className = 'swatch';
-      if (t.bgImage) {
-        sw.style.backgroundImage = `url("${t.bgImage}")`;
-        sw.style.backgroundSize = 'cover';
-        sw.style.backgroundPosition = 'center';
-      } else if (t.bgColor) {
-        sw.style.background = t.bgColor;
-      } else {
-        sw.style.background = '#ddd';
-      }
-      left.appendChild(sw);
-
-      const txt = document.createElement('div');
-      const title = document.createElement('div');
-      title.textContent = t.name || `Custom ${idx + 1}`;
-      title.style.fontWeight = '600';
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      const pieces = [];
-      if (t.accent) pieces.push(`accent: ${t.accent}`);
-      if (t.textColor) pieces.push(`text: ${t.textColor}`);
-      if (t.hover) pieces.push(`hover: ${t.hover}`);
-      meta.textContent = pieces.join(' • ');
-      txt.appendChild(title);
-      txt.appendChild(meta);
-      left.appendChild(txt);
-
-      li.appendChild(left);
-
-      const actions = document.createElement('div');
-      actions.style.display = 'flex';
-      actions.style.gap = '8px';
-
-      // Removed "Apply" button because it was unused.
-      // Keep Edit and Delete functionality.
-      const editBtn = document.createElement('button');
-      editBtn.className = 'ghost';
-      editBtn.textContent = 'Edit';
-      editBtn.onclick = () => {
-        themeNameInput.value = t.name || '';
-        bgColorInput.value = t.bgColor || '#ffffff';
-        accentInput.value = t.accent || '#00cec9';
-        hoverInput.value = t.hover || '#00b2af';
-        textInput.value = t.textColor || '#000000';
-        if (t.bgImage) {
-          preview.style.backgroundImage = `url("${t.bgImage}")`;
-          preview.style.backgroundSize = 'cover';
-        } else {
-          preview.style.backgroundImage = '';
+      /* --- Utility helpers --- */
+      function loadCustomThemes() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.error('Failed to parse customThemes', e);
+          return [];
         }
-        customs.splice(idx, 1);
-        saveCustomThemes(customs);
-        renderList();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      };
-      actions.appendChild(editBtn);
+      }
 
-      const delBtn = document.createElement('button');
-      delBtn.className = 'danger';
-      delBtn.textContent = 'Delete';
-      delBtn.onclick = () => {
-        if (!confirm(`Delete custom theme "${t.name || 'Custom'}"?`)) return;
+      function saveCustomThemes(arr) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(arr || []));
+        } catch (e) {
+          console.error('Failed to save customThemes', e);
+        }
+      }
+
+      function fileToDataUrl(file) {
+        return new Promise((res, rej) => {
+          if (!file) return res('');
+          const reader = new FileReader();
+          reader.onload = () => res(reader.result);
+          reader.onerror = (e) => rej(e);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      /* --- Preview update --- */
+      let selectedBgDataUrl = '';
+      function updatePreview() {
+        preview.style.backgroundImage = '';
+        preview.style.backgroundSize = 'cover';
+        preview.style.backgroundPosition = 'center';
+        preview.style.color = textInput.value || '#000';
+        // image takes precedence
+        if (selectedBgDataUrl) {
+          preview.style.backgroundImage = `url("${selectedBgDataUrl}")`;
+          preview.innerHTML = '';
+          return;
+        }
+        const bg = bgColorInput.value || '#ffffff';
+        preview.style.background = bg;
+        preview.innerHTML = '<div class="title">' + (themeNameInput.value || 'Preview') + '</div>';
+      }
+
+      bgFileInput.addEventListener('change', async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) {
+          selectedBgDataUrl = '';
+          updatePreview();
+          return;
+        }
+        try {
+          selectedBgDataUrl = await fileToDataUrl(f);
+          updatePreview();
+        } catch (err) {
+          console.error('Error reading file', err);
+          selectedBgDataUrl = '';
+        }
+      });
+
+      /* --- Render list: only custom themes --- */
+      function renderList() {
+        themesUL.innerHTML = '';
+        const customs = loadCustomThemes();
+
+        if (!customs || customs.length === 0) {
+          // striking empty state so users notice
+          const li = document.createElement('li');
+          li.className = 'empty';
+          li.innerHTML = '<div style="font-weight:700;margin-bottom:6px">No custom themes yet</div>' +
+                         '<div style="color:var(--muted)">Create one using the panel above — it will appear here instantly.</div>';
+          themesUL.appendChild(li);
+          return;
+        }
+
+        customs.forEach((t, idx) => {
+          const li = document.createElement('li');
+          li.className = 'theme-item';
+
+          // Left column: preview swatch + text
+          const left = document.createElement('div');
+          left.className = 'left-col';
+
+          const sw = document.createElement('div');
+          sw.className = 'swatch';
+          if (t.bgImage) {
+            sw.style.backgroundImage = `url("${t.bgImage}")`;
+            sw.style.backgroundSize = 'cover';
+            sw.style.backgroundPosition = 'center';
+            sw.textContent = '';
+          } else if (t.bgColor) {
+            sw.style.background = t.bgColor;
+            // show first letter for identification if text color allows (fallback)
+            sw.textContent = (t.name && t.name[0]) ? t.name[0].toUpperCase() : '';
+          } else {
+            sw.style.background = '#e6e9ee';
+            sw.textContent = (t.name && t.name[0]) ? t.name[0].toUpperCase() : '';
+          }
+          left.appendChild(sw);
+
+          const txt = document.createElement('div');
+          txt.style.minWidth = '0';
+          const title = document.createElement('div');
+          title.className = 'title';
+          title.textContent = t.name || `Custom ${idx + 1}`;
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          const parts = [];
+          if (t.accent) parts.push(`accent ${t.accent}`);
+          if (t.textColor) parts.push(`text ${t.textColor}`);
+          if (t.hover) parts.push(`hover ${t.hover}`);
+          meta.textContent = parts.join(' • ');
+          txt.appendChild(title);
+          txt.appendChild(meta);
+          left.appendChild(txt);
+
+          li.appendChild(left);
+
+          // Actions: Edit + Delete (compact icon buttons)
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+
+          // Edit icon button
+          const editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'icon-btn';
+          editBtn.title = 'Edit theme';
+          editBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>';
+          editBtn.addEventListener('click', () => {
+            // populate editor and remove the item so save acts like update
+            themeNameInput.value = t.name || '';
+            bgColorInput.value = t.bgColor || '#ffffff';
+            accentInput.value = t.accent || '#00cec9';
+            hoverInput.value = t.hover || '#00b2af';
+            textInput.value = t.textColor || '#000000';
+            if (t.bgImage) {
+              selectedBgDataUrl = t.bgImage;
+              preview.style.backgroundImage = `url("${t.bgImage}")`;
+              preview.innerHTML = '';
+            } else {
+              selectedBgDataUrl = '';
+              preview.style.background = t.bgColor || '#fff';
+              preview.innerHTML = '<div class="title">' + (t.name || 'Preview') + '</div>';
+            }
+            const arr = loadCustomThemes();
+            arr.splice(idx, 1);
+            saveCustomThemes(arr);
+            renderList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+          actions.appendChild(editBtn);
+
+          // Delete icon button
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'icon-btn';
+          delBtn.title = 'Delete theme';
+          delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 7h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+          delBtn.addEventListener('click', () => {
+            if (!confirm(`Delete custom theme "${t.name || 'Custom'}"?`)) return;
+            const arr = loadCustomThemes();
+            arr.splice(idx, 1);
+            saveCustomThemes(arr);
+            renderList();
+          });
+          actions.appendChild(delBtn);
+
+          li.appendChild(actions);
+          themesUL.appendChild(li);
+        });
+      }
+
+      /* --- Events: save / reset / clear --- */
+      saveBtn.addEventListener('click', async () => {
+        const name = (themeNameInput.value || '').trim() || `Custom ${Date.now()}`;
+        const newTheme = {
+          name,
+          bgColor: bgColorInput.value || '#ffffff',
+          accent: accentInput.value || '',
+          hover: hoverInput.value || '',
+          textColor: textInput.value || '',
+          bgImage: selectedBgDataUrl || ''
+        };
         const arr = loadCustomThemes();
-        arr.splice(idx, 1);
+        arr.push(newTheme);
+        saveCustomThemes(arr);
+        renderList();
+        // reset editor
+        themeNameInput.value = '';
+        bgFileInput.value = '';
+        selectedBgDataUrl = '';
+        preview.style.backgroundImage = '';
+        preview.style.background = '#fff';
+        preview.innerHTML = '<div class="title">Preview</div>';
+        try { localStorage.setItem('customThemes:sync', Date.now().toString()); } catch(e){}
+      });
+
+      resetBtn.addEventListener('click', () => {
+        themeNameInput.value = '';
+        bgColorInput.value = '#ffffff';
+        accentInput.value = '#00cec9';
+        hoverInput.value = '#00b2af';
+        textInput.value = '#000000';
+        bgFileInput.value = '';
+        selectedBgDataUrl = '';
+        preview.style.backgroundImage = '';
+        preview.style.background = '#fff';
+        preview.innerHTML = '<div class="title">Preview</div>';
+      });
+
+      clearCustomsBtn.addEventListener('click', () => {
+        if (!confirm('Remove all custom themes?')) return;
+        saveCustomThemes([]);
+        renderList();
+      });
+
+      /* Keep UI in sync across tabs */
+      window.addEventListener('storage', (e) => {
+        if (!e.key) return;
+        if (e.key === STORAGE_KEY || e.key === 'customThemes:sync') {
+          renderList();
+        }
+      });
+
+      /* Initial render */
+      renderList();
+      updatePreview();
+
+      /* Expose a small API for external code to add themes:
+         window.addCustomTheme({ name, bgColor, accent, hover, textColor, bgImage })
+      */
+      window.addCustomTheme = function(themeObj) {
+        if (!themeObj || typeof themeObj !== 'object') {
+          throw new Error('addCustomTheme requires an object');
+        }
+        const arr = loadCustomThemes();
+        arr.push(themeObj);
         saveCustomThemes(arr);
         renderList();
       };
-      actions.appendChild(delBtn);
-
-      li.appendChild(actions);
-      themesUL.appendChild(li);
-    });
-  }
-
-  function fileToDataUrl(file) {
-    return new Promise((res, rej) => {
-      if (!file) return res('');
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result);
-      reader.onerror = (e) => rej(e);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function updatePreview() {
-    preview.style.backgroundImage = '';
-    preview.style.backgroundSize = 'cover';
-    preview.style.backgroundPosition = 'center';
-    preview.style.color = textInput.value || '#000';
-    if (selectedBgDataUrl) {
-      preview.style.backgroundImage = `url("${selectedBgDataUrl}")`;
-      preview.textContent = '';
-      return;
-    }
-    const bg = bgColorInput.value || '#ffffff';
-    preview.style.background = bg;
-    preview.textContent = themeNameInput.value || 'Preview';
-  }
-
-  let selectedBgDataUrl = '';
-
-  bgFileInput.addEventListener('change', async (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (!f) {
-      selectedBgDataUrl = '';
-      updatePreview();
-      return;
-    }
-    try {
-      selectedBgDataUrl = await fileToDataUrl(f);
-      updatePreview();
-    } catch (err) {
-      console.error('Error reading file', err);
-      selectedBgDataUrl = '';
-    }
-  });
-
-  saveBtn.addEventListener('click', async () => {
-    const name = (themeNameInput.value || '').trim() || `Custom ${Date.now()}`;
-    const newTheme = {
-      name,
-      bgColor: bgColorInput.value || '#ffffff',
-      accent: accentInput.value || '',
-      hover: hoverInput.value || '',
-      textColor: textInput.value || '',
-      bgImage: selectedBgDataUrl || ''
-    };
-    const arr = loadCustomThemes();
-    arr.push(newTheme);
-    saveCustomThemes(arr);
-    renderList();
-    themeNameInput.value = '';
-    bgFileInput.value = '';
-    selectedBgDataUrl = '';
-    preview.style.backgroundImage = '';
-    preview.style.background = '#fff';
-    preview.textContent = 'Preview';
-    try {
-      localStorage.setItem('customThemes:sync', Date.now().toString());
-    } catch (e) {}
-  });
-
-  resetBtn.addEventListener('click', () => {
-    themeNameInput.value = '';
-    bgColorInput.value = '#ffffff';
-    accentInput.value = '#00cec9';
-    hoverInput.value = '#00b2af';
-    textInput.value = '#000000';
-    bgFileInput.value = '';
-    selectedBgDataUrl = '';
-    preview.style.backgroundImage = '';
-    preview.style.background = '#fff';
-    preview.textContent = 'Preview';
-  });
-
-  clearCustomsBtn.addEventListener('click', () => {
-    if (!confirm('Remove all custom themes?')) return;
-    saveCustomThemes([]);
-    renderList();
-  });
-
-  window.addCustomTheme = function (themeObj) {
-    if (!themeObj || typeof themeObj !== 'object') {
-      throw new Error('addCustomTheme requires an object');
-    }
-    const arr = loadCustomThemes();
-    arr.push(themeObj);
-    saveCustomThemes(arr);
-    renderList();
-  };
-
-  window.addEventListener('storage', (e) => {
-    if (!e.key) return;
-    if (e.key === STORAGE_KEY || e.key === 'customThemes:sync' || e.key === ACTIVE_KEY) {
-      renderList();
-    }
-  });
-
-  renderList();
-  updatePreview();
-})();
-</script>
+    })();
+    </script>
 </body>
 </html>
