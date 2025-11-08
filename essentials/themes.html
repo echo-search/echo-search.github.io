@@ -4,222 +4,45 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Themes — EchoSearch</title>
-
-  <!--
-    Tidied visual design (web-facing):
-    - Cleaner spacing, better typography and card-like list items
-    - Icon buttons for Edit/Delete for compactness
-    - Clear empty state and helpful copy
-    - Inline comments added so future maintainers can understand structure quickly
-  -->
-
-  <style>
-    :root{
-      --bg: #f5f7f9;
-      --card: #ffffff;
-      --muted: #666d75;
-      --accent: #00b7b0; /* main accent */
-      --accent-dark: #009688;
-      --danger: #dc3545;
-      --radius: 10px;
-      --shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-      --gap: 14px;
-      --max-w: 980px;
-      --ui-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-
-    /* Page layout */
-    html,body { height:100%; }
-    body{
-      margin:0;
-      font-family: var(--ui-font);
-      background: linear-gradient(180deg, var(--bg), #eef2f5);
-      color:#111827;
-      padding:28px;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-
-    .container {
-      max-width: var(--max-w);
-      margin: 0 auto;
-    }
-
-    header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:var(--gap);
-      margin-bottom:18px;
-    }
-
-    h1 { margin:0; font-size:20px; letter-spacing:-0.2px; }
-    .subtitle { color:var(--muted); font-size:0.95rem; margin-top:4px; }
-
-    /* Panels */
-    .panel {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding:18px;
-      box-shadow: var(--shadow);
-      margin-bottom:18px;
-      border:1px solid rgba(16,24,40,0.03);
-    }
-
-    /* Create area */
-    .create-grid {
-      display:grid;
-      grid-template-columns: 1fr 220px;
-      gap:18px;
-      align-items:start;
-    }
-
-    .controls { display:flex; flex-direction:column; gap:10px; }
-    label { display:block; font-weight:600; color:#111827; font-size:0.92rem; margin-bottom:6px; }
-    .inputs { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    input[type="text"]{
-      padding:9px 10px;
-      border-radius:8px;
-      border:1px solid #e6e9ee;
-      width:100%;
-      box-sizing:border-box;
-      font-size:0.95rem;
-      background:#fff;
-    }
-    input[type="color"]{
-      width:46px;
-      height:38px;
-      padding:0;
-      border-radius:8px;
-      border:1px solid #e6e9ee;
-      cursor:pointer;
-    }
-    input[type="file"] { font-size:0.9rem; }
-
-    .preview {
-      min-height:120px;
-      border-radius:8px;
-      border:1px solid #e6e9ee;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      color:#0f1724;
-      font-weight:600;
-      overflow:hidden;
-      background:#fff;
-      box-shadow: 0 2px 8px rgba(16,24,40,0.03);
-    }
-
-    .preview .title {
-      background: rgba(255,255,255,0.6);
-      padding:6px 10px;
-      border-radius:6px;
-      font-size:0.98rem;
-    }
-
-    .btn-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
-    button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; cursor:pointer; }
-    .btn-primary { background:var(--accent); color:#fff; box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
-    .btn-ghost { background:#f7fafc; color:#111827; border:1px solid #eef2f4; }
-    .btn-danger { background:var(--danger); color:#fff; }
-
-    /* Themes list */
-    #themesUL { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
-    .theme-item {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      padding:12px;
-      border-radius:10px;
-      background:white;
-      border:1px solid rgba(16,24,40,0.03);
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-    }
-
-    .left-col { display:flex; gap:12px; align-items:center; min-width:0; }
-    .swatch {
-      width:64px;
-      height:64px;
-      border-radius:8px;
-      border:1px solid #eef2f4;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      color:#fff;
-      font-size:14px;
-      overflow:hidden;
-      flex-shrink:0;
-      background:#d1d5db;
-    }
-    .meta {
-      font-size:0.95rem;
-      color:var(--muted);
-      margin-top:4px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width:420px;
-    }
-    .title {
-      font-weight:700;
-      color:#0b1220;
-    }
-
-    .actions {
-      margin-left:auto;
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-
-    /* icon-button */
-    .icon-btn {
-      width:40px;
-      height:40px;
-      display:inline-grid;
-      place-items:center;
-      border-radius:8px;
-      border:1px solid transparent;
-      background:transparent;
-      cursor:pointer;
-    }
-    .icon-btn:hover { background:#f8fafc; border-color:#eef2f4; }
-    .icon-edit { color: #0b1220; }
-    .icon-delete { color: var(--danger); }
-
-    .empty {
-      padding:28px;
-      text-align:center;
-      color:var(--muted);
-      border-radius:8px;
-      background:linear-gradient(180deg, rgba(0,0,0,0.01), transparent);
-      border:1px dashed rgba(16,24,40,0.04);
-    }
-
-    .toolbar {
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-
-    .back-button {
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:8px;
-      background:transparent;
-      color:var(--muted);
-      text-decoration:none;
-      border:1px solid transparent;
-      font-weight:600;
-    }
-
-    @media (max-width:880px) {
-      .create-grid { grid-template-columns: 1fr; }
-      .swatch { width:52px; height:52px; }
-    }
-  </style>
+<style>
+:root { --bg: #f5f7f9; --card: #ffffff; --muted: #666d75; --accent: #00b7b0; --accent-dark: #009688; --danger: #dc3545; --radius: 10px; --shadow: 0 6px 18px rgba(15, 23, 42, 0.06); --gap: 14px; --max-w: 980px; --ui-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+html,body { height:100%; }
+body { margin:0; font-family: var(--ui-font); background: linear-gradient(180deg, var(--bg), #eef2f5); color:#111827; padding:28px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+.container { max-width: var(--max-w); margin: 0 auto; }
+header { display:flex; justify-content:space-between; align-items:center; gap:var(--gap); margin-bottom:18px; }
+h1 { margin:0; font-size:20px; letter-spacing:-0.2px; }
+.subtitle { color:var(--muted); font-size:0.95rem; margin-top:4px; }
+.panel { background: var(--card); border-radius: var(--radius); padding:18px; box-shadow: var(--shadow); margin-bottom:18px; border:1px solid rgba(16,24,40,0.03); }
+.create-grid { display:grid; grid-template-columns: 1fr 220px; gap:18px; align-items:start; }
+.controls { display:flex; flex-direction:column; gap:10px; }
+label { display:block; font-weight:600; color:#111827; font-size:0.92rem; margin-bottom:6px; }
+.inputs { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+input[type="text"] { padding:9px 10px; border-radius:8px; border:1px solid #e6e9ee; width:100%; box-sizing:border-box; font-size:0.95rem; background:#fff; }
+input[type="color"] { width:46px; height:38px; padding:0; border-radius:8px; border:1px solid #e6e9ee; cursor:pointer; }
+input[type="file"] { font-size:0.9rem; }
+.preview { min-height:120px; border-radius:8px; border:1px solid #e6e9ee; display:flex; align-items:center; justify-content:center; text-align:center; color:#0f1724; font-weight:600; overflow:hidden; background:#fff; box-shadow: 0 2px 8px rgba(16,24,40,0.03); }
+.preview .title { background: rgba(255,255,255,0.6); padding:6px 10px; border-radius:6px; font-size:0.98rem; }
+.btn-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; cursor:pointer; }
+.btn-primary { background:var(--accent); color:#fff; box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
+.btn-ghost { background:#f7fafc; color:#111827; border:1px solid #eef2f4; }
+.btn-danger { background:var(--danger); color:#fff; }
+#themesUL { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+.theme-item { display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px; background:white; border:1px solid rgba(16,24,40,0.03); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03); }
+.left-col { display:flex; gap:12px; align-items:center; min-width:0; }
+.swatch { width:64px; height:64px; border-radius:8px; border:1px solid #eef2f4; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:14px; overflow:hidden; flex-shrink:0; background:#d1d5db; }
+.meta { font-size:0.95rem; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:420px; }
+.title { font-weight:700; color:#0b1220; }
+.actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
+.icon-btn { width:40px; height:40px; display:inline-grid; place-items:center; border-radius:8px; border:1px solid transparent; background:transparent; cursor:pointer; }
+.icon-btn:hover { background:#f8fafc; border-color:#eef2f4; }
+.icon-edit { color: #0b1220; }
+.icon-delete { color: var(--danger); }
+.empty { padding:28px; text-align:center; color:var(--muted); border-radius:8px; background:linear-gradient(180deg, rgba(0,0,0,0.01), transparent); border:1px dashed rgba(16,24,40,0.04); }
+.toolbar { display:flex; gap:8px; align-items:center; }
+.back-button { display:inline-block; padding:10px 14px; border-radius:8px; background:transparent; color:var(--muted); text-decoration:none; border:1px solid transparent; font-weight:600; }
+@media (max-width:880px) { .create-grid { grid-template-columns: 1fr; } .swatch { width:52px; height:52px; } }
+</style>
 </head>
 <body>
   <div class="container">
@@ -227,7 +50,7 @@
     <header>
       <div>
         <h1>Themes</h1>
-        <div class="subtitle">Create and manage your site's custom themes. Presets are not shown.</div>
+        <div class="subtitle">Create and manage your custom themes for EchoSearch. Presets are not shown.</div>
       </div>
 
       <div class="toolbar" aria-hidden="false">
@@ -235,10 +58,8 @@
       </div>
     </header>
 
-    <!-- Create/edit panel -->
     <section class="panel" aria-labelledby="createHeading">
       <div class="create-grid">
-        <!-- Left: inputs -->
         <div class="controls">
           <div>
             <div id="createHeading" style="font-weight:700;margin-bottom:6px">Create a custom theme</div>
@@ -282,14 +103,12 @@
           </div>
         </div>
 
-        <!-- Right: preview -->
         <aside>
           <div class="preview" id="preview" aria-hidden="false"><div class="title">Preview</div></div>
         </aside>
       </div>
     </section>
 
-    <!-- Themes list -->
     <section class="panel" aria-labelledby="listHeading">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div>
@@ -304,16 +123,12 @@
       <ul id="themesUL" aria-live="polite" aria-relevant="additions removals"></ul>
     </section>
 
-    <!-- NOTE: script contains helpful inline comments for maintainers -->
     <script>
     (function () {
       'use strict';
 
-      /* --- Configuration / keys --- */
-      // custom themes stored here as JSON array
       const STORAGE_KEY = 'customThemes';
 
-      /* --- Elements --- */
       const themesUL = document.getElementById('themesUL');
       const saveBtn = document.getElementById('saveBtn');
       const resetBtn = document.getElementById('resetBtn');
@@ -326,7 +141,6 @@
       const preview = document.getElementById('preview');
       const clearCustomsBtn = document.getElementById('clearCustoms');
 
-      /* --- Utility helpers --- */
       function loadCustomThemes() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -355,14 +169,12 @@
         });
       }
 
-      /* --- Preview update --- */
       let selectedBgDataUrl = '';
       function updatePreview() {
         preview.style.backgroundImage = '';
         preview.style.backgroundSize = 'cover';
         preview.style.backgroundPosition = 'center';
         preview.style.color = textInput.value || '#000';
-        // image takes precedence
         if (selectedBgDataUrl) {
           preview.style.backgroundImage = `url("${selectedBgDataUrl}")`;
           preview.innerHTML = '';
@@ -389,13 +201,11 @@
         }
       });
 
-      /* --- Render list: only custom themes --- */
       function renderList() {
         themesUL.innerHTML = '';
         const customs = loadCustomThemes();
 
         if (!customs || customs.length === 0) {
-          // striking empty state so users notice
           const li = document.createElement('li');
           li.className = 'empty';
           li.innerHTML = '<div style="font-weight:700;margin-bottom:6px">No custom themes yet</div>' +
@@ -408,7 +218,6 @@
           const li = document.createElement('li');
           li.className = 'theme-item';
 
-          // Left column: preview swatch + text
           const left = document.createElement('div');
           left.className = 'left-col';
 
@@ -421,7 +230,6 @@
             sw.textContent = '';
           } else if (t.bgColor) {
             sw.style.background = t.bgColor;
-            // show first letter for identification if text color allows (fallback)
             sw.textContent = (t.name && t.name[0]) ? t.name[0].toUpperCase() : '';
           } else {
             sw.style.background = '#e6e9ee';
@@ -447,7 +255,6 @@
 
           li.appendChild(left);
 
-          // Actions: Edit + Delete (compact icon buttons)
           const actions = document.createElement('div');
           actions.className = 'actions';
 
@@ -559,6 +366,6 @@
         renderList();
       };
     })();
-    </script>
+</script>
 </body>
 </html>
