@@ -20,7 +20,7 @@ label { display:block; font-weight:600; color:#111827; font-size:0.92rem; margin
 input[type="text"] { padding:9px 10px; border-radius:8px; border:1px solid #e6e9ee; width:100%; box-sizing:border-box; font-size:0.95rem; background:#fff; }
 input[type="color"] { width:46px; height:38px; padding:0; border-radius:8px; border:1px solid #e6e9ee; cursor:pointer; }
 input[type="file"] { font-size:0.9rem; }
-.preview { min-height:120px; border-radius:8px; border:1px solid #e6e9ee; display:flex; align-items:center; justify-content:center; text-align:center; color:#0f1724; font-weight:600; overflow:hidden; background:#fff; box-shadow: 0 2px 8px rgba(16,24,40,0.03); }
+.preview { min-height:120px; border-radius:8px; border:1px solid #e6e9ee; display:flex; align-items:center; justify-content:center; text-align:center; color:#0f1724; font-weight:600; overflow:hidden; }
 .preview .title { background: rgba(255,255,255,0.6); padding:6px 10px; border-radius:6px; font-size:0.98rem; }
 .btn-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
 button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; cursor:pointer; }
@@ -30,7 +30,7 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 #themesUL { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
 .theme-item { display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px; background:white; border:1px solid rgba(16,24,40,0.03); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03); }
 .left-col { display:flex; gap:12px; align-items:center; min-width:0; }
-.swatch { width:64px; height:64px; border-radius:8px; border:1px solid #eef2f4; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:14px; overflow:hidden; flex-shrink:0; background:#d1d5db; }
+.swatch { width:64px; height:64px; border-radius:8px; border:1px solid #eef2f4; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:14px; overflow:hidden; }
 .meta { font-size:0.95rem; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:420px; }
 .title { font-weight:700; color:#0b1220; }
 .actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
@@ -75,11 +75,6 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
             <div>
               <label for="accentColor">Button</label>
               <input id="accentColor" type="color" value="#00cec9" aria-label="Accent color"/>
-            </div>
-
-            <div>
-              <label for="hoverColor">Hover</label>
-              <input id="hoverColor" type="color" value="#00b2af" aria-label="Hover color"/>
             </div>
 
             <div>
@@ -135,7 +130,6 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
       const themeNameInput = document.getElementById('themeName');
       const bgColorInput = document.getElementById('bgColor');
       const accentInput = document.getElementById('accentColor');
-      const hoverInput = document.getElementById('hoverColor');
       const textInput = document.getElementById('textColor');
       const bgFileInput = document.getElementById('bgImage');
       const preview = document.getElementById('preview');
@@ -167,6 +161,68 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
           reader.onerror = (e) => rej(e);
           reader.readAsDataURL(file);
         });
+      }
+
+      function hexToRgb(hex) {
+        if (!hex) throw new Error('Invalid color');
+        hex = hex.replace('#', '');
+        if (hex.length === 3) {
+          hex = hex.split('').map(c => c + c).join('');
+        }
+        const bigint = parseInt(hex, 16);
+        return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+      }
+      function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h = 0, s = 0, l = (max + min) / 2;
+        if (max !== min) {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        return { h, s, l };
+      }
+      function hslToRgb(h, s, l) {
+        let r, g, b;
+        if (s === 0) {
+          r = g = b = l;
+        } else {
+          const hue2rgb = function (p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+          };
+          const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          const p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1/3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1/3);
+        }
+        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+      }
+      function rgbToHex(rgb) {
+        return '#' + [rgb.r, rgb.g, rgb.b].map(v => v.toString(16).padStart(2, '0')).join('');
+      }
+      function computeHover(hex) {
+        try {
+          const rgb = hexToRgb(hex || '#00cec9');
+          const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+          hsl.l = Math.max(0, hsl.l - 0.12);
+          const darker = hslToRgb(hsl.h, hsl.s, hsl.l);
+          return rgbToHex(darker);
+        } catch (e) {
+          console.warn('computeHover failed, falling back to provided color', e);
+          return hex;
+        }
       }
 
       let selectedBgDataUrl = '';
@@ -262,12 +318,11 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
           editBtn.type = 'button';
           editBtn.className = 'icon-btn';
           editBtn.title = 'Edit theme';
-          editBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="12" height="12" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><rect x="35.26" y="7.87" rx="0" ry="0" width="18.1" height="68.63" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(-0.7071 -0.7071 0.7071 -0.7071 45.813 103.3483) "/><polygon points="23.41,75.89 3.5,82.99 10.6,63.09 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><path d="M 80.252 1.712 l 4.533 4.533 c 2.283 2.283 2.283 5.984 0 8.267 l -6.768 6.768 l -12.8 -12.8 l 6.768 -6.768 C 74.267 -0.571 77.969 -0.571 80.252 1.712 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><rect x="3.5" y="85.87" rx="0" ry="0" width="82.44" height="4.13" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/></g></svg>';
+          editBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="12" height="12" viewBox="0 0 256 256" xml:space="preserve"><g style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:16"><path d="M216 112v88a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8V48a8 8 0 0 1 8-8h88"/></g></svg>';
           editBtn.addEventListener('click', () => {
             themeNameInput.value = t.name || '';
             bgColorInput.value = t.bgColor || '#ffffff';
             accentInput.value = t.accent || '#00cec9';
-            hoverInput.value = t.hover || '#00b2af';
             textInput.value = t.textColor || '#000000';
             if (t.bgImage) {
               selectedBgDataUrl = t.bgImage;
@@ -290,7 +345,7 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
           delBtn.type = 'button';
           delBtn.className = 'icon-btn';
           delBtn.title = 'Delete theme';
-          delBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="12" height="12" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><path d="M 65.179 90 H 24.821 c -4.238 0 -7.752 -3.314 -8 -7.545 L 12.8 13.769 c -0.032 -0.55 0.164 -1.088 0.542 -1.489 c 0.378 -0.401 0.904 -0.628 1.455 -0.628 h 60.408 c 0.551 0 1.077 0.227 1.455 0.628 c 0.378 0.4 0.573 0.939 0.542 1.489 L 73.18 82.455 C 72.931 86.686 69.417 90 65.179 90 z M 16.917 15.652 l 3.897 66.568 C 20.938 84.34 22.698 86 24.821 86 h 40.358 c 2.123 0 3.883 -1.66 4.008 -3.779 l 3.897 -66.568 H 16.917 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><path d="M 81.546 15.652 H 8.454 c -1.104 0 -2 -0.896 -2 -2 s 0.896 -2 2 -2 h 73.092 c 1.104 0 2 0.896 2 2 S 82.65 15.652 81.546 15.652 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><path d="M 59.056 15.652 H 30.944 c -1.104 0 -2 -0.896 -2 -2 V 7.927 C 28.944 3.556 32.5 0 36.872 0 h 16.256 c 4.371 0 7.928 3.556 7.928 7.927 v 5.725 C 61.056 14.757 60.16 15.652 59.056 15.652 z M 32.944 11.652 h 24.111 V 7.927 C 57.056 5.762 55.294 4 53.128 4 H 36.872 c -2.166 0 -3.927 1.762 -3.927 3.927 V 11.652 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><path d="M 58.646 74.634 c -0.039 0 -0.079 -0.001 -0.119 -0.004 c -1.103 -0.064 -1.944 -1.011 -1.88 -2.113 l 2.533 -43.25 c 0.063 -1.103 0.999 -1.946 2.113 -1.88 c 1.103 0.064 1.944 1.011 1.879 2.113 l -2.532 43.25 C 60.579 73.813 59.697 74.634 58.646 74.634 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><path d="M 31.354 74.634 c -1.051 0 -1.933 -0.82 -1.995 -1.883 L 26.827 29.5 c -0.064 -1.103 0.777 -2.049 1.88 -2.113 c 1.087 -0.07 2.049 0.777 2.113 1.88 l 2.532 43.25 c 0.064 1.103 -0.777 2.049 -1.88 2.113 C 31.433 74.633 31.393 74.634 31.354 74.634 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><path d="M 45 74.634 c -1.104 0 -2 -0.896 -2 -2 v -43.25 c 0 -1.104 0.896 -2 2 -2 s 2 0.896 2 2 v 43.25 C 47 73.738 46.104 74.634 45 74.634 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/></g></svg>';
+          delBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="12" height="12" viewBox="0 0 256 256" xml:space="preserve"><g style="fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:16"><path d="M216 72 40 72"/><path d="M96 72v112"/><path d="M160 72v112"/><path d="M208 72v112a8 8 0 0 1-8 8H56a8 8 0 0 1-8-8V72"/></g></svg>';
           delBtn.addEventListener('click', () => {
             if (!confirm(`Delete custom theme "${t.name || 'Custom'}"?`)) return;
             const arr = loadCustomThemes();
@@ -307,11 +362,13 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 
       saveBtn.addEventListener('click', async () => {
         const name = (themeNameInput.value || '').trim() || `Custom ${Date.now()}`;
+        const accent = accentInput.value || '#00cec9';
+        const hoverColor = computeHover(accent);
         const newTheme = {
           name,
           bgColor: bgColorInput.value || '#ffffff',
-          accent: accentInput.value || '',
-          hover: hoverInput.value || '',
+          accent: accent,
+          hover: hoverColor,
           textColor: textInput.value || '',
           bgImage: selectedBgDataUrl || ''
         };
@@ -332,7 +389,6 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
         themeNameInput.value = '';
         bgColorInput.value = '#ffffff';
         accentInput.value = '#00cec9';
-        hoverInput.value = '#00b2af';
         textInput.value = '#000000';
         bgFileInput.value = '';
         selectedBgDataUrl = '';
@@ -360,6 +416,8 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
         if (!themeObj || typeof themeObj !== 'object') {
           throw new Error('addCustomTheme requires an object');
         }
+        const acc = themeObj.accent || themeObj.accentColor || '#00cec9';
+        themeObj.hover = themeObj.hover || computeHover(acc);
         const arr = loadCustomThemes();
         arr.push(themeObj);
         saveCustomThemes(arr);
