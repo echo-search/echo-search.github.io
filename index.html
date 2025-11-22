@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -51,7 +51,7 @@ search-btn { width: 1em; height: 1em; }
 #darkModeToggle { position: fixed; top: 12px; right: 12px; z-index: 10001; padding: 8px 12px; border-radius: 8px; border: none; background: var(--accent); color: var(--text); cursor: pointer; font-size: 0.95rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); }
 #articles-link { text-align: right; margin: 10px 20px; }
 #articles-link a { color: blue; text-decoration: underline; }
-.no-js-msg { font-family: system-ui, sans-serif; background: #ffe0e0; color: #900; padding: 20px; margin: 20px; border: 2px solid #900; border-radius: 10px; text-align: center; font-size: 1.2rem; }
+.no-js-msg { font-family: system-ui, sans-serif; color: #900; padding: 20px 20px 20px 70px; margin: 20px; border: 2px solid #900; border-radius: 10px; font-size: 1.2rem; background-color: transparent; background-image: url('/favicon.ico'); background-repeat: no-repeat; background-size: 40px 40px; background-position: 15px 15px; }
 body.default { --bg: #ffffff; --text: #000000; --accent: #00cec9; --hover: #00b2af; background: #ffffff; }
 body.retro { --bg: #fdf6e3; --text: #586e75; --accent: #2aa198; --hover: #23827e; background: url('essentials/retro.jpeg') no-repeat center center fixed; background-size: cover; }
 body.neon { --bg: #000000; --text: #39ff14; --accent: #ff00ff; --hover: #cc00cc; background: url('essentials/neon.jpeg') no-repeat center center fixed; background-size: cover; }
@@ -72,6 +72,7 @@ body.dark-mode.matrix { --bg: #000000; --text: #000000; --accent: #00ff00; --hov
 body.dark-mode.cyberpunk { --bg: #1a1a1a; --text: #f50057; --accent: #00e5ff; --hover: #00a0b2; background: url('essentials/cyberpunk.jpeg') no-repeat center center fixed; background-size: cover; }
 body.dark-mode.forest { --bg: #1b2e1b; --text: #c8e6c9; --accent: #66bb6a; --hover: #4a8a4d; background: url('essentials/forest.jpeg') no-repeat center center fixed; background-size: cover; }
 body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hover: #7c4141; background: url('essentials/floral.jpeg') no-repeat center center fixed; background-size: cover; }
+.no-js body > *:not(noscript) { display: none; }
 </style>
 </head>
 <body class="default">
