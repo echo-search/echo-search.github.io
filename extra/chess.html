@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Play Chess vs Bot</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<style>
+  #board { width: 480px; margin: 20px; }
+  #status { margin-top: 10px; font-family: sans-serif; }
+</style>
+</head>
+<body>
+
+<div id="board"></div>
+<div id="status">Game in progress</div>
+
+<script>
+const game = new Chess();
+
+// Drag & drop rules
+function onDragStart(source, piece, position, orientation) {
+  if (game.game_over() ||
+      (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+    return false;
+  }
+}
+
+function onDrop(source, target) {
+  const move = game.move({ from: source, to: target, promotion: 'q' });
+
+  if (move === null) return 'snapback';
+  updateStatus();
+}
+
+function onSnapEnd() {
+  board.position(game.fen());
+}
+
+// Update messages and make bot play
+function updateStatus() {
+  let status = '';
+  if (game.in_checkmate()) {
+    status = 'Checkmate! ' + (game.turn() === 'w' ? 'Black wins' : 'White wins');
+  } else if (game.in_stalemate()) {
+    status = 'Stalemate!';
+  } else if (game.in_check()) {
+    status = 'Check!';
+  } else {
+    status = 'Turn: ' + (game.turn() === 'w' ? 'White' : 'Black');
+  }
+
+  document.getElementById('status').innerText = status;
+
+  if (!game.game_over() && game.turn() === 'b') {
+    setTimeout(botPlay, 300); // bot plays after 0.3s
+  }
+}
+
+// Simple AI using random legal moves
+function botPlay() {
+  const moves = game.moves();
+  if (moves.length === 0) return;
+
+  // Pick random move
+  const move = moves[Math.floor(Math.random() * moves.length)];
+  game.move(move);
+  board.position(game.fen());
+  updateStatus();
+}
+
+const board = Chessboard('board', {
+  draggable: true,
+  position: 'start',
+  onDragStart: onDragStart,
+  onDrop: onDrop,
+  onSnapEnd: onSnapEnd
+});
+
+updateStatus();
+</script>
+</body>
+</html>
