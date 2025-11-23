@@ -2,149 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Play Chess vs Easy Bot</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+<title>Chess vs Real Bot</title>
+
+<!-- Board library (NOT chessboard.js) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/cm-chessboard@8.4.4/src/cm-chessboard.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cm-chessboard@8.4.4/assets/styles/cm-chessboard.css">
+
+<!-- Stockfish engine (NOT chess.js) -->
+<script src="https://cdn.jsdelivr.net/npm/stockfish/stockfish.wasm.js"></script>
+
 <style>
   body { display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }
-  #board { width: 480px; margin-top: 20px; }
+  #board { width: 480px; height: 480px; margin-top: 20px; }
   #status { margin-top: 10px; font-size: 18px; }
   #score { margin-top: 5px; font-size: 16px; }
 </style>
 </head>
 <body>
 
-<h2>Play Chess vs Easy Bot</h2>
+<h2>Play Chess vs Bot</h2>
 <div id="board"></div>
 <div id="status">Game in progress</div>
 <div id="score">White: 39 | Black: 39</div>
 
-<script>
+<script type="module">
+import { Chess } from "https://cdn.jsdelivr.net/npm/chess.mjs@1.2.0/+esm";
+import { Chessboard } from "https://cdn.jsdelivr.net/npm/cm-chessboard@8.4.4/src/cm-chessboard.js";
+
 const game = new Chess();
+const pieceValues = { p:1, n:3, b:3, r:5, q:9, k:0 };
 
-// Piece values for evaluation
-const pieceValues = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
-
-// Drag & drop rules
-function onDragStart(source, piece) {
-  if (game.game_over() ||
-      (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-    return false;
-  }
-}
-
-function onDrop(source, target) {
-  const move = game.move({ from: source, to: target, promotion: 'q' });
-  if (move === null) return 'snapback';
-  updateStatus();
-}
-
-function onSnapEnd() {
-  board.position(game.fen());
-}
-
-// Evaluate board score
-function calculateScore() {
-  const board = game.board();
-  let whiteScore = 0;
-  let blackScore = 0;
-  for (let row of board) {
-    for (let piece of row) {
-      if (piece) {
-        if (piece.color === 'w') whiteScore += pieceValues[piece.type];
-        else blackScore += pieceValues[piece.type];
-      }
+// Create board
+const board = new Chessboard(document.getElementById("board"), {
+    position: "start",
+    movable: {
+        free: false,
+        color: "white",
+        events: {
+            after: (from, to) => onPlayerMove(from, to)
+        }
     }
-  }
-  return { white: whiteScore, black: blackScore };
-}
-
-// Update status and score
-function updateStatus() {
-  let status = '';
-  if (game.in_checkmate()) {
-    status = 'Checkmate! ' + (game.turn() === 'w' ? 'Black wins' : 'White wins');
-  } else if (game.in_stalemate()) {
-    status = 'Stalemate!';
-  } else if (game.in_check()) {
-    status = 'Check!';
-  } else {
-    status = 'Turn: ' + (game.turn() === 'w' ? 'White' : 'Black');
-  }
-
-  document.getElementById('status').innerText = status;
-
-  const score = calculateScore();
-  document.getElementById('score').innerText = `White: ${score.white} | Black: ${score.black}`;
-
-  if (!game.game_over() && game.turn() === 'b') {
-    setTimeout(botPlay, 300);
-  }
-}
-
-// Simple bot with shallow minimax (depth 2)
-function evaluateBoard(board) {
-  let total = 0;
-  for (let row of board) {
-    for (let piece of row) {
-      if (piece) {
-        const value = pieceValues[piece.type] || 0;
-        total += (piece.color === 'b' ? value : -value);
-      }
-    }
-  }
-  return total;
-}
-
-function minimax(depth, isMaximizing) {
-  if (depth === 0 || game.game_over()) {
-    return evaluateBoard(game.board());
-  }
-  const moves = game.moves();
-  let bestEval = isMaximizing ? -Infinity : Infinity;
-
-  for (let move of moves) {
-    game.move(move);
-    const evalScore = minimax(depth - 1, !isMaximizing);
-    game.undo();
-    if (isMaximizing) bestEval = Math.max(bestEval, evalScore);
-    else bestEval = Math.min(bestEval, evalScore);
-  }
-  return bestEval;
-}
-
-function botPlay() {
-  const moves = game.moves();
-  if (moves.length === 0) return;
-  let bestMove = null;
-  let bestEval = -Infinity;
-
-  for (let move of moves) {
-    game.move(move);
-    const evalScore = minimax(1, false); // depth 2
-    game.undo();
-    if (evalScore > bestEval || bestMove === null) {
-      bestEval = evalScore;
-      bestMove = move;
-    }
-  }
-
-  game.move(bestMove);
-  board.position(game.fen());
-  updateStatus();
-}
-
-const board = Chessboard('board', {
-  draggable: true,
-  position: 'start',
-  onDragStart: onDragStart,
-  onDrop: onDrop,
-  onSnapEnd: onSnapEnd
 });
 
-updateStatus();
+// Stockfish bot
+const bot = STOCKFISH();
+bot.postMessage("uci");
+
+// Calculate material points
+function calculateScore() {
+    let white = 0, black = 0;
+    for (const row of game.board()) {
+        for (const piece of row) {
+            if (!piece) continue;
+            const v = pieceValues[piece.type];
+            if (piece.color === "w") white += v;
+            else black += v;
+        }
+    }
+    return { white, black };
+}
+
+function updateUI() {
+    // Score
+    const score = calculateScore();
+    document.getElementById("score").innerText =
+        `White: ${score.white} | Black: ${score.black}`;
+
+    // Status
+    let msg = "";
+    if (game.isCheckmate()) msg = "Checkmate!";
+    else if (game.isStalemate()) msg = "Stalemate!";
+    else if (game.isCheck()) msg = "Check!";
+    else msg = `Turn: ${game.turn() === "w" ? "White" : "Black"}`;
+
+    document.getElementById("status").innerText = msg;
+}
+
+// After human moves
+function onPlayerMove(from, to) {
+    const legal = game.move({ from, to, promotion: "q" });
+    if (!legal) {
+        board.setPosition(game.fen());
+        return;
+    }
+
+    updateUI();
+    setTimeout(botMove, 200);
+}
+
+// Bot plays using Stockfish
+function botMove() {
+    bot.postMessage(`position fen ${game.fen()}`);
+    bot.postMessage("go depth 8");
+
+    bot.onmessage = (e) => {
+        const line = e.data + "";
+        if (line.startsWith("bestmove")) {
+            const move = line.split(" ")[1];
+            if (move === "(none)") return;
+
+            game.move({ from: move.slice(0,2), to: move.slice(2,4), promotion:"q" });
+            board.setPosition(game.fen());
+            updateUI();
+        }
+    };
+}
+
+updateUI();
 </script>
+
 </body>
 </html>
