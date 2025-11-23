@@ -1,163 +1,204 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Search History — EchoSearch</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lifetime Search History — EchoSearch</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="canocial" href="https://echo-search.github.io/essentials/history.html" />
   <style>
-    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:1rem;color:#222}
-    h1{margin-bottom:0.5rem}
-    .controls{margin:1rem 0;display:flex;gap:.5rem;flex-wrap:wrap}
-    button{padding:.45rem .75rem;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
-    .danger{background:#ffebe9;border-color:#ffb6b0}
-    .history-list{list-style:none;padding:0;margin:0}
-    .history-item{display:flex;align-items:center;justify-content:space-between;padding:.5rem;border-bottom:1px solid #f0f0f0}
-    .meta{color:#666;font-size:.9rem}
-    .item-left{display:flex;flex-direction:column;gap:.25rem}
-    .item-actions{display:flex;gap:.5rem}
-    .empty{color:#666;padding:1rem}
-    .search-filter{display:flex;gap:.5rem;align-items:center}
-    input[type="text"]{padding:.4rem .6rem;border:1px solid #ccc;border-radius:6px}
-    .minor{font-size:.85rem;color:#777}
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      background: #fafafa;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+    }
+
+    .day-block {
+      margin-bottom: 25px;
+      padding: 15px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .day-block h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .toolbar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #888;
+      cursor: pointer;
+      background: white;
+    }
   </style>
 </head>
-<body>
-  <h1>Search History</h1>
-  <p class="minor">All searches are stored locally in your browser. Use the controls below to remove items or clear ranges.</p>
 
-  <div class="controls">
-    <div class="search-filter">
-      <label for="filterText">Filter:</label>
-      <input id="filterText" type="text" placeholder="Filter queries..." />
-    </div>
-    <button id="btnDelete24">Delete last 24 hours</button>
-    <button id="btnDelete7d">Delete last 7 days</button>
-    <button id="btnDelete30d">Delete last 30 days</button>
-    <button id="btnClearAll" class="danger">Delete all</button>
-    <button id="btnExport">Export JSON</button>
+<body>
+  <h1>Lifetime Search History</h1>
+
+  <div class="toolbar">
+    <select id="deleteRange">
+      <option value="">Delete by range…</option>
+      <option value="24h">Last 24 hours</option>
+      <option value="7d">Last 7 days</option>
+      <option value="30d">Last 30 days</option>
+      <option value="365d">Last 365 days</option>
+    </select>
+
+    <button id="exportBtn">Export JSON</button>
   </div>
 
-  <ul id="historyList" class="history-list" aria-live="polite"></ul>
-  <div id="empty" class="empty" style="display:none">No history found.</div>
+  <div id="lifetime"></div>
 
-  <script src="essentials/history-manager.js"></script>
   <script>
-    (function(){
-      const HM = window.HistoryManager;
-      if(!HM) return console.warn('HistoryManager missing');
+    const PAGE_EVENT = new Event("history-updated");
 
-      const listEl = document.getElementById('historyList');
-      const emptyEl = document.getElementById('empty');
-      const filterInput = document.getElementById('filterText');
+    function saveSearch(query) {
+      if (!query.trim()) return;
+      const entry = { query, time: Date.now() };
 
-      function render() {
-        const entries = HM.getAll();
-        const filter = filterInput.value.trim().toLowerCase();
+      const home = JSON.parse(localStorage.getItem("searchHistory") || "[]");
+      home.unshift(entry);
+      localStorage.setItem("searchHistory", JSON.stringify(home));
 
-        listEl.innerHTML = '';
-        const filtered = entries.filter(e => (!filter) || e.query.toLowerCase().includes(filter));
-        if(filtered.length === 0) {
-          emptyEl.style.display = 'block';
-          return;
-        } else emptyEl.style.display = 'none';
+      const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+      life.unshift(entry);
+      localStorage.setItem("lifetimeHistory", JSON.stringify(life));
 
-        filtered.forEach(entry => {
-          const li = document.createElement('li');
-          li.className = 'history-item';
+      document.dispatchEvent(PAGE_EVENT);
+    }
 
-          const left = document.createElement('div');
-          left.className = 'item-left';
-          const q = document.createElement('div');
-          q.textContent = entry.query;
-          const meta = document.createElement('div');
-          meta.className = 'meta';
-          meta.textContent = 'Searched: ' + HM.formatTs(entry.ts);
+    function clearHomeHistory() {
+      localStorage.setItem("searchHistory", "[]");
+      document.dispatchEvent(PAGE_EVENT);
+    }
 
-          left.appendChild(q);
-          left.appendChild(meta);
+    function formatDateHeader(dateObj) {
+      const d = dateObj.getDate();
+      const suffix =
+        d % 10 === 1 && d !== 11 ? "st" :
+        d % 10 === 2 && d !== 12 ? "nd" :
+        d % 10 === 3 && d !== 13 ? "rd" : "th";
 
-          const actions = document.createElement('div');
-          actions.className = 'item-actions';
+      return dateObj.toLocaleDateString("en-UK", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      }).replace(/\d+/, `${d}${suffix}`);
+    }
 
-          const btnSearch = document.createElement('button');
-          btnSearch.textContent = 'Search again';
-          btnSearch.addEventListener('click', () => {
-            // Hint: replace with your search invocation
-            if(window.doSearch) window.doSearch(entry.query);
-            else alert('Call your search function with: ' + entry.query);
-          });
+    function getLifetimeGrouped() {
+      const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+      const groups = {};
 
-          const btnDel = document.createElement('button');
-          btnDel.textContent = 'Delete';
-          btnDel.addEventListener('click', () => {
-            if(confirm('Delete this entry?')) {
-              HM.deleteById(entry.id);
-              render();
-            }
-          });
-
-          actions.appendChild(btnSearch);
-          actions.appendChild(btnDel);
-
-          li.appendChild(left);
-          li.appendChild(actions);
-          listEl.appendChild(li);
-        });
-      }
-
-      // Buttons
-      document.getElementById('btnDelete24').addEventListener('click', () => {
-        if(confirm('Delete all entries from the last 24 hours?')) {
-          const ms = 24 * 60 * 60 * 1000;
-          HM.deleteRange(ms);
-          render();
-        }
+      life.forEach(e => {
+        const d = new Date(e.time);
+        const header = formatDateHeader(d);
+        if (!groups[header]) groups[header] = [];
+        groups[header].push(e);
       });
 
-      document.getElementById('btnDelete7d').addEventListener('click', () => {
-        if(confirm('Delete all entries from the last 7 days?')) {
-          const ms = 7 * 24 * 60 * 60 * 1000;
-          HM.deleteRange(ms);
-          render();
-        }
+      return groups;
+    }
+
+    function deleteRange(range) {
+      const now = Date.now();
+
+      const ranges = {
+        "24h": now - 24 * 60 * 60 * 1000,
+        "7d": now - 7 * 24 * 60 * 60 * 1000,
+        "30d": now - 30 * 24 * 60 * 60 * 1000,
+        "365d": now - 365 * 24 * 60 * 60 * 1000
+      };
+
+      if (!ranges[range]) return;
+
+      const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+      const filtered = life.filter(e => e.time < ranges[range]);
+
+      localStorage.setItem("lifetimeHistory", JSON.stringify(filtered));
+      document.dispatchEvent(PAGE_EVENT);
+    }
+
+    function exportLifetimeHistory() {
+      const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+      const blob = new Blob([JSON.stringify(life, null, 2)], {
+        type: "application/json"
       });
 
-      document.getElementById('btnDelete30d').addEventListener('click', () => {
-        if(confirm('Delete all entries from the last 30 days?')) {
-          const ms = 30 * 24 * 60 * 60 * 1000;
-          HM.deleteRange(ms);
-          render();
-        }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "echo-lifetime-history.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ---- Page Rendering ----
+    const container = document.getElementById("lifetime");
+    const deleteRangeSel = document.getElementById("deleteRange");
+    const exportBtn = document.getElementById("exportBtn");
+
+    function render() {
+      const groups = getLifetimeGrouped();
+      container.innerHTML = "";
+
+      Object.keys(groups).forEach(day => {
+        const block = document.createElement("div");
+        block.className = "day-block";
+
+        block.innerHTML = `
+          <h2>${day}</h2>
+          <ul>
+            ${groups[day]
+              .map(e => `<li>${e.query} — ${new Date(e.time).toLocaleTimeString()}</li>`)
+              .join("")}
+          </ul>
+        `;
+
+        container.appendChild(block);
       });
+    }
 
-      document.getElementById('btnClearAll').addEventListener('click', () => {
-        if(confirm('Delete all history?')) {
-          HM.clearAll();
-          render();
-        }
-      });
+    document.addEventListener("history-updated", render);
 
-      document.getElementById('btnExport').addEventListener('click', () => {
-        const data = JSON.stringify(HM.getAll(), null, 2);
-        const blob = new Blob([data], {type:'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'search-history.json';
-        a.click();
-        URL.revokeObjectURL(url);
-      });
+    render();
 
-      filterInput.addEventListener('input', render);
+    deleteRangeSel.addEventListener("change", () => {
+      if (!deleteRangeSel.value) return;
+      deleteRange(deleteRangeSel.value);
+      deleteRangeSel.value = "";
+    });
 
-      // Initial render
-      render();
-
-      // Re-render if history changes elsewhere (e.g., other tabs) using storage event
-      window.addEventListener('storage', (e) => {
-        if(e.key === HM.storageKey) render();
-      });
-    })();
+    exportBtn.addEventListener("click", exportLifetimeHistory);
   </script>
 </body>
 </html>
