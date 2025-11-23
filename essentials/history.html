@@ -35,13 +35,41 @@
       margin-bottom: 10px;
     }
 
-    ul {
-      margin: 0;
-      padding-left: 20px;
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 1rem;
     }
 
-    li {
-      margin-bottom: 6px;
+    .query {
+      flex: 1;
+    }
+
+    .time {
+      font-size: 0.85rem;
+      color: #777;
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #ddd;
+      opacity: 0.55;
+      margin-bottom: 4px;
+    }
+
+    .history-day {
+      margin-top: 10px;
+    }
+
+    ul, li {
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
 
     .toolbar {
@@ -81,23 +109,11 @@
   <script>
     const PAGE_EVENT = new Event("history-updated");
 
-    function saveSearch(query) {
-      if (!query.trim()) return;
+    function saveLifetime(query) {
       const entry = { query, time: Date.now() };
-
-      const home = JSON.parse(localStorage.getItem("searchHistory") || "[]");
-      home.unshift(entry);
-      localStorage.setItem("searchHistory", JSON.stringify(home));
-
       const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
       life.unshift(entry);
       localStorage.setItem("lifetimeHistory", JSON.stringify(life));
-
-      document.dispatchEvent(PAGE_EVENT);
-    }
-
-    function clearHomeHistory() {
-      localStorage.setItem("searchHistory", "[]");
       document.dispatchEvent(PAGE_EVENT);
     }
 
@@ -117,8 +133,8 @@
 
     function getLifetimeGrouped() {
       const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
-      const groups = {};
 
+      const groups = {};
       life.forEach(e => {
         const d = new Date(e.time);
         const header = formatDateHeader(d);
@@ -150,6 +166,7 @@
 
     function exportLifetimeHistory() {
       const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+
       const blob = new Blob([JSON.stringify(life, null, 2)], {
         type: "application/json"
       });
@@ -162,7 +179,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // ---- Page Rendering ----
     const container = document.getElementById("lifetime");
     const deleteRangeSel = document.getElementById("deleteRange");
     const exportBtn = document.getElementById("exportBtn");
@@ -177,11 +193,25 @@
 
         block.innerHTML = `
           <h2>${day}</h2>
-          <ul>
+          <div class="history-day">
             ${groups[day]
-              .map(e => `<li>${e.query} — ${new Date(e.time).toLocaleTimeString()}</li>`)
+              .map(e => {
+                const time = new Date(e.time).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                });
+
+                return `
+                  <div class="history-row">
+                    <span class="query">${e.query}</span>
+                    <span class="time">${time}</span>
+                  </div>
+                  <div class="divider"></div>
+                `;
+              })
               .join("")}
-          </ul>
+          </div>
         `;
 
         container.appendChild(block);
@@ -189,7 +219,6 @@
     }
 
     document.addEventListener("history-updated", render);
-
     render();
 
     deleteRangeSel.addEventListener("change", () => {
@@ -200,5 +229,6 @@
 
     exportBtn.addEventListener("click", exportLifetimeHistory);
   </script>
+
 </body>
 </html>
