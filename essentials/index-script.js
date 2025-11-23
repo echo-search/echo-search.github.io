@@ -1,4 +1,3 @@
-
 const surpriseBtn = document.getElementById("surpriseBtn");
 const voiceBtn = document.getElementById("voiceBtn");
 const searchInput = document.getElementById("searchInput");
@@ -11,6 +10,15 @@ const historyTitle = document.getElementById("historyTitle");
 const chatBtn = document.getElementById("chatBtn");
 const gcseResults = document.getElementById("gcse-results");
 const themeSelect = document.getElementById('theme');
+const input = document.querySelector('input[type="search"]');
+const ul = document.getElementById("historyList");
+
+function saveLifetime(query) {
+  const entry = { query, time: Date.now() };
+  const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+  life.unshift(entry);
+  localStorage.setItem("lifetimeHistory", JSON.stringify(life));
+}
 
 const facts = [
   "Every snowflake that's ever fallen is unique, but none remember it.",
@@ -592,6 +600,7 @@ function doSearch(query) {
 
   history = history.filter(h => h !== query);
   history.unshift(query);
+  saveLifetime(query);
 
   if (history.length > 10) history.pop();
 
