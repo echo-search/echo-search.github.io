@@ -2,25 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Play Chess vs Bot</title>
+<title>Play Chess vs Easy Bot</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
 <style>
-  #board { width: 480px; margin: 20px; }
-  #status { margin-top: 10px; font-family: sans-serif; }
+  body { display: flex; flex-direction: column; align-items: center; font-family: sans-serif; }
+  #board { width: 480px; margin-top: 20px; }
+  #status { margin-top: 10px; font-size: 18px; }
+  #score { margin-top: 5px; font-size: 16px; }
 </style>
 </head>
 <body>
 
+<h2>Play Chess vs Easy Bot</h2>
 <div id="board"></div>
 <div id="status">Game in progress</div>
+<div id="score">White: 39 | Black: 39</div>
 
 <script>
 const game = new Chess();
 
+// Piece values for evaluation
+const pieceValues = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
+
 // Drag & drop rules
-function onDragStart(source, piece, position, orientation) {
+function onDragStart(source, piece) {
   if (game.game_over() ||
       (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
       (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
@@ -30,7 +37,6 @@ function onDragStart(source, piece, position, orientation) {
 
 function onDrop(source, target) {
   const move = game.move({ from: source, to: target, promotion: 'q' });
-
   if (move === null) return 'snapback';
   updateStatus();
 }
@@ -39,7 +45,23 @@ function onSnapEnd() {
   board.position(game.fen());
 }
 
-// Update messages and make bot play
+// Evaluate board score
+function calculateScore() {
+  const board = game.board();
+  let whiteScore = 0;
+  let blackScore = 0;
+  for (let row of board) {
+    for (let piece of row) {
+      if (piece) {
+        if (piece.color === 'w') whiteScore += pieceValues[piece.type];
+        else blackScore += pieceValues[piece.type];
+      }
+    }
+  }
+  return { white: whiteScore, black: blackScore };
+}
+
+// Update status and score
 function updateStatus() {
   let status = '';
   if (game.in_checkmate()) {
@@ -54,19 +76,62 @@ function updateStatus() {
 
   document.getElementById('status').innerText = status;
 
+  const score = calculateScore();
+  document.getElementById('score').innerText = `White: ${score.white} | Black: ${score.black}`;
+
   if (!game.game_over() && game.turn() === 'b') {
-    setTimeout(botPlay, 300); // bot plays after 0.3s
+    setTimeout(botPlay, 300);
   }
 }
 
-// Simple AI using random legal moves
+// Simple bot with shallow minimax (depth 2)
+function evaluateBoard(board) {
+  let total = 0;
+  for (let row of board) {
+    for (let piece of row) {
+      if (piece) {
+        const value = pieceValues[piece.type] || 0;
+        total += (piece.color === 'b' ? value : -value);
+      }
+    }
+  }
+  return total;
+}
+
+function minimax(depth, isMaximizing) {
+  if (depth === 0 || game.game_over()) {
+    return evaluateBoard(game.board());
+  }
+  const moves = game.moves();
+  let bestEval = isMaximizing ? -Infinity : Infinity;
+
+  for (let move of moves) {
+    game.move(move);
+    const evalScore = minimax(depth - 1, !isMaximizing);
+    game.undo();
+    if (isMaximizing) bestEval = Math.max(bestEval, evalScore);
+    else bestEval = Math.min(bestEval, evalScore);
+  }
+  return bestEval;
+}
+
 function botPlay() {
   const moves = game.moves();
   if (moves.length === 0) return;
+  let bestMove = null;
+  let bestEval = -Infinity;
 
-  // Pick random move
-  const move = moves[Math.floor(Math.random() * moves.length)];
-  game.move(move);
+  for (let move of moves) {
+    game.move(move);
+    const evalScore = minimax(1, false); // depth 2
+    game.undo();
+    if (evalScore > bestEval || bestMove === null) {
+      bestEval = evalScore;
+      bestMove = move;
+    }
+  }
+
+  game.move(bestMove);
   board.position(game.fen());
   updateStatus();
 }
