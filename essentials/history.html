@@ -186,7 +186,18 @@
         "365d": now - 365*24*60*60*1000
       };
 
+      const rangeLabels = {
+        "24h": "last 24 hours",
+        "7d": "last 7 days",
+        "30d": "last 30 days",
+        "365d": "last 365 days"
+      };
+
       if (!ranges[range]) return;
+
+      const confirmed = confirm(`Delete Search History from the ${rangeLabels[range]}?`);
+      
+      if (!confirmed) return;
 
       const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
       const filtered = life.filter(e => e.time < ranges[range]);
