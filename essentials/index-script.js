@@ -12,6 +12,8 @@ const gcseResults = document.getElementById("gcse-results");
 const themeSelect = document.getElementById('theme');
 const input = document.querySelector('input[type="search"]');
 const ul = document.getElementById("historyList");
+const newTabToggle = document.getElementById("newTabToggle");
+const privateBtn = document.getElementById("privateModeBtn");
 
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
@@ -123,6 +125,40 @@ const facts = [
   "Jupiter's magnetic field is 20,000 times stronger than Earth's.",
   "Every human started as a single cell smaller than a grain of salt."
 ];
+
+let privateMode = false;
+
+if (privateBtn) {
+  privateBtn.addEventListener("click", () => {
+    privateMode = !privateMode;
+
+    if (privateMode) {
+      try { localStorage.clear(); } catch (e) {}
+      privateBtn.textContent = "Private: ON";
+    } else {
+      privateBtn.textContent = "Private: OFF";
+    }
+  });
+}
+
+
+function openResult(url) {
+  if (newTabToggle && newTabToggle.checked) {
+    window.open(url, "_blank");
+  } else {
+    window.location.href = url;
+  }
+}
+
+function domainSearchHandler(query) {
+  query = query.trim();
+
+  const match = query.match(/^site:(.+)$/i);
+  if (!match) return null;
+
+  const domain = match[1].trim();
+  return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
+}
 
 (function () {
   if (!themeSelect) return;
@@ -496,7 +532,7 @@ searchBtn.addEventListener("click", function() {
       if (!/^https?:\/\//i.test(url)) {
         url = "https://" + url;
       }
-      window.location.href = url;
+      openResult(url);
       return;
     }
     const searchElement = google.search.cse.element.getElement("searchbox1");
@@ -606,6 +642,13 @@ function doSearch(query) {
 
   saveHistory();
   renderHistory();
+
+  const domainURL = domainSearchHandler(query);
+  if (domainURL) {
+   if (!privateMode) saveHistory();
+   openResult(domainURL);
+   return;
+}
 
   const searchElement = google.search.cse.element.getElement("searchbox1");
   if (searchElement) {
