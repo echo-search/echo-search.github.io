@@ -126,22 +126,6 @@ const facts = [
   "Every human started as a single cell smaller than a grain of salt."
 ];
 
-let privateMode = false;
-
-if (privateBtn) {
-  privateBtn.addEventListener("click", () => {
-    privateMode = !privateMode;
-
-    if (privateMode) {
-      try { localStorage.clear(); } catch (e) {}
-      privateBtn.textContent = "Private: ON";
-    } else {
-      privateBtn.textContent = "Private: OFF";
-    }
-  });
-}
-
-
 function openResult(url) {
   if (newTabToggle && newTabToggle.checked) {
     window.open(url, "_blank");
