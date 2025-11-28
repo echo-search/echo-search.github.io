@@ -394,18 +394,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
 window.__gcse = {
   callback: function() {
-    searchBtn.addEventListener("click", function() {
-      const query = searchInput.value.trim();
-      if (!query) return;
-      const searchElement = google.search.cse.element.getElement("searchbox1");
-      if (searchElement) {
-        searchElement.execute(query);
-        window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
-      } else {
-        console.error("Search element not found.");
-      }
-    });
-
     const urlParams = new URLSearchParams(window.location.search);
     const queryFromUrl = urlParams.get('q');
     if (queryFromUrl) {
