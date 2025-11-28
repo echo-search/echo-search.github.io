@@ -12,8 +12,7 @@ const gcseResults = document.getElementById("gcse-results");
 const themeSelect = document.getElementById('theme');
 const input = document.querySelector('input[type="search"]');
 const ul = document.getElementById("historyList");
-const newTabToggle = document.getElementById("newTabToggle");
-const privateBtn = document.getElementById("privateModeBtn");
+const slider = document.getElementById("openInNewTabSlider");
 
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
@@ -126,8 +125,15 @@ const facts = [
   "Every human started as a single cell smaller than a grain of salt."
 ];
 
+let openNewTab = false;
+
+slider.addEventListener("click", () => {
+  slider.classList.toggle("active");
+  openNewTab = slider.classList.contains("active");
+});
+
 function openResult(url) {
-  if (newTabToggle && newTabToggle.checked) {
+  if (openNewTab) {
     window.open(url, "_blank");
   } else {
     window.location.href = url;
