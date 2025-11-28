@@ -510,7 +510,7 @@ searchBtn.addEventListener("click", function() {
       if (!/^https?:\/\//i.test(url)) {
         url = "https://" + url;
       }
-      openResult(url);
+      setTimeout(() => openResult(url), 0);
       return;
     }
     const searchElement = google.search.cse.element.getElement("searchbox1");
