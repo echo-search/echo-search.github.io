@@ -670,7 +670,7 @@ btn67.addEventListener("click", () => {
     for (let i = 0; i < 80; i++) {
         setTimeout(() => {
             const emoji = document.createElement("span");
-            emoji.textContent = "67";
+            emoji.textContent = "6️⃣7️⃣";
 
             const x = Math.random() * window.innerWidth;
             const y = Math.random() * window.innerHeight;
