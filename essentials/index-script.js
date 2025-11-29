@@ -13,6 +13,9 @@ const themeSelect = document.getElementById('theme');
 const input = document.querySelector('input[type="search"]');
 const ul = document.getElementById("historyList");
 const slider = document.getElementById("openInNewTabSlider");
+const btn67 = document.getElementById("btn67");
+const audio67 = document.getElementById("audio67");
+const container = document.getElementById("emojiContainer");
 
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
@@ -658,6 +661,30 @@ chatBtn.addEventListener("click", () => {
 
 window.addEventListener("load", () => {
   chatBtn.style.display = "none";
+});
+
+btn67.addEventListener("click", () => {
+    audio67.currentTime = 0;
+    audio67.play();
+
+    for (let i = 0; i < 80; i++) {
+        setTimeout(() => {
+            const emoji = document.createElement("span");
+            emoji.textContent = "67";
+
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+
+            emoji.style.left = x + "px";
+            emoji.style.top = y + "px";
+
+            container.appendChild(emoji);
+        }, Math.random() * 3000);
+    }
+
+    setTimeout(() => {
+        container.innerHTML = "";
+    }, 3000);
 });
 
 document.documentElement.classList.remove('no-js');
