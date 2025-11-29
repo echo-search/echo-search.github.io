@@ -25,21 +25,21 @@ function saveLifetime(query) {
 }
 
 const facts = [
-    "Why don’t skeletons fight each other? They don’t have the guts.",
+    "Why don't skeletons fight each other? They don't have the guts.",
     "What do you call fake spaghetti? An impasta.",
     "Why did the scarecrow win an award? He was outstanding in his field.",
-    "Why don’t eggs tell jokes? They’d crack each other up.",
+    "Why don't eggs tell jokes? They'd crack each other up.",
     "What do you call a fish wearing a bowtie? Sofishticated.",
     "Why did the bicycle fall over? It was two-tired.",
     "I tried to catch fog yesterday… Mist.",
-    "Why don’t oysters donate to charity? Because they’re shellfish.",
-    "What do you call cheese that isn’t yours? Nacho cheese.",
+    "Why don't oysters donate to charity? Because they're shellfish.",
+    "What do you call cheese that isn't yours? Nacho cheese.",
     "Why did the tomato blush? Because it saw the salad dressing!",
     "Why was the math book sad? Too many problems.",
-    "Why don’t crabs share? Because they’re shellfish.",
-    "Why can’t you trust stairs? They're always up to something.",
+    "Why don't crabs share? Because they're shellfish.",
+    "Why can't you trust stairs? They're always up to something.",
     "Why did the coffee file a police report? It got mugged.",
-    "Why do cows wear bells? Because their horns don’t work.",
+    "Why do cows wear bells? Because their horns don't work.",
     "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
     "What do you call a sleeping bull? A bulldozer.",
     "What do you call an alligator in a vest? An investigator.",
@@ -52,44 +52,44 @@ const facts = [
     "What do you call a bear with no teeth? A gummy bear.",
     "Why did the stadium get hot? All the fans left.",
     "Why was the broom late? It swept in.",
-    "Why don’t oranges ever win races? They always peel out.",
+    "Why don't oranges ever win races? They always peel out.",
     "Why did the picture go to jail? It was framed.",
-    "Why did the banana go to the doctor? It wasn’t peeling well.",
+    "Why did the banana go to the doctor? It wasn't peeling well.",
     "Why did the man run around his bed? He was trying to catch up on sleep.",
     "What do you call a dinosaur with an extensive vocabulary? A thesaurus.",
-    "Why don’t scientists trust atoms? They make up everything.",
+    "Why don't scientists trust atoms? They make up everything.",
     "Why did the chicken join a band? It had the drumsticks.",
     "What do you call a factory that makes good products? A satisfactory.",
-    "Why don’t vampires have friends? They’re a pain in the neck.",
+    "Why don't vampires have friends? They're a pain in the neck.",
     "What do you call a snowman with a six-pack? An abdominal snowman.",
     "Why did the barber win the race? He took a short cut.",
     "Why did the frog take the bus? His car got toad.",
     "Why are ghosts bad liars? They are too transparent.",
-    "Why don’t elephants use computers? They’re afraid of the mouse.",
+    "Why don't elephants use computers? They're afraid of the mouse.",
     "Why did the grape stop in the middle of the road? It ran out of juice.",
-    "Why don’t seagulls fly over the bay? Because then they'd be bagels.",
+    "Why don't seagulls fly over the bay? Because then they'd be bagels.",
     "Why did the music teacher go to jail? She got caught with too many notes.",
     "What do you call a cow with no legs? Ground beef.",
     "What do you call a cow with two legs? Lean beef.",
     "What do you call a cow that just gave birth? Decaffeinated.",
     "Why did the baker go to therapy? Too much kneaded attention.",
     "Why are elevator jokes so good? They work on many levels.",
-    "Why don’t pirates shower before walking the plank? They’ll just wash up on shore.",
-    "Why do chickens sit on eggs? Because they don’t have chairs.",
+    "Why don't pirates shower before walking the plank? They'll just wash up on shore.",
+    "Why do chickens sit on eggs? Because they don't have chairs.",
     "Why was the belt arrested? Holding up a pair of pants.",
     "Why was the dictionary always calm? Because it had all the right words.",
     "What do you call a penguin in the desert? Lost.",
-    "Why can’t a leopard hide? He’s always spotted.",
-    "Why do birds fly south for the winter? It’s faster than walking.",
+    "Why can't a leopard hide? He's always spotted.",
+    "Why do birds fly south for the winter? It's faster than walking.",
     "What do you call a potato with glasses? A spec-tater.",
     "Why did the orange stop half-way up the hill? It ran out of juice.",
-    "Why did the fish blush? It saw the ocean’s bottom.",
+    "Why did the fish blush? It saw the ocean's bottom.",
     "What did the janitor say when he jumped out of the closet? Supplies!",
-    "Why don’t koalas count as bears? They don’t have the koalafications.",
+    "Why don't koalas count as bears? They don't have the koalafications.",
     "Why did the scarecrow keep getting promoted? He was outstanding in his field.",
     "Why do cows have hooves instead of feet? They lactose.",
     "Why was the cat sitting on the computer? It wanted to keep an eye on the mouse.",
-    "What do you call an elephant that doesn’t matter? An irrelephant.",
+    "What do you call an elephant that doesn't matter? An irrelephant.",
     "What do you call a sleeping dinosaur? Dino-snore.",
     "Why did the mushroom get invited to the party? He was a fungi.",
     "Why did the toilet paper roll down the hill? To get to the bottom.",
@@ -99,22 +99,22 @@ const facts = [
     "Why did the cookie go to school? It wanted to be a smart cookie.",
     "What do you call birds who stick together? Vel-crows.",
     "Why did the smartphone need glasses? It lost all its contacts.",
-    "Why don’t calendars ever get tired? They have too many dates.",
+    "Why don't calendars ever get tired? They have too many dates.",
     "Why did the tree go to the dentist? To get a root canal.",
     "What do you call a dog magician? A labracadabrador.",
-    "Why couldn’t the bicycle stand on its own? It was two-tired.",
+    "Why couldn't the bicycle stand on its own? It was two-tired.",
     "Why did the pirate go to school? To improve his arrr-ticulation.",
-    "What did one wall say to the other? I’ll meet you at the corner.",
+    "What did one wall say to the other? I'll meet you at the corner.",
     "Why did the cookie cry? Its mother was a wafer too long.",
     "What do you call a frog with no hind legs? Unhoppy.",
-    "Why don’t ducks tell jokes while flying? They’d quack up.",
+    "Why don't ducks tell jokes while flying? They'd quack up.",
     "Why was the math lesson so cold? Too many degrees.",
     "Why was the sand wet? Because the seaweed.",
     "Why did the balloon go near the needle? It was feeling brave.",
     "Why did the barber always win arguments? He always cut to the point.",
-    "Why did the clown get fired? He couldn’t put on a happy face.",
-    "Why did the banana go out with the prune? It couldn’t find a date.",
-    "Why do mushrooms love parties? They’re fungi, remember?",
+    "Why did the clown get fired? He couldn't put on a happy face.",
+    "Why did the banana go out with the prune? It couldn't find a date.",
+    "Why do mushrooms love parties? They're fungi, remember?",
     "Why did the lightbulb fail school? Too dim.",
     "Why do math teachers love parks? Natural logs.",
     "Why did the cookie join the gym? To get a little chip-per.",
@@ -549,6 +549,18 @@ searchInput.addEventListener('input', () => {
   });
 
   suggestionsBox.style.display = matches.length ? 'block' : 'none';
+
+  try {
+    const compact = searchInput.value.replace(/\s+/g, '');
+    if (compact === '67') {
+      if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
+        play67Effect();
+        window.__last67Played = Date.now();
+      }
+    }
+  } catch (e) {
+    console.error('67 detection error', e);
+  }
 });
 
 document.addEventListener('click', e => {
@@ -605,8 +617,48 @@ function saveHistory() {
   localStorage.setItem("searchHistory", JSON.stringify(history));
 }
 
+function play67Effect() {
+  if (!audio67 || !container) return;
+
+  try {
+    audio67.currentTime = 0;
+    audio67.play().catch(() => {});
+  } catch (e) {}
+
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const emoji = document.createElement("span");
+      emoji.textContent = "6️⃣7️⃣";
+
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+
+      emoji.style.left = x + "px";
+      emoji.style.top = y + "px";
+      emoji.style.position = "absolute";
+      emoji.style.pointerEvents = "none";
+      emoji.style.userSelect = "none";
+
+      container.appendChild(emoji);
+    }, Math.random() * 3000);
+  }
+
+  setTimeout(() => {
+    container.innerHTML = "";
+  }, 3000);
+}
+
 function doSearch(query) {
   if (!query.trim()) return;
+
+  const compact = query.replace(/\s+/g, '');
+  if (compact === '67') {
+    if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
+      play67Effect();
+      window.__last67Played = Date.now();
+    }
+    return;
+  }
 
   history = history.filter(h => h !== query);
   history.unshift(query);
@@ -657,27 +709,7 @@ window.addEventListener("load", () => {
 });
 
 btn67.addEventListener("click", () => {
-    audio67.currentTime = 0;
-    audio67.play();
-
-    for (let i = 0; i < 80; i++) {
-        setTimeout(() => {
-            const emoji = document.createElement("span");
-            emoji.textContent = "6️⃣7️⃣";
-
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-
-            emoji.style.left = x + "px";
-            emoji.style.top = y + "px";
-
-            container.appendChild(emoji);
-        }, Math.random() * 3000);
-    }
-
-    setTimeout(() => {
-        container.innerHTML = "";
-    }, 3000);
+    play67Effect();
 });
 
 document.documentElement.classList.remove('no-js');
