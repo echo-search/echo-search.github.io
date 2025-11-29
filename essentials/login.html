@@ -55,10 +55,9 @@
 
     // FirebaseUI config
     const uiConfig = {
-      signInSuccessUrl: 'index.html', // redirect after login
+      signInSuccessUrl: '/index.html', // redirect after login
       signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
       tosUrl: '', // optional
       privacyPolicyUrl: '' // optional
