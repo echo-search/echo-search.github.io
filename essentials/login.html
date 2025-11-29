@@ -29,15 +29,17 @@
   <div id="login-container">
     <h2>Login to EchoSearch</h2>
     <div id="firebaseui-auth-container"></div>
-    <div id="loader">Loading...</div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+  <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
+  
+  <!-- FirebaseUI -->
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
 
-    // Firebase config (use yours)
+  <script>
+    // Firebase config (your project)
     const firebaseConfig = {
       apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
       authDomain: "echosearchh.firebaseapp.com",
@@ -48,30 +50,21 @@
       measurementId: "G-S2S8NLVQDT"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
-    // Redirect if already signed in
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        window.location.href = "index.html"; // or your main EchoSearch page
-      }
-    });
-  </script>
-
-  <!-- FirebaseUI -->
-  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
-  <script>
+    // FirebaseUI config
     const uiConfig = {
-      signInSuccessUrl: 'index.html',
+      signInSuccessUrl: 'index.html', // redirect after login
       signInOptions: [
         firebase.auth.EmailAuthProvider.PROVIDER_ID,
         firebase.auth.GoogleAuthProvider.PROVIDER_ID
       ],
-      tosUrl: '<your-tos-url>', // optional
-      privacyPolicyUrl: '<your-privacy-policy-url>' // optional
+      tosUrl: '', // optional
+      privacyPolicyUrl: '' // optional
     };
 
+    // Initialize FirebaseUI Auth
     const ui = new firebaseui.auth.AuthUI(firebase.auth());
     ui.start('#firebaseui-auth-container', uiConfig);
   </script>
