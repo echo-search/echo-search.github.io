@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Sign Up to EchoSearch</title>
-    <!-- Firebase SDKs -->
-    <!-- We're using version 8.10.1 which is compatible with the `firebase.auth()` namespace -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
@@ -58,14 +56,14 @@
             transition: background-color 0.3s ease;
         }
         button.email-auth { 
-            background-color: #4CAF50; /* Green for email actions */
+            background-color: #4CAF50;
             color: white; 
         }
         button.email-auth:hover {
             background-color: #45a049;
         }
         button.google-auth {
-            background-color: #db4437; /* Google Red */
+            background-color: #db4437;
             color: white;
             margin-top: 15px;
         }
@@ -96,7 +94,6 @@
         <h2>EchoSearch</h2>
         <p id="auth-status">Please sign in or sign up.</p>
         
-        <!-- Email/Password Section -->
         <h3>Sign In / Sign Up with Email</h3>
         <input type="email" id="email" placeholder="Email" required>
         <input type="password" id="password" placeholder="Password" required>
@@ -105,7 +102,6 @@
         
         <hr>
 
-        <!-- Google Sign-In Section -->
         <h3>Or use Google</h3>
         <button class="google-auth" onclick="signInWithGoogle()">Sign in with Google</button>
 
@@ -123,7 +119,6 @@
            measurementId: "G-S2S8NLVQDT"
           };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -133,31 +128,26 @@
         const messageElement = document.getElementById('message');
         const authStatusElement = document.getElementById('auth-status');
 
-        // Helper function to display messages
         function displayMessage(msg, isError = true) {
             messageElement.textContent = msg;
             messageElement.className = isError ? 'error' : 'success';
         }
 
-        // Listen for authentication state changes
         auth.onAuthStateChanged(function(user) {
             if (user) {
                 authStatusElement.innerHTML = `Welcome back, <span class="success">${user.displayName || user.email}</span>!`;
-                displayMessage('', false); // Clear any previous error messages
-                // You can redirect the user to a dashboard page here if they are signed in
-                // window.location.href = "/dashboard.html"; 
+                displayMessage('', false);
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
-                displayMessage('', false); // Clear messages if user signs out (or is not signed in)
+                displayMessage('', false);
             }
         });
 
-        // Email/Password Sign In
         function signInEmailPassword() {
             const email = emailInput.value;
             const password = passwordInput.value;
-            displayMessage('', false); // Clear previous messages
+            displayMessage('', false);
 
             if (!email || !password) {
                 displayMessage("Please enter both email and password to sign in.", true);
@@ -166,7 +156,6 @@
 
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Sign-in successful. onAuthStateChanged will handle the welcome message.
                     displayMessage("Signed in successfully with Email!", false);
                 })
                 .catch((error) => {
@@ -174,25 +163,22 @@
                 });
         }
 
-        // Email/Password Sign Up
         function signUpEmailPassword() {
             const email = emailInput.value;
             const password = passwordInput.value;
-            displayMessage('', false); // Clear previous messages
+            displayMessage('', false);
 
             if (!email || !password) {
                 displayMessage("Please enter both email and password to sign up.", true);
                 return;
             }
-            if (password.length < 6) { // Firebase Authentication requires a minimum password length
+            if (password.length < 6) {
                  displayMessage("Password must be at least 6 characters long.", true);
                  return;
             }
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Account created and user is automatically signed in.
-                    // onAuthStateChanged will handle the welcome message.
                     displayMessage("Account created successfully! You are now signed in.", false);
                 })
                 .catch((error) => {
@@ -200,13 +186,10 @@
                 });
         }
 
-        // Google Sign In
         function signInWithGoogle() {
-            displayMessage('', false); // Clear previous messages
+            displayMessage('', false);
             auth.signInWithPopup(googleProvider)
                 .then((result) => {
-                    // Signed in successfully with Google.
-                    // onAuthStateChanged will handle the welcome message.
                     displayMessage("Signed in successfully with Google!", false);
                 })
                 .catch((error) => {
