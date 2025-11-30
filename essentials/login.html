@@ -53,6 +53,14 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
+    // Utility: link pending credential to the signed-in user
+    function linkPendingCredentialToUser(pendingCred) {
+      if (!pendingCred) return Promise.reject(new Error('No pending credential'));
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser) return Promise.reject(new Error('No current user to link to'));
+      return currentUser.linkWithCredential(pendingCred);
+    }
+
     // FirebaseUI config
     const uiConfig = {
       signInSuccessUrl: '/index.html', // redirect after login
@@ -60,6 +68,63 @@
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
+      // handle sign-in failures such as "account-exists-with-different-credential"
+      callbacks: {
+        signInFailure: function(error) {
+          // This callback must return a Promise.
+          // If an error occurs where the email already exists with a different provider
+          // we will prompt the user to sign in with the existing provider, then link the pending credential.
+          if (error && (error.code === 'auth/account-exists-with-different-credential' || error.code === 'firebaseui/anonymous-upgrade-merge-conflict')) {
+            const pendingCred = error.credential; // OAuth credential from failed sign-in
+            const email = error.email; // The email the user tried to sign in with
+
+            // Fetch sign-in methods for this email.
+            return firebase.auth().fetchSignInMethodsForEmail(email).then(function(methods) {
+              // methods is an array like ['google.com'] or ['password']
+              if (methods.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) !== -1 || methods.indexOf('password') !== -1) {
+                // Existing account is email/password — ask for the password and sign in
+                const password = prompt('An account already exists with this email. Please enter your password to link the accounts:');
+                if (!password) {
+                  return Promise.resolve(); // user cancelled
+                }
+                return firebase.auth().signInWithEmailAndPassword(email, password)
+                  .then(function(userCredential) {
+                    // Link the pending credential (if any) to the existing user
+                    if (pendingCred) {
+                      return linkPendingCredentialToUser(pendingCred);
+                    }
+                    return Promise.resolve();
+                  })
+                  .catch(function(err) {
+                    alert('Sign-in failed: ' + err.message);
+                    return Promise.resolve();
+                  });
+              } else if (methods.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) !== -1 || methods.indexOf('google.com') !== -1) {
+                // Existing account is Google — sign in with Google and then link
+                const provider = new firebase.auth.GoogleAuthProvider();
+                return firebase.auth().signInWithPopup(provider).then(function(result) {
+                  // After signing in with the existing provider, link the pending credential
+                  if (pendingCred) {
+                    return linkPendingCredentialToUser(pendingCred);
+                  }
+                  return Promise.resolve();
+                }).catch(function(err) {
+                  console.error('Error signing in with existing provider:', err);
+                  return Promise.resolve();
+                });
+              } else {
+                // Add handling for other providers as needed
+                alert('Please sign in using the same provider you used previously: ' + methods.join(', '));
+              }
+            }).catch(function(fetchErr) {
+              console.error('Error fetching sign-in methods for email:', fetchErr);
+              return Promise.resolve();
+            });
+          }
+          // Default behavior: resolve to let FirebaseUI continue or show error
+          return Promise.resolve();
+        }
+      },
       tosUrl: '', // optional
       privacyPolicyUrl: '' // optional
     };
