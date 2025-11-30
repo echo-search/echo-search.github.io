@@ -1,138 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EchoSearch Login</title>
-  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f4f4f4;
-    }
-    #login-container {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      width: 300px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up to EchoSearch</title>
+    <!-- Firebase SDKs -->
+    <!-- We're using version 8.10.1 which is compatible with the `firebase.auth()` namespace -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            color: #333;
+        }
+        .login-container { 
+            background-color: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            width: 320px; 
+            text-align: center; 
+        }
+        h2 { 
+            color: #2c3e50; 
+            margin-bottom: 25px; 
+            font-size: 1.8em;
+        }
+        h3 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        input[type="email"], input[type="password"] { 
+            width: calc(100% - 20px); 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 1em;
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        button.email-auth { 
+            background-color: #4CAF50; /* Green for email actions */
+            color: white; 
+        }
+        button.email-auth:hover {
+            background-color: #45a049;
+        }
+        button.google-auth {
+            background-color: #db4437; /* Google Red */
+            color: white;
+            margin-top: 15px;
+        }
+        button.google-auth:hover {
+            background-color: #c03d30;
+        }
+        #message, #auth-status { 
+            margin-top: 20px; 
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .error { 
+            color: #d32f2f; 
+        }
+        .success { 
+            color: #388e3c; 
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #eee;
+            margin: 30px 0;
+        }
+    </style>
 </head>
 <body>
+    <div class="login-container">
+        <h2>EchoSearch</h2>
+        <p id="auth-status">Please sign in or sign up.</p>
+        
+        <!-- Email/Password Section -->
+        <h3>Sign In / Sign Up with Email</h3>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button class="email-auth" onclick="signInEmailPassword()">Sign In</button>
+        <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up</button>
+        
+        <hr>
 
-  <div id="login-container">
-    <h2>Login to EchoSearch</h2>
-    <div id="firebaseui-auth-container"></div>
-  </div>
+        <!-- Google Sign-In Section -->
+        <h3>Or use Google</h3>
+        <button class="google-auth" onclick="signInWithGoogle()">Sign in with Google</button>
 
-  <!-- Firebase SDKs (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
-  
-  <!-- FirebaseUI -->
-  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+        <p id="message"></p>
+    </div>
 
-  <script>
-    // Firebase config (your project)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
-      authDomain: "echosearchh.firebaseapp.com",
-      projectId: "echosearchh",
-      storageBucket: "echosearchh.firebasestorage.app",
-      messagingSenderId: "202629312430",
-      appId: "1:202629312430:web:1895b1e1b0bd508f86223f",
-      measurementId: "G-S2S8NLVQDT"
-    };
+    <script>
+          const firebaseConfig = {
+           apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
+           authDomain: "echosearchh.firebaseapp.com",
+           projectId: "echosearchh",
+           storageBucket: "echosearchh.firebasestorage.app",
+           messagingSenderId: "202629312430",
+           appId: "1:202629312430:web:1895b1e1b0bd508f86223f",
+           measurementId: "G-S2S8NLVQDT"
+          };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-    // Utility: link pending credential to the signed-in user
-    function linkPendingCredentialToUser(pendingCred) {
-      if (!pendingCred) return Promise.reject(new Error('No pending credential'));
-      const currentUser = firebase.auth().currentUser;
-      if (!currentUser) return Promise.reject(new Error('No current user to link to'));
-      return currentUser.linkWithCredential(pendingCred);
-    }
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const messageElement = document.getElementById('message');
+        const authStatusElement = document.getElementById('auth-status');
 
-    // FirebaseUI config
-    const uiConfig = {
-      signInSuccessUrl: '/index.html', // redirect after login
-      signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
-      ],
-      // handle sign-in failures such as "account-exists-with-different-credential"
-      callbacks: {
-        signInFailure: function(error) {
-          // This callback must return a Promise.
-          // If an error occurs where the email already exists with a different provider
-          // we will prompt the user to sign in with the existing provider, then link the pending credential.
-          if (error && (error.code === 'auth/account-exists-with-different-credential' || error.code === 'firebaseui/anonymous-upgrade-merge-conflict')) {
-            const pendingCred = error.credential; // OAuth credential from failed sign-in
-            const email = error.email; // The email the user tried to sign in with
-
-            // Fetch sign-in methods for this email.
-            return firebase.auth().fetchSignInMethodsForEmail(email).then(function(methods) {
-              // methods is an array like ['google.com'] or ['password']
-              if (methods.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) !== -1 || methods.indexOf('password') !== -1) {
-                // Existing account is email/password — ask for the password and sign in
-                const password = prompt('An account already exists with this email. Please enter your password to link the accounts:');
-                if (!password) {
-                  return Promise.resolve(); // user cancelled
-                }
-                return firebase.auth().signInWithEmailAndPassword(email, password)
-                  .then(function(userCredential) {
-                    // Link the pending credential (if any) to the existing user
-                    if (pendingCred) {
-                      return linkPendingCredentialToUser(pendingCred);
-                    }
-                    return Promise.resolve();
-                  })
-                  .catch(function(err) {
-                    alert('Sign-in failed: ' + err.message);
-                    return Promise.resolve();
-                  });
-              } else if (methods.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) !== -1 || methods.indexOf('google.com') !== -1) {
-                // Existing account is Google — sign in with Google and then link
-                const provider = new firebase.auth.GoogleAuthProvider();
-                return firebase.auth().signInWithPopup(provider).then(function(result) {
-                  // After signing in with the existing provider, link the pending credential
-                  if (pendingCred) {
-                    return linkPendingCredentialToUser(pendingCred);
-                  }
-                  return Promise.resolve();
-                }).catch(function(err) {
-                  console.error('Error signing in with existing provider:', err);
-                  return Promise.resolve();
-                });
-              } else {
-                // Add handling for other providers as needed
-                alert('Please sign in using the same provider you used previously: ' + methods.join(', '));
-              }
-            }).catch(function(fetchErr) {
-              console.error('Error fetching sign-in methods for email:', fetchErr);
-              return Promise.resolve();
-            });
-          }
-          // Default behavior: resolve to let FirebaseUI continue or show error
-          return Promise.resolve();
+        // Helper function to display messages
+        function displayMessage(msg, isError = true) {
+            messageElement.textContent = msg;
+            messageElement.className = isError ? 'error' : 'success';
         }
-      },
-      tosUrl: '', // optional
-      privacyPolicyUrl: '' // optional
-    };
 
-    // Initialize FirebaseUI Auth
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
-  </script>
+        // Listen for authentication state changes
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                authStatusElement.innerHTML = `Welcome back, <span class="success">${user.displayName || user.email}</span>!`;
+                displayMessage('', false); // Clear any previous error messages
+                // You can redirect the user to a dashboard page here if they are signed in
+                // window.location.href = "/dashboard.html"; 
+            } else {
+                authStatusElement.innerHTML = "Please sign in or sign up.";
+                authStatusElement.classList.remove('success');
+                displayMessage('', false); // Clear messages if user signs out (or is not signed in)
+            }
+        });
 
+        // Email/Password Sign In
+        function signInEmailPassword() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            displayMessage('', false); // Clear previous messages
+
+            if (!email || !password) {
+                displayMessage("Please enter both email and password to sign in.", true);
+                return;
+            }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Sign-in successful. onAuthStateChanged will handle the welcome message.
+                    displayMessage("Signed in successfully with Email!", false);
+                })
+                .catch((error) => {
+                    displayMessage(`Sign In failed: ${error.message}`, true);
+                });
+        }
+
+        // Email/Password Sign Up
+        function signUpEmailPassword() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            displayMessage('', false); // Clear previous messages
+
+            if (!email || !password) {
+                displayMessage("Please enter both email and password to sign up.", true);
+                return;
+            }
+            if (password.length < 6) { // Firebase Authentication requires a minimum password length
+                 displayMessage("Password must be at least 6 characters long.", true);
+                 return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Account created and user is automatically signed in.
+                    // onAuthStateChanged will handle the welcome message.
+                    displayMessage("Account created successfully! You are now signed in.", false);
+                })
+                .catch((error) => {
+                    displayMessage(`Sign Up failed: ${error.message}`, true);
+                });
+        }
+
+        // Google Sign In
+        function signInWithGoogle() {
+            displayMessage('', false); // Clear previous messages
+            auth.signInWithPopup(googleProvider)
+                .then((result) => {
+                    // Signed in successfully with Google.
+                    // onAuthStateChanged will handle the welcome message.
+                    displayMessage("Signed in successfully with Google!", false);
+                })
+                .catch((error) => {
+                    displayMessage(`Google Sign In failed: ${error.message}`, true);
+                });
+        }
+    </script>
 </body>
 </html>
