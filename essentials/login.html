@@ -56,7 +56,7 @@
             transition: background-color 0.3s ease;
         }
         button.email-auth { 
-            background-color: #4CAF50;
+            background-color: #4CAF50; 
             color: white; 
         }
         button.email-auth:hover {
@@ -69,6 +69,18 @@
         }
         button.google-auth:hover {
             background-color: #c03d30;
+        }
+        .forgot-password {
+            margin-top: 10px;
+            text-align: right;
+        }
+        .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
         }
         #message, #auth-status { 
             margin-top: 20px; 
@@ -98,6 +110,9 @@
         <input type="email" id="email" placeholder="Email" required>
         <input type="password" id="password" placeholder="Password" required>
         <button class="email-auth" onclick="signInEmailPassword()">Sign In</button>
+        <div class="forgot-password">
+            <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
+        </div>
         <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up</button>
         
         <hr>
@@ -109,15 +124,14 @@
     </div>
 
     <script>
-          const firebaseConfig = {
-           apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
-           authDomain: "echosearchh.firebaseapp.com",
-           projectId: "echosearchh",
-           storageBucket: "echosearchh.firebasestorage.app",
-           messagingSenderId: "202629312430",
-           appId: "1:202629312430:web:1895b1e1b0bd508f86223f",
-           measurementId: "G-S2S8NLVQDT"
-          };
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "echosearchh.firebaseapp.com",
+            projectId: "echosearchh",
+            storageBucket: "echosearchh.appspot.com",
+            messagingSenderId: "202629312430",
+            appId: "YOUR_APP_ID"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -194,6 +208,24 @@
                 })
                 .catch((error) => {
                     displayMessage(`Google Sign In failed: ${error.message}`, true);
+                });
+        }
+
+        function resetPassword() {
+            const email = emailInput.value;
+            displayMessage('', false);
+
+            if (!email) {
+                displayMessage("Please enter your email address to reset your password.", true);
+                return;
+            }
+
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    displayMessage(`Password reset email sent to ${email}. Please check your inbox.`, false);
+                })
+                .catch((error) => {
+                    displayMessage(`Password reset failed: ${error.message}`, true);
                 });
         }
     </script>
