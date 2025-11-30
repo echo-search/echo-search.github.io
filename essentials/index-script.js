@@ -3,7 +3,6 @@ const voiceBtn = document.getElementById("voiceBtn");
 const searchInput = document.getElementById("searchInput");
 const suggestionsBox = document.getElementById('suggestions');
 const searchBtn = document.getElementById("searchBtn");
-const darkToggle = document.getElementById("darkModeToggle");
 const historyList = document.getElementById("historyList");
 const clearBtn = document.getElementById("clearBtn");
 const historyTitle = document.getElementById("historyTitle");
@@ -151,6 +150,7 @@ function domainSearchHandler(query) {
 
   const presets = [
     { name: 'Default', value: 'default' },
+    { name: 'Dark', value: 'dark' },
     { name: 'Retro', value: 'retro' },
     { name: 'Neon', value: 'neon' },
     { name: 'Ocean', value: 'ocean' },
@@ -569,28 +569,6 @@ document.addEventListener('click', e => {
   }
 });
 
-function applyDarkFromStorage() {
-  const d = localStorage.getItem('darkMode');
-  if (d === 'true') {
-    document.body.classList.add('dark-mode');
-    darkToggle.textContent = '☀️ Light Mode';
-    darkToggle.setAttribute('aria-pressed','true');
-  } else {
-    document.body.classList.remove('dark-mode');
-    darkToggle.textContent = '🌙 Dark Mode';
-    darkToggle.setAttribute('aria-pressed','false');
-  }
-}
-
-darkToggle.addEventListener('click', () => {
-  const isDark = document.body.classList.toggle('dark-mode');
-  localStorage.setItem('darkMode', isDark ? 'true' : 'false');
-  darkToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-  darkToggle.setAttribute('aria-pressed', String(isDark));
-});
-
-applyDarkFromStorage();
-
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
 function renderHistory() {
@@ -706,10 +684,6 @@ chatBtn.addEventListener("click", () => {
 
 window.addEventListener("load", () => {
   chatBtn.style.display = "none";
-});
-
-btn67.addEventListener("click", () => {
-    play67Effect();
 });
 
 document.documentElement.classList.remove('no-js');
