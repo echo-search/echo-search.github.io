@@ -649,10 +649,9 @@ function doSearch(query) {
 
   const domainURL = domainSearchHandler(query);
   if (domainURL) {
-   if (!privateMode) saveHistory();
    openResult(domainURL);
    return;
-}
+  }
 
   const searchElement = google.search.cse.element.getElement("searchbox1");
   if (searchElement) {
