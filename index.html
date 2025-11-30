@@ -56,6 +56,7 @@ search-btn { width: 1em; height: 1em; }
 .slider-switch.active { background-color: var(--accent); }
 .slider-switch.active::before { transform: translateX(20px); }
 #emojiContainer span { position: absolute; font-size: 40px; pointer-events: none; user-select: none; }
+#accountLink { padding: 10px 20px; display: inline-block; text-decoration: none; border-radius: 6px; font-size: 16px; cursor: pointer; background: var(--accent) }
 .no-js-msg { font-family: system-ui, sans-serif; color: #900; padding: 20px 20px 20px 70px; margin: 20px; border: 2px solid #900; border-radius: 10px; font-size: 1.2rem; background-color: transparent; background-image: url('/favicon.ico'); background-repeat: no-repeat; background-size: 40px 40px; background-position: 15px 15px; }
 body.default { --bg: #ffffff; --text: #000000; --accent: #00cec9; --hover: #00b2af; background: #ffffff; }
 body.retro { --bg: #fdf6e3; --text: #586e75; --accent: #2aa198; --hover: #23827e; background: url('essentials/retro.jpeg') no-repeat center center fixed; background-size: cover; }
@@ -101,6 +102,8 @@ body.dark-mode.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hov
     </div>
   </header>
 
+  <a href="essentials/login.html" id="accountLink"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><path d="M 85.091 90 h -8.372 c 0 -17.49 -14.229 -31.719 -31.719 -31.719 S 13.281 72.51 13.281 90 H 4.909 c 0 -22.107 17.985 -40.091 40.091 -40.091 S 85.091 67.893 85.091 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/><path d="M 45 46.484 c -12.816 0 -23.242 -10.426 -23.242 -23.242 S 32.184 0 45 0 s 23.242 10.426 23.242 23.242 S 57.816 46.484 45 46.484 z M 45 8.372 c -8.199 0 -14.87 6.67 -14.87 14.87 s 6.67 14.87 14.87 14.87 s 14.87 -6.67 14.87 -14.87 S 53.199 8.372 45 8.372 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/></g></svg></a>
+	
   <audio id="audio67" src="extra/67.m4a"></audio>
   <div id="emojiContainer"></div>
 	
