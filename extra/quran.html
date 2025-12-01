@@ -34,18 +34,14 @@
   .small{font-size:12px;color:var(--muted)}
   .btn-ghost{background:transparent;border:1px dashed rgba(0,0,0,0.06)}
   .highlight{border:2px solid rgba(107,156,255,0.18);box-shadow:0 6px 24px rgba(43,108,176,0.06)}
-  /* Mistake-proof shadow styles */
   .shadow-hidden{color:transparent;text-shadow:0 0 8px rgba(0,0,0,0.25);transition:all .3s}
-  /* Night whisper mode dimming overlay */
   .whisper-overlay{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;border-radius:12px;mix-blend-mode:multiply}
-  /* map */
   .map {width:100%;height:220px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#e3f2fd,#fff)}
   .timeline{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
   .event{padding:8px;border-radius:8px;background:var(--glass);cursor:pointer}
   .progress{height:8px;background:rgba(0,0,0,0.06);border-radius:8px;margin-top:10px;overflow:hidden}
   .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#7fd1ff);width:0%}
   footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
-  /* responsive */
   @media(max-width:900px){main{grid-template-columns:1fr} .side{order:2}}
 </style>
 </head>
@@ -92,7 +88,6 @@
 
       <div id="ayahContainer"></div>
 
-      <!-- whisper overlay (dimming for night mode) -->
       <div id="whisperOverlay" class="whisper-overlay" style="opacity:0"></div>
 
       <div class="progress" title="Reading progress">
@@ -101,7 +96,6 @@
     </section>
 
     <aside class="side">
-      <!-- STANDARD FEATURES -->
       <div class="feature">
         <label>Audio / Listen</label>
         <div class="small">Plays Arabic TTS (if Arabic voice available) or translation voice.</div>
@@ -145,7 +139,6 @@
       <div class="feature">
         <label>Historical Revelation Map (Hijrah Route Edition)</label>
         <div class="map" id="mapSVG">
-          <!-- simple illustrative map; replace with richer map if desired -->
           <svg viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%">
             <rect width="100%" height="100%" fill="url(#g)"></rect>
             <defs>
@@ -154,11 +147,7 @@
                 <stop offset="1" stop-color="#fff"/>
               </linearGradient>
             </defs>
-
-            <!-- simplified path between cities (Mecca -> Medina) -->
             <path id="route" d="M80 220 C200 150 400 120 720 70" stroke="#c63" stroke-width="3" fill="none" stroke-linecap="round"></path>
-
-            <!-- markers will be injected here -->
             <g id="markers"></g>
           </svg>
         </div>
@@ -183,42 +172,18 @@
 </div>
 
 <script>
-/* ===========================
-   SAMPLE DATA — REPLACE for prod
-   - For full app, provide full JSON with surah number, ayah text, translation, revelation (makkah/medina), coords for map etc.
-   =========================== */
-const DATA = {
-  surahs: [
-    {num:1, name:'Al-Fātiḥah', english:'The Opening', ayahs:[
-      {num:1, text:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', trans:'In the name of Allah, the Entirely Merciful, the Especially Merciful.', revelation:'makkah', coords:[90,220]},
-      {num:2, text:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', trans:'[All] praise is [due] to Allah, Lord of the worlds —', revelation:'makkah', coords:[120,200]},
-      {num:3, text:'الرَّحْمَٰنِ الرَّحِيمِ', trans:'The Entirely Merciful, the Especially Merciful,', revelation:'makkah', coords:[160,170]},
-      {num:4, text:'مَالِكِ يَوْمِ الدِّينِ', trans:'Sovereign of the Day of Recompense.', revelation:'makkah', coords:[260,150]},
-      {num:5, text:'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', trans:'It is You we worship and You we ask for help.', revelation:'makkah', coords:[360,130]},
-      {num:6, text:'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ', trans:'Guide us to the straight path —', revelation:'makkah', coords:[460,110]},
-      {num:7, text:'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ', trans:'The path of those upon whom You have bestowed favor,', revelation:'makkah', coords:[620,90]}
-    ]},
-    {num:112,name:'Al-Ikhlāṣ',english:'Sincerity', ayahs:[
-      {num:1,text:'قُلْ هُوَ اللَّهُ أَحَدٌ',trans:'Say, "He is Allah, [who is] One,"',revelation:'makkah', coords:[160,170]},
-      {num:2,text:'اللَّهُ الصَّمَدُ',trans:'Allah, the Eternal Refuge.',revelation:'makkah', coords:[260,150]},
-      {num:3,text:'لَمْ يَلِدْ وَلَمْ يُولَدْ',trans:'He neither begets nor is born,',revelation:'makkah', coords:[360,130]},
-      {num:4,text:'وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',trans:'Nor is there to Him any equivalent."',revelation:'makkah', coords:[460,110]}
-    ]}
-  ],
-  emotionIndex: {
-    calm: [{surah:1,ayah:1},{surah:1,ayah:3},{surah:112,ayah:2}],
-    stressed: [{surah:1,ayah:2},{surah:1,ayah:6}],
-    grateful: [{surah:1,ayah:2},{surah:112,ayah:2}],
-    fear: [{surah:1,ayah:4},{surah:1,ayah:5}],
-    hope: [{surah:1,ayah:6},{surah:112,ayah:4}]
-  }
-};
+const DATA = { surahs: [], emotionIndex: {
+  calm: [{surah:1,ayah:1},{surah:1,ayah:3},{surah:112,ayah:2}],
+  stressed: [{surah:1,ayah:2},{surah:1,ayah:6}],
+  grateful: [{surah:1,ayah:2},{surah:112,ayah:2}],
+  fear: [{surah:1,ayah:4},{surah:1,ayah:5}],
+  hope: [{surah:1,ayah:6},{surah:112,ayah:4}]
+}};
 
-/* ===========================
-   App State
-   =========================== */
+const REMOTE_URL = 'https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/quran.json';
+
 const state = {
-  currentSurah: DATA.surahs[0].num,
+  currentSurah: 1,
   showTranslation: true,
   showArabic: true,
   fontSize: 28,
@@ -228,9 +193,6 @@ const state = {
   emotion: null
 };
 
-/* ===========================
-   DOM references
-   =========================== */
 const surahSelect = document.getElementById('surahSelect');
 const ayahContainer = document.getElementById('ayahContainer');
 const surahTitle = document.getElementById('surahTitle');
@@ -262,22 +224,90 @@ const readProgress = document.getElementById('readProgress');
 const timeline = document.getElementById('timeline');
 const markersGroup = document.getElementById('markers');
 
-/* ===========================
-   Init UI
-   =========================== */
-function init(){
-  // populate surah select
+let qariAudioQueue = null;
+
+async function loadRemoteData(){
+  try{
+    const res = await fetch(REMOTE_URL);
+    if(!res.ok) throw new Error('Failed to fetch remote quran JSON');
+    const json = await res.json();
+
+    if(Array.isArray(json) && json.length){
+      const mapped = json.map(s => {
+        const verses = (s.verses || s.ayahs || s.ayahs_list || s.ayah_list || []).map(v => {
+          return {
+            num: v.number || v.verse || v.ayah || (v.index? v.index+1: undefined),
+            text: v.text || v.arabic_text || v.ar || v.q || '',
+            trans: (v.translation && (v.translation.en || v.translation.en_US)) || v.translationText || v.en || v.trans || (v.translation_english) || ''
+          };
+        });
+        return {
+          num: s.number || s.chapter || s.id || s.idx || 0,
+          name: s.name || s.arabicName || s.ar_name || s.simpleName || s.surah || s.englishName || '',
+          english: s.englishName || s.translation || s.english_name || s.name_simple || s.english || '',
+          ayahs: verses.length ? verses : []
+        };
+      });
+      DATA.surahs = mapped.filter(s=>s.num && s.ayahs && s.ayahs.length);
+    } else if(json.surahs && Array.isArray(json.surahs)){
+      const mapped = json.surahs.map(s => {
+        const verses = (s.verses || []).map(v=>({
+          num: v.numberInSurah || v.number || v.verse || v.ayah,
+          text: v.text || v.arabic || '',
+          trans: v.translation || v.trans || ''
+        }));
+        return { num: s.number || s.id, name: s.name || s.englishName || s.translationName || s.simpleName || '', english: s.englishName || '', ayahs: verses };
+      });
+      DATA.surahs = mapped.filter(s=>s.num && s.ayahs && s.ayahs.length);
+    } else {
+      console.warn('Unexpected remote json shape, falling back to sample dataset');
+    }
+  }catch(e){
+    console.warn('Load remote failed:', e);
+  }
+
+  if(!DATA.surahs.length){
+    DATA.surahs = [
+      {num:1, name:'Al-Fātiḥah', english:'The Opening', ayahs:[
+        {num:1, text:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', trans:'In the name of Allah, the Entirely Merciful, the Especially Merciful.'},
+        {num:2, text:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', trans:'[All] praise is [due] to Allah, Lord of the worlds —'},
+        {num:3, text:'الرَّحْمَٰنِ الرَّحِيمِ', trans:'The Entirely Merciful, the Especially Merciful,'},
+        {num:4, text:'مَالِكِ يَوْمِ الدِّينِ', trans:'Sovereign of the Day of Recompense.'},
+        {num:5, text:'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', trans:'It is You we worship and You we ask for help.'},
+        {num:6, text:'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ', trans:'Guide us to the straight path —'},
+        {num:7, text:'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ', trans:'The path of those upon whom You have bestowed favor,'}
+      ]},
+      {num:112,name:'Al-Ikhlāṣ',english:'Sincerity', ayahs:[
+        {num:1,text:'قُلْ هُوَ اللَّهُ أَحَدٌ',trans:'Say, "He is Allah, [who is] One,"'},
+        {num:2,text:'اللَّهُ الصَّمَدُ',trans:'Allah, the Eternal Refuge.'},
+        {num:3,text:'لَمْ يَلِدْ وَلَمْ يُولَدْ',trans:'He neither begets nor is born,'},
+        {num:4,text:'وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',trans:'Nor is there to Him any equivalent."'}
+      ]}
+    ];
+  }
+  state.currentSurah = DATA.surahs[0].num;
+}
+
+async function init(){
+  await loadRemoteData();
+
+  DATA.emotionIndex = DATA.emotionIndex || {
+    calm: [{surah:1,ayah:1},{surah:1,ayah:3},{surah:112,ayah:2}],
+    stressed: [{surah:1,ayah:2},{surah:1,ayah:6}],
+    grateful: [{surah:1,ayah:2},{surah:112,ayah:2}],
+    fear: [{surah:1,ayah:4},{surah:1,ayah:5}],
+    hope: [{surah:1,ayah:6},{surah:112,ayah:4}]
+  };
+
   DATA.surahs.forEach(s=>{
-    const o = document.createElement('option'); o.value = s.num; o.textContent = `${s.num}. ${s.name} — ${s.english}`;
+    const o = document.createElement('option'); o.value = s.num; o.textContent = `${s.num}. ${s.name} — ${s.english || ''}`;
     surahSelect.appendChild(o);
   });
   surahSelect.value = state.currentSurah;
 
-  // voices
   setTimeout(populateVoices, 200);
   if (speechSynthesis) speechSynthesis.onvoiceschanged = populateVoices;
 
-  // set font range default
   fontRange.value = state.fontSize;
   fontRange.addEventListener('input', e=>{
     state.fontSize = +e.target.value;
@@ -293,7 +323,7 @@ function init(){
   themeBtn.addEventListener('click', toggleTheme);
 
   playBtn.addEventListener('click', ()=>playAllArabic());
-  pauseBtn.addEventListener('click', ()=>speechSynthesis.cancel());
+  pauseBtn.addEventListener('click', ()=>{ if(qariAudioQueue && qariAudioQueue.stop) qariAudioQueue.stop(); if('speechSynthesis' in window) speechSynthesis.cancel(); });
 
   playRecite.addEventListener('click',()=>playSelectedRecitation());
   playTrans.addEventListener('click',()=>playSelectedTranslation());
@@ -313,39 +343,31 @@ function init(){
 
   whisperToggle.addEventListener('click', toggleWhisperMode);
 
-  // populate timeline & map
   renderMap();
-
   renderSurah();
   updateProgress();
 }
 init();
 
-/* ===========================
-   Render Surah & Ayahs
-   =========================== */
 function getSurah(num){ return DATA.surahs.find(s=>s.num===num) || DATA.surahs[0]; }
 
 function renderSurah(){
   const s = getSurah(state.currentSurah);
   surahTitle.textContent = `${s.num}. ${s.name}`;
-  surahInfo.textContent = s.english + ' — ' + (s.ayahs.length) + ' ayahs (sample data)';
+  surahInfo.textContent = (s.english || '') + ' — ' + (s.ayahs.length || 0) + ' ayahs';
   ayahContainer.innerHTML = '';
-  s.ayahs.forEach(a=>{
+  (s.ayahs || []).forEach(a=>{
     const node = document.createElement('div'); node.className='ayah';
     const numNode = document.createElement('div'); numNode.className='num'; numNode.textContent = a.num;
     const content = document.createElement('div'); content.style.flex='1';
-    const arab = document.createElement('div'); arab.className='arabic'; arab.style.fontSize = state.fontSize+'px'; arab.textContent = a.text;
-    const trans = document.createElement('div'); trans.className='trans'; trans.textContent = a.trans;
-    // attach dataset for later jumps
+    const arab = document.createElement('div'); arab.className='arabic'; arab.style.fontSize = state.fontSize+'px'; arab.textContent = a.text || a.arabic || '';
+    const trans = document.createElement('div'); trans.className='trans'; trans.textContent = a.trans || a.translation || '';
     node.dataset.surah = s.num; node.dataset.ayah = a.num;
     content.appendChild(arab);
     if(state.showTranslation) content.appendChild(trans);
     if(!state.showArabic){ arab.style.display='none' } else arab.style.display='';
     node.appendChild(numNode); node.appendChild(content);
-    // click to bookmark / select
     node.addEventListener('click', ()=>selectAyah(node));
-    // long-press for breathing timer (night whisper mode)
     addLongPress(node,()=>startBreathing(8));
     ayahContainer.appendChild(node);
   });
@@ -353,41 +375,32 @@ function renderSurah(){
   updateProgress();
 }
 
-/* ===========================
-   Search
-   =========================== */
 function doSearch(){
   const q = (searchInput.value||'').trim().toLowerCase();
   if(!q){ renderSurah(); return; }
-  // naive search through sample dataset
   const results = [];
-  DATA.surahList = DATA.surahList || DATA.surahs.reduce((acc,s)=>{ s.ayahs.forEach(a=>acc.push({surah:s.num,surahName:s.name,ayah:a})); return acc; },[]);
+  DATA.surahList = DATA.surahList || DATA.surahs.reduce((acc,s)=>{ (s.ayahs||[]).forEach(a=>acc.push({surah:s.num,surahName:s.name,ayah:a})); return acc; },[]);
   DATA.surahList.forEach(item=>{
-    if(item.ayah.text.includes(q) || (item.ayah.trans || '').toLowerCase().includes(q) || item.surahName.toLowerCase().includes(q)){
+    if((item.ayah.text||'').toLowerCase().includes(q) || ((item.ayah.trans||'').toLowerCase().includes(q)) || (item.surahName||'').toLowerCase().includes(q)){
       results.push(item);
     }
   });
-  // show results in reader
   ayahContainer.innerHTML='';
-  if(!results.length){ ayahContainer.innerHTML = '<div class="small">No results in sample data.</div>'; return; }
+  if(!results.length){ ayahContainer.innerHTML = '<div class="small">No results in data.</div>'; return; }
   results.forEach(r=>{
     const node = document.createElement('div'); node.className='ayah';
     const numNode = document.createElement('div'); numNode.className='num'; numNode.textContent = r.ayah.num + ' • ' + r.surah;
     const content = document.createElement('div'); content.style.flex='1';
-    const arab = document.createElement('div'); arab.className='arabic'; arab.style.fontSize = state.fontSize+'px'; arab.textContent = r.ayah.text;
-    const trans = document.createElement('div'); trans.className='trans'; trans.textContent = r.ayah.trans;
+    const arab = document.createElement('div'); arab.className='arabic'; arab.style.fontSize = state.fontSize+'px'; arab.textContent = r.ayah.text || '';
+    const trans = document.createElement('div'); trans.className='trans'; trans.textContent = r.ayah.trans || '';
     content.appendChild(arab); if(state.showTranslation) content.appendChild(trans);
     node.appendChild(numNode); node.appendChild(content);
     ayahContainer.appendChild(node);
   });
 }
 
-/* ===========================
-   BOOKMARKS
-   =========================== */
 function selectAyah(node){
   const surah = +node.dataset.surah, ayah = +node.dataset.ayah;
-  // toggle bookmark
   const key = `${surah}:${ayah}`;
   const idx = state.bookmarks.indexOf(key);
   if(idx===-1){
@@ -404,14 +417,14 @@ function selectAyah(node){
 
 function showBookmarks(){
   if(!state.bookmarks.length){
-    alert('No bookmarks yet (sample). Click an ayah to bookmark it.');
+    alert('No bookmarks yet. Click an ayah to bookmark it.');
     return;
   }
   const list = state.bookmarks.map(b=>{
     const [s,a] = b.split(':');
     const sur = getSurah(+s);
-    const ay = sur.ayahs.find(x=>x.num==+a);
-    return `${s}•${sur.name} — ${a}: ${ay ? ay.trans : '(missing in sample)'}`;
+    const ay = (sur && sur.ayahs) ? sur.ayahs.find(x=>x.num==+a) : null;
+    return `${s}•${sur ? sur.name : '(surah)'} — ${a}: ${ay ? ay.trans || ay.text : '(missing)'}`;
   }).join('\n\n');
   prompt('Bookmarks (copy):', list);
 }
@@ -424,11 +437,9 @@ function exportBook(){
   URL.revokeObjectURL(url);
 }
 
-/* ===========================
-   TTS / Audio
-   =========================== */
 function populateVoices(){
   audioVoiceSelect.innerHTML = '';
+  if(!('speechSynthesis' in window)) { audioVoiceSelect.innerHTML = '<option>No TTS</option>'; return; }
   const v = speechSynthesis.getVoices();
   v.forEach((voice,i)=>{
     const o = document.createElement('option'); o.value=i; o.textContent = voice.name + ' — ' + voice.lang;
@@ -448,37 +459,82 @@ function speak(text, lang){
   speechSynthesis.speak(u);
 }
 
+function stopQariQueue(){
+  if(qariAudioQueue && qariAudioQueue.stop) qariAudioQueue.stop();
+  qariAudioQueue = null;
+}
+
 function playAllArabic(){
-  // naive: speak all ayahs in current surah in arabic language tag
+  stopQariQueue();
   const s = getSurah(state.currentSurah);
-  const text = s.ayahs.map(a=>a.text).join(' \n ');
-  speak(text,'ar');
+  const verses = (s.ayahs||[]).slice();
+  if(!verses.length) return;
+  const base = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/';
+  let index = 0;
+  let currentAudio = null;
+
+  const queue = {
+    stopped:false,
+    stop(){
+      this.stopped = true;
+      if(currentAudio){ currentAudio.pause(); currentAudio.src=''; currentAudio = null; }
+    }
+  };
+  qariAudioQueue = queue;
+
+  function playNext(){
+    if(queue.stopped) return;
+    if(index >= verses.length) return;
+    const sur = String(s.num).padStart(3,'0');
+    const ay = String(verses[index].num).padStart(3,'0');
+    const url = `${base}${sur}${ay}.mp3`;
+    currentAudio = new Audio(url);
+    currentAudio.crossOrigin = 'anonymous';
+    currentAudio.onended = ()=>{ index++; playNext(); };
+    currentAudio.onerror = ()=>{ index++; playNext(); };
+    currentAudio.play().catch(()=>{ /* user interaction required or blocked */ });
+  }
+  playNext();
+}
+
+function playSingleAyahAudio(surahNum, ayahNum){
+  stopQariQueue();
+  const base = 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/';
+  const sur = String(surahNum).padStart(3,'0');
+  const ay = String(ayahNum).padStart(3,'0');
+  const audio = new Audio(`${base}${sur}${ay}.mp3`);
+  audio.crossOrigin = 'anonymous';
+  audio.play().catch(()=>{});
 }
 
 function playSelectedRecitation(){
-  // speak selected ayah (or whole surah) in Arabic
-  // if user selected an ayah (click stored lastSelected?), we'll fallback to whole surah for simplicity
-  playAllArabic();
-}
-function playSelectedTranslation(){
-  const s = getSurah(state.currentSurah);
-  const text = s.ayahs.map(a=>a.trans).join(' \n ');
-  speak(text,'en-US');
+  if(lastClickedNode){
+    const sur = +lastClickedNode.dataset.surah; const ay = +lastClickedNode.dataset.ayah;
+    playSingleAyahAudio(sur, ay);
+  } else playAllArabic();
 }
 
-/* ===========================
-   Emotion Mode
-   =========================== */
+function playSelectedTranslation(){
+  stopQariQueue();
+  if(lastClickedNode){
+    const sur = +lastClickedNode.dataset.surah; const ay = +lastClickedNode.dataset.ayah;
+    const s = getSurah(sur);
+    const a = (s.ayahs || []).find(x=>x.num==ay);
+    if(a) speak(a.trans || a.translation || a.text, 'en-US');
+  } else {
+    const s = getSurah(state.currentSurah);
+    speak((s.ayahs || []).map(x=>x.trans || x.translation || '').join(' '),'en-US');
+  }
+}
+
 function applyEmotionMode(){
   const emot = emotionSelect.value;
   state.emotion = emot || null;
   applyEmotionHighlights();
-  // if emotion applied, scroll to first highlighted ayah
   if(state.emotion){
     const idx = DATA.emotionIndex[state.emotion] && DATA.emotionIndex[state.emotion][0];
     if(idx){
       state.currentSurah = idx.surah; surahSelect.value = state.currentSurah; renderSurah();
-      // find node and flash
       setTimeout(()=> {
         const nodes = [...ayahContainer.children];
         const n = nodes.find(nd=>+nd.dataset.ayah===idx.ayah && +nd.dataset.surah===idx.surah);
@@ -489,7 +545,6 @@ function applyEmotionMode(){
 }
 
 function applyEmotionHighlights(){
-  // highlight ayahs mapped for the selected emotion
   document.querySelectorAll('.ayah').forEach(n=>n.classList.remove('highlight'));
   if(!state.emotion) return;
   const list = DATA.emotionIndex[state.emotion] || [];
@@ -500,9 +555,6 @@ function applyEmotionHighlights(){
   });
 }
 
-/* ===========================
-   Memorization Shadows
-   =========================== */
 function startMemorizeSession(){
   state.memorize.active = true;
   state.memorize.cycles = +cyclesInput.value || 4;
@@ -514,13 +566,11 @@ function memorizeNextCycle(){
   if(!state.memorize.active) return alert('Start a session first');
   state.memorize.cycle++;
   const pct = Math.min(90, state.memorize.startHide + (state.memorize.cycle-1) * Math.round((100-state.memorize.startHide)/(state.memorize.cycles)));
-  // hide pct of words in each ayah
   [...ayahContainer.querySelectorAll('.ayah')].forEach(node=>{
     const arab = node.querySelector('.arabic');
-    const txt = arab.textContent;
+    const txt = arab.textContent || '';
     const words = txt.split(/\s+/);
     const hideCount = Math.floor(words.length * (pct/100));
-    // simple hide: mask random words (deterministic per cycle)
     const newWords = words.map((w,i)=>{
       const seed = (i + state.memorize.cycle) % words.length;
       if(seed < hideCount) return '_'.repeat(Math.min(6,w.length));
@@ -528,7 +578,6 @@ function memorizeNextCycle(){
     });
     arab.textContent = newWords.join(' ');
     arab.classList.add('shadow-hidden');
-    // reveal a bit visually by toggling opacity
     arab.style.textShadow = 'none';
   });
   if(state.memorize.cycle >= state.memorize.cycles){
@@ -543,23 +592,15 @@ function resetMemorizeSession(){
   renderSurah();
 }
 
-/* ===========================
-   Map & Timeline (Historical Revelation Map)
-   =========================== */
 function renderMap(){
-  // clear markers
   markersGroup.innerHTML='';
   timeline.innerHTML='';
-  // For demonstration: use ayah coords in data to place markers along drawn path
-  const s = getSurah(state.currentSurah);
-  // Merge across all surahs' ayahs as timeline events
   const events = [];
   DATA.surahs.forEach(sur=>{
-    sur.ayahs.forEach(a=>{
-      events.push({surah:sur.num, name:sur.name, ayah:a.num, trans:a.trans, coords:a.coords, rev:a.revelation});
+    (sur.ayahs||[]).forEach(a=>{
+      if(a.coords) events.push({surah:sur.num, name:sur.name, ayah:a.num, trans:a.trans, coords:a.coords, rev:a.revelation});
     });
   });
-  // draw markers
   events.forEach(ev=>{
     if(!ev.coords) return;
     const [cx,cy] = ev.coords;
@@ -569,8 +610,6 @@ function renderMap(){
     circle.style.cursor='pointer';
     circle.addEventListener('click', ()=>{ jumpToAyah(ev.surah, ev.ayah); });
     markersGroup.appendChild(circle);
-
-    // timeline event
     const div = document.createElement('div'); div.className='event'; div.textContent = `${ev.surah}:${ev.ayah} — ${ev.name}`;
     div.addEventListener('click', ()=>{ jumpToAyah(ev.surah, ev.ayah); });
     timeline.appendChild(div);
@@ -579,7 +618,6 @@ function renderMap(){
 
 function jumpToAyah(surah, ayah){
   state.currentSurah = +surah; surahSelect.value = state.currentSurah; renderSurah();
-  // jump after render
   setTimeout(()=> {
     const nodes = [...ayahContainer.children];
     const n = nodes.find(nd=>+nd.dataset.ayah===+ayah && +nd.dataset.surah===+surah);
@@ -588,36 +626,26 @@ function jumpToAyah(surah, ayah){
   },200);
 }
 
-/* ===========================
-   Night Whisper Mode
-   - dims gradually, enlarges text slightly, soft tap sound on clicks
-   - long-press breathing syncs with dimming
-   =========================== */
 function toggleWhisperMode(){
   state.whisper.active = !state.whisper.active;
-  const app = document.getElementById('app');
   if(state.whisper.active){
     whisperOverlay.style.transition='opacity 2s linear';
     whisperOverlay.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.25))';
     whisperOverlay.style.opacity = 0.28;
-    // gentle dim increments
     let level = 0.28;
     state.whisper.dimInterval = setInterval(()=>{
       level = Math.min(0.6, level + 0.03);
       whisperOverlay.style.opacity = level;
-      // enlarge arabic text slightly
       document.querySelectorAll('.arabic').forEach(n=>{
         const fs = parseFloat(n.style.fontSize || 28);
         n.style.fontSize = (Math.min(38, fs + 0.12))+'px';
       });
     }, 4000);
-    // soften click taps: install listener
     document.addEventListener('click', tapSound);
   } else {
     whisperOverlay.style.opacity = 0;
     clearInterval(state.whisper.dimInterval);
     document.removeEventListener('click', tapSound);
-    // restore font sizes (re-render simpler)
     renderSurah();
   }
 }
@@ -629,10 +657,8 @@ function tapSound(){
   o.start(); o.stop(ctx.currentTime + 0.06);
 }
 
-/* breathing timer used for long-press on ayah */
 let breathingTimer = null;
 function startBreathing(seconds=6){
-  // Animate whisper overlay in sync
   const steps = seconds;
   let i=0;
   if(breathingTimer) clearInterval(breathingTimer);
@@ -644,21 +670,16 @@ function startBreathing(seconds=6){
   }, 1000);
 }
 
-/* ===========================
-   Misc utilities
-   =========================== */
 function toggleTheme(){ const app=document.getElementById('app'); app.dataset.theme = app.dataset.theme==='light'?'dark':'light'; themeBtn.textContent = app.dataset.theme==='light'?'Dark':'Light'; }
 function flash(node){ if(!node) return; node.animate([{transform:'scale(1)'},{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:320}); }
-function updateProgress(){ // naive: percent of ayahs viewed within current surah vs sample
+function updateProgress(){
   const s = getSurah(state.currentSurah);
-  const total = s.ayahs.length;
-  // rough percent based on scroll
+  const total = s.ayahs.length || 0;
   const sc = document.querySelector('.reader').scrollTop || 0;
   const pct = Math.min(100, Math.round((sc/1000)*100));
   readProgress.style.width = pct+'%';
 }
 
-/* long-press helper */
 function addLongPress(node,fn,ms=600){
   let timer=null;
   node.addEventListener('pointerdown', (e)=>{ timer=setTimeout(()=>fn(), ms); });
@@ -666,39 +687,14 @@ function addLongPress(node,fn,ms=600){
   node.addEventListener('pointerleave', ()=>{ clearTimeout(timer); timer=null; });
 }
 
-/* small helper to play translation or arabic for the currently clicked ayah */
 let lastClickedNode = null;
 ayahContainer.addEventListener('click', (e)=>{
   const root = e.target.closest('.ayah');
   if(root) { lastClickedNode = root; }
 });
-function playSelectedRecitation(){
-  if(lastClickedNode){
-    const sur = +lastClickedNode.dataset.surah; const ay = +lastClickedNode.dataset.ayah;
-    const s = getSurah(sur);
-    const a = s.ayahs.find(x=>x.num==ay);
-    if(a) speak(a.text,'ar');
-  } else playAllArabic();
-}
-function playSelectedTranslation(){
-  if(lastClickedNode){
-    const sur = +lastClickedNode.dataset.surah; const ay = +lastClickedNode.dataset.ayah;
-    const s = getSurah(sur);
-    const a = s.ayahs.find(x=>x.num==ay);
-    if(a) speak(a.trans,'en-US');
-  } else {
-    const s = getSurah(state.currentSurah);
-    speak(s.ayahs.map(x=>x.trans).join(' '),'en-US');
-  }
-}
-
-/* init timeline events click highlight mapping (already in renderMap) */
 ayahContainer.addEventListener('scroll', updateProgress);
 
-/* small UX touches */
 function showConfirm(msg){ return confirm(msg); }
-
-/* end of file */
 </script>
 </body>
 </html>
