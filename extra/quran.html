@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quran App — Single File</title>
+<style>
+  :root{
+    --bg:#f7f7f7; --panel:#fff; --muted:#666; --accent:#2b6cb0;
+    --glass: rgba(255,255,255,0.6);
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220; --panel:#071021; --muted:#9aa9bf; --accent:#6fb3ff; --glass: rgba(255,255,255,0.03);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#111}
+  .app{max-width:1100px;margin:18px auto;padding:14px;}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#8dd3ff);display:grid;place-items:center;color:white;font-weight:700}
+  .controls{display:flex;gap:8px;align-items:center}
+  button,select{padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:var(--panel);cursor:pointer}
+  input[type="range"]{width:120px}
+  main{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:14px}
+  .reader{background:var(--panel);padding:14px;border-radius:12px;min-height:60vh;position:relative}
+  .toolbar{display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+  .surah-meta{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+  .ayah{padding:8px;border-radius:8px;margin:6px 0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.01));display:flex;gap:12px;align-items:flex-start}
+  .ayah .num{width:36px;height:36;border-radius:50%;display:grid;place-items:center;background:var(--glass);font-weight:600;color:var(--muted)}
+  .arabic{font-size:28px;line-height:1.6;direction:rtl;flex:1}
+  .trans{font-size:14px;color:var(--muted);margin-top:6px}
+  .side{background:var(--panel);padding:14px;border-radius:12px;min-height:60vh;overflow:auto}
+  .feature{margin-bottom:12px;padding:10px;border-radius:10px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.02))}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  .small{font-size:12px;color:var(--muted)}
+  .btn-ghost{background:transparent;border:1px dashed rgba(0,0,0,0.06)}
+  .highlight{border:2px solid rgba(107,156,255,0.18);box-shadow:0 6px 24px rgba(43,108,176,0.06)}
+  /* Mistake-proof shadow styles */
+  .shadow-hidden{color:transparent;text-shadow:0 0 8px rgba(0,0,0,0.25);transition:all .3s}
+  /* Night whisper mode dimming overlay */
+  .whisper-overlay{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;border-radius:12px;mix-blend-mode:multiply}
+  /* map */
+  .map {width:100%;height:220px;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#e3f2fd,#fff)}
+  .timeline{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .event{padding:8px;border-radius:8px;background:var(--glass);cursor:pointer}
+  .progress{height:8px;background:rgba(0,0,0,0.06);border-radius:8px;margin-top:10px;overflow:hidden}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#7fd1ff);width:0%}
+  footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
+  /* responsive */
+  @media(max-width:900px){main{grid-template-columns:1fr} .side{order:2}}
+</style>
+</head>
+<body>
+<div class="app" id="app" data-theme="light">
+  <header>
+    <div class="brand">
+      <div class="logo">ق</div>
+      <div>
+        <div style="font-weight:700">Quran Mini — Single File</div>
+        <div class="small">Sample data included. Replace with full content for production.</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <select id="surahSelect" title="Choose surah"></select>
+      <input id="searchInput" placeholder="Search (arabic/translation)" />
+      <button id="searchBtn">Search</button>
+      <button id="bookmarkBtn">Bookmarks</button>
+      <button id="themeBtn">Dark</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label class="small">Font</label>
+        <input id="fontRange" type="range" min="16" max="42" value="28" />
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="reader" id="reader">
+      <div class="toolbar">
+        <div class="surah-meta">
+          <div id="surahTitle" style="font-weight:700"></div>
+          <div class="small" id="surahInfo"></div>
+        </div>
+
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button id="playBtn">▶ Play</button>
+          <button id="pauseBtn">⏸</button>
+          <button id="emotionToggle">Emotion Mode</button>
+          <button id="memorizeToggle">Memorize Mode</button>
+          <button id="whisperToggle">Whisper Night</button>
+        </div>
+      </div>
+
+      <div id="ayahContainer"></div>
+
+      <!-- whisper overlay (dimming for night mode) -->
+      <div id="whisperOverlay" class="whisper-overlay" style="opacity:0"></div>
+
+      <div class="progress" title="Reading progress">
+        <i id="readProgress"></i>
+      </div>
+    </section>
+
+    <aside class="side">
+      <!-- STANDARD FEATURES -->
+      <div class="feature">
+        <label>Audio / Listen</label>
+        <div class="small">Plays Arabic TTS (if Arabic voice available) or translation voice.</div>
+        <select id="audioVoiceSelect"></select>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="playRecite">Recite Ayah</button>
+          <button id="playTrans">Read Translation</button>
+        </div>
+      </div>
+
+      <div class="feature">
+        <label>Emotion-Linked Recitation Mode</label>
+        <div class="small">Pick how you feel and get highlighted ayahs curated for that mood.</div>
+        <select id="emotionSelect">
+          <option value="">— choose emotion —</option>
+          <option value="calm">Calm / Peaceful</option>
+          <option value="stressed">Stressed / Distressed</option>
+          <option value="grateful">Grateful</option>
+          <option value="fear">Fear / Uneasy</option>
+          <option value="hope">Hopeful</option>
+        </select>
+        <button id="applyEmotion">Apply</button>
+      </div>
+
+      <div class="feature">
+        <label>Mistake-Proof Memorisation Shadows</label>
+        <div class="small">Cycle hides more of the ayah each time. Use during memorization sessions.</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <label class="small">Start with hide %</label>
+          <input id="startHide" type="number" min="0" max="90" value="20" style="width:60px" />
+          <label class="small">Cycle count</label>
+          <input id="cycles" type="number" min="1" max="6" value="4" style="width:60px" />
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button id="memorizeStart">Start Session</button>
+          <button id="memorizeNext">Next Cycle</button>
+          <button id="memorizeReset">Reset</button>
+        </div>
+      </div>
+
+      <div class="feature">
+        <label>Historical Revelation Map (Hijrah Route Edition)</label>
+        <div class="map" id="mapSVG">
+          <!-- simple illustrative map; replace with richer map if desired -->
+          <svg viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%">
+            <rect width="100%" height="100%" fill="url(#g)"></rect>
+            <defs>
+              <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#e3f2fd"/>
+                <stop offset="1" stop-color="#fff"/>
+              </linearGradient>
+            </defs>
+
+            <!-- simplified path between cities (Mecca -> Medina) -->
+            <path id="route" d="M80 220 C200 150 400 120 720 70" stroke="#c63" stroke-width="3" fill="none" stroke-linecap="round"></path>
+
+            <!-- markers will be injected here -->
+            <g id="markers"></g>
+          </svg>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+        <div class="small" style="margin-top:8px">Click event to jump to the ayah in the reader.</div>
+      </div>
+
+      <div class="feature">
+        <label>Extras / Utilities</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="toggleTrans">Toggle Translation</button>
+          <button id="toggleArabic">Toggle Arabic</button>
+          <button id="exportBookmarks">Export Bookmarks</button>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <footer>Single-file Quran app — demo data included. Replace `DATA` block with full dataset for production.</footer>
+</div>
+
+<script>
+/* ===========================
+   SAMPLE DATA — REPLACE for prod
+   - For full app, provide full JSON with surah number, ayah text, translation, revelation (makkah/medina), coords for map etc.
+   =========================== */
+const DATA = {
+  surahs: [
+    {num:1, name:'Al-Fātiḥah', english:'The Opening', ayahs:[
+      {num:1, text:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', trans:'In the name of Allah, the Entirely Merciful, the Especially Merciful.', revelation:'makkah', coords:[90,220]},
+      {num:2, text:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', trans:'[All] praise is [due] to Allah, Lord of the worlds —', revelation:'makkah', coords:[120,200]},
+      {num:3, text:'الرَّحْمَٰنِ الرَّحِيمِ', trans:'The Entirely Merciful, the Especially Merciful,', revelation:'makkah', coords:[160,170]},
+      {num:4, text:'مَالِكِ يَوْمِ الدِّينِ', trans:'Sovereign of the Day of Recompense.', revelation:'makkah', coords:[260,150]},
+      {num:5, text:'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', trans:'It is You we worship and You we ask for help.', revelation:'makkah', coords:[360,130]},
+      {num:6, text:'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ', trans:'Guide us to the straight path —', revelation:'makkah', coords:[460,110]},
+      {num:7, text:'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ', trans:'The path of those upon whom You have bestowed favor,', revelation:'makkah', coords:[620,90]}
+    ]},
+    {num:112,name:'Al-Ikhlāṣ',english:'Sincerity', ayahs:[
+      {num:1,text:'قُلْ هُوَ اللَّهُ أَحَدٌ',trans:'Say, "He is Allah, [who is] One,"',revelation:'makkah', coords:[160,170]},
+      {num:2,text:'اللَّهُ الصَّمَدُ',trans:'Allah, the Eternal Refuge.',revelation:'makkah', coords:[260,150]},
+      {num:3,text:'لَمْ يَلِدْ وَلَمْ يُولَدْ',trans:'He neither begets nor is born,',revelation:'makkah', coords:[360,130]},
+      {num:4,text:'وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',trans:'Nor is there to Him any equivalent."',revelation:'makkah', coords:[460,110]}
+    ]}
+  ],
+  emotionIndex: {
+    calm: [{surah:1,ayah:1},{surah:1,ayah:3},{surah:112,ayah:2}],
+    stressed: [{surah:1,ayah:2},{surah:1,ayah:6}],
+    grateful: [{surah:1,ayah:2},{surah:112,ayah:2}],
+    fear: [{surah:1,ayah:4},{surah:1,ayah:5}],
+    hope: [{surah:1,ayah:6},{surah:112,ayah:4}]
+  }
+};
+
+/* ===========================
+   App State
+   =========================== */
+const state = {
+  currentSurah: DATA.surahs[0].num,
+  showTranslation: true,
+  showArabic: true,
+  fontSize: 28,
+  bookmarks: JSON.parse(localStorage.getItem('qbook')||'[]'),
+  memorize: {active:false, cycle:0, cycles:4, startHide:20},
+  whisper: {active:false, dimInterval:null, dimLevel:0},
+  emotion: null
+};
+
+/* ===========================
+   DOM references
+   =========================== */
+const surahSelect = document.getElementById('surahSelect');
+const ayahContainer = document.getElementById('ayahContainer');
+const surahTitle = document.getElementById('surahTitle');
+const surahInfo = document.getElementById('surahInfo');
+const fontRange = document.getElementById('fontRange');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const themeBtn = document.getElementById('themeBtn');
+const playBtn = document.getElementById('playBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const audioVoiceSelect = document.getElementById('audioVoiceSelect');
+const playRecite = document.getElementById('playRecite');
+const playTrans = document.getElementById('playTrans');
+const emotionSelect = document.getElementById('emotionSelect');
+const applyEmotion = document.getElementById('applyEmotion');
+const memorizeStart = document.getElementById('memorizeStart');
+const memorizeNext = document.getElementById('memorizeNext');
+const memorizeReset = document.getElementById('memorizeReset');
+const startHide = document.getElementById('startHide');
+const cyclesInput = document.getElementById('cycles');
+const memorizeToggle = document.getElementById('memorizeToggle');
+const emotionToggle = document.getElementById('emotionToggle');
+const whisperToggle = document.getElementById('whisperToggle');
+const whisperOverlay = document.getElementById('whisperOverlay');
+const toggleTrans = document.getElementById('toggleTrans');
+const toggleArabic = document.getElementById('toggleArabic');
+const exportBookmarks = document.getElementById('exportBookmarks');
+const readProgress = document.getElementById('readProgress');
+const timeline = document.getElementById('timeline');
+const markersGroup = document.getElementById('markers');
+
+/* ===========================
+   Init UI
+   =========================== */
+function init(){
+  // populate surah select
+  DATA.surahs.forEach(s=>{
+    const o = document.createElement('option'); o.value = s.num; o.textContent = `${s.num}. ${s.name} — ${s.english}`;
+    surahSelect.appendChild(o);
+  });
+  surahSelect.value = state.currentSurah;
+
+  // voices
+  setTimeout(populateVoices, 200);
+  if (speechSynthesis) speechSynthesis.onvoiceschanged = populateVoices;
+
+  // set font range default
+  fontRange.value = state.fontSize;
+  fontRange.addEventListener('input', e=>{
+    state.fontSize = +e.target.value;
+    document.querySelectorAll('.arabic').forEach(n=>n.style.fontSize = state.fontSize+'px');
+  });
+
+  surahSelect.addEventListener('change', e=>{
+    state.currentSurah = +e.target.value; renderSurah(); renderMap();
+  });
+
+  searchBtn.addEventListener('click', doSearch);
+  document.getElementById('bookmarkBtn').addEventListener('click', showBookmarks);
+  themeBtn.addEventListener('click', toggleTheme);
+
+  playBtn.addEventListener('click', ()=>playAllArabic());
+  pauseBtn.addEventListener('click', ()=>speechSynthesis.cancel());
+
+  playRecite.addEventListener('click',()=>playSelectedRecitation());
+  playTrans.addEventListener('click',()=>playSelectedTranslation());
+
+  emotionToggle.addEventListener('click', ()=>{ document.getElementById('app').scrollIntoView({behavior:'smooth'}); flash(emotionSelect); });
+  memorizeToggle.addEventListener('click', ()=>{ document.getElementById('app').scrollIntoView({behavior:'smooth'}); flash(startHide); });
+
+  applyEmotion.addEventListener('click', applyEmotionMode);
+
+  memorizeStart.addEventListener('click', startMemorizeSession);
+  memorizeNext.addEventListener('click', memorizeNextCycle);
+  memorizeReset.addEventListener('click', resetMemorizeSession);
+
+  toggleTrans.addEventListener('click', ()=>{ state.showTranslation = !state.showTranslation; renderSurah(); });
+  toggleArabic.addEventListener('click', ()=>{ state.showArabic = !state.showArabic; renderSurah(); });
+  exportBookmarks.addEventListener('click', exportBook);
+
+  whisperToggle.addEventListener('click', toggleWhisperMode);
+
+  // populate timeline & map
+  renderMap();
+
+  renderSurah();
+  updateProgress();
+}
+init();
+
+/* ===========================
+   Render Surah & Ayahs
+   =========================== */
+function getSurah(num){ return DATA.surahs.find(s=>s.num===num) || DATA.surahs[0]; }
+
+function renderSurah(){
+  const s = getSurah(state.currentSurah);
+  surahTitle.textContent = `${s.num}. ${s.name}`;
+  surahInfo.textContent = s.english + ' — ' + (s.ayahs.length) + ' ayahs (sample data)';
+  ayahContainer.innerHTML = '';
+  s.ayahs.forEach(a=>{
+    const node = document.createElement('div'); node.className='ayah';
+    const numNode = document.createElement('div'); numNode.className='num'; numNode.textContent = a.num;
+    const content = document.createElement('div'); content.style.flex='1';
+    const arab = document.createElement('div'); arab.className='arabic'; arab.style.fontSize = state.fontSize+'px'; arab.textContent = a.text;
+    const trans = document.createElement('div'); trans.className='trans'; trans.textContent = a.trans;
+    // attach dataset for later jumps
+    node.dataset.surah = s.num; node.dataset.ayah = a.num;
+    content.appendChild(arab);
+    if(state.showTranslation) content.appendChild(trans);
+    if(!state.showArabic){ arab.style.display='none' } else arab.style.display='';
+    node.appendChild(numNode); node.appendChild(content);
+    // click to bookmark / select
+    node.addEventListener('click', ()=>selectAyah(node));
+    // long-press for breathing timer (night whisper mode)
+    addLongPress(node,()=>startBreathing(8));
+    ayahContainer.appendChild(node);
+  });
+  applyEmotionHighlights();
+  updateProgress();
+}
+
+/* ===========================
+   Search
+   =========================== */
+function doSearch(){
+  const q = (searchInput.value||'').trim().toLowerCase();
+  if(!q){ renderSurah(); return; }
+  // naive search through sample dataset
+  const results = [];
+  DATA.surahList = DATA.surahList || DATA.surahs.reduce((acc,s)=>{ s.ayahs.forEach(a=>acc.push({surah:s.num,surahName:s.name,ayah:a})); return acc; },[]);
+  DATA.surahList.forEach(item=>{
+    if(item.ayah.text.includes(q) || (item.ayah.trans || '').toLowerCase().includes(q) || item.surahName.toLowerCase().includes(q)){
+      results.push(item);
+    }
+  });
+  // show results in reader
+  ayahContainer.innerHTML='';
+  if(!results.length){ ayahContainer.innerHTML = '<div class="small">No results in sample data.</div>'; return; }
+  results.forEach(r=>{
+    const node = document.createElement('div'); node.className='ayah';
+    const numNode = document.createElement('div'); numNode.className='num'; numNode.textContent = r.ayah.num + ' • ' + r.surah;
+    const content = document.createElement('div'); content.style.flex='1';
+    const arab = document.createElement('div'); arab.className='arabic'; arab.style.fontSize = state.fontSize+'px'; arab.textContent = r.ayah.text;
+    const trans = document.createElement('div'); trans.className='trans'; trans.textContent = r.ayah.trans;
+    content.appendChild(arab); if(state.showTranslation) content.appendChild(trans);
+    node.appendChild(numNode); node.appendChild(content);
+    ayahContainer.appendChild(node);
+  });
+}
+
+/* ===========================
+   BOOKMARKS
+   =========================== */
+function selectAyah(node){
+  const surah = +node.dataset.surah, ayah = +node.dataset.ayah;
+  // toggle bookmark
+  const key = `${surah}:${ayah}`;
+  const idx = state.bookmarks.indexOf(key);
+  if(idx===-1){
+    state.bookmarks.push(key);
+    localStorage.setItem('qbook', JSON.stringify(state.bookmarks));
+    flash(node);
+  } else {
+    state.bookmarks.splice(idx,1);
+    localStorage.setItem('qbook', JSON.stringify(state.bookmarks));
+    node.classList.remove('highlight');
+  }
+  renderSurah();
+}
+
+function showBookmarks(){
+  if(!state.bookmarks.length){
+    alert('No bookmarks yet (sample). Click an ayah to bookmark it.');
+    return;
+  }
+  const list = state.bookmarks.map(b=>{
+    const [s,a] = b.split(':');
+    const sur = getSurah(+s);
+    const ay = sur.ayahs.find(x=>x.num==+a);
+    return `${s}•${sur.name} — ${a}: ${ay ? ay.trans : '(missing in sample)'}`;
+  }).join('\n\n');
+  prompt('Bookmarks (copy):', list);
+}
+
+function exportBook(){
+  const data = {bookmarks:state.bookmarks, exportedAt:new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='qbookmarks.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ===========================
+   TTS / Audio
+   =========================== */
+function populateVoices(){
+  audioVoiceSelect.innerHTML = '';
+  const v = speechSynthesis.getVoices();
+  v.forEach((voice,i)=>{
+    const o = document.createElement('option'); o.value=i; o.textContent = voice.name + ' — ' + voice.lang;
+    audioVoiceSelect.appendChild(o);
+  });
+  if(!v.length) audioVoiceSelect.innerHTML = '<option>No TTS voices found in this browser</option>';
+}
+
+function speak(text, lang){
+  if(!('speechSynthesis' in window)){ alert('No speech synthesis available'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const idx = audioVoiceSelect.value;
+  const voices = speechSynthesis.getVoices();
+  if(voices && voices.length && voices[idx]) u.voice = voices[idx];
+  if(lang) u.lang = lang;
+  speechSynthesis.speak(u);
+}
+
+function playAllArabic(){
+  // naive: speak all ayahs in current surah in arabic language tag
+  const s = getSurah(state.currentSurah);
+  const text = s.ayahs.map(a=>a.text).join(' \n ');
+  speak(text,'ar');
+}
+
+function playSelectedRecitation(){
+  // speak selected ayah (or whole surah) in Arabic
+  // if user selected an ayah (click stored lastSelected?), we'll fallback to whole surah for simplicity
+  playAllArabic();
+}
+function playSelectedTranslation(){
+  const s = getSurah(state.currentSurah);
+  const text = s.ayahs.map(a=>a.trans).join(' \n ');
+  speak(text,'en-US');
+}
+
+/* ===========================
+   Emotion Mode
+   =========================== */
+function applyEmotionMode(){
+  const emot = emotionSelect.value;
+  state.emotion = emot || null;
+  applyEmotionHighlights();
+  // if emotion applied, scroll to first highlighted ayah
+  if(state.emotion){
+    const idx = DATA.emotionIndex[state.emotion] && DATA.emotionIndex[state.emotion][0];
+    if(idx){
+      state.currentSurah = idx.surah; surahSelect.value = state.currentSurah; renderSurah();
+      // find node and flash
+      setTimeout(()=> {
+        const nodes = [...ayahContainer.children];
+        const n = nodes.find(nd=>+nd.dataset.ayah===idx.ayah && +nd.dataset.surah===idx.surah);
+        if(n){ n.scrollIntoView({behavior:'smooth',block:'center'}); flash(n); }
+      },200);
+    }
+  }
+}
+
+function applyEmotionHighlights(){
+  // highlight ayahs mapped for the selected emotion
+  document.querySelectorAll('.ayah').forEach(n=>n.classList.remove('highlight'));
+  if(!state.emotion) return;
+  const list = DATA.emotionIndex[state.emotion] || [];
+  list.forEach(m=>{
+    if(+m.surah !== state.currentSurah) return;
+    const node = [...ayahContainer.children].find(nd=>+nd.dataset.ayah===+m.ayah && +nd.dataset.surah===+m.surah);
+    if(node) node.classList.add('highlight');
+  });
+}
+
+/* ===========================
+   Memorization Shadows
+   =========================== */
+function startMemorizeSession(){
+  state.memorize.active = true;
+  state.memorize.cycles = +cyclesInput.value || 4;
+  state.memorize.cycle = 0;
+  state.memorize.startHide = (+startHide.value) || 20;
+  memorizeNextCycle();
+}
+function memorizeNextCycle(){
+  if(!state.memorize.active) return alert('Start a session first');
+  state.memorize.cycle++;
+  const pct = Math.min(90, state.memorize.startHide + (state.memorize.cycle-1) * Math.round((100-state.memorize.startHide)/(state.memorize.cycles)));
+  // hide pct of words in each ayah
+  [...ayahContainer.querySelectorAll('.ayah')].forEach(node=>{
+    const arab = node.querySelector('.arabic');
+    const txt = arab.textContent;
+    const words = txt.split(/\s+/);
+    const hideCount = Math.floor(words.length * (pct/100));
+    // simple hide: mask random words (deterministic per cycle)
+    const newWords = words.map((w,i)=>{
+      const seed = (i + state.memorize.cycle) % words.length;
+      if(seed < hideCount) return '_'.repeat(Math.min(6,w.length));
+      return w;
+    });
+    arab.textContent = newWords.join(' ');
+    arab.classList.add('shadow-hidden');
+    // reveal a bit visually by toggling opacity
+    arab.style.textShadow = 'none';
+  });
+  if(state.memorize.cycle >= state.memorize.cycles){
+    alert('Final cycle reached. Use Reset to restore full text.');
+  } else {
+    flash(memorizeNext);
+  }
+}
+function resetMemorizeSession(){
+  state.memorize.active = false;
+  state.memorize.cycle = 0;
+  renderSurah();
+}
+
+/* ===========================
+   Map & Timeline (Historical Revelation Map)
+   =========================== */
+function renderMap(){
+  // clear markers
+  markersGroup.innerHTML='';
+  timeline.innerHTML='';
+  // For demonstration: use ayah coords in data to place markers along drawn path
+  const s = getSurah(state.currentSurah);
+  // Merge across all surahs' ayahs as timeline events
+  const events = [];
+  DATA.surahs.forEach(sur=>{
+    sur.ayahs.forEach(a=>{
+      events.push({surah:sur.num, name:sur.name, ayah:a.num, trans:a.trans, coords:a.coords, rev:a.revelation});
+    });
+  });
+  // draw markers
+  events.forEach(ev=>{
+    if(!ev.coords) return;
+    const [cx,cy] = ev.coords;
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r',6);
+    circle.setAttribute('fill', ev.rev==='makkah' ? '#2b6cb0' : '#c63');
+    circle.style.cursor='pointer';
+    circle.addEventListener('click', ()=>{ jumpToAyah(ev.surah, ev.ayah); });
+    markersGroup.appendChild(circle);
+
+    // timeline event
+    const div = document.createElement('div'); div.className='event'; div.textContent = `${ev.surah}:${ev.ayah} — ${ev.name}`;
+    div.addEventListener('click', ()=>{ jumpToAyah(ev.surah, ev.ayah); });
+    timeline.appendChild(div);
+  });
+}
+
+function jumpToAyah(surah, ayah){
+  state.currentSurah = +surah; surahSelect.value = state.currentSurah; renderSurah();
+  // jump after render
+  setTimeout(()=> {
+    const nodes = [...ayahContainer.children];
+    const n = nodes.find(nd=>+nd.dataset.ayah===+ayah && +nd.dataset.surah===+surah);
+    if(n) n.scrollIntoView({behavior:'smooth',block:'center'});
+    flash(n || ayahContainer);
+  },200);
+}
+
+/* ===========================
+   Night Whisper Mode
+   - dims gradually, enlarges text slightly, soft tap sound on clicks
+   - long-press breathing syncs with dimming
+   =========================== */
+function toggleWhisperMode(){
+  state.whisper.active = !state.whisper.active;
+  const app = document.getElementById('app');
+  if(state.whisper.active){
+    whisperOverlay.style.transition='opacity 2s linear';
+    whisperOverlay.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.25))';
+    whisperOverlay.style.opacity = 0.28;
+    // gentle dim increments
+    let level = 0.28;
+    state.whisper.dimInterval = setInterval(()=>{
+      level = Math.min(0.6, level + 0.03);
+      whisperOverlay.style.opacity = level;
+      // enlarge arabic text slightly
+      document.querySelectorAll('.arabic').forEach(n=>{
+        const fs = parseFloat(n.style.fontSize || 28);
+        n.style.fontSize = (Math.min(38, fs + 0.12))+'px';
+      });
+    }, 4000);
+    // soften click taps: install listener
+    document.addEventListener('click', tapSound);
+  } else {
+    whisperOverlay.style.opacity = 0;
+    clearInterval(state.whisper.dimInterval);
+    document.removeEventListener('click', tapSound);
+    // restore font sizes (re-render simpler)
+    renderSurah();
+  }
+}
+function tapSound(){
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.type='sine'; o.frequency.value = 200; g.gain.value = 0.0025;
+  o.connect(g); g.connect(ctx.destination);
+  o.start(); o.stop(ctx.currentTime + 0.06);
+}
+
+/* breathing timer used for long-press on ayah */
+let breathingTimer = null;
+function startBreathing(seconds=6){
+  // Animate whisper overlay in sync
+  const steps = seconds;
+  let i=0;
+  if(breathingTimer) clearInterval(breathingTimer);
+  breathingTimer = setInterval(()=>{
+    i++;
+    const level = 0.12 + 0.12*Math.sin( (i/steps) * Math.PI * 2 );
+    whisperOverlay.style.opacity = level;
+    if(i>=steps) { clearInterval(breathingTimer); breathingTimer=null; whisperOverlay.style.opacity = state.whisper.active?0.28:0; }
+  }, 1000);
+}
+
+/* ===========================
+   Misc utilities
+   =========================== */
+function toggleTheme(){ const app=document.getElementById('app'); app.dataset.theme = app.dataset.theme==='light'?'dark':'light'; themeBtn.textContent = app.dataset.theme==='light'?'Dark':'Light'; }
+function flash(node){ if(!node) return; node.animate([{transform:'scale(1)'},{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:320}); }
+function updateProgress(){ // naive: percent of ayahs viewed within current surah vs sample
+  const s = getSurah(state.currentSurah);
+  const total = s.ayahs.length;
+  // rough percent based on scroll
+  const sc = document.querySelector('.reader').scrollTop || 0;
+  const pct = Math.min(100, Math.round((sc/1000)*100));
+  readProgress.style.width = pct+'%';
+}
+
+/* long-press helper */
+function addLongPress(node,fn,ms=600){
+  let timer=null;
+  node.addEventListener('pointerdown', (e)=>{ timer=setTimeout(()=>fn(), ms); });
+  node.addEventListener('pointerup', ()=>{ clearTimeout(timer); timer=null; });
+  node.addEventListener('pointerleave', ()=>{ clearTimeout(timer); timer=null; });
+}
+
+/* small helper to play translation or arabic for the currently clicked ayah */
+let lastClickedNode = null;
+ayahContainer.addEventListener('click', (e)=>{
+  const root = e.target.closest('.ayah');
+  if(root) { lastClickedNode = root; }
+});
+function playSelectedRecitation(){
+  if(lastClickedNode){
+    const sur = +lastClickedNode.dataset.surah; const ay = +lastClickedNode.dataset.ayah;
+    const s = getSurah(sur);
+    const a = s.ayahs.find(x=>x.num==ay);
+    if(a) speak(a.text,'ar');
+  } else playAllArabic();
+}
+function playSelectedTranslation(){
+  if(lastClickedNode){
+    const sur = +lastClickedNode.dataset.surah; const ay = +lastClickedNode.dataset.ayah;
+    const s = getSurah(sur);
+    const a = s.ayahs.find(x=>x.num==ay);
+    if(a) speak(a.trans,'en-US');
+  } else {
+    const s = getSurah(state.currentSurah);
+    speak(s.ayahs.map(x=>x.trans).join(' '),'en-US');
+  }
+}
+
+/* init timeline events click highlight mapping (already in renderMap) */
+ayahContainer.addEventListener('scroll', updateProgress);
+
+/* small UX touches */
+function showConfirm(msg){ return confirm(msg); }
+
+/* end of file */
+</script>
+</body>
+</html>
