@@ -1,15 +1,3 @@
-// Unified Firebase <> localStorage sync for EchoSearch
-// - If a user signs in, localStorage <-> Firestore (users/{uid}) will be merged and kept in sync.
-// - If no user is signed in, localStorage remains the source of truth.
-// - This file is intentionally small and defensive: it dynamically loads the compat SDKs used elsewhere
-//   in the site (matching login.html), and exposes basic sync behaviour without changing existing code paths.
-//
-// Usage: simply include <script src="/essentials/firebase-sync.js"></script> on pages that read/write
-// localStorage keys 'customThemes' and 'lifetimeHistory'. This script will upgrade local-only behaviour
-// to cloud syncing when a user signs in.
-//
-// Note: Ensure Firestore rules allow the intended read/write for authenticated users.
-
 (function () {
   const FB_BASE = 'https://www.gstatic.com/firebasejs/12.6.0';
   const SCRIPTS = [
@@ -18,7 +6,6 @@
     `${FB_BASE}/firebase-firestore-compat.js`
   ];
 
-  // Your Firebase config -- keep in sync with login.html
   const firebaseConfig = {
     apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
     authDomain: "echosearchh.firebaseapp.com",
@@ -29,11 +16,9 @@
     measurementId: "G-S2S8NLVQDT"
   };
 
-  // Keys we sync
   const THEMES_KEY = 'customThemes';
   const HISTORY_KEY = 'lifetimeHistory';
 
-  // Internal state
   let firebaseReady = false;
   let app = null;
   let auth = null;
@@ -43,11 +28,9 @@
   let suppressLocalWrite = false;
   let pushTimeout = null;
 
-  // Helper: load script sequentially
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       if (document.querySelector(`script[src="${src}"]`)) {
-        // Already present
         return resolve();
       }
       const s = document.createElement('script');
@@ -65,7 +48,6 @@
       for (const src of SCRIPTS) {
         await loadScript(src);
       }
-      // Initialize app if not already
       if (!window.firebase) {
         console.warn('Firebase scripts loaded but window.firebase missing');
         return;
@@ -78,12 +60,10 @@
       auth = firebase.auth();
       db = firebase.firestore();
       firebaseReady = true;
-      // Start listening auth state
       auth.onAuthStateChanged(user => {
         if (user) startSyncForUid(user.uid).catch(console.error);
         else stopSync();
       });
-      // If already signed in (persisted), trigger immediate sync
       const user = auth.currentUser;
       if (user) startSyncForUid(user.uid).catch(console.error);
     } catch (e) {
@@ -91,7 +71,6 @@
     }
   }
 
-  // Stable stringify: sorts object keys recursively so equivalent objects produce same string
   function stableStringify(value) {
     if (value === null || value === undefined) return String(value);
     if (typeof value !== 'object') return String(value);
@@ -105,29 +84,22 @@
     return '{' + parts.join(',') + '}';
   }
 
-  // Compute a dedupe key for items:
-  // - For lifetimeHistory entries we ignore the 'time' field so identical queries don't duplicate.
-  // - For other objects we produce a stable string of the full object.
   function getItemKey(item) {
     if (item && typeof item === 'object') {
-      // lifetimeHistory entries should have a 'query' property and a 'time' field.
       if (Object.prototype.hasOwnProperty.call(item, 'query') && Object.prototype.hasOwnProperty.call(item, 'time')) {
         const clone = Object.assign({}, item);
         delete clone.time;
         return stableStringify(clone);
       }
-      // customThemes sometimes include large dataURLs; we keep full canonical representation
       return stableStringify(item);
     }
     return String(item);
   }
 
-  // Merge arrays uniquely using stable keys and prefer cloud order first, then append non-duplicates from local.
   function mergeUniqueArray(cloudArr = [], localArr = []) {
     const seen = new Set();
     const out = [];
 
-    // iterate cloud then local to prefer cloud ordering, but avoid duplicates
     const combined = (Array.isArray(cloudArr) ? cloudArr : []).concat(Array.isArray(localArr) ? localArr : []);
     combined.forEach(item => {
       try {
@@ -137,7 +109,6 @@
           out.push(item);
         }
       } catch (e) {
-        // fallback: use string coercion
         const k = String(item);
         if (!seen.has(k)) {
           seen.add(k);
@@ -148,7 +119,6 @@
     return out;
   }
 
-  // Set localStorage safely while avoiding re-triggering push-to-cloud
   function setLocalStorageSilently(key, valueStr) {
     suppressLocalWrite = true;
     try {
@@ -156,14 +126,12 @@
     } catch (e) {
       console.warn('localStorage set failed', e);
     } finally {
-      // small timeout to let any storage handlers run and then re-enable pushes
       setTimeout(() => {
         suppressLocalWrite = false;
       }, 50);
     }
   }
 
-  // Debounced push of both keys to cloud user doc
   function schedulePushToCloud() {
     if (!currentUid || !db) return;
     if (pushTimeout) clearTimeout(pushTimeout);
@@ -179,19 +147,16 @@
     }, 800);
   }
 
-  // Start listening to user's doc and merge
   async function startSyncForUid(uid) {
     await ensureFirebase();
     if (!firebaseReady) return;
     if (!uid) return;
-    // If already syncing for same uid, no-op
     if (currentUid === uid && userDocUnsub) return;
-    stopSync(); // tear down any previous
+    stopSync();
     currentUid = uid;
 
     const docRef = db.collection('users').doc(uid);
 
-    // 1) merge local -> cloud (so local items are not lost)
     try {
       const snap = await docRef.get();
       const cloud = snap.exists ? snap.data() || {} : {};
@@ -204,27 +169,23 @@
       const mergedThemes = mergeUniqueArray(cloudThemes, localThemes);
       const mergedLife = mergeUniqueArray(cloudLife, localLife);
 
-      // write merged result into Firestore (create if necessary)
       await docRef.set({
         customThemes: mergedThemes,
         lifetimeHistory: mergedLife
       }, { merge: true });
 
-      // reflect merged state immediately into localStorage so existing page code sees cloud data
       setLocalStorageSilently(THEMES_KEY, JSON.stringify(mergedThemes));
       setLocalStorageSilently(HISTORY_KEY, JSON.stringify(mergedLife));
     } catch (e) {
       console.error('Error merging local and cloud data:', e);
     }
 
-    // 2) listen for remote changes and mirror to localStorage
     userDocUnsub = docRef.onSnapshot(doc => {
       if (!doc.exists) return;
       const data = doc.data() || {};
       try {
         const ct = Array.isArray(data.customThemes) ? data.customThemes : [];
         const lh = Array.isArray(data.lifetimeHistory) ? data.lifetimeHistory : [];
-        // apply into localStorage silently so we don't ping-pong
         setLocalStorageSilently(THEMES_KEY, JSON.stringify(ct));
         setLocalStorageSilently(HISTORY_KEY, JSON.stringify(lh));
       } catch (e) {
@@ -243,8 +204,6 @@
     currentUid = null;
   }
 
-  // Monkeypatch Storage.prototype.setItem to emit an in-window event so same-tab writes can be observed.
-  // We do it once per inclusion.
   (function monkeypatchStorage() {
     try {
       if (!Storage.prototype.__echosearch_patched) {
@@ -252,25 +211,18 @@
         Storage.prototype.setItem = function (key, value) {
           original.apply(this, arguments);
           try {
-            // dispatch both a window event and a custom event name for older browsers
             const ev = new CustomEvent('localstorage-changed', { detail: { key, value } });
             window.dispatchEvent(ev);
-          } catch (e) {
-            // ignore
-          }
+          } catch (e) {}
         };
         Storage.prototype.__echosearch_patched = true;
       }
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
   })();
 
-  // Listen to local changes (same-tab) and 'storage' (other-tab) to push updates to cloud
   window.addEventListener('localstorage-changed', (e) => {
     if (!currentUid || !db) return;
     if (suppressLocalWrite) return;
-    // only react to our keys
     const key = e.detail && e.detail.key;
     if (key === THEMES_KEY || key === HISTORY_KEY) {
       schedulePushToCloud();
@@ -281,20 +233,15 @@
     if (!currentUid || !db) return;
     if (!e.key) return;
     if (e.key === THEMES_KEY || e.key === HISTORY_KEY) {
-      // other tab changed localStorage: push to cloud
       if (suppressLocalWrite) return;
       schedulePushToCloud();
     }
   });
 
-  // Kick off attempt to load Firebase; it's fine if it fails (we'll remain local-only)
-  // The app will start syncing automatically when the user signs in (and persistence is already established).
   ensureFirebase().catch(err => {
-    // non-fatal: site continues to work with localStorage only
     console.warn('Firebase sync initialization failed; continuing in local-only mode.', err);
   });
 
-  // Expose a small debug API
   window.__echosearchFirebaseSync = {
     isReady: () => firebaseReady,
     isSignedIn: () => !!currentUid,
