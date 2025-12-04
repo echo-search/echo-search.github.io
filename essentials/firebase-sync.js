@@ -91,21 +91,53 @@
     }
   }
 
-  // Merge arrays uniquely (by JSON string)
+  // Stable stringify: sorts object keys recursively so equivalent objects produce same string
+  function stableStringify(value) {
+    if (value === null || value === undefined) return String(value);
+    if (typeof value !== 'object') return String(value);
+
+    if (Array.isArray(value)) {
+      return '[' + value.map(v => stableStringify(v)).join(',') + ']';
+    }
+
+    const keys = Object.keys(value).sort();
+    const parts = keys.map(k => JSON.stringify(k) + ':' + stableStringify(value[k]));
+    return '{' + parts.join(',') + '}';
+  }
+
+  // Compute a dedupe key for items:
+  // - For lifetimeHistory entries we ignore the 'time' field so identical queries don't duplicate.
+  // - For other objects we produce a stable string of the full object.
+  function getItemKey(item) {
+    if (item && typeof item === 'object') {
+      // lifetimeHistory entries should have a 'query' property and a 'time' field.
+      if (Object.prototype.hasOwnProperty.call(item, 'query') && Object.prototype.hasOwnProperty.call(item, 'time')) {
+        const clone = Object.assign({}, item);
+        delete clone.time;
+        return stableStringify(clone);
+      }
+      // customThemes sometimes include large dataURLs; we keep full canonical representation
+      return stableStringify(item);
+    }
+    return String(item);
+  }
+
+  // Merge arrays uniquely using stable keys and prefer cloud order first, then append non-duplicates from local.
   function mergeUniqueArray(cloudArr = [], localArr = []) {
     const seen = new Set();
     const out = [];
 
-    // prefer cloud order first, then local new items appended (preserve recent local)
-    (cloudArr.concat(localArr)).forEach(item => {
+    // iterate cloud then local to prefer cloud ordering, but avoid duplicates
+    const combined = (Array.isArray(cloudArr) ? cloudArr : []).concat(Array.isArray(localArr) ? localArr : []);
+    combined.forEach(item => {
       try {
-        const k = JSON.stringify(item);
+        const k = getItemKey(item);
         if (!seen.has(k)) {
           seen.add(k);
           out.push(item);
         }
       } catch (e) {
-        // fallback: use item as string
+        // fallback: use string coercion
         const k = String(item);
         if (!seen.has(k)) {
           seen.add(k);
