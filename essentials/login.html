@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Sign Up to EchoSearch</title>
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
@@ -56,19 +57,27 @@
             transition: background-color 0.3s ease;
         }
         button.email-auth { 
-            background-color: #4CAF50; 
+            background-color: #4CAF50; /* Green for email actions */
             color: white; 
         }
         button.email-auth:hover {
             background-color: #45a049;
         }
         button.google-auth {
-            background-color: #db4437;
+            background-color: #db4437; /* Google Red */
             color: white;
             margin-top: 15px;
         }
         button.google-auth:hover {
             background-color: #c03d30;
+        }
+        button.sign-out-button {
+            background-color: #6c757d; /* Grey for sign out */
+            color: white;
+            margin-top: 20px;
+        }
+        button.sign-out-button:hover {
+            background-color: #5a6268;
         }
         .forgot-password {
             margin-top: 10px;
@@ -99,6 +108,9 @@
             background: #eee;
             margin: 30px 0;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -107,33 +119,39 @@
         <p id="auth-status">Please sign in or sign up.</p>
         
         <!-- Email/Password Section -->
-        <h3>Sign In / Sign Up with Email</h3>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button class="email-auth" onclick="signInEmailPassword()">Sign In</button>
-        <div class="forgot-password">
-            <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
-        </div>
-        <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up</button>
-        
-        <hr>
+        <div id="auth-forms">
+            <h3>Sign In / Sign Up with Email</h3>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button class="email-auth" onclick="signInEmailPassword()">Sign In</button>
+            <div class="forgot-password">
+                <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
+            </div>
+            <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up</button>
+            
+            <hr>
 
-        <h3>Or use Google</h3>
-        <button class="google-auth" onclick="signInWithGoogle()">Sign in with Google</button>
+            <!-- Google Sign-In Section -->
+            <h3>Or use Google</h3>
+            <button class="google-auth" onclick="signInWithGoogle()">Sign in with Google</button>
+        </div>
+
+        <div id="sign-out-section" class="hidden">
+            <button class="sign-out-button" onclick="signOutUser()">Sign Out</button>
+        </div>
 
         <p id="message"></p>
     </div>
 
     <script>
         const firebaseConfig = {
-         apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
-         authDomain: "echosearchh.firebaseapp.com",
-         projectId: "echosearchh",
-         storageBucket: "echosearchh.firebasestorage.app",
-         messagingSenderId: "202629312430",
-         appId: "1:202629312430:web:1895b1e1b0bd508f86223f",
-         measurementId: "G-S2S8NLVQDT"
-      };
+            apiKey: "YOUR_API_KEY",
+            authDomain: "echosearchh.firebaseapp.com",
+            projectId: "echosearchh",
+            storageBucket: "echosearchh.appspot.com",
+            messagingSenderId: "202629312430",
+            appId: "YOUR_APP_ID"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -143,20 +161,54 @@
         const passwordInput = document.getElementById('password');
         const messageElement = document.getElementById('message');
         const authStatusElement = document.getElementById('auth-status');
+        const authForms = document.getElementById('auth-forms');
+        const signOutSection = document.getElementById('sign-out-section');
 
         function displayMessage(msg, isError = true) {
             messageElement.textContent = msg;
             messageElement.className = isError ? 'error' : 'success';
         }
 
+        // Helper function to map Firebase error codes to user-friendly messages
+        function getFriendlyErrorMessage(error) {
+            switch (error.code) {
+                case 'auth/invalid-email':
+                    return "The email address is not valid. Please check your spelling.";
+                case 'auth/user-disabled':
+                    return "This account has been disabled. Please contact support.";
+                case 'auth/user-not-found':
+                    return "No user found with this email. Please sign up or check your email address.";
+                case 'auth/wrong-password':
+                    return "Incorrect password. Please try again.";
+                case 'auth/email-already-in-use':
+                    return "This email is already registered. Please sign in or use a different email.";
+                case 'auth/weak-password':
+                    return "Password should be at least 6 characters long.";
+                case 'auth/network-request-failed':
+                    return "Network error. Please check your internet connection.";
+                case 'auth/popup-closed-by-user':
+                    return "Google sign-in was cancelled.";
+                case 'auth/account-exists-with-different-credential':
+                    return "An account already exists with the same email address but different sign-in credentials. Sign in using the original method.";
+                default:
+                    return `An unexpected error occurred: ${error.message}`;
+            }
+        }
+
         auth.onAuthStateChanged(function(user) {
             if (user) {
-                authStatusElement.innerHTML = `Welcome back, <span class="success">${user.displayName || user.email}</span>!`;
-                displayMessage('', false);
+                authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email}</span>!`;
+                displayMessage('', false); // Clear any previous error messages
+                authForms.classList.add('hidden'); // Hide login/signup forms
+                signOutSection.classList.remove('hidden'); // Show sign out button
+                // You can redirect the user to a dashboard page here if they are signed in
+                // window.location.href = "/dashboard.html"; 
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
-                displayMessage('', false);
+                displayMessage('', false); // Clear messages if user signs out (or is not signed in)
+                authForms.classList.remove('hidden'); // Show login/signup forms
+                signOutSection.classList.add('hidden'); // Hide sign out button
             }
         });
 
@@ -175,7 +227,7 @@
                     displayMessage("Signed in successfully with Email!", false);
                 })
                 .catch((error) => {
-                    displayMessage(`Sign In failed: ${error.message}`, true);
+                    displayMessage(getFriendlyErrorMessage(error), true);
                 });
         }
 
@@ -198,7 +250,7 @@
                     displayMessage("Account created successfully! You are now signed in.", false);
                 })
                 .catch((error) => {
-                    displayMessage(`Sign Up failed: ${error.message}`, true);
+                    displayMessage(getFriendlyErrorMessage(error), true);
                 });
         }
 
@@ -209,7 +261,7 @@
                     displayMessage("Signed in successfully with Google!", false);
                 })
                 .catch((error) => {
-                    displayMessage(`Google Sign In failed: ${error.message}`, true);
+                    displayMessage(getFriendlyErrorMessage(error), true);
                 });
         }
 
@@ -227,7 +279,17 @@
                     displayMessage(`Password reset email sent to ${email}. Please check your inbox.`, false);
                 })
                 .catch((error) => {
-                    displayMessage(`Password reset failed: ${error.message}`, true);
+                    displayMessage(getFriendlyErrorMessage(error), true);
+                });
+        }
+
+        function signOutUser() {
+            auth.signOut()
+                .then(() => {
+                    displayMessage("You have been signed out.", false);
+                })
+                .catch((error) => {
+                    displayMessage(getFriendlyErrorMessage(error), true);
                 });
         }
     </script>
