@@ -42,6 +42,11 @@
     });
   }
 
+  function localKey(base) {
+    if (currentUid) return `${base}__user__${currentUid}`;
+    return base;
+  }
+
   async function ensureFirebase() {
     if (firebaseReady) return;
     try {
@@ -63,6 +68,12 @@
       auth.onAuthStateChanged(user => {
         if (user) startSyncForUid(user.uid).catch(console.error);
         else stopSync();
+        try {
+          if (user) localStorage.setItem('echosearchSignedInUser', user.uid);
+          else localStorage.removeItem('echosearchSignedInUser');
+        } catch (e) {
+          console.warn('Could not write echosearchSignedInUser into localStorage', e);
+        }
       });
       const user = auth.currentUser;
       if (user) startSyncForUid(user.uid).catch(console.error);
@@ -138,8 +149,8 @@
     pushTimeout = setTimeout(async () => {
       try {
         const docRef = db.collection('users').doc(currentUid);
-        const themes = JSON.parse(localStorage.getItem(THEMES_KEY) || '[]');
-        const life = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        const themes = JSON.parse(localStorage.getItem(localKey(THEMES_KEY)) || '[]');
+        const life = JSON.parse(localStorage.getItem(localKey(HISTORY_KEY)) || '[]');
         await docRef.set({ customThemes: themes, lifetimeHistory: life }, { merge: true });
       } catch (e) {
         console.error('Failed to push local data to cloud:', e);
@@ -163,8 +174,8 @@
       const cloudThemes = Array.isArray(cloud.customThemes) ? cloud.customThemes : [];
       const cloudLife = Array.isArray(cloud.lifetimeHistory) ? cloud.lifetimeHistory : [];
 
-      const localThemes = JSON.parse(localStorage.getItem(THEMES_KEY) || '[]');
-      const localLife = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      const localThemes = JSON.parse(localStorage.getItem(localKey(THEMES_KEY)) || '[]');
+      const localLife = JSON.parse(localStorage.getItem(localKey(HISTORY_KEY)) || '[]');
 
       const mergedThemes = mergeUniqueArray(cloudThemes, localThemes);
       const mergedLife = mergeUniqueArray(cloudLife, localLife);
@@ -174,8 +185,8 @@
         lifetimeHistory: mergedLife
       }, { merge: true });
 
-      setLocalStorageSilently(THEMES_KEY, JSON.stringify(mergedThemes));
-      setLocalStorageSilently(HISTORY_KEY, JSON.stringify(mergedLife));
+      setLocalStorageSilently(localKey(THEMES_KEY), JSON.stringify(mergedThemes));
+      setLocalStorageSilently(localKey(HISTORY_KEY), JSON.stringify(mergedLife));
     } catch (e) {
       console.error('Error merging local and cloud data:', e);
     }
@@ -186,8 +197,8 @@
       try {
         const ct = Array.isArray(data.customThemes) ? data.customThemes : [];
         const lh = Array.isArray(data.lifetimeHistory) ? data.lifetimeHistory : [];
-        setLocalStorageSilently(THEMES_KEY, JSON.stringify(ct));
-        setLocalStorageSilently(HISTORY_KEY, JSON.stringify(lh));
+        setLocalStorageSilently(localKey(THEMES_KEY), JSON.stringify(ct));
+        setLocalStorageSilently(localKey(HISTORY_KEY), JSON.stringify(lh));
       } catch (e) {
         console.error('Error applying snapshot data to localStorage:', e);
       }
@@ -202,6 +213,9 @@
       userDocUnsub = null;
     }
     currentUid = null;
+    try {
+      localStorage.removeItem('echosearchSignedInUser');
+    } catch (e) {}
   }
 
   (function monkeypatchStorage() {
@@ -224,7 +238,7 @@
     if (!currentUid || !db) return;
     if (suppressLocalWrite) return;
     const key = e.detail && e.detail.key;
-    if (key === THEMES_KEY || key === HISTORY_KEY) {
+    if (key === localKey(THEMES_KEY) || key === localKey(HISTORY_KEY)) {
       schedulePushToCloud();
     }
   });
@@ -232,8 +246,8 @@
   window.addEventListener('storage', (e) => {
     if (!currentUid || !db) return;
     if (!e.key) return;
-    if (e.key === THEMES_KEY || e.key === HISTORY_KEY) {
-      if (suppressLocalWrite) return;
+    if (suppressLocalWrite) return;
+    if (e.key === localKey(THEMES_KEY) || e.key === localKey(HISTORY_KEY)) {
       schedulePushToCloud();
     }
   });
@@ -247,6 +261,7 @@
     isSignedIn: () => !!currentUid,
     currentUid: () => currentUid,
     startSyncForUid,
-    stopSync
+    stopSync,
+    getLocalKey: (base) => localKey(base)
   };
 })();
