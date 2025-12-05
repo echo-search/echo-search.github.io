@@ -145,6 +145,7 @@ const CONTAINER_ID = "lifetime";
 const DELETE_RANGE_SELECT_ID = "deleteRange";
 const EXPORT_BUTTON_ID = "exportBtn";
 
+// Default base key (unchanged). We'll resolve per-user key at access time
 const STORAGE_BASE_KEY = "lifetimeHistory";
 
 function getLocalKey(base) {
@@ -156,15 +157,22 @@ function getLocalKey(base) {
   return base;
 }
 
-const STORAGE_KEY = getLocalKey(STORAGE_BASE_KEY);
+function getStorageKey() {
+  return getLocalKey(STORAGE_BASE_KEY);
+}
 
 const PAGE_EVENT = new Event("history-updated");
 
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
-  const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const key = getStorageKey();
+  const life = JSON.parse(localStorage.getItem(key) || "[]");
   life.unshift(entry);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(life));
+  try {
+    localStorage.setItem(key, JSON.stringify(life));
+  } catch (e) {
+    console.warn('Failed to write lifetime history', e);
+  }
   document.dispatchEvent(PAGE_EVENT);
 }
 
@@ -183,7 +191,8 @@ function formatDateHeader(dateObj) {
 }
 
 function getLifetimeGrouped() {
-  const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const key = getStorageKey();
+  const life = JSON.parse(localStorage.getItem(key) || "[]");
   const groups = {};
 
   life.forEach((e, idx) => {
@@ -218,15 +227,17 @@ function deleteRange(range) {
   
   if (!confirmed) return;
 
-  const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const key = getStorageKey();
+  const life = JSON.parse(localStorage.getItem(key) || "[]");
   const filtered = life.filter(e => e.time < ranges[range]);
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+  localStorage.setItem(key, JSON.stringify(filtered));
   document.dispatchEvent(PAGE_EVENT);
 }
 
 function exportLifetimeHistory() {
-  const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const key = getStorageKey();
+  const life = JSON.parse(localStorage.getItem(key) || "[]");
 
   const blob = new Blob([JSON.stringify(life, null, 2)], {
     type: "application/json"
@@ -241,21 +252,23 @@ function exportLifetimeHistory() {
 }
 
 function deleteEntry(index) {
-  let life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const key = getStorageKey();
+  let life = JSON.parse(localStorage.getItem(key) || "[]");
   life.splice(index, 1);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(life));
+  localStorage.setItem(key, JSON.stringify(life));
   document.dispatchEvent(PAGE_EVENT);
 }
 
 function deleteEntireDay(day) {
-  let life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const key = getStorageKey();
+  let life = JSON.parse(localStorage.getItem(key) || "[]");
 
   const filtered = life.filter(e => {
     const d = formatDateHeader(new Date(e.time));
     return d !== day;
   });
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+  localStorage.setItem(key, JSON.stringify(filtered));
   document.dispatchEvent(PAGE_EVENT);
 }
 
@@ -283,7 +296,7 @@ function render() {
         <div class="history-row">
           <span class="query">${e.query}</span>
           <span class="time">${time}</span>
-          <span class="entry-delete" onclick="deleteEntry(${e.index})"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z" fill="currentColor"></path></svg></span>
+          <span class="entry-delete" onclick="deleteEntry(${e.index})"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="[...]
         </div>
         <div class="divider"></div>
       `;
@@ -292,7 +305,7 @@ function render() {
     details.innerHTML = `
       <summary>
         ${day}
-        <span class="day-delete" onclick="deleteEntireDay('${day.replace(/'/g, "\\'")}'); event.stopPropagation();"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z" fill="currentColor"></path></svg></span>
+        <span class="day-delete" onclick="deleteEntireDay('${day.replace(/'/g, "\\'")}'); event.stopPropagation();"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" v[...]
       </summary>
       ${entriesHTML}
     `;
@@ -315,6 +328,15 @@ deleteRangeSel.addEventListener("change", () => {
 });
 
 exportBtn.addEventListener("click", exportLifetimeHistory);
+
+// Also listen to storage events dynamically (works for both global and per-user storage keys)
+window.addEventListener('storage', (e) => {
+  if (!e.key) return;
+  const k = getStorageKey();
+  if (e.key === k || e.key === k + ':sync') {
+    document.dispatchEvent(PAGE_EVENT);
+  }
+});
   </script>
 </body>
 </html>
