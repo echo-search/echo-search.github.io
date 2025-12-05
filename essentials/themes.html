@@ -6,9 +6,9 @@
   <title>Themes — EchoSearch</title>
   <link rel="canocial" href="https://echo-search.github.io/essentials/themes.html" />
 <style>
-:root { --bg: #f5f7f9; --card: #ffffff; --muted: #666d75; --accent: #00b7b0; --accent-dark: #009688; --danger: #dc3545; --radius: 10px; --shadow: 0 6px 18px rgba(15, 23, 42, 0.06); --gap: 14px; --max-[...]
+:root { --bg: #f5f7f9; --card: #ffffff; --muted: #666d75; --accent: #00b7b0; --accent-dark: #009688; --danger: #dc3545; --radius: 10px; --shadow: 0 6px 18px rgba(15, 23, 42, 0.06); --gap: 14px; --max-w: 980px; --ui-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
 html,body { height:100%; }
-body { margin:0; font-family: var(--ui-font); background: linear-gradient(180deg, var(--bg), #eef2f5); color:#111827; padding:28px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscal[...]
+body { margin:0; font-family: var(--ui-font); background: linear-gradient(180deg, var(--bg), #eef2f5); color:#111827; padding:28px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 .container { max-width: var(--max-w); margin: 0 auto; }
 header { display:flex; justify-content:space-between; align-items:center; gap:var(--gap); margin-bottom:18px; }
 h1 { margin:0; font-size:20px; letter-spacing:-0.2px; }
@@ -21,7 +21,7 @@ label { display:block; font-weight:600; color:#111827; font-size:0.92rem; margin
 input[type="text"] { padding:9px 10px; border-radius:8px; border:1px solid #e6e9ee; width:100%; box-sizing:border-box; font-size:0.95rem; background:#fff; }
 input[type="color"] { width:46px; height:38px; padding:0; border-radius:8px; border:1px solid #e6e9ee; cursor:pointer; }
 input[type="file"] { font-size:0.9rem; }
-.preview { min-height:120px; border-radius:8px; border:1px solid #e6e9ee; display:flex; align-items:center; justify-content:center; text-align:center; color:#0f1724; font-weight:600; overflow:hidden; [...]
+.preview { min-height:120px; border-radius:8px; border:1px solid #e6e9ee; display:flex; align-items:center; justify-content:center; text-align:center; color:#0f1724; font-weight:600; overflow:hidden; }
 .preview .title { background: rgba(255,255,255,0.6); padding:6px 10px; border-radius:6px; font-size:0.98rem; }
 .btn-row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
 button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; cursor:pointer; }
@@ -31,7 +31,7 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 #themesUL { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
 .theme-item { display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px; background:white; border:1px solid rgba(16,24,40,0.03); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03); }
 .left-col { display:flex; gap:12px; align-items:center; min-width:0; }
-.swatch { width:64px; height:64px; border-radius:8px; border:1px solid #eef2f4; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:14px; overflow:hidden; [...]
+.swatch { width:64px; height:64px; border-radius:8px; border:1px solid #eef2f4; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:14px; overflow:hidden; }
 .meta { font-size:0.95rem; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:420px; }
 .title { font-weight:700; color:#0b1220; }
 .actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
@@ -42,7 +42,9 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 .empty { padding:28px; text-align:center; color:var(--muted); border-radius:8px; background:linear-gradient(180deg, rgba(0,0,0,0.01), transparent); border:1px dashed rgba(16,24,40,0.04); }
 .toolbar { display:flex; gap:8px; align-items:center; }
 .back-button { display:inline-block; padding:10px 14px; border-radius:8px; background:transparent; color:var(--muted); text-decoration:none; border:1px solid transparent; font-weight:600; }
-@media (max-width:880px) { .create-grid { grid-template-columns: 1fr; } .swatch { width:52px; height:52px; } }
+@media (max-width:880px) { .create-grid { grid-template-columns: 1fr; } 
+.swatch { width:52px; height:52px; } }
+
 </style>
 </head>
 <body>
@@ -134,7 +136,9 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
         return base;
       }
 
-      const STORAGE_KEY = getLocalKey(STORAGE_BASE_KEY);
+      function getStorageKey() {
+        return getLocalKey(STORAGE_BASE_KEY);
+      }
 
       const themesUL = document.getElementById('themesUL');
       const saveBtn = document.getElementById('saveBtn');
@@ -149,7 +153,7 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 
       function loadCustomThemes() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          const raw = localStorage.getItem(getStorageKey());
           return raw ? JSON.parse(raw) : [];
         } catch (e) {
           console.error('Failed to parse customThemes', e);
@@ -159,7 +163,7 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 
       function saveCustomThemes(arr) {
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(arr || []));
+          localStorage.setItem(getStorageKey(), JSON.stringify(arr || []));
         } catch (e) {
           console.error('Failed to save customThemes', e);
         }
@@ -394,7 +398,7 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
         preview.style.backgroundImage = '';
         preview.style.background = '#fff';
         preview.innerHTML = '<div class="title">Preview</div>';
-        try { localStorage.setItem(STORAGE_KEY + ':sync', Date.now().toString()); } catch(e){}
+        try { localStorage.setItem(getStorageKey() + ':sync', Date.now().toString()); } catch(e){}
       });
 
       resetBtn.addEventListener('click', () => {
@@ -417,7 +421,8 @@ button { font-size:0.95rem; padding:9px 12px; border-radius:8px; border:0; curso
 
       window.addEventListener('storage', (e) => {
         if (!e.key) return;
-        if (e.key === STORAGE_KEY || e.key === STORAGE_KEY + ':sync') {
+        const k = getStorageKey();
+        if (e.key === k || e.key === k + ':sync') {
           renderList();
         }
       });
