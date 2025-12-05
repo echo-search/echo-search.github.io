@@ -16,6 +16,8 @@ const btn67 = document.getElementById("btn67");
 const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
 
+// helper to resolve per-user local keys if a user is signed in.
+// firebase-sync exposes window.__echosearchFirebaseSync.getLocalKey(base)
 function getLocalKey(base) {
   try {
     if (window.__echosearchFirebaseSync && typeof window.__echosearchFirebaseSync.getLocalKey === 'function') {
@@ -30,7 +32,11 @@ function saveLifetime(query) {
   const key = getLocalKey("lifetimeHistory");
   const life = JSON.parse(localStorage.getItem(key) || "[]");
   life.unshift(entry);
-  localStorage.setItem(key, JSON.stringify(life));
+  try {
+    localStorage.setItem(key, JSON.stringify(life));
+  } catch (e) {
+    console.warn('Failed to write lifetimeHistory', e);
+  }
 }
 
 const facts = [
@@ -147,8 +153,10 @@ function openResult(url) {
 
 function domainSearchHandler(query) {
   query = query.trim();
+
   const match = query.match(/^site:(.+)$/i);
   if (!match) return null;
+
   const domain = match[1].trim();
   return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
 }
@@ -172,7 +180,7 @@ function domainSearchHandler(query) {
 
   function loadCustomThemes() {
     try {
-      const raw = localStorage.getItem('customThemes');
+      const raw = localStorage.getItem(getLocalKey('customThemes'));
       return raw ? JSON.parse(raw) : [];
     } catch (e) {
       console.error('Failed to parse customThemes:', e);
@@ -181,7 +189,7 @@ function domainSearchHandler(query) {
   }
 
   function saveCustomThemes(themes) {
-    localStorage.setItem('customThemes', JSON.stringify(themes || []));
+    localStorage.setItem(getLocalKey('customThemes'), JSON.stringify(themes || []));
   }
 
   function populateThemeSelect() {
@@ -217,18 +225,24 @@ function domainSearchHandler(query) {
 
   function applyPreset(name) {
     const presetValues = presets.map(p => p.value);
+    // remove any preset/variant classes
     presetValues.forEach(cls => document.body.classList.remove(cls));
+    // remove any CSS variables we might have set previously
     document.documentElement.style.removeProperty('--bg');
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--hover');
     document.documentElement.style.removeProperty('--text');
     document.body.style.backgroundImage = '';
 
+    // Special-case the 'dark' entry: the CSS expects a "dark-mode" modifier
     if (name === 'dark') {
+      // turn on dark-mode and ensure there's a variant class (use 'default' as the base variant)
       document.body.classList.add('dark-mode');
+      // ensure a variant class exists; fallback to 'default'
       const variant = 'default';
       document.body.classList.add(variant);
     } else {
+      // normal preset: ensure dark-mode is off and add the chosen preset class
       document.body.classList.remove('dark-mode');
       document.body.classList.add(name);
     }
@@ -271,7 +285,7 @@ function domainSearchHandler(query) {
 
   function persistSelectedTheme(descriptor) {
     try {
-      localStorage.setItem('selectedTheme', JSON.stringify(descriptor));
+      localStorage.setItem(getLocalKey('selectedTheme'), JSON.stringify(descriptor));
     } catch (e) {
       console.error('Failed to save selectedTheme', e);
     }
@@ -279,7 +293,7 @@ function domainSearchHandler(query) {
 
   function restoreSelectedTheme() {
     try {
-      const raw = localStorage.getItem('selectedTheme');
+      const raw = localStorage.getItem(getLocalKey('selectedTheme'));
       if (!raw) return;
       const desc = JSON.parse(raw);
       if (desc.type === 'preset' && desc.name) {
@@ -324,7 +338,7 @@ function domainSearchHandler(query) {
   restoreSelectedTheme();
 
   try {
-    const activeRaw = localStorage.getItem('activeTheme');
+    const activeRaw = localStorage.getItem(getLocalKey('activeTheme'));
     if (activeRaw) {
       const theme = JSON.parse(activeRaw);
       if (theme && theme.__fromThemesPage === true) {
@@ -350,7 +364,7 @@ function domainSearchHandler(query) {
         applyPreset(theme.name);
         persistSelectedTheme({ type: 'preset', name: theme.name });
       }
-      localStorage.removeItem('activeTheme');
+      localStorage.removeItem(getLocalKey('activeTheme'));
     }
   } catch (e) {
     console.error('Error applying activeTheme from storage', e);
