@@ -152,8 +152,8 @@
          messagingSenderId: "202629312430",
          appId: "1:202629312430:web:1895b1e1b0bd508f86223f",
          measurementId: "G-S2S8NLVQDT"
-      };
-        
+       };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -173,14 +173,13 @@
         // Helper function to map Firebase error codes to user-friendly messages
         function getFriendlyErrorMessage(error) {
             switch (error.code) {
+                // Grouping common "invalid credentials" errors which often correspond to HTTP 400
                 case 'auth/invalid-email':
-                    return "The email address is not valid. Please check your spelling.";
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    return "Invalid email and/or password. Please check.";
                 case 'auth/user-disabled':
                     return "This account has been disabled. Please contact support.";
-                case 'auth/user-not-found':
-                    return "No user found with this email. Please sign up or check your email address.";
-                case 'auth/wrong-password':
-                    return "Incorrect password. Please try again.";
                 case 'auth/email-already-in-use':
                     return "This email is already registered. Please sign in or use a different email.";
                 case 'auth/weak-password':
@@ -192,24 +191,25 @@
                 case 'auth/account-exists-with-different-credential':
                     return "An account already exists with the same email address but different sign-in credentials. Sign in using the original method.";
                 default:
-                    return `An unexpected error occurred: ${error.message}`;
+                    // Fallback for other unexpected errors
+                    return `An unexpected error occurred. Please try again. (Code: ${error.code})`;
             }
         }
 
         auth.onAuthStateChanged(function(user) {
             if (user) {
                 authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email}</span>!`;
-                displayMessage('', false); // Clear any previous error messages
-                authForms.classList.add('hidden'); // Hide login/signup forms
-                signOutSection.classList.remove('hidden'); // Show sign out button
+                displayMessage('', false);
+                authForms.classList.add('hidden');
+                signOutSection.classList.remove('hidden');
                 // You can redirect the user to a dashboard page here if they are signed in
                 // window.location.href = "/dashboard.html"; 
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
-                displayMessage('', false); // Clear messages if user signs out (or is not signed in)
-                authForms.classList.remove('hidden'); // Show login/signup forms
-                signOutSection.classList.add('hidden'); // Hide sign out button
+                displayMessage('', false);
+                authForms.classList.remove('hidden');
+                signOutSection.classList.add('hidden');
             }
         });
 
