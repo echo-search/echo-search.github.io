@@ -16,27 +16,11 @@ const btn67 = document.getElementById("btn67");
 const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
 
-// helper to resolve per-user local keys if a user is signed in.
-// firebase-sync exposes window.__echosearchFirebaseSync.getLocalKey(base)
-function getLocalKey(base) {
-  try {
-    if (window.__echosearchFirebaseSync && typeof window.__echosearchFirebaseSync.getLocalKey === 'function') {
-      return window.__echosearchFirebaseSync.getLocalKey(base);
-    }
-  } catch (e) {}
-  return base;
-}
-
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
-  const key = getLocalKey("lifetimeHistory");
-  const life = JSON.parse(localStorage.getItem(key) || "[]");
+  const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
   life.unshift(entry);
-  try {
-    localStorage.setItem(key, JSON.stringify(life));
-  } catch (e) {
-    console.warn('Failed to write lifetimeHistory', e);
-  }
+  localStorage.setItem("lifetimeHistory", JSON.stringify(life));
 }
 
 const facts = [
@@ -180,7 +164,7 @@ function domainSearchHandler(query) {
 
   function loadCustomThemes() {
     try {
-      const raw = localStorage.getItem(getLocalKey('customThemes'));
+      const raw = localStorage.getItem('customThemes');
       return raw ? JSON.parse(raw) : [];
     } catch (e) {
       console.error('Failed to parse customThemes:', e);
@@ -189,7 +173,7 @@ function domainSearchHandler(query) {
   }
 
   function saveCustomThemes(themes) {
-    localStorage.setItem(getLocalKey('customThemes'), JSON.stringify(themes || []));
+    localStorage.setItem('customThemes', JSON.stringify(themes || []));
   }
 
   function populateThemeSelect() {
@@ -285,7 +269,7 @@ function domainSearchHandler(query) {
 
   function persistSelectedTheme(descriptor) {
     try {
-      localStorage.setItem(getLocalKey('selectedTheme'), JSON.stringify(descriptor));
+      localStorage.setItem('selectedTheme', JSON.stringify(descriptor));
     } catch (e) {
       console.error('Failed to save selectedTheme', e);
     }
@@ -293,7 +277,7 @@ function domainSearchHandler(query) {
 
   function restoreSelectedTheme() {
     try {
-      const raw = localStorage.getItem(getLocalKey('selectedTheme'));
+      const raw = localStorage.getItem('selectedTheme');
       if (!raw) return;
       const desc = JSON.parse(raw);
       if (desc.type === 'preset' && desc.name) {
@@ -338,7 +322,7 @@ function domainSearchHandler(query) {
   restoreSelectedTheme();
 
   try {
-    const activeRaw = localStorage.getItem(getLocalKey('activeTheme'));
+    const activeRaw = localStorage.getItem('activeTheme');
     if (activeRaw) {
       const theme = JSON.parse(activeRaw);
       if (theme && theme.__fromThemesPage === true) {
@@ -364,7 +348,7 @@ function domainSearchHandler(query) {
         applyPreset(theme.name);
         persistSelectedTheme({ type: 'preset', name: theme.name });
       }
-      localStorage.removeItem(getLocalKey('activeTheme'));
+      localStorage.removeItem('activeTheme');
     }
   } catch (e) {
     console.error('Error applying activeTheme from storage', e);
