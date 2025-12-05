@@ -202,8 +202,7 @@
                 displayMessage('', false);
                 authForms.classList.add('hidden');
                 signOutSection.classList.remove('hidden');
-                // You can redirect the user to a dashboard page here if they are signed in
-                // window.location.href = "/dashboard.html"; 
+                window.location.href = "/"; 
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
