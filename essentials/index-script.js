@@ -16,11 +16,21 @@ const btn67 = document.getElementById("btn67");
 const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
 
+function getLocalKey(base) {
+  try {
+    if (window.__echosearchFirebaseSync && typeof window.__echosearchFirebaseSync.getLocalKey === 'function') {
+      return window.__echosearchFirebaseSync.getLocalKey(base);
+    }
+  } catch (e) {}
+  return base;
+}
+
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
-  const life = JSON.parse(localStorage.getItem("lifetimeHistory") || "[]");
+  const key = getLocalKey("lifetimeHistory");
+  const life = JSON.parse(localStorage.getItem(key) || "[]");
   life.unshift(entry);
-  localStorage.setItem("lifetimeHistory", JSON.stringify(life));
+  localStorage.setItem(key, JSON.stringify(life));
 }
 
 const facts = [
@@ -137,10 +147,8 @@ function openResult(url) {
 
 function domainSearchHandler(query) {
   query = query.trim();
-
   const match = query.match(/^site:(.+)$/i);
   if (!match) return null;
-
   const domain = match[1].trim();
   return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
 }
@@ -209,24 +217,18 @@ function domainSearchHandler(query) {
 
   function applyPreset(name) {
     const presetValues = presets.map(p => p.value);
-    // remove any preset/variant classes
     presetValues.forEach(cls => document.body.classList.remove(cls));
-    // remove any CSS variables we might have set previously
     document.documentElement.style.removeProperty('--bg');
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--hover');
     document.documentElement.style.removeProperty('--text');
     document.body.style.backgroundImage = '';
 
-    // Special-case the 'dark' entry: the CSS expects a "dark-mode" modifier
     if (name === 'dark') {
-      // turn on dark-mode and ensure there's a variant class (use 'default' as the base variant)
       document.body.classList.add('dark-mode');
-      // ensure a variant class exists; fallback to 'default'
       const variant = 'default';
       document.body.classList.add(variant);
     } else {
-      // normal preset: ensure dark-mode is off and add the chosen preset class
       document.body.classList.remove('dark-mode');
       document.body.classList.add(name);
     }
