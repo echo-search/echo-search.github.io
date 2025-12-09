@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Data Extraction & Transformation Studio — Single File</title>
+<style>
+  :root{
+    --bg:#0f1724; --panel:#0b1220; --muted:#9aa4b2; --accent:#7dd3fc; --accent2:#60a5fa;
+    --card:#0b1220; --glass: rgba(255,255,255,0.03);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#e6eef6;background:linear-gradient(180deg,#071025 0%,#071a2b 100%);-webkit-font-smoothing:antialiased}
+  .wrap{display:flex;gap:12px;align-items:flex-start;padding:18px;box-sizing:border-box}
+  .left{width:440px;flex-shrink:0}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:10px;box-shadow:0 6px 24px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+  h1{margin:0;font-size:16px;color:var(--accent)}
+  p.muted{color:var(--muted);font-size:12px;margin:8px 0 12px}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
+  input[type="file"]{display:block}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button{background:linear-gradient(180deg,var(--accent),var(--accent2));border:none;padding:8px 10px;border-radius:8px;color:#04202a;font-weight:600;cursor:pointer}
+  .small{padding:6px 8px;font-size:13px;border-radius:6px}
+  .muted-pill{background:var(--glass);padding:6px 8px;border-radius:8px;color:var(--muted);font-size:12px}
+  .textarea{width:100%;height:180px;background:#051122;border:1px solid rgba(255,255,255,0.03);color:#bfe9ff;padding:8px;border-radius:8px;resize:vertical;font-family:monospace;font-size:13px}
+  .grid{display:grid;gap:10px}
+  .row{display:flex;gap:8px;align-items:center}
+  .preview{flex:1;min-height:400px;overflow:auto;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:6px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left;color:#cfeeff}
+  .mini{font-size:11px;color:var(--muted)}
+  .status{font-size:12px;color:#7fffd4;margin-left:8px}
+  .chip{display:inline-block;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-size:12px}
+  .split{display:flex;gap:10px}
+  .right{flex:1}
+  .control-group{margin-bottom:10px}
+  .rule{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:8px}
+  input,select,textarea{background:transparent;border:1px solid rgba(255,255,255,0.03);color:#cfeeff;padding:8px;border-radius:6px}
+  .danger{background:#ff6b6b;color:#fff}
+  .success{background:#6ee7b7;color:#052018}
+  .footer{font-size:12px;color:var(--muted);margin-top:8px}
+  .legend{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .log{font-family:monospace;background:#02111a;padding:8px;border-radius:6px;color:#8ee0ff;height:120px;overflow:auto}
+  .flexv{display:flex;flex-direction:column;gap:8px}
+  .pill-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 10px;border-radius:999px;color:var(--muted);cursor:pointer}
+  .row-between{display:flex;justify-content:space-between;align-items:center}
+</style>
+</head>
+<body>
+<div style="padding:12px 18px">
+  <div class="wrap">
+    <div class="left panel">
+      <h1>Data Extraction & Transformation Studio</h1>
+      <p class="muted">A single-file toolkit: upload CSV/JSON/TXT, run extractions, build rules, preview and export.</p>
+
+      <div class="control-group">
+        <label>Import file (CSV / JSON / TXT) or paste raw data</label>
+        <div class="row">
+          <input id="file" type="file" accept=".csv,.json,.txt" />
+          <button id="btn-paste" class="small">Paste data</button>
+          <button id="btn-load-example" class="small">Load example</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Parsing options</label>
+        <div class="row">
+          <select id="csv-sep"><option value=",">Comma (,)</option><option value=";">Semicolon (;)</option><option value="tab">Tab</option></select>
+          <select id="has-header"><option value="true">Has header</option><option value="false">No header</option></select>
+          <button id="parse" class="small">Parse</button>
+          <div class="pill-btn" id="toggle-worker">Use Web Worker: <span id="worker-status" class="chip">off</span></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Extraction playground (regex / tokens / fn)</label>
+        <textarea id="extractor-code" class="textarea" spellcheck="false">// Examples:
+// 1. Regex capture for emails: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,})/g
+// 2. Tokenize field: tokens(field)
+// 3. Custom transform: return field.replace(/\\s+/g,' ').trim()
+//
+// variable available: field (string), row (object), i (index)
+// final value should be returned
+return field;
+</textarea>
+        <div class="row" style="margin-top:8px">
+          <button id="apply-extract" class="small">Apply to column</button>
+          <select id="columns-select"></select>
+          <button id="add-column" class="small">Add derived column</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Rule engine (apply if → then transform)</label>
+        <div id="rules" class="flexv"></div>
+        <div class="row">
+          <button id="add-rule" class="small">+ Add rule</button>
+          <button id="run-rules" class="small success">Run rules</button>
+          <button id="reset" class="small danger">Reset</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Export</label>
+        <div class="row">
+          <button id="export-csv" class="small">Export CSV</button>
+          <button id="export-json" class="small">Export JSON</button>
+          <button id="save-db" class="small">Save snapshot</button>
+          <button id="load-db" class="small">Load snapshot</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Console & logs</label>
+        <div id="log" class="log"></div>
+      </div>
+
+      <div class="footer">Single-file demo. Edit the extractor code and rules to craft complex pipelines.</div>
+    </div>
+
+    <div class="right panel">
+      <div class="row-between">
+        <div>
+          <div class="legend">Preview</div>
+          <div class="mini">Rows: <span id="row-count">0</span> • Columns: <span id="col-count">0</span></div>
+        </div>
+        <div class="row">
+          <input id="search" placeholder="Search preview (fuzzy)" style="width:240px" />
+          <button id="dedupe" class="small">Dedupe</button>
+          <button id="clear-filters" class="small">Clear</button>
+        </div>
+      </div>
+
+      <div id="preview" class="preview"></div>
+
+      <hr style="border:none;height:1px;background:rgba(255,255,255,0.02);margin:12px 0">
+
+      <div class="split">
+        <div style="width:48%;">
+          <div class="legend">Transformations</div>
+          <label>Rename column</label>
+          <div class="row">
+            <select id="rename-from"></select>
+            <input id="rename-to" placeholder="new name" />
+            <button id="rename-btn" class="small">Rename</button>
+          </div>
+
+          <label style="margin-top:8px">Apply JS function to column</label>
+          <textarea id="col-fn" class="textarea" style="height:100px">// function(field, row, i){ return field; }</textarea>
+          <div class="row">
+            <select id="col-fn-select"></select>
+            <button id="col-fn-apply" class="small">Apply</button>
+          </div>
+        </div>
+        <div style="width:48%;">
+          <div class="legend">Stats & Helpers</div>
+          <div class="mini">Basic stats for selected column:</div>
+          <select id="stats-select"></select>
+          <div id="stats" class="muted-pill" style="margin-top:8px">—</div>
+
+          <div style="margin-top:12px">
+            <label>Regex tester</label>
+            <input id="regex-input" placeholder="Enter regex (no slashes)"/>
+            <input id="regex-opts" placeholder="flags (g,i,m)" style="width:90px"/>
+            <textarea id="regex-sample" class="textarea" style="height:80px">sample text to test</textarea>
+            <div class="row">
+              <button id="test-regex" class="small">Test</button>
+              <button id="apply-regex" class="small">Apply to column</button>
+              <select id="regex-col"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:none;height:1px;background:rgba(255,255,255,0.02);margin:12px 0">
+
+      <div class="row-between">
+        <div class="legend">Saved Snapshots (IndexedDB)</div>
+        <div><button id="clear-db" class="small danger">Clear all</button></div>
+      </div>
+      <div id="snapshots" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Data Extraction & Transformation Studio
+  - Single file, no external libs
+  - Features: parse CSV/JSON, web worker for heavy parsing, extraction via user JS/regex,
+    rule engine, preview, export, indexedDB snapshots, dedupe, stats.
+*/
+
+// ---- Utilities ----
+const logEl = document.getElementById('log');
+const log = (...args) => { const s = args.map(a => (typeof a==='object'? JSON.stringify(a): String(a))).join(' '); console.log(...args); logEl.textContent += s + '\\n'; logEl.scrollTop = logEl.scrollHeight; }
+
+const download = (filename, text) => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+const csvEscape = (v) => {
+  if (v == null) return '';
+  const s = String(v);
+  return /[",\\n]/.test(s) ? ('"' + s.replace(/"/g,'""') + '"') : s;
+}
+
+// Simple fuzzy match: score based on sequential chars
+function fuzzyScore(needle, hay) {
+  if (!needle) return 1;
+  needle = needle.toLowerCase(); hay = String(hay||'').toLowerCase();
+  let idx = 0, score = 0;
+  for (let c of needle){
+    const found = hay.indexOf(c, idx);
+    if (found === -1) return 0;
+    score += 1;
+    idx = found + 1;
+  }
+  return score / needle.length;
+}
+
+// Basic tokenizer
+function tokens(txt){ if (txt==null) return []; return String(txt).split(/\\s+/).filter(Boolean); }
+
+// ---- Data model ----
+let DATA = { rows: [], cols: [] }; // rows: array of objects
+let SNAPSHOTS = []; // id + meta
+let USE_WORKER = false;
+let parseWorker = null;
+
+// ---- IndexedDB snapshot simple wrapper ----
+const DBNAME = 'de_studio_snapshots_v1';
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(DBNAME, 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('snapshots')) db.createObjectStore('snapshots', {keyPath:'id'});
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => reject(e);
+  });
+}
+async function saveSnapshot(name){
+  const db = await openDB();
+  const tx = db.transaction('snapshots','readwrite');
+  const store = tx.objectStore('snapshots');
+  const id = 'snap_'+Date.now();
+  const payload = { id, name, created: new Date().toISOString(), data: DATA };
+  store.put(payload);
+  return new Promise((res,rej)=>{ tx.oncomplete = ()=>res(payload); tx.onerror = rej; });
+}
+async function listSnapshots(){
+  const db = await openDB();
+  const tx = db.transaction('snapshots','readonly');
+  const store = tx.objectStore('snapshots');
+  const req = store.getAll();
+  return new Promise((res,rej)=>{ req.onsuccess = ()=>res(req.result); req.onerror = rej; });
+}
+async function clearAllSnapshots(){
+  const db = await openDB();
+  const tx = db.transaction('snapshots','readwrite');
+  const store = tx.objectStore('snapshots');
+  store.clear();
+  return new Promise((res,rej)=>{ tx.oncomplete = ()=>res(); tx.onerror = rej; });
+}
+
+// ---- UI wiring ----
+const fileInput = document.getElementById('file');
+const parseBtn = document.getElementById('parse');
+const csvSep = document.getElementById('csv-sep');
+const hasHeader = document.getElementById('has-header');
+const previewEl = document.getElementById('preview');
+const rowCountEl = document.getElementById('row-count');
+const colCountEl = document.getElementById('col-count');
+const columnsSelect = document.getElementById('columns-select');
+const addColumnBtn = document.getElementById('add-column');
+const extractorCode = document.getElementById('extractor-code');
+const applyExtractBtn = document.getElementById('apply-extract');
+const renameFrom = document.getElementById('rename-from');
+const renameTo = document.getElementById('rename-to');
+const renameBtn = document.getElementById('rename-btn');
+const colFnInput = document.getElementById('col-fn');
+const colFnSelect = document.getElementById('col-fn-select');
+const colFnApply = document.getElementById('col-fn-apply');
+const statsSelect = document.getElementById('stats-select');
+const statsEl = document.getElementById('stats');
+const regexInput = document.getElementById('regex-input');
+const regexOpts = document.getElementById('regex-opts');
+const regexSample = document.getElementById('regex-sample');
+const testRegexBtn = document.getElementById('test-regex');
+const applyRegexBtn = document.getElementById('apply-regex');
+const regexCol = document.getElementById('regex-col');
+const searchInput = document.getElementById('search');
+const dedupeBtn = document.getElementById('dedupe');
+const clearFiltersBtn = document.getElementById('clear-filters');
+const exportCSVBtn = document.getElementById('export-csv');
+const exportJSONBtn = document.getElementById('export-json');
+const saveDbBtn = document.getElementById('save-db');
+const loadDbBtn = document.getElementById('load-db');
+const snapshotsEl = document.getElementById('snapshots');
+const toggleWorkerBtn = document.getElementById('toggle-worker');
+const workerStatusEl = document.getElementById('worker-status');
+const addRuleBtn = document.getElementById('add-rule');
+const rulesContainer = document.getElementById('rules');
+const runRulesBtn = document.getElementById('run-rules');
+const resetBtn = document.getElementById('reset');
+const lockBtn = document.getElementById('btn-paste');
+const loadExampleBtn = document.getElementById('btn-load-example');
+const clearDbBtn = document.getElementById('clear-db');
+
+fileInput.addEventListener('change', handleFile);
+parseBtn.addEventListener('click', () => {
+  if (fileInput.files.length) handleFile({target:fileInput});
+  else {
+    const txt = prompt('Paste raw data (CSV/JSON/TXT):');
+    if (txt) parseText(txt);
+  }
+});
+toggleWorkerBtn.addEventListener('click', ()=>{
+  USE_WORKER = !USE_WORKER;
+  workerStatusEl.textContent = USE_WORKER ? 'on' : 'off';
+  log('Web Worker set to', USE_WORKER);
+  if (USE_WORKER && !parseWorker) initWorker();
+});
+loadExampleBtn.addEventListener('click', loadExample);
+addColumnBtn.addEventListener('click', addDerivedColumn);
+applyExtractBtn.addEventListener('click', applyExtractorToColumn);
+renameBtn.addEventListener('click', renameColumnAction);
+colFnApply.addEventListener('click', applyFunctionToColumn);
+testRegexBtn.addEventListener('click', testRegex);
+applyRegexBtn.addEventListener('click', applyRegexToColumn);
+searchInput.addEventListener('input', renderPreview);
+dedupeBtn.addEventListener('click', dedupeData);
+clearFiltersBtn.addEventListener('click', ()=>{
+  searchInput.value = '';
+  renderPreview();
+});
+exportCSVBtn.addEventListener('click', exportCSV);
+exportJSONBtn.addEventListener('click', exportJSON);
+saveDbBtn.addEventListener('click', async ()=>{
+  const name = prompt('Snapshot name', 'snapshot');
+  if (!name) return;
+  const snap = await saveSnapshot(name);
+  log('Saved snapshot', snap.id);
+  refreshSnapshots();
+});
+loadDbBtn.addEventListener('click', refreshSnapshots);
+addRuleBtn.addEventListener('click', addRule);
+runRulesBtn.addEventListener('click', runRules);
+resetBtn.addEventListener('click', resetAll);
+lockBtn.addEventListener('click', async ()=>{
+  const text = prompt('Paste data (CSV/JSON/TXT)');
+  if (text) parseText(text);
+});
+clearDbBtn.addEventListener('click', async ()=>{
+  if (!confirm('Clear all snapshots?')) return;
+  await clearAllSnapshots();
+  refreshSnapshots();
+  log('Cleared snapshots');
+});
+
+async function handleFile(e){
+  const file = (e.target && e.target.files && e.target.files[0]) || (e.target && e.target.files && e.target.files);
+  if (!file) return;
+  const text = await file.text();
+  parseText(text, file.name);
+}
+
+function initWorker(){
+  const blob = new Blob([`onmessage = ${workerOnMessage.toString()}`], {type:'application/javascript'});
+  const url = URL.createObjectURL(blob);
+  parseWorker = new Worker(url);
+  parseWorker.onmessage = (e) => {
+    const {type, payload} = e.data;
+    if (type === 'parsed') {
+      DATA = payload;
+      postParse();
+      log('Parsed in worker:', DATA.rows.length, 'rows');
+    } else if (type === 'log') log('worker:', payload);
+  }
+}
+
+function workerOnMessage(e){
+  // this code stringifies into worker blob
+  onmessage = function(ev){
+    const {text, opts} = ev.data;
+    try {
+      const parsed = parseTextSync(text, opts);
+      postMessage({type:'parsed', payload:parsed});
+    } catch (err) { postMessage({type:'log', payload: String(err)}); }
+  }
+}
+
+// parse text either in main thread or worker
+function parseText(text, filename){
+  const opts = {
+    sep: csvSep.value === 'tab' ? '\\t' : csvSep.value,
+    header: hasHeader.value === 'true',
+    filename: filename || 'pasted'
+  };
+  if (USE_WORKER){
+    if (!parseWorker) initWorker();
+    parseWorker.postMessage({text, opts});
+    log('Parsing in worker...');
+  } else {
+    const parsed = parseTextSync(text, opts);
+    DATA = parsed;
+    postParse();
+    log('Parsed in main thread:', DATA.rows.length, 'rows');
+  }
+}
+
+// sync parser (simple but robust)
+function parseTextSync(text, opts){
+  text = String(text).replace(/\\r\\n/g,'\\n').replace(/\\r/g,'\\n');
+  // detect JSON
+  const trimmed = text.trim();
+  if (trimmed.startsWith('{') || trimmed.startsWith('[')){
+    try {
+      const obj = JSON.parse(text);
+      if (Array.isArray(obj)){
+        const rows = obj.map((r)=> (typeof r==='object' ? r : {value:r}));
+        const cols = deduceCols(rows);
+        return {rows, cols};
+      } else if (typeof obj === 'object'){
+        const rows = [obj];
+        const cols = deduceCols(rows);
+        return {rows, cols};
+      }
+    } catch(e){}
+  }
+  // else assume CSV or plain lines
+  let sep = opts.sep;
+  if (sep === '\\t') sep = '\\t';
+  const lines = text.split('\\n').filter(l=>l.trim()!=='');
+  // try CSV parse with quote support
+  let rows = [];
+  for (let line of lines){
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let i=0;i<line.length;i++){
+      const ch = line[i];
+      if (ch === '"' ) { if (inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; continue; }
+      if (!inQ && sep !== '\\t' && ch === sep) { cols.push(cur); cur=''; continue; }
+      if (!inQ && sep === '\\t' && ch === '\\t') { cols.push(cur); cur=''; continue; }
+      cur += ch;
+    }
+    cols.push(cur);
+    // if semicolon / comma detected differently, allow fallback
+    rows.push(cols);
+  }
+  // if single column and lines contain commas, try splitting by commas
+  if (rows.length>0 && rows.every(r=>r.length===1) && rows.some(r=>r[0].includes(',')) && opts.sep !== ','){
+    // try comma split
+    const retry = text.split('\\n').map(l=> l.split(',').map(x=>x.trim()));
+    rows = retry;
+  }
+  // build objects
+  let header = null;
+  if (opts.header && rows.length>0){
+    header = rows.shift().map(h=>h.trim() || 'col');
+  }
+  if (!header){
+    const maxCols = Math.max(...rows.map(r=>r.length));
+    header = Array.from({length:maxCols},(v,i)=>'col'+(i+1));
+  }
+  const objs = rows.map(r=>{
+    const o = {};
+    for (let i=0;i<header.length;i++){ o[header[i]] = r[i] !== undefined ? r[i] : ''; }
+    return o;
+  });
+  const cols = header.slice();
+  return {rows:objs, cols};
+}
+
+function deduceCols(rows){
+  const set = new Set();
+  for (let r of rows) Object.keys(r).forEach(k=>set.add(k));
+  return Array.from(set);
+}
+
+function postParse(){
+  // basic normalize: ensure all rows have same keys
+  const cols = deduceCols(DATA.rows);
+  DATA.cols = cols;
+  DATA.rows = DATA.rows.map(r=>{
+    const o = {};
+    for (let c of cols) o[c] = r[c] == null ? '' : r[c];
+    return o;
+  });
+  refreshUI();
+  renderPreview();
+}
+
+// ---- Preview ----
+function refreshUI(){
+  // populate selects
+  columnsSelect.innerHTML = '';
+  renameFrom.innerHTML = '';
+  colFnSelect.innerHTML = '';
+  statsSelect.innerHTML = '';
+  regexCol.innerHTML = '';
+  const cols = DATA.cols || [];
+  for (let c of cols){
+    const opt = (v)=>{ const o = document.createElement('option'); o.value=v; o.textContent=v; return o; }
+    columnsSelect.appendChild(opt(c));
+    renameFrom.appendChild(opt(c));
+    colFnSelect.appendChild(opt(c));
+    statsSelect.appendChild(opt(c));
+    regexCol.appendChild(opt(c));
+  }
+  rowCountEl.textContent = (DATA.rows||[]).length;
+  colCountEl.textContent = (DATA.cols||[]).length;
+  refreshSnapshots();
+}
+
+function renderPreview(){
+  const rows = DATA.rows || [];
+  const cols = DATA.cols || [];
+  const q = searchInput.value.trim();
+  let filtered = rows;
+  if (q){
+    filtered = rows.filter(r=>{
+      for (let c of cols){
+        const sc = fuzzyScore(q, r[c]);
+        if (sc > 0) return true;
+      }
+      return false;
+    });
+  }
+  // render up to 200 rows
+  const max = 200;
+  const limited = filtered.slice(0,max);
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const trh = document.createElement('tr');
+  for (let c of cols){
+    const th = document.createElement('th'); th.textContent = c; trh.appendChild(th);
+  }
+  thead.appendChild(trh);
+  table.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  for (let i=0;i<limited.length;i++){
+    const r = limited[i];
+    const tr = document.createElement('tr');
+    for (let c of cols){
+      const td = document.createElement('td');
+      const v = r[c];
+      td.textContent = v;
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  previewEl.innerHTML = '';
+  previewEl.appendChild(table);
+  const info = document.createElement('div');
+  info.className = 'mini';
+  info.textContent = `Showing ${limited.length}/${filtered.length} rows (first ${max})`;
+  previewEl.appendChild(info);
+}
+
+// ---- Extractor / Derived columns ----
+function addDerivedColumn(){
+  const col = columnsSelect.value;
+  if (!col) return alert('Pick a source column first');
+  const newCol = prompt('New column name', col + '_extracted');
+  if (!newCol) return;
+  // apply current extractor to all rows
+  const fnBody = extractorCode.value;
+  let fn;
+  try {
+    fn = new Function('field','row','i','tokens','regexCapture', fnBody);
+  } catch(e){ return alert('Invalid extractor JS: ' + e.message); }
+  DATA.cols.push(newCol);
+  DATA.rows = DATA.rows.map((r,i)=>{
+    const field = r[col];
+    let out;
+    try { out = fn(field, {...r}, i, tokens, regexCapture); } catch(e) { out = ''; }
+    return {...r, [newCol]: out};
+  });
+  refreshUI();
+  renderPreview();
+  log('Added derived column', newCol);
+}
+
+function applyExtractorToColumn(){
+  const col = columnsSelect.value;
+  if (!col) return alert('Pick a column to apply to');
+  const fnBody = extractorCode.value;
+  let fn;
+  try { fn = new Function('field','row','i','tokens','regexCapture', fnBody); } catch(e){ return alert('Invalid JS: ' + e.message); }
+  DATA.rows = DATA.rows.map((r,i)=>{
+    const field = r[col];
+    try { r[col] = fn(field, {...r}, i, tokens, regexCapture); } catch(e) { r[col] = r[col]; }
+    return r;
+  });
+  renderPreview();
+  log('Applied extractor to', col);
+}
+
+// helper regex capture
+function regexCapture(text, pattern, flags = 'g'){
+  try {
+    const re = new RegExp(pattern, flags);
+    const out = [];
+    let m;
+    while ((m = re.exec(text)) !== null){
+      if (m.length>1) out.push(m.slice(1));
+      else out.push(m[0]);
+      if (!flags.includes('g')) break;
+    }
+    return out;
+  } catch(e){
+    log('regexCapture error', e);
+    return [];
+  }
+}
+
+// ---- rename / apply fn to column ----
+function renameColumnAction(){
+  const from = renameFrom.value;
+  const to = renameTo.value.trim();
+  if (!from || !to) return alert('pick both names');
+  // rename in cols
+  DATA.cols = DATA.cols.map(c => c === from ? to : c);
+  DATA.rows = DATA.rows.map(r=>{
+    r[to] = r[from]; delete r[from]; return r;
+  });
+  refreshUI();
+  renderPreview();
+  log('Renamed', from, '→', to);
+}
+
+function applyFunctionToColumn(){
+  const col = colFnSelect.value;
+  if (!col) return alert('select column');
+  const src = colFnInput.value;
+  let fn;
+  try { fn = new Function('field','row','i', src); } catch(e){ return alert('Invalid JS: ' + e.message); }
+  DATA.rows = DATA.rows.map((r,i)=>{
+    try { r[col] = fn(r[col], {...r}, i);} catch(e){ r[col] = r[col]; }
+    return r;
+  });
+  renderPreview();
+  log('Applied function to', col);
+}
+
+// ---- stats ----
+statsSelect.addEventListener('change', ()=>{
+  const col = statsSelect.value;
+  if (!col){ statsEl.textContent = '—'; return; }
+  const vals = DATA.rows.map(r=>r[col]).filter(v=>v!=null && v !== '');
+  const count = vals.length;
+  const unique = new Set(vals).size;
+  let numeric = vals.filter(v=> !isNaN(Number(v))).map(Number);
+  const stats = {
+    count,
+    unique,
+    sample: vals.slice(0,5).join(', '),
+    min: numeric.length? Math.min(...numeric): 'n/a',
+    max: numeric.length? Math.max(...numeric): 'n/a',
+    mean: numeric.length? (numeric.reduce((a,b)=>a+b,0)/numeric.length).toFixed(3): 'n/a'
+  }
+  statsEl.textContent = JSON.stringify(stats, null, 2);
+});
+
+// ---- regex tester / apply ----
+function testRegex(){
+  const pat = regexInput.value;
+  const opts = regexOpts.value;
+  try {
+    const re = new RegExp(pat, opts);
+    const sample = regexSample.value;
+    const matches = [];
+    let m;
+    if (opts.includes('g')){
+      while ((m = re.exec(sample)) !== null){
+        matches.push(m.slice());
+      }
+    } else {
+      m = re.exec(sample);
+      if (m) matches.push(m.slice());
+    }
+    alert('Matches:\\n' + JSON.stringify(matches, null, 2));
+  } catch(e){ alert('Invalid regex: ' + e.message); }
+}
+
+function applyRegexToColumn(){
+  const col = regexCol.value;
+  const pat = regexInput.value;
+  const opts = regexOpts.value;
+  if (!col) return alert('choose column');
+  if (!pat) return alert('enter pattern');
+  try {
+    const re = new RegExp(pat, opts);
+    DATA.rows = DATA.rows.map((r,i)=>{
+      const val = String(r[col] || '');
+      const res = [];
+      let m;
+      if (opts.includes('g')){
+        while ((m = re.exec(val)) !== null){
+          res.push(m.length>1 ? m[1] : m[0]);
+        }
+      } else {
+        m = re.exec(val);
+        if (m) res.push(m.length>1 ? m[1] : m[0]);
+      }
+      r[col] = res.join(' | ');
+      return r;
+    });
+    renderPreview();
+    log('Applied regex to', col);
+  } catch(e){ alert('Invalid regex: ' + e.message); }
+}
+
+// ---- dedupe ----
+function dedupeData(){
+  if (!confirm('Dedupe rows by exact JSON equality?')) return;
+  const seen = new Set();
+  const out = [];
+  for (let r of DATA.rows){
+    const key = JSON.stringify(r);
+    if (!seen.has(key)){ seen.add(key); out.push(r); }
+  }
+  DATA.rows = out;
+  renderPreview();
+  log('Dedupe complete, rows:', DATA.rows.length);
+}
+
+// ---- export ----
+function exportCSV(){
+  const cols = DATA.cols || [];
+  const rows = DATA.rows || [];
+  const header = cols.map(csvEscape).join(',');
+  const lines = [header];
+  for (let r of rows){
+    lines.push(cols.map(c => csvEscape(r[c])).join(','));
+  }
+  const txt = lines.join('\\n');
+  download('export.csv', txt);
+  log('Exported CSV', rows.length, 'rows');
+}
+function exportJSON(){
+  download('export.json', JSON.stringify(DATA.rows || [], null, 2));
+  log('Exported JSON');
+}
+
+// ---- snapshots UI ----
+async function refreshSnapshots(){
+  const snaps = await listSnapshots();
+  snapshotsEl.innerHTML = '';
+  for (let s of snaps){
+    const d = document.createElement('div');
+    d.className = 'row';
+    d.style.justifyContent = 'space-between';
+    d.innerHTML = `<div class="chip">${s.name} <span class="mini">(${new Date(s.created).toLocaleString()})</span></div>`;
+    const actions = document.createElement('div');
+    const load = document.createElement('button'); load.className='small'; load.textContent='Load';
+    load.onclick = ()=>{ if (confirm('Load snapshot? Current data will be overwritten')) { DATA = s.data; refreshUI(); renderPreview(); log('Loaded snapshot', s.id); } };
+    const dl = document.createElement('button'); dl.className='small'; dl.textContent='Download';
+    dl.onclick = ()=> download(s.id + '.json', JSON.stringify(s.data,null,2));
+    const del = document.createElement('button'); del.className='small danger'; del.textContent='Delete';
+    del.onclick = async ()=>{ if (confirm('Delete snapshot?')){ const db = await openDB(); const tx = db.transaction('snapshots','readwrite'); tx.objectStore('snapshots').delete(s.id); tx.oncomplete = ()=>refreshSnapshots(); } };
+    actions.appendChild(load); actions.appendChild(dl); actions.appendChild(del);
+    d.appendChild(actions);
+    snapshotsEl.appendChild(d);
+  }
+}
+
+// ---- Rule engine ----
+// rule format: {id, ifExpr (JS string returning boolean using row), thenExpr (JS string returning modified row)}, executed in VM context.
+function addRule(existing){
+  const r = existing || {id:'r_'+Date.now(), ifExpr:'return row["status"] === "active";', thenExpr:'row["flagged"] = true; return row;'}
+  const el = document.createElement('div'); el.className='rule';
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div><strong>${r.id}</strong></div>
+      <div><button class="rule-run small">Run</button> <button class="rule-del small danger">Delete</button></div>
+    </div>
+    <div style="margin-top:6px"><div class="mini">IF (return boolean) — use 'row' variable</div><textarea class="rule-if textarea" style="height:60px">${r.ifExpr}</textarea></div>
+    <div style="margin-top:6px"><div class="mini">THEN (modify row and return it)</div><textarea class="rule-then textarea" style="height:80px">${r.thenExpr}</textarea></div>
+  `;
+  rulesContainer.appendChild(el);
+  el.querySelector('.rule-del').addEventListener('click', ()=> el.remove());
+  el.querySelector('.rule-run').addEventListener('click', ()=>{
+    const ifCode = el.querySelector('.rule-if').value;
+    const thenCode = el.querySelector('.rule-then').value;
+    runSingleRule(ifCode, thenCode);
+  });
+}
+
+function runSingleRule(ifCode, thenCode){
+  let ifFn, thenFn;
+  try { ifFn = new Function('row','i', ifCode); thenFn = new Function('row','i', thenCode); } catch(e){ return alert('Rule compile error: ' + e.message); }
+  let changed=0;
+  DATA.rows = DATA.rows.map((r,i)=>{
+    try {
+      const ok = !!ifFn({...r}, i);
+      if (ok){
+        const newRow = thenFn({...r}, i) || r;
+        changed++;
+        return {...r, ...newRow};
+      }
+      return r;
+    } catch(e){ return r; }
+  });
+  renderPreview();
+  log('Rule applied to', changed, 'rows');
+}
+
+function runRules(){
+  const nodes = Array.from(rulesContainer.querySelectorAll('.rule'));
+  let totalChanged = 0;
+  for (let node of nodes){
+    const ifCode = node.querySelector('.rule-if').value;
+    const thenCode = node.querySelector('.rule-then').value;
+    try {
+      const ifFn = new Function('row','i', ifCode);
+      const thenFn = new Function('row','i', thenCode);
+      let changed = 0;
+      DATA.rows = DATA.rows.map((r,i)=>{
+        try {
+          if (ifFn({...r}, i)){
+            changed++;
+            return {...r, ...thenFn({...r}, i)};
+          }
+          return r;
+        } catch(e){ return r; }
+      });
+      totalChanged += changed;
+    } catch(e){ log('rule error', e); }
+  }
+  renderPreview();
+  log('Rules executed, total changed:', totalChanged);
+}
+
+function resetAll(){
+  if (!confirm('Reset all loaded data?')) return;
+  DATA = {rows:[], cols:[]};
+  refreshUI();
+  renderPreview();
+  log('Reset data');
+}
+
+// ---- Example data ----
+function loadExample(){
+  const sample = `name,email,age,city,status
+Alice,alice@example.com,29,London,active
+Bob,bob.smith@example.net,34,Manchester,active
+Carol,carol99@test.org,27,Leeds,inactive
+Derek,derek23@sample.com,22,Bristol,active
+Emily,emily@test.co,40,London,inactive`;
+  parseText(sample, 'example.csv');
+  // add a starter rule
+  rulesContainer.innerHTML = '';
+  addRule({id:'r_example', ifExpr:'return row["city"] === "London";', thenExpr:'row["is_london"] = true; return row;'});
+}
+
+// ---- init ----
+refreshUI();
+renderPreview();
+log('Studio ready. Load a file or click "Load example".');
+
+// ---- safety note ----
+// This sandbox evaluates user JS for transformations and rules in the page context. Do not paste untrusted code you don't understand.
+</script>
+</body>
+</html>
