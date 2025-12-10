@@ -13,11 +13,9 @@
       margin: auto;
       background: #fafafa;
     }
-
     h1 {
       margin-bottom: 15px;
     }
-
     details {
       border: 1px solid #ccc;
       border-radius: 10px;
@@ -26,7 +24,6 @@
       padding: 5px 12px 12px 12px;
       position: relative;
     }
-
     summary {
       font-size: 1.25rem;
       font-weight: 600;
@@ -37,22 +34,18 @@
       justify-content: space-between;
       align-items: center;
     }
-
     summary::-webkit-details-marker {
       display: none;
     }
-
     .day-delete {
       font-size: 1rem;
       cursor: pointer;
       color: #999;
       margin-left: 10px;
     }
-
     .day-delete:hover {
       color: #d33;
     }
-
     .history-row {
       display: flex;
       align-items: center;
@@ -60,36 +53,30 @@
       padding: 6px 0;
       font-size: 1rem;
     }
-
     .row-left {
       display: flex;
       flex-direction: column;
       flex: 1;
     }
-
     .query {
       flex: 1;
       margin-right: 8px;
     }
-
     .time {
       font-size: 0.85rem;
       color: #777;
       white-space: nowrap;
       margin-left: 10px;
     }
-
     .entry-delete {
       color: #999;
       cursor: pointer;
       font-size: 1rem;
       margin-left: 12px;
     }
-
     .entry-delete:hover {
       color: #d33;
     }
-
     .divider {
       width: 100%;
       height: 1px;
@@ -97,26 +84,34 @@
       opacity: 0.55;
       margin: 4px 0 6px;
     }
-
     ul, li {
       list-style: none;
       padding: 0;
       margin: 0;
     }
-
     .toolbar {
       margin-bottom: 20px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
-
     button, select {
       padding: 8px 12px;
       border-radius: 6px;
       border: 1px solid #888;
       cursor: pointer;
       background: white;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 10px 20px;
+      background-color: #00cec9;
+      color: black;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease;
     }
   </style>
 </head>
@@ -137,6 +132,8 @@
   </div>
 
   <div id="lifetime"></div>
+
+  <a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
 
   <script src="/essentials/firebase-sync.js"></script>
 
