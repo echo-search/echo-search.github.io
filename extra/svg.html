@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Generative SVG Studio — Self-contained</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#0b1220; --muted:#9aa7b2; --accent:#60a5fa;
+    --glass: rgba(255,255,255,0.03);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%; margin:0; background:linear-gradient(180deg,#07101a 0%, #081624 100%); color:#e6eef6;}
+  .wrap{display:grid; grid-template-columns: 1fr 420px; gap:18px; padding:20px; max-width:1400px; margin:18px auto;}
+  header{grid-column:1/-1; display:flex; gap:12px; align-items:center;}
+  h1{font-size:18px; margin:0;}
+  .panel{background:var(--panel); border-radius:12px; padding:14px; box-shadow: 0 6px 18px rgba(0,0,0,0.6);}
+  .left{min-height:60vh; display:flex; flex-direction:column; gap:12px;}
+  .right{height:60vh; overflow:auto;}
+  label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px;}
+  input[type=text], textarea, select{width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:var(--glass); color:inherit; outline:none; box-sizing:border-box;}
+  textarea{min-height:66px; resize:vertical;}
+  .row{display:flex; gap:12px;}
+  .row > *{flex:1;}
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  button{background:transparent; border:1px solid rgba(255,255,255,0.06); color:inherit; padding:8px 10px; border-radius:8px; cursor:pointer;}
+  button.primary{background:linear-gradient(90deg,var(--accent),#7dd3fc20); border:0; color:#051029; font-weight:600;}
+  .stage{background:#06111a; border-radius:10px; padding:12px; display:flex; gap:12px; align-items:center; justify-content:center; min-height:320px;}
+  .svg-wrap{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+  pre{background:#05101a; padding:12px; border-radius:8px; overflow:auto; max-height:260px; color:#cfefff; font-size:13px;}
+  .teach{background:linear-gradient(90deg,#08202b, #071226); padding:10px; border-radius:8px; color:var(--muted); font-size:13px;}
+  .controls{display:grid; gap:8px;}
+  .small{font-size:12px; color:var(--muted);}
+  .flex-between{display:flex; justify-content:space-between; align-items:center;}
+  .badge{background:#082a3a; padding:6px 8px; border-radius:999px; font-size:12px; color:var(--muted);}
+  footer{grid-column:1/-1; color:var(--muted); font-size:13px; margin-top:6px; text-align:center;}
+  @media (max-width:980px){ .wrap{grid-template-columns:1fr; padding:12px;} .right{height:auto;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div style="display:flex;flex-direction:column;">
+      <h1>Generative SVG Studio — no-API</h1>
+      <div class="small">Type a simple prompt (e.g., "blue circle sun with rays and text"), tweak controls, then Generate.</div>
+    </div>
+    <div style="margin-left:auto" class="badge">Local • No keys</div>
+  </header>
+
+  <div class="left panel">
+    <div class="toolbar">
+      <div style="flex:1">
+        <label>Prompt</label>
+        <input id="prompt" type="text" placeholder="e.g. neon star, three circles, sun with rays, wavy pattern, spiral, logo">
+      </div>
+      <div style="width:120px">
+        <label>Size (px)</label>
+        <input id="size" type="text" value="600">
+      </div>
+      <div style="width:130px">
+        <label>Background</label>
+        <input id="bgcolor" type="text" value="#0b1220">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="panel controls">
+        <label>Generation controls</label>
+        <div style="display:flex; gap:8px;">
+          <button id="generate" class="primary">Generate SVG</button>
+          <button id="random">Randomize</button>
+          <button id="teachBtn">Teach: build step</button>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button id="copyCode">Copy SVG</button>
+          <button id="download">Download .svg</button>
+          <button id="clear">Clear</button>
+        </div>
+
+        <div style="margin-top:8px;">
+          <label>Presets</label>
+          <select id="preset">
+            <option value="">— choose preset —</option>
+            <option value="sun">Sun with rays</option>
+            <option value="neonStar">Neon star</option>
+            <option value="wave">Wavy stripes</option>
+            <option value="logo">Minimal logo (circle + text)</option>
+            <option value="spiral">Spiral</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <label>Live preview</label>
+        <div class="stage" id="previewStage">
+          <div class="svg-wrap" id="svgContainer" aria-live="polite" role="img">No SVG yet — generate one!</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="panel">
+        <div class="flex-between"><label>SVG Source</label><div class="small">Editable — changes won't auto-validate</div></div>
+        <pre id="svgSource">&lt;!-- generate something first --&gt;</pre>
+      </div>
+
+      <div class="panel teach" id="teachingPane">
+        <label>Teaching / Explanation</label>
+        <div id="teachSteps" style="margin-top:8px;">
+          <div class="small">Press <strong>Teach: build step</strong> to walk through how this SVG was created.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <aside class="right panel">
+    <label>How this generator "thinks" (quick)</label>
+    <div class="small" style="margin-bottom:10px;">
+      It's a deterministic rule-based generator: the prompt is parsed for keywords (circle, rect, star, spiral, wave, text, sun, neon), and parameters + randomness produce SVG elements. The "Teach" button shows each element with an explanation & the exact SVG code used.
+    </div>
+
+    <label>Prompt examples</label>
+    <pre class="small">
+blue circle sun with rays
+neon star 5pt glow
+three overlapping circles pastel
+wavy stripes horizontal
+logo: initials inside circle
+spiral orange
+text: HELLO, bold center
+    </pre>
+
+    <label>Tips</label>
+    <ul class="small">
+      <li>Keywords steer the generator — include shapes or styles.</li>
+      <li>Use simple adjectives: neon, pastel, bold, thin, overlapping.</li>
+      <li>The teaching pane explains transforms, fills, gradients, stroke and grouping.</li>
+    </ul>
+
+    <div style="height:10px"></div>
+    <div class="small">Built to teach — click "Teach" repeatedly to reveal each step of construction.</div>
+  </aside>
+
+  <footer>Generative SVG Studio — offline, single file. Copy or download your SVG and inspect the code to learn. </footer>
+</div>
+
+<script>
+/* Generative SVG Studio — client-side only.
+   Key features:
+   - Simple prompt parser (keywords -> element generator)
+   - Randomness but deterministic if you set seed (not exposed here)
+   - Teach mode shows step-by-step element creation and code
+*/
+
+// Utilities
+const $ = id => document.getElementById(id);
+const rand = (min,max) => Math.random()*(max-min)+min;
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const esc = s => String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+
+function makeSVG(content, size, bg){
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" preserveAspectRatio="xMidYMid meet">\n  <rect width="100%" height="100%" fill="${bg}" />\n${content}\n</svg>`;
+}
+
+// Basic shape generators — each returns {svg: string, explain: string}
+function genCircle(cx,cy,r,fill,stroke,strokeW){
+  return {
+    svg: `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${stroke||'none'}" stroke-width="${strokeW||0}"/>`,
+    explain: `A circle at (${cx},${cy}) radius ${r}. Fill: ${fill}. Stroke: ${stroke||'none'}.`
+  };
+}
+
+function genRect(x,y,w,h,rx,fill,stroke,strokeW){
+  return {
+    svg: `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx||0}" fill="${fill}" stroke="${stroke||'none'}" stroke-width="${strokeW||0}"/>`,
+    explain: `A rectangle at (${x},${y}) size ${w}×${h}. Corner radius ${rx||0}.`
+  };
+}
+
+function genLine(x1,y1,x2,y2,stroke,strokeW){
+  return { svg:`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${strokeW}"/>`,
+           explain:`A straight line from (${x1},${y1}) to (${x2},${y2}).` };
+}
+
+function genText(x,y,textStr,fill,sz,anchor){
+  return { svg:`<text x="${x}" y="${y}" fill="${fill}" font-size="${sz}" text-anchor="${anchor||'middle'}" font-family="system-ui, Arial, sans-serif">${esc(textStr)}</text>`,
+           explain:`Text "${textStr}" at (${x},${y}) size ${sz}.`};
+}
+
+// extras: star path generator
+function starPath(cx,cy, spikes, outerR, innerR){
+  let path = '', rot = Math.PI/2 * 3, step = Math.PI/spikes;
+  let x = cx, y = cy;
+  let pts = [];
+  for(let i=0;i<spikes;i++){
+    x = cx + Math.cos(rot)*outerR; y = cy + Math.sin(rot)*outerR;
+    pts.push([x,y]);
+    rot += step;
+    x = cx + Math.cos(rot)*innerR; y = cy + Math.sin(rot)*innerR;
+    pts.push([x,y]);
+    rot += step;
+  }
+  path = "M"+pts.map(p=>p.join(",")).join("L")+"Z";
+  return path;
+}
+
+function genStar(cx,cy,spikes,outerR,innerR,fill,stroke,strokeW){
+  const p = starPath(cx,cy,spikes,outerR,innerR);
+  return { svg:`<path d="${p}" fill="${fill}" stroke="${stroke||'none'}" stroke-width="${strokeW||0}"/>`,
+           explain:`A ${spikes}-point star centered at (${cx},${cy}) outer radius ${outerR}.`};
+}
+
+// spiral (approx via polyline)
+function genSpiral(cx,cy,turns, spacing, points, stroke, strokeW){
+  let d = [];
+  for(let i=0;i<points;i++){
+    let t = i/(points-1) * Math.PI*2*turns;
+    let r = spacing * t;
+    let x = cx + Math.cos(t)*r;
+    let y = cy + Math.sin(t)*r;
+    d.push(`${x},${y}`);
+  }
+  return { svg:`<polyline points="${d.join(' ')}" fill="none" stroke="${stroke}" stroke-width="${strokeW}"/>`,
+           explain:`A spiral with ${turns} turns and spacing ${spacing}.`};
+}
+
+// gradient generator (returns defs string and reference id)
+function genRadialGradient(id, colors){
+  let stops = colors.map((c,i)=>`<stop offset="${Math.round(i/(colors.length-1)*100)}%" stop-color="${c}"/>`).join("\n    ");
+  return { defs:`<radialGradient id="${id}" cx="50%" cy="50%" r="50%">${stops}</radialGradient>`, ref:`url(#${id})` };
+}
+
+function genLinearGradient(id, colors){
+  let stops = colors.map((c,i)=>`<stop offset="${Math.round(i/(colors.length-1)*100)}%" stop-color="${c}"/>`).join("\n    ");
+  return { defs:`<linearGradient id="${id}" x1="0%" x2="100%">${stops}</linearGradient>`, ref:`url(#${id})` };
+}
+
+// Parser: simple keyword mapping
+function parsePrompt(prompt){
+  const p = prompt.toLowerCase();
+  const keywords = [];
+  if(p.includes('circle')) keywords.push('circle');
+  if(p.includes('rect')||p.includes('square')) keywords.push('rect');
+  if(p.includes('star')) keywords.push('star');
+  if(p.includes('spiral')) keywords.push('spiral');
+  if(p.includes('wave')||p.includes('wavy')) keywords.push('wave');
+  if(p.includes('sun')||p.includes('rays')) keywords.push('sun');
+  if(p.includes('text')||/text:/.test(p)) keywords.push('text');
+  if(p.includes('logo')) keywords.push('logo');
+  if(p.includes('neon')) keywords.push('neon');
+  if(p.includes('pastel')) keywords.push('pastel');
+  if(p.includes('three')||p.includes('three circles')) keywords.push('three');
+  return keywords;
+}
+
+// High-level generator
+function generateFromPrompt(prompt, size, bg){
+  const kw = parsePrompt(prompt);
+  const center = size/2;
+  const defs = [];
+  const elements = [];
+  const teachings = [];
+
+  const paletteNeon = ['#0ff','#f0f','#ff0','#7df','#f77'];
+  const palettePastel = ['#ffb3ba','#baffc9','#bae1ff','#ffffba','#ffdfba'];
+  const paletteBold = ['#e63946','#f4a261','#2a9d8f','#264653'];
+
+  let palette = paletteBold;
+  if(kw.includes('neon')) palette = paletteNeon;
+  if(kw.includes('pastel')) palette = palettePastel;
+
+  // gradients for some styles
+  if(kw.includes('neon') || kw.includes('sun')){
+    const g = genRadialGradient('g1',[pick(palette), pick(palette)]);
+    defs.push(g.defs);
+    // use later as fill if needed
+  }
+  if(kw.includes('wave')){
+    const g = genLinearGradient('g2',[pick(palette), pick(palette)]);
+    defs.push(g.defs);
+  }
+
+  // Generate shapes based on keywords
+  if(kw.includes('sun')){
+    // central circle
+    const r = size*0.16;
+    const c = genCircle(center, center, r, defs.length? 'url(#g1)' : pick(palette), '#fff', 2);
+    elements.push(c.svg); teachings.push(c.explain);
+    // rays
+    const rayCount = 12;
+    for(let i=0;i<rayCount;i++){
+      const a = (i/rayCount)*Math.PI*2;
+      const x1 = center + Math.cos(a)*(r+6);
+      const y1 = center + Math.sin(a)*(r+6);
+      const x2 = center + Math.cos(a)*(r+size*0.22);
+      const y2 = center + Math.sin(a)*(r+size*0.22);
+      const ln = genLine(x1,y1,x2,y2,'rgba(255,255,255,0.8)',2);
+      elements.push(ln.svg); teachings.push(ln.explain);
+    }
+  }
+  if(kw.includes('star')){
+    const s = genStar(center, center, 5, size*0.22, size*0.1, pick(palette), '#000', 3);
+    elements.push(s.svg); teachings.push(s.explain);
+  }
+  if(kw.includes('spiral')){
+    const sp = genSpiral(center, center, 3, 0.8, 240, pick(palette), 3);
+    elements.push(sp.svg); teachings.push(sp.explain);
+  }
+  if(kw.includes('three') || (kw.includes('circle') && prompt.match(/(three|three circles)/))){
+    const offsets = [-1,0,1];
+    offsets.forEach((o,i)=>{
+      const cx = center + o * size*0.12;
+      const cy = center + (i-1)*size*0.02;
+      const r = size*0.14;
+      const c = genCircle(cx,cy,r,palettePastel[i%palettePastel.length],'rgba(0,0,0,0.06)',1);
+      elements.push(c.svg); teachings.push(c.explain);
+    });
+  } else if(kw.includes('circle') && !kw.includes('three') && !kw.includes('sun')){
+    const r = size*0.18;
+    const c = genCircle(center, center, r, pick(palette), '#000', 2);
+    elements.push(c.svg); teachings.push(c.explain);
+  }
+  if(kw.includes('rect')){
+    const w = size*0.5, h = size*0.3;
+    const rect = genRect(center-w/2, center-h/2, w, h, 18, pick(palette), '#031', 2);
+    elements.push(rect.svg); teachings.push(rect.explain);
+  }
+  if(kw.includes('wave')){
+    // create a few horizontal wave paths via sin
+    const pathLines = [];
+    for(let row=0;row<5;row++){
+      let d = `M 0 ${size*(0.2+row*0.12)}`;
+      for(let x=0;x<=size;x+=8){
+        const y = size*(0.2+row*0.12) + Math.sin((x/size + row*0.3)*Math.PI*4) * (size*0.03);
+        d += ` L ${x} ${y}`;
+      }
+      const color = `url(#g2)`;
+      pathLines.push(`<path d="${d}" fill="none" stroke="${color}" stroke-width="8" opacity="${0.6-row*0.08}"/>`);
+      teachings.push(`A wavy horizontal stroke (row ${row+1}).`);
+    }
+    elements.push(...pathLines);
+  }
+
+  if(kw.includes('logo') || prompt.startsWith('logo:')){
+    // logo = circle + initials or text
+    const initials = (prompt.split(':')[1] || 'EG').trim().split(' ').map(s=>s[0]||'').join('').slice(0,3).toUpperCase() || 'EG';
+    const r = size*0.26;
+    const outer = genCircle(center, center, r, pick(palette), 'rgba(0,0,0,0.12)', 2);
+    elements.push(outer.svg); teachings.push(outer.explain);
+    const txt = genText(center, center+10, initials, '#ffffff', Math.round(size*0.12),'middle');
+    elements.push(txt.svg); teachings.push(txt.explain);
+  }
+
+  if(kw.includes('text') || /text:/.test(prompt)){
+    const match = prompt.match(/text:\s*([^,]+)/i);
+    const content = match ? match[1].trim() : 'Hello';
+    const t = genText(center, size*0.85, content, pick(palette), Math.round(size*0.06),'middle');
+    elements.push(t.svg); teachings.push(t.explain);
+  }
+
+  // fallback: if nothing produced, make abstract composition
+  if(elements.length === 0){
+    // layered circles + one rotated rect
+    for(let i=0;i<4;i++){
+      const r = size*(0.08 + i*0.06);
+      const c = genCircle(center + (i-2)*size*0.06, center - (i-2)*size*0.04, r, pick(palette), 'none', 0);
+      elements.push(c.svg); teachings.push(c.explain);
+    }
+    const rect = genRect(center*0.1, center*1.2, size*0.8, size*0.12, 26, pick(palette),'none',0);
+    elements.push(`<g transform="rotate(-12 ${center} ${center})">${rect.svg}</g>`);
+    teachings.push('Abstract layered circles and a rotated band.');
+  }
+
+  // combine defs and elements
+  const defsBlock = defs.length ? `<defs>\n  ${defs.join('\n  ')}\n</defs>` : '';
+  const content = defsBlock + "\n  " + elements.join("\n  ");
+  return { svg: makeSVG(content, size, bg), teachings };
+}
+
+// UI wiring
+const promptEl = $('prompt'), sizeEl = $('size'), bgEl = $('bgcolor'), generateBtn = $('generate');
+const preview = $('svgContainer'), source = $('svgSource'), teachPane = $('teachSteps');
+const preset = $('preset'), randomBtn = $('random'), teachBtn = $('teachBtn');
+const copyBtn = $('copyCode'), downloadBtn = $('download'), clearBtn = $('clear');
+
+function renderSVGString(svgStr){
+  // show in preview container safely
+  preview.innerHTML = svgStr;
+  source.textContent = svgStr;
+}
+
+function doGenerate(){
+  const p = promptEl.value.trim();
+  const size = parseInt(sizeEl.value) || 600;
+  const bg = bgEl.value || '#0b1220';
+  const out = generateFromPrompt(p, size, bg);
+  renderSVGString(out.svg);
+  // teaching content saved to latest
+  window.__latest = { svg: out.svg, teachings: out.teachings };
+  teachPane.innerHTML = `<div class="small">Press "Teach: build step" to reveal steps (${out.teachings.length} steps).</div>`;
+  teachPane.dataset.step = 0;
+}
+
+generateBtn.addEventListener('click', doGenerate);
+
+randomBtn.addEventListener('click', ()=>{
+  const options = [
+    'neon star',
+    'sun with rays',
+    'three circles pastel',
+    'wavy stripes horizontal',
+    'spiral orange',
+    'logo: JS',
+    'text: Hello World',
+    'circle'
+  ];
+  promptEl.value = pick(options);
+  doGenerate();
+});
+
+preset.addEventListener('change', ()=>{
+  const v = preset.value;
+  if(!v) return;
+  const map = {
+    sun: 'sun with rays',
+    neonStar: 'neon star 5pt glow',
+    wave: 'wavy stripes',
+    logo: 'logo: EG',
+    spiral: 'spiral purple'
+  };
+  promptEl.value = map[v] || '';
+  doGenerate();
+});
+
+teachBtn.addEventListener('click', ()=>{
+  const latest = window.__latest;
+  if(!latest){ teachPane.innerHTML = '<div class="small">Generate something first.</div>'; return; }
+  let step = parseInt(teachPane.dataset.step||0);
+  if(step >= latest.teachings.length){ teachPane.dataset.step = 0; teachPane.innerHTML = `<div class="small">All steps shown. Click again to restart.</div>`; return; }
+  const msg = latest.teachings[step];
+  const codeLines = latest.svg.split('\n').slice(2).filter(Boolean).slice(0, step+1).join('\n');
+  const html = `<div style="margin-bottom:8px;"><strong>Step ${step+1}:</strong> <div class="small" style="margin-top:6px">${esc(msg)}</div></div>
+<pre class="small">${esc(codeLines)}</pre>`;
+  teachPane.innerHTML = html;
+  teachPane.dataset.step = step+1;
+});
+
+copyBtn.addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(source.textContent);
+    copyBtn.textContent = 'Copied ✓';
+    setTimeout(()=>copyBtn.textContent='Copy SVG',900);
+  }catch(e){ alert('Copy failed — you can select and copy the code manually.'); }
+});
+
+downloadBtn.addEventListener('click', ()=>{
+  const svg = source.textContent;
+  const blob = new Blob([svg], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'generated.svg'; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+});
+
+clearBtn.addEventListener('click', ()=>{
+  promptEl.value=''; preview.innerHTML='No SVG yet — generate one!'; source.textContent='<!-- generate something first -->'; teachPane.innerHTML='<div class="small">Press <strong>Teach: build step</strong> to walk through how this SVG was created.</div>'; window.__latest = null;
+});
+
+// load an initial sample
+promptEl.value = 'sun with rays';
+doGenerate();
+</script>
+</body>
+</html>
