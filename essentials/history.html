@@ -61,6 +61,7 @@
     .query {
       flex: 1;
       margin-right: 8px;
+      word-break: break-word;
     }
     .time {
       font-size: 0.85rem;
@@ -113,6 +114,11 @@
       font-weight: bold;
       transition: background 0.3s ease;
     }
+    .back-button svg {
+      vertical-align: middle;
+      margin-left: 8px;
+      fill: currentColor;
+    }
   </style>
 </head>
 
@@ -133,7 +139,7 @@
 
   <div id="lifetime"></div>
 
-  <a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
+  <a href="/" class="back-button" aria-label="Back to home">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
 
   <script src="/essentials/firebase-sync.js"></script>
 
@@ -144,14 +150,19 @@ const EXPORT_BUTTON_ID = "exportBtn";
 
 const STORAGE_KEY = "lifetimeHistory";
 
-const PAGE_EVENT = new Event("history-updated");
+/**
+ * Centralized notifier so event creation is consistent and avoids accidental reuse of the same Event object.
+ */
+function notifyHistoryUpdated() {
+  document.dispatchEvent(new Event("history-updated"));
+}
 
 function saveLifetime(query) {
   const entry = { query, time: new Date().toISOString() };
   const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   life.unshift(entry);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(life));
-  document.dispatchEvent(PAGE_EVENT);
+  notifyHistoryUpdated();
 }
 
 function formatDateHeader(dateObj) {
@@ -161,7 +172,8 @@ function formatDateHeader(dateObj) {
     d % 10 === 2 && d !== 12 ? "nd" :
     d % 10 === 3 && d !== 13 ? "rd" : "th";
 
-  return dateObj.toLocaleDateString("en-UK", {
+  // use en-GB for correct UK-style formatting
+  return dateObj.toLocaleDateString("en-GB", {
     weekday: "long",
     month: "long",
     day: "numeric"
@@ -173,6 +185,7 @@ function getLifetimeGrouped() {
   const groups = {};
 
   life.forEach((e, idx) => {
+    // handle numeric timestamps as well as ISO strings
     const d = new Date(e.time);
     const header = formatDateHeader(d);
     if (!groups[header]) groups[header] = [];
@@ -205,13 +218,14 @@ function deleteRange(range) {
   if (!confirmed) return;
 
   const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  // keep items older than the cutoff; this deletes items from the specified recent range
   const filtered = life.filter(e => {
     const t = (typeof e.time === "number") ? e.time : new Date(e.time).getTime();
     return t < ranges[range];
   });
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-  document.dispatchEvent(PAGE_EVENT);
+  notifyHistoryUpdated();
 }
 
 function exportLifetimeHistory() {
@@ -238,9 +252,10 @@ function exportLifetimeHistory() {
 
 function deleteEntry(index) {
   let life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if (index < 0 || index >= life.length) return;
   life.splice(index, 1);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(life));
-  document.dispatchEvent(PAGE_EVENT);
+  notifyHistoryUpdated();
 }
 
 function deleteEntireDay(day) {
@@ -252,7 +267,15 @@ function deleteEntireDay(day) {
   });
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-  document.dispatchEvent(PAGE_EVENT);
+  notifyHistoryUpdated();
+}
+
+function escapeHTML(s) {
+  return String(s || "").replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#39;");
 }
 
 function render() {
@@ -260,13 +283,22 @@ function render() {
   const groups = getLifetimeGrouped();
   container.innerHTML = "";
 
-  const days = Object.keys(groups);
+  // sort days by newest first using the first entry's timestamp in each group
+  let days = Object.keys(groups);
+  days = days.sort((a, b) => {
+    const ta = new Date(groups[a][0].time).getTime();
+    const tb = new Date(groups[b][0].time).getTime();
+    return tb - ta;
+  });
 
   days.forEach((day, index) => {
     const isLatest = index === 0;
 
     const details = document.createElement("details");
     if (isLatest) details.open = true;
+
+    const escapedDay = escapeHTML(day);
+    const escapedForJS = day.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 
     const entriesHTML = groups[day].map(e => {
       const time = new Date(e.time).toLocaleTimeString("en-GB", {
@@ -277,9 +309,9 @@ function render() {
 
       return `
         <div class="history-row">
-          <span class="query">${e.query}</span>
+          <span class="query">${escapeHTML(e.query)}</span>
           <span class="time">${time}</span>
-          <span class="entry-delete" onclick="deleteEntry(${e.index})"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="[...]
+          <span class="entry-delete" onclick="deleteEntry(${e.index})" title="Delete entry">&times;</span>
         </div>
         <div class="divider"></div>
       `;
@@ -287,8 +319,8 @@ function render() {
 
     details.innerHTML = `
       <summary>
-        ${day}
-        <span class="day-delete" onclick="deleteEntireDay('${day.replace(/'/g, "\\'")}'); event.stopPropagation();"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" v[...]
+        ${escapedDay}
+        <span class="day-delete" onclick="(function(ev){ ev = ev || window.event; if(ev && ev.stopPropagation) ev.stopPropagation(); deleteEntireDay('${escapedForJS}'); })(event);" title="Delete all entries for this day">&times;</span>
       </summary>
       ${entriesHTML}
     `;
@@ -304,13 +336,17 @@ const exportBtn = document.getElementById(EXPORT_BUTTON_ID);
 document.addEventListener("history-updated", render);
 render();
 
-deleteRangeSel.addEventListener("change", () => {
-  if (!deleteRangeSel.value) return;
-  deleteRange(deleteRangeSel.value);
-  deleteRangeSel.value = "";
-});
+if (deleteRangeSel) {
+  deleteRangeSel.addEventListener("change", () => {
+    if (!deleteRangeSel.value) return;
+    deleteRange(deleteRangeSel.value);
+    deleteRangeSel.value = "";
+  });
+}
 
-exportBtn.addEventListener("click", exportLifetimeHistory);
+if (exportBtn) {
+  exportBtn.addEventListener("click", exportLifetimeHistory);
+}
   </script>
 </body>
 </html>
