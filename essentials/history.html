@@ -141,18 +141,12 @@
 
   <a href="/" class="back-button" aria-label="Back to home">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
 
-  <script src="/essentials/firebase-sync.js"></script>
-
   <script>
 const CONTAINER_ID = "lifetime";
 const DELETE_RANGE_SELECT_ID = "deleteRange";
 const EXPORT_BUTTON_ID = "exportBtn";
-
 const STORAGE_KEY = "lifetimeHistory";
 
-/**
- * Centralized notifier so event creation is consistent and avoids accidental reuse of the same Event object.
- */
 function notifyHistoryUpdated() {
   document.dispatchEvent(new Event("history-updated"));
 }
@@ -172,7 +166,6 @@ function formatDateHeader(dateObj) {
     d % 10 === 2 && d !== 12 ? "nd" :
     d % 10 === 3 && d !== 13 ? "rd" : "th";
 
-  // use en-GB for correct UK-style formatting
   return dateObj.toLocaleDateString("en-GB", {
     weekday: "long",
     month: "long",
@@ -185,7 +178,6 @@ function getLifetimeGrouped() {
   const groups = {};
 
   life.forEach((e, idx) => {
-    // handle numeric timestamps as well as ISO strings
     const d = new Date(e.time);
     const header = formatDateHeader(d);
     if (!groups[header]) groups[header] = [];
@@ -218,7 +210,6 @@ function deleteRange(range) {
   if (!confirmed) return;
 
   const life = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  // keep items older than the cutoff; this deletes items from the specified recent range
   const filtered = life.filter(e => {
     const t = (typeof e.time === "number") ? e.time : new Date(e.time).getTime();
     return t < ranges[range];
@@ -283,7 +274,6 @@ function render() {
   const groups = getLifetimeGrouped();
   container.innerHTML = "";
 
-  // sort days by newest first using the first entry's timestamp in each group
   let days = Object.keys(groups);
   days = days.sort((a, b) => {
     const ta = new Date(groups[a][0].time).getTime();
