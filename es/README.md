@@ -9,18 +9,18 @@ Bienvenido a **EchoSearch**, una plataforma innovadora de búsqueda web diseñad
 La URL oficial de EchoSearch es: https://echo-search.github.io/. Al visitar esta URL, los usuarios pueden acceder instantáneamente a la interfaz de búsqueda desde cualquier dispositivo, ya sea un ordenador de escritorio, una tableta o un teléfono móvil. La interfaz es totalmente responsiva y está optimizada para funcionar perfectamente en todos los tamaños de pantalla, garantizando una experiencia consistente y fiable para todos.
 
 ## Tabla de contenidos
-- Introduction
-- Features
-- Version History
-- Customization
-- FAQ
-- Performance
-- Contributing
-- License
-- Minimalism
-- Conclusion
+- [Introducción](#introducción)
+- [Características](#características)
+- [Historial de Versiones](#historial-de-versiones)
+- [Personalización](#personalización)
+- [Preguntas Frecuentes](#preguntas-frecuentes)
+- [Rendimiento](#rendimiento)
+- [Contribuir](#contribuir)
+- [Licencia](#licencia)
+- [Minimalismo](#minimalismo)
+- [Conclusión](#conclusión)
 
-## Introduction
+## Introducción
 EchoSearch fue desarrollado para abordar las limitaciones de los motores de búsqueda convencionales. Muchas plataformas de búsqueda tradicionales están sobrecargadas de anuncios, ventanas emergentes y funciones innecesarias que distraen a los usuarios y ralentizan su experiencia de búsqueda. EchoSearch elimina estas distracciones y se centra por completo en ofrecer resultados relevantes de forma rápida. Este enfoque permite a los usuarios concentrarse en la información que necesitan sin interrupciones ni retrasos.
 
 Otra razón clave por la que se desarrolló EchoSearch fue ofrecer múltiples funciones que se ajusten a tus preferencias. Los motores de búsqueda tradicionales tienen un modo claro/oscuro (activar el modo oscuro en ellos lleva mucho tiempo y es muy complicado), pero EchoSearch cuenta con 10 temas que incluyen:
@@ -41,7 +41,7 @@ La arquitectura de EchoSearch ha sido cuidadosamente optimizada para equilibrar 
 
 El rendimiento y la optimización han sido fundamentales en el desarrollo de EchoSearch. Cada imagen, archivo CSS y recurso JavaScript está optimizado para reducir la latencia y mejorar los tiempos de carga. Estas optimizaciones proporcionan una excelente experiencia de usuario independientemente de la velocidad de internet o la capacidad del dispositivo.
 
-## Features
+## Características
 EchoSearch incluye una amplia gama de funciones diseñadas para mejorar la usabilidad, el rendimiento y la satisfacción del usuario. A continuación se muestra una descripción detallada de las funciones principales:
 
 - **Interfaz minimalista:** La interfaz es limpia y sin distracciones, lo que permite a los usuarios centrarse completamente en los resultados de búsqueda sin desorden.
@@ -58,7 +58,7 @@ Si quieres ir más allá, puedes hacernos saber tus ideas y también puedes soli
 
 Si no quieres editar pero sí sugerir ideas, publica un issue en la pestaña de issues del repositorio de GitHub y describe lo que quieres. De verdad queremos escucharte, ya que estamos atrapados en nuestras propias ideas y no conocemos la reacción del público ante nuestro pensamiento 😆.
 
-## Version History
+## Historial de Versiones
 Mantener un historial de versiones es fundamental para comprender el crecimiento y la evolución de EchoSearch. Cada actualización incluye nuevas funciones, mejoras de rendimiento, correcciones de errores y otros refinamientos. Los usuarios pueden revisar el historial de versiones en https://echo-search.github.io/Articles/version-history.html para seguir los cambios y entender cómo ha evolucionado la plataforma a lo largo del tiempo. El historial de versiones incluye:
 - Notas de lanzamiento que describen funciones añadidas o mejoras.
 - Documentación de correcciones de errores y mejoras de rendimiento.
@@ -68,7 +68,7 @@ Este seguimiento estructurado de versiones garantiza transparencia y permite que
 
 Se actualiza regularmente con nuevas ideas y quizás tus ideas también se incluyan (si nos das una idea y decidimos incluirla como una actualización futura, mencionaremos tu nombre para que tu contribución sea reconocida).
 
-## Customization
+## Personalización
 EchoSearch está diseñado para ser altamente personalizable. Los usuarios pueden elegir las imágenes de fondo que deseen para crear un entorno de búsqueda personalizado. Por ejemplo, EchoSearch utiliza variables CSS para definir colores de fondo y texto:
 
     body {
@@ -79,9 +79,9 @@ EchoSearch está diseñado para ser altamente personalizable. Los usuarios puede
       background-size: cover;
     }
 
-Los desarrolladores y usuarios avanzados también pueden reportar issues para mejoras en JavaScript que automaticen flujos de trabajo, integren APIs externas para tener todo-en-uno, o añadan funcionalidades avanzadas adaptadas a casos de uso específicos. Este nivel de personalización garantiza que EchoSearch pueda adaptarse tanto a requisitos personales como organizativos, proporcionando una plataforma versátil para una amplia gama de usuarios.
+Los desarrolladores y usuarios avanzados también pueden reportar issues para mejoras en JavaScript que automaticen flujos de trabajo, integren APIs externas para tener todo-en-uno, o añadan funcionalidades avanzadas adaptadas a casos de uso específicos. Este nivel de personalización garantiza que EchoSearch pueda adaptarse tanto a requisitos personales como organizativos, proporcionando una plataforma versátil para una amplia gama de usuarios
 
-## Frequently Asked Questions (FAQ)
+## Preguntas Frecuentes
 
 ### ¿EchoSearch es gratuito?
 Sí, EchoSearch es completamente gratuito. Los usuarios pueden reportar, contribuir y tomar ideas, lo que demuestra que es accesible para todos.
@@ -103,7 +103,7 @@ No. No se te permite afirmar que EchoSearch es tuyo. Reclamamos prueba completa 
 
 Lo que sí puedes hacer es ponerlo en un repositorio diferente e incluir el crédito correspondiente. Estamos licenciados bajo MIT (ver la sección License) para facilitar su uso a nivel mundial.
 
-## Performance
+## Rendimiento
 El rendimiento es un pilar fundamental de EchoSearch. La plataforma ha sido meticulosamente optimizada para garantizar tiempos de carga extremadamente rápidos, interacciones fluidas y una funcionalidad de búsqueda fiable. Estas optimizaciones de rendimiento incluyen:
 - **Recursos que no bloquean el renderizado minimizados:** CSS y JavaScript están optimizados para evitar retrasos en la representación de la interfaz.
 - **Imágenes optimizadas:** Todas las imágenes de fondo y de la interfaz están comprimidas y escaladas para mantener la calidad reduciendo el tamaño del archivo.
@@ -112,7 +112,7 @@ El rendimiento es un pilar fundamental de EchoSearch. La plataforma ha sido meti
 
 Además, EchoSearch está diseñado para funcionar de manera fiable en conexiones de red más lentas sin comprometer la funcionalidad. Los usuarios en redes móviles, Wi‑Fi público o entornos de bajo ancho de banda experimentarán la misma funcionalidad de búsqueda rápida y responsiva que aquellos con conexiones de alta velocidad.
 
-## Contributing
+## Contribuir
 EchoSearch es un proyecto de código abierto y prospera gracias a la participación de la comunidad. Cualquiera puede contribuir, ya sea corrigiendo errores, proponiendo funciones, mejorando el diseño o la documentación. Las contribuciones ayudan a mejorar la plataforma y a garantizar que continúe satisfaciendo las necesidades de una amplia variedad de usuarios.
 
 Guía para contribuir:
@@ -126,15 +126,15 @@ Guía para contribuir:
 
 Todos los pull requests se revisan para garantizar calidad del código, mantenibilidad y alineación con los principios de diseño del proyecto. Se anima a los colaboradores a proporcionar documentación para sus cambios y a seguir las mejores prácticas de codificación y accesibilidad.
 
-## License
+## Licencia
 Este proyecto, **EchoSearch**, está licenciado bajo la Licencia MIT. La Licencia MIT es ampliamente reconocida como una de las licencias de código abierto más permisivas y amigables para desarrolladores, permitiendo una amplia libertad para usar, modificar y redistribuir software manteniendo la atribución al autor original.
 
-## Minimalism
+## Minimalismo
 Uno de los principios definitorios detrás de EchoSearch es su compromiso deliberado con el **minimalismo en HTML**. Desde el principio, el objetivo no fue solo crear otra interfaz de búsqueda, sino crear una que encarne claridad, velocidad y simplicidad sin sacrificar la usabilidad. El HTML a menudo se da por sentado, con desarrolladores que rápidamente pasan a frameworks más pesados, librerías y complementos. Sin embargo, EchoSearch se construyó sobre la creencia de que un HTML bien estructurado y minimalista puede lograr mucho más de lo que la mayoría de la gente supone.
 
 En resumen, la filosofía de HTML minimalista detrás de EchoSearch garantiza que siga siendo rápido, accesible, mantenible y escalable. Al centrarse en “menos es más”, el proyecto ofrece una experiencia pura y sin distracciones que pone al usuario —y su búsqueda— en el centro de todo.
 
-## Conclusion
+## Conclusión
 EchoSearch es más que un motor de búsqueda; es una plataforma moderna de búsqueda de alto rendimiento que enfatiza la simplicidad, la usabilidad y la fiabilidad. La plataforma ofrece búsqueda por voz, botones de acceso rápido, modo oscuro, historial de versiones y amplias opciones de personalización, todo optimizado para ofrecer una experiencia de usuario inigualable. Al mantener una puntuación de PageSpeed Insight de 99 y centrarse en privacidad, accesibilidad y capacidad de respuesta, EchoSearch garantiza que los usuarios puedan buscar en la web de forma rápida, eficiente y segura.
 
 Visita EchoSearch hoy en https://echo-search.github.io/ para experimentar el futuro de la búsqueda web, donde el rendimiento, la privacidad y la facilidad de uso se unen en una interfaz elegante y optimizada.
