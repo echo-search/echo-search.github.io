@@ -138,3 +138,5 @@ En resumen, la filosofía de HTML minimalista detrás de EchoSearch garantiza qu
 EchoSearch es más que un motor de búsqueda; es una plataforma moderna de búsqueda de alto rendimiento que enfatiza la simplicidad, la usabilidad y la fiabilidad. La plataforma ofrece búsqueda por voz, botones de acceso rápido, modo oscuro, historial de versiones y amplias opciones de personalización, todo optimizado para ofrecer una experiencia de usuario inigualable. Al mantener una puntuación de PageSpeed Insight de 99 y centrarse en privacidad, accesibilidad y capacidad de respuesta, EchoSearch garantiza que los usuarios puedan buscar en la web de forma rápida, eficiente y segura.
 
 Visita EchoSearch hoy en https://echo-search.github.io/ para experimentar el futuro de la búsqueda web, donde el rendimiento, la privacidad y la facilidad de uso se unen en una interfaz elegante y optimizada.
+
+This folder is for EchoSearch in Spanish.
