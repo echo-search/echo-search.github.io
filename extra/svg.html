@@ -17,7 +17,7 @@
   }
   button {
     padding: 10px 14px;
-    margin-top: 10px;
+    margin: 6px 4px 0 0;
     cursor: pointer;
   }
   canvas { display: none; }
@@ -26,13 +26,17 @@
 <body>
 
 <h2>High-Quality Color Image → SVG</h2>
-<p>Color-aware vector tracing. Clean paths. Girl Gang standards.</p>
+<p>Trace it. Copy it. Clear it. Girl Gang workflow.</p>
 
 <input type="file" id="file" accept="image/*">
 <br>
+
 <button onclick="convert()">Convert to SVG</button>
+<button onclick="copySVG()">Copy SVG</button>
+<button onclick="clearAll()">Clear</button>
 
 <canvas id="canvas"></canvas>
+
 <textarea id="output" placeholder="SVG code appears here..."></textarea>
 
 <script>
@@ -52,9 +56,8 @@ function convert() {
 
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
-    // --- Color Quantization (simple but effective)
     const colors = {};
-    const step = 32; // smaller = more colors
+    const step = 32;
 
     function quant(v) {
       return Math.round(v / step) * step;
@@ -69,21 +72,17 @@ function convert() {
       colors[key].push(i / 4);
     }
 
+    const w = canvas.width;
     let svgPaths = [];
 
-    const w = canvas.width;
-
     for (const color in colors) {
-      let path = "";
+      let d = "";
       colors[color].forEach(p => {
         const x = p % w;
         const y = Math.floor(p / w);
-        path += `M${x} ${y}h1v1h-1z `;
+        d += `M${x} ${y}h1v1h-1z `;
       });
-
-      svgPaths.push(
-        `<path d="${path}" fill="rgb(${color})"/>`
-      );
+      svgPaths.push(`<path d="${d}" fill="rgb(${color})"/>`);
     }
 
     const svg = `
@@ -96,6 +95,20 @@ function convert() {
   };
 
   img.src = URL.createObjectURL(file);
+}
+
+function copySVG() {
+  const text = document.getElementById("output");
+  if (!text.value) return alert("Nothing to copy.");
+  text.select();
+  text.setSelectionRange(0, 999999);
+  navigator.clipboard.writeText(text.value);
+  alert("SVG copied ✔");
+}
+
+function clearAll() {
+  document.getElementById("output").value = "";
+  document.getElementById("file").value = "";
 }
 </script>
 
