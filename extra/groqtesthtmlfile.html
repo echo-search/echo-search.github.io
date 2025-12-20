@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,16 +7,37 @@ html
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
         
         .container {
-            width: 80%;
+            max-width: 400px;
             margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
             text-align: center;
+            margin-bottom: 20px;
         }
         
         .form-group {
             margin-bottom: 20px;
+        }
+        
+        .label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         
         .button {
@@ -32,18 +52,32 @@ html
         .button:hover {
             background-color: #3e8e41;
         }
+        
+        .output {
+            margin-top: 20px;
+        }
+        
+        .copy-button {
+            display: none;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Image to Base64 Converter</h2>
+        <div class="header">
+            <h2>Image to Base64 Converter</h2>
+        </div>
         <form>
             <div class="form-group">
-                <input type="file" id="image" accept="image/*">
+                <label for="image" class="label">Select an image:</label>
+                <input type="file" id="image" accept="image/*" class="input-field">
             </div>
             <button class="button" id="convert-button">Convert to Base64</button>
-            <div id="base64-output" style="margin-top: 20px;"></div>
-            <button class="button" id="copy-button" style="display: none;">Copy to Clipboard</button>
+            <div class="output">
+                <div id="base64-output"></div>
+                <button class="button copy-button" id="copy-button">Copy to Clipboard</button>
+            </div>
         </form>
     </div>
     <script>
