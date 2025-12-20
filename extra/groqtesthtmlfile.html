@@ -1,0 +1,81 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Base64 Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Image to Base64 Converter</h2>
+        <form>
+            <div class="form-group">
+                <input type="file" id="image" accept="image/*">
+            </div>
+            <button class="button" id="convert-button">Convert to Base64</button>
+            <div id="base64-output" style="margin-top: 20px;"></div>
+            <button class="button" id="copy-button" style="display: none;">Copy to Clipboard</button>
+        </form>
+    </div>
+    <script>
+        const imageInput = document.getElementById('image');
+        const convertButton = document.getElementById('convert-button');
+        const base64Output = document.getElementById('base64-output');
+        const copyButton = document.getElementById('copy-button');
+
+        imageInput.onchange = function() {
+            const file = imageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const base64String = reader.result;
+                    base64Output.innerText = `Base64 String: ${base64String}`;
+                    convertButton.onclick = null;
+                    convertButton.disabled = true;
+                    convertButton.style.background = 'gray';
+                    convertButton.style.cursor = 'not-allowed';
+                    copyButton.style.display = 'block';
+                    copyButton.onclick = function() {
+                        navigator.clipboard.writeText(base64String);
+                        alert('Base64 string copied to clipboard!');
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        convertButton.onclick = function() {
+            imageInput.onchange();
+        };
+    </script>
+</body>
+</html>
