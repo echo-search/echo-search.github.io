@@ -164,7 +164,7 @@ The license also encourages responsible attribution. Preserving the copyright no
 ### Summary
 In summary, the MIT License provides freedom and flexibility while safeguarding credit for the author. It allows developers to use, modify, redistribute, and integrate EchoSearch with minimal restrictions. By choosing MIT, EchoSearch invites collaboration, experimentation, and innovation while ensuring that anyone who builds upon the project respects the original creator’s contributions.
 
-For the full legal text and official terms, please see the [license.txt] (blob/main/license.txt) file.
+For the full legal text and official terms, please see the [license.txt](blob/main/license.txt) file.
 
 ## Minimalism
 One of the defining principles behind EchoSearch is its deliberate commitment to **minimalism in HTML**. From the very beginning, the goal was not just to create another search interface, but to create one that embodies clarity, speed, and simplicity without sacrificing usability. HTML is often taken for granted, with developers quickly moving on to heavier frameworks, libraries, and add-ons. However, EchoSearch was built on the belief that well-structured, minimal HTML can accomplish far more than most people assume. By stripping the code down to its essentials, every tag in the document has a clear purpose. This ensures that the foundation of the project is lean, easy to follow, and completely free of unnecessary clutter.
