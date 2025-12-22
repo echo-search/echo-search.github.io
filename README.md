@@ -35,7 +35,7 @@ Another key reason EchoSearch was developed was to have multiple features that m
 * Forest
 * Floral
 
-All with their own colours and background.
+All with unique colours and background.
 
 The architecture of EchoSearch has been carefully optimized to balance minimalism with powerful functionality. Every element, from the search bar to the quick-access buttons, has been designed to ensure simplicity without sacrificing utility. Users can perform searches using text input or voice commands, access popular websites instantly through customizable buttons, and utilize dark mode for low-light conditions.
 
