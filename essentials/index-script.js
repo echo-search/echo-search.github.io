@@ -419,59 +419,6 @@ window.__gcse = {
         searchBtn.click();
       }
     });
-    (function () {
-    const observer = new MutationObserver(() => {
-    document.querySelectorAll('.gsc-webResult').forEach(result => {
-      // prevent double-processing
-      if (result.dataset.googleStyled) return;
-      result.dataset.googleStyled = "true";
-
-      const titleLink = result.querySelector('.gs-title a');
-      const snippetEl = result.querySelector('.gs-snippet');
-      const urlEl = result.querySelector('.gs-visibleUrl');
-
-      if (!titleLink || !urlEl) return;
-
-      let domain;
-      try {
-        domain = new URL(titleLink.href).hostname.replace(/^www\./, '');
-      } catch {
-        return;
-      }
-
-      // build Google-style visual block
-      const googleBlock = document.createElement('div');
-      googleBlock.className = 'google-like-result';
-
-      googleBlock.innerHTML = `
-        <div class="google-site-line">
-          <img src="https://${domain}/favicon.ico" class="google-favicon"
-               onerror="this.remove()">
-          <span class="google-site-name">${domain}</span>
-        </div>
-
-        <a class="google-title" href="${titleLink.href}">
-          ${titleLink.textContent}
-        </a>
-
-        <div class="google-snippet">
-          ${snippetEl ? snippetEl.innerHTML : ''}
-        </div>
-      `;
-
-      // 🔑 PRESERVE ORDER: insert directly after original result
-      result.parentNode.insertBefore(googleBlock, result.nextSibling);
-
-      // hide original CSE result (do NOT remove)
-      result.style.display = 'none';
-    });
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-})();
   }
 };
 
