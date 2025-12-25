@@ -533,6 +533,7 @@ searchBtn.addEventListener("click", function() {
 
 let currentFocus = -1;
 
+// 1. Handle the suggestions from Google
 window.handleGoogleSuggestions = function(data) {
   const matches = data[1]; 
   suggestionsBox.innerHTML = '';
@@ -548,6 +549,7 @@ window.handleGoogleSuggestions = function(data) {
     li.textContent = match;
     li.setAttribute('data-index', index);
     
+    // Auto-search on click
     li.addEventListener('click', () => {
       searchInput.value = match;      
       suggestionsBox.style.display = 'none'; 
@@ -560,8 +562,23 @@ window.handleGoogleSuggestions = function(data) {
   suggestionsBox.style.display = 'block';
 };
 
+// 2. The Input Listener (Handles Suggestions AND the 67 Feature)
 searchInput.addEventListener('input', () => {
   const query = searchInput.value.trim();
+
+  // --- 67 EASTER EGG DETECTION ---
+  try {
+    const compact = searchInput.value.replace(/\s+/g, '');
+    if (compact === '67') {
+      if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
+        play67Effect();
+        window.__last67Played = Date.now();
+      }
+    }
+  } catch (e) {
+    console.error('67 detection error', e);
+  }
+  // -------------------------------
   
   if (!query) {
     suggestionsBox.innerHTML = '';
@@ -569,6 +586,7 @@ searchInput.addEventListener('input', () => {
     return;
   }
   
+  // JSONP to bypass CORS
   const oldScript = document.getElementById('googleSuggestScript');
   if (oldScript) oldScript.remove();
   
@@ -578,6 +596,7 @@ searchInput.addEventListener('input', () => {
   document.body.appendChild(script);
 });
 
+// 3. Keyboard Navigation
 searchInput.addEventListener('keydown', function(e) {
   const items = suggestionsBox.getElementsByTagName('li');
   if (!items.length) return;
@@ -612,30 +631,14 @@ function updateActive(items) {
   searchInput.value = items[currentFocus].textContent;
 }
 
+// 4. Click Outside to Close
 document.addEventListener('click', e => {
   if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
     suggestionsBox.style.display = 'none';
   }
 });
 
-  try {
-    const compact = searchInput.value.replace(/\s+/g, '');
-    if (compact === '67') {
-      if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
-        play67Effect();
-        window.__last67Played = Date.now();
-      }
-    }
-  } catch (e) {
-    console.error('67 detection error', e);
-  }
-});
-
-document.addEventListener('click', e => {
-  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-    suggestionsBox.style.display = 'none';
-  }
-});
+// (End of replacement block - next line in your file should be 'let history = ...')
 
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
