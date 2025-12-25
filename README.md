@@ -152,7 +152,7 @@ While the MIT License is extremely permissive, there are a few key limitations t
 * ❌ **Preservation of Attribution:** You must retain the copyright notice and license text in all copies or substantial portions of the software. While you may modify and redistribute the project, removing attribution is prohibited.
 
 ### Why MIT Was Chosen
-The MIT License was selected for EchoSearch because it aligns perfectly with the goals of the project: simplicity, transparency, and accessibility. Many search engines and web tools are closed-source or heavily restricted, making it difficult for learners and developers to explore how they work. EchoSearch flips this model by being open, minimal, and adaptable. However, this will change soon. See the [https://echo-search.github.io/articles/open-source-transition](EchoSearch Open Source Policy Update) page to learn more.
+The MIT License was selected for EchoSearch because it aligns perfectly with the goals of the project: simplicity, transparency, and accessibility. Many search engines and web tools are closed-source or heavily restricted, making it difficult for learners and developers to explore how they work. EchoSearch flips this model by being open, minimal, and adaptable. However, this will change soon. See the [EchoSearch Open Source Policy Update](https://echo-search.github.io/articles/open-source-transition) page to learn more.
 
 This licensing choice ensures that anyone—from students exploring coding concepts to professionals integrating the project into larger platforms—can freely engage with the code without legal complications. The MIT License removes friction while still protecting the intellectual contributions of the original author.
 
