@@ -533,9 +533,10 @@ searchBtn.addEventListener("click", function() {
 
 let allSuggestions = [];
 
-fetch('/essentials/suggestions.json')
+fetch('https://suggestqueries.google.com/complete/search?client=firefox&q=${query}')
   .then(res => res.json())
-  .then(data => { allSuggestions = data; })
+  .then(data => { 
+    const suggestions = showSuggestions(data[1]) })
   .catch(err => console.error('Error loading suggestions:', err));
 
 searchInput.addEventListener('input', () => {
