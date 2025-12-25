@@ -531,39 +531,92 @@ searchBtn.addEventListener("click", function() {
   }
 });
 
-let allSuggestions = [];
+let currentFocus = -1;
 
-fetch('https://suggestqueries.google.com/complete/search?client=firefox&q=${query}')
-  .then(res => res.json())
-  .then(data => { 
-    const suggestions = showSuggestions(data[1]) })
-  .catch(err => console.error('Error loading suggestions:', err));
-
-searchInput.addEventListener('input', () => {
-  const query = searchInput.value.trim().toLowerCase();
+window.handleGoogleSuggestions = function(data) {
+  const matches = data[1]; 
   suggestionsBox.innerHTML = '';
-
-  if (!query) {
+  currentFocus = -1;
+  
+  if (!matches || matches.length === 0) {
     suggestionsBox.style.display = 'none';
     return;
   }
-
-  const matches = allSuggestions.filter(item =>
-    item.toLowerCase().includes(query)
-  ).slice(0, 10);
-
-  matches.forEach(match => {
+  
+  matches.forEach((match, index) => {
     const li = document.createElement('li');
     li.textContent = match;
+    li.setAttribute('data-index', index);
+    
     li.addEventListener('click', () => {
-      searchInput.value = match;
-      suggestionsBox.style.display = 'none';
+      searchInput.value = match;      
+      suggestionsBox.style.display = 'none'; 
       doSearch(match);
     });
+    
     suggestionsBox.appendChild(li);
   });
+  
+  suggestionsBox.style.display = 'block';
+};
 
-  suggestionsBox.style.display = matches.length ? 'block' : 'none';
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim();
+  
+  if (!query) {
+    suggestionsBox.innerHTML = '';
+    suggestionsBox.style.display = 'none';
+    return;
+  }
+  
+  const oldScript = document.getElementById('googleSuggestScript');
+  if (oldScript) oldScript.remove();
+  
+  const script = document.createElement('script');
+  script.id = 'googleSuggestScript';
+  script.src = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}&callback=handleGoogleSuggestions`;
+  document.body.appendChild(script);
+});
+
+searchInput.addEventListener('keydown', function(e) {
+  const items = suggestionsBox.getElementsByTagName('li');
+  if (!items.length) return;
+  
+  if (e.key === "ArrowDown") {
+    currentFocus++;
+    updateActive(items);
+    e.preventDefault();
+  } else if (e.key === "ArrowUp") {
+    currentFocus--;
+    updateActive(items);
+    e.preventDefault();
+  } else if (e.key === "Enter") {
+    if (currentFocus > -1) {
+      e.preventDefault();
+      if (items[currentFocus]) items[currentFocus].click();
+    }
+  }
+});
+
+function updateActive(items) {
+  if (!items) return false;
+  
+  for (let i = 0; i < items.length; i++) {
+    items[i].classList.remove("active");
+  }
+  
+  if (currentFocus >= items.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = items.length - 1;
+  
+  items[currentFocus].classList.add("active");
+  searchInput.value = items[currentFocus].textContent;
+}
+
+document.addEventListener('click', e => {
+  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+    suggestionsBox.style.display = 'none';
+  }
+});
 
   try {
     const compact = searchInput.value.replace(/\s+/g, '');
