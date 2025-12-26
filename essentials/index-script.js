@@ -145,6 +145,7 @@ function domainSearchHandler(query) {
   return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
 }
 
+// Theme handling
 (function () {
   if (!themeSelect) return;
 
@@ -209,24 +210,18 @@ function domainSearchHandler(query) {
 
   function applyPreset(name) {
     const presetValues = presets.map(p => p.value);
-    // remove any preset/variant classes
     presetValues.forEach(cls => document.body.classList.remove(cls));
-    // remove any CSS variables we might have set previously
     document.documentElement.style.removeProperty('--bg');
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--hover');
     document.documentElement.style.removeProperty('--text');
     document.body.style.backgroundImage = '';
 
-    // Special-case the 'dark' entry: the CSS expects a "dark-mode" modifier
     if (name === 'dark') {
-      // turn on dark-mode and ensure there's a variant class (use 'default' as the base variant)
       document.body.classList.add('dark-mode');
-      // ensure a variant class exists; fallback to 'default'
       const variant = 'default';
       document.body.classList.add(variant);
     } else {
-      // normal preset: ensure dark-mode is off and add the chosen preset class
       document.body.classList.remove('dark-mode');
       document.body.classList.add(name);
     }
@@ -356,11 +351,13 @@ function domainSearchHandler(query) {
 
 })();
 
+// Surprise button
 surpriseBtn.addEventListener("click", () => {
   const fact = facts[Math.floor(Math.random() * facts.length)];
   alert(fact);
 });
 
+// Voice recognition
 let recognition;
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -380,18 +377,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     searchInput.value = transcript;
-  
-    const query = searchInput.value.trim();
-    if (query) {
-      const searchElement = google.search.cse.element.getElement("searchbox1");
-      if (searchElement) {
-        searchElement.execute(query);
-        window.scrollTo({ 
-          top: gcseResults.offsetTop, 
-          behavior: "smooth" 
-        });
-      }
-    }
+    doSearch(transcript);
   };
 
   voiceBtn.addEventListener("click", () => {
@@ -402,6 +388,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   voiceBtn.title = "Voice input not supported in this browser.";
 }
 
+// Google CSE callback
 window.__gcse = {
   callback: function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -422,6 +409,7 @@ window.__gcse = {
   }
 };
 
+// Math conversion handler
 function handleMathConversion(query) {
   query = query.trim();
 
@@ -460,6 +448,7 @@ function handleMathConversion(query) {
   return null;
 }
 
+// Dictionary search handler
 async function handleDictionarySearch(query) {
   const lower = query.toLowerCase().trim();
   const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
@@ -500,172 +489,7 @@ async function handleDictionarySearch(query) {
   return "No definition found.";
 }
 
-searchBtn.addEventListener("click", function() {
-  const query = searchInput.value.trim();
-  if(!query) return;
-
-  handleDictionarySearch(query).then(def => {
-    if (def) {
-      alert(def);
-      return;
-    }
-  });
-
-  const result = handleMathConversion(query);
-  if(result) {
-    alert(result);
-  } else {
-    if (/^[\w.-]+\.[a-z]{2,}$/i.test(query)) {
-      let url = query;
-      if (!/^https?:\/\//i.test(url)) {
-        url = "https://" + url;
-      }
-      setTimeout(() => openResult(url), 0);
-      return;
-    }
-    const searchElement = google.search.cse.element.getElement("searchbox1");
-    if(searchElement) {
-      searchElement.execute(query);
-      window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
-    }
-  }
-});
-
-let currentFocus = -1;
-
-// 1. Handle the suggestions from Google
-window.handleGoogleSuggestions = function(data) {
-  const matches = data[1]; 
-  suggestionsBox.innerHTML = '';
-  currentFocus = -1;
-  
-  if (!matches || matches.length === 0) {
-    suggestionsBox.style.display = 'none';
-    return;
-  }
-  
-  matches.forEach((match, index) => {
-    const li = document.createElement('li');
-    li.textContent = match;
-    li.setAttribute('data-index', index);
-    
-    // Auto-search on click
-    li.addEventListener('click', () => {
-      searchInput.value = match;      
-      suggestionsBox.style.display = 'none'; 
-      doSearch(match);
-    });
-    
-    suggestionsBox.appendChild(li);
-  });
-  
-  suggestionsBox.style.display = 'block';
-};
-
-// 2. The Input Listener (Handles Suggestions AND the 67 Feature)
-searchInput.addEventListener('input', () => {
-  const query = searchInput.value.trim();
-
-  // --- 67 EASTER EGG DETECTION ---
-  try {
-    const compact = searchInput.value.replace(/\s+/g, '');
-    if (compact === '67') {
-      if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
-        play67Effect();
-        window.__last67Played = Date.now();
-      }
-    }
-  } catch (e) {
-    console.error('67 detection error', e);
-  }
-  // -------------------------------
-  
-  if (!query) {
-    suggestionsBox.innerHTML = '';
-    suggestionsBox.style.display = 'none';
-    return;
-  }
-  
-  // JSONP to bypass CORS
-  const oldScript = document.getElementById('googleSuggestScript');
-  if (oldScript) oldScript.remove();
-  
-  const script = document.createElement('script');
-  script.id = 'googleSuggestScript';
-  script.src = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}&callback=handleGoogleSuggestions`;
-  document.body.appendChild(script);
-});
-
-// 3. Keyboard Navigation
-searchInput.addEventListener('keydown', function(e) {
-  const items = suggestionsBox.getElementsByTagName('li');
-  if (!items.length) return;
-  
-  if (e.key === "ArrowDown") {
-    currentFocus++;
-    updateActive(items);
-    e.preventDefault();
-  } else if (e.key === "ArrowUp") {
-    currentFocus--;
-    updateActive(items);
-    e.preventDefault();
-  } else if (e.key === "Enter") {
-    if (currentFocus > -1) {
-      e.preventDefault();
-      if (items[currentFocus]) items[currentFocus].click();
-    }
-  }
-});
-
-function updateActive(items) {
-  if (!items) return false;
-  
-  for (let i = 0; i < items.length; i++) {
-    items[i].classList.remove("active");
-  }
-  
-  if (currentFocus >= items.length) currentFocus = 0;
-  if (currentFocus < 0) currentFocus = items.length - 1;
-  
-  items[currentFocus].classList.add("active");
-  searchInput.value = items[currentFocus].textContent;
-}
-
-// 4. Click Outside to Close
-document.addEventListener('click', e => {
-  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-    suggestionsBox.style.display = 'none';
-  }
-});
-
-// (End of replacement block - next line in your file should be 'let history = ...')
-
-let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-
-function renderHistory() {
-  historyList.innerHTML = "";
-
-  if (history.length === 0) {
-    historyTitle.style.display = "none";
-    clearBtn.style.display = "none";
-    return;
-  }
-
-  historyTitle.style.display = "block";
-  clearBtn.style.display = "inline-block";
-
-  history.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    li.addEventListener("click", () => doSearch(item));
-    historyList.appendChild(li);
-  });
-}
-
-function saveHistory() {
-  localStorage.setItem("searchHistory", JSON.stringify(history));
-}
-
+// 67 Easter Egg effect
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -697,9 +521,11 @@ function play67Effect() {
   }, 3000);
 }
 
+// Main search function - consolidated
 function doSearch(query) {
   if (!query.trim()) return;
 
+  // Check for 67 easter egg
   const compact = query.replace(/\s+/g, '');
   if (compact === '67') {
     if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
@@ -709,6 +535,7 @@ function doSearch(query) {
     return;
   }
 
+  // Update history
   history = history.filter(h => h !== query);
   history.unshift(query);
   saveLifetime(query);
@@ -718,12 +545,24 @@ function doSearch(query) {
   saveHistory();
   renderHistory();
 
+  // Check for domain search
   const domainURL = domainSearchHandler(query);
   if (domainURL) {
-   openResult(domainURL);
-   return;
+    openResult(domainURL);
+    return;
   }
 
+  // Check for direct URL
+  if (/^[\w.-]+\.[a-z]{2,}$/i.test(query)) {
+    let url = query;
+    if (!/^https?:\/\//i.test(url)) {
+      url = "https://" + url;
+    }
+    openResult(url);
+    return;
+  }
+
+  // Execute Google search
   const searchElement = google.search.cse.element.getElement("searchbox1");
   if (searchElement) {
     searchElement.execute(query);
@@ -731,10 +570,189 @@ function doSearch(query) {
   }
 }
 
-searchBtn.addEventListener("click", () => {
-  doSearch(searchInput.value);
+// Search button click handler
+searchBtn.addEventListener("click", async function() {
+  const query = searchInput.value.trim();
+  if(!query) return;
+
+  // Check dictionary first
+  const def = await handleDictionarySearch(query);
+  if (def) {
+    alert(def);
+    return;
+  }
+
+  // Check math conversion
+  const result = handleMathConversion(query);
+  if(result) {
+    alert(result);
+    return;
+  }
+
+  // Otherwise do normal search
+  doSearch(query);
   searchInput.value = "";
 });
+
+// Autocomplete suggestions system (no debouncing)
+let currentScript = null;
+let currentFocus = -1;
+let isNavigating = false; // Track if we're navigating with arrow keys
+
+window.handleGoogleSuggestions = function(data) {
+  const matches = data[1]; 
+  suggestionsBox.innerHTML = '';
+  
+  if (!matches || matches.length === 0) {
+    suggestionsBox.style.display = 'none';
+    return;
+  }
+  
+  matches.forEach((match, index) => {
+    const li = document.createElement('li');
+    li.textContent = match;
+    li.setAttribute('data-index', index);
+    
+    li.addEventListener('click', () => {
+      searchInput.value = match;      
+      suggestionsBox.style.display = 'none';
+      currentFocus = -1;
+      doSearch(match);
+    });
+    
+    suggestionsBox.appendChild(li);
+  });
+  
+  suggestionsBox.style.display = 'block';
+  currentFocus = -1;
+};
+
+function fetchSuggestions(query) {
+  if (currentScript) {
+    currentScript.remove();
+    currentScript = null;
+  }
+  
+  const script = document.createElement('script');
+  currentScript = script;
+  script.src = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}&callback=handleGoogleSuggestions`;
+  
+  script.onload = () => {
+    setTimeout(() => {
+      if (script.parentNode) script.remove();
+    }, 1000);
+  };
+  
+  script.onerror = () => {
+    if (script.parentNode) script.remove();
+  };
+  
+  document.body.appendChild(script);
+}
+
+searchInput.addEventListener('input', (e) => {
+  // Don't fetch suggestions if we're just navigating with arrow keys
+  if (isNavigating) {
+    isNavigating = false;
+    return;
+  }
+
+  const query = searchInput.value.trim();
+  
+  // Check for 67 easter egg
+  try {
+    const compact = searchInput.value.replace(/\s+/g, '');
+    if (compact === '67') {
+      if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
+        play67Effect();
+        window.__last67Played = Date.now();
+      }
+    }
+  } catch (e) {
+    console.error('67 detection error', e);
+  }
+  
+  if (!query) {
+    suggestionsBox.innerHTML = '';
+    suggestionsBox.style.display = 'none';
+    currentFocus = -1;
+    return;
+  }
+  
+  // Fetch immediately (no debounce)
+  fetchSuggestions(query);
+});
+
+// Keyboard navigation for suggestions
+searchInput.addEventListener('keydown', function(e) {
+  const items = suggestionsBox.getElementsByTagName('li');
+  if (!items.length) return;
+  
+  if (e.key === "ArrowDown") {
+    isNavigating = true; // Set flag before changing input value
+    currentFocus++;
+    updateActive(items);
+    e.preventDefault();
+  } else if (e.key === "ArrowUp") {
+    isNavigating = true; // Set flag before changing input value
+    currentFocus--;
+    updateActive(items);
+    e.preventDefault();
+  } else if (e.key === "Enter") {
+    if (currentFocus > -1) {
+      e.preventDefault();
+      if (items[currentFocus]) items[currentFocus].click();
+    }
+  }
+});
+
+function updateActive(items) {
+  if (!items) return false;
+  
+  for (let i = 0; i < items.length; i++) {
+    items[i].classList.remove("active");
+  }
+  
+  if (currentFocus >= items.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = items.length - 1;
+  
+  items[currentFocus].classList.add("active");
+  searchInput.value = items[currentFocus].textContent;
+}
+
+// Click outside to close suggestions
+document.addEventListener('click', e => {
+  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+    suggestionsBox.style.display = 'none';
+  }
+});
+
+// Search history management
+let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+function renderHistory() {
+  historyList.innerHTML = "";
+
+  if (history.length === 0) {
+    historyTitle.style.display = "none";
+    clearBtn.style.display = "none";
+    return;
+  }
+
+  historyTitle.style.display = "block";
+  clearBtn.style.display = "inline-block";
+
+  history.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.addEventListener("click", () => doSearch(item));
+    historyList.appendChild(li);
+  });
+}
+
+function saveHistory() {
+  localStorage.setItem("searchHistory", JSON.stringify(history));
+}
 
 clearBtn.addEventListener("click", () => {
   history = [];
@@ -744,6 +762,7 @@ clearBtn.addEventListener("click", () => {
 
 renderHistory();
 
+// Chat button
 searchBtn.addEventListener("click", function () {
   chatBtn.style.display = "block";
 });
@@ -756,4 +775,5 @@ window.addEventListener("load", () => {
   chatBtn.style.display = "none";
 });
 
+// Remove no-js class
 document.documentElement.classList.remove('no-js');
