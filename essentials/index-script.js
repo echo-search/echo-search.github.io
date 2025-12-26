@@ -145,7 +145,6 @@ function domainSearchHandler(query) {
   return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
 }
 
-// Theme handling
 (function () {
   if (!themeSelect) return;
 
@@ -351,13 +350,11 @@ function domainSearchHandler(query) {
 
 })();
 
-// Surprise button
 surpriseBtn.addEventListener("click", () => {
   const fact = facts[Math.floor(Math.random() * facts.length)];
   alert(fact);
 });
 
-// Voice recognition
 let recognition;
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -388,7 +385,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   voiceBtn.title = "Voice input not supported in this browser.";
 }
 
-// Google CSE callback
 window.__gcse = {
   callback: function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -409,7 +405,6 @@ window.__gcse = {
   }
 };
 
-// Math conversion handler
 function handleMathConversion(query) {
   query = query.trim();
 
@@ -448,7 +443,6 @@ function handleMathConversion(query) {
   return null;
 }
 
-// Dictionary search handler
 async function handleDictionarySearch(query) {
   const lower = query.toLowerCase().trim();
   const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
@@ -489,7 +483,6 @@ async function handleDictionarySearch(query) {
   return "No definition found.";
 }
 
-// 67 Easter Egg effect
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -521,11 +514,9 @@ function play67Effect() {
   }, 3000);
 }
 
-// Main search function - consolidated
 function doSearch(query) {
   if (!query.trim()) return;
 
-  // Check for 67 easter egg
   const compact = query.replace(/\s+/g, '');
   if (compact === '67') {
     if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
@@ -535,7 +526,6 @@ function doSearch(query) {
     return;
   }
 
-  // Update history
   history = history.filter(h => h !== query);
   history.unshift(query);
   saveLifetime(query);
@@ -545,14 +535,12 @@ function doSearch(query) {
   saveHistory();
   renderHistory();
 
-  // Check for domain search
   const domainURL = domainSearchHandler(query);
   if (domainURL) {
     openResult(domainURL);
     return;
   }
 
-  // Check for direct URL
   if (/^[\w.-]+\.[a-z]{2,}$/i.test(query)) {
     let url = query;
     if (!/^https?:\/\//i.test(url)) {
@@ -562,7 +550,6 @@ function doSearch(query) {
     return;
   }
 
-  // Execute Google search
   const searchElement = google.search.cse.element.getElement("searchbox1");
   if (searchElement) {
     searchElement.execute(query);
@@ -570,34 +557,29 @@ function doSearch(query) {
   }
 }
 
-// Search button click handler
 searchBtn.addEventListener("click", async function() {
   const query = searchInput.value.trim();
   if(!query) return;
 
-  // Check dictionary first
   const def = await handleDictionarySearch(query);
   if (def) {
     alert(def);
     return;
   }
 
-  // Check math conversion
   const result = handleMathConversion(query);
   if(result) {
     alert(result);
     return;
   }
 
-  // Otherwise do normal search
   doSearch(query);
   searchInput.value = "";
 });
 
-// Autocomplete suggestions system (no debouncing)
 let currentScript = null;
 let currentFocus = -1;
-let isNavigating = false; // Track if we're navigating with arrow keys
+let isNavigating = false;
 
 window.handleGoogleSuggestions = function(data) {
   const matches = data[1]; 
@@ -651,7 +633,6 @@ function fetchSuggestions(query) {
 }
 
 searchInput.addEventListener('input', (e) => {
-  // Don't fetch suggestions if we're just navigating with arrow keys
   if (isNavigating) {
     isNavigating = false;
     return;
@@ -659,7 +640,6 @@ searchInput.addEventListener('input', (e) => {
 
   const query = searchInput.value.trim();
   
-  // Check for 67 easter egg
   try {
     const compact = searchInput.value.replace(/\s+/g, '');
     if (compact === '67') {
@@ -679,22 +659,20 @@ searchInput.addEventListener('input', (e) => {
     return;
   }
   
-  // Fetch immediately (no debounce)
   fetchSuggestions(query);
 });
 
-// Keyboard navigation for suggestions
 searchInput.addEventListener('keydown', function(e) {
   const items = suggestionsBox.getElementsByTagName('li');
   if (!items.length) return;
   
   if (e.key === "ArrowDown") {
-    isNavigating = true; // Set flag before changing input value
+    isNavigating = true;
     currentFocus++;
     updateActive(items);
     e.preventDefault();
   } else if (e.key === "ArrowUp") {
-    isNavigating = true; // Set flag before changing input value
+    isNavigating = true;
     currentFocus--;
     updateActive(items);
     e.preventDefault();
@@ -720,14 +698,12 @@ function updateActive(items) {
   searchInput.value = items[currentFocus].textContent;
 }
 
-// Click outside to close suggestions
 document.addEventListener('click', e => {
   if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
     suggestionsBox.style.display = 'none';
   }
 });
 
-// Search history management
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
 function renderHistory() {
@@ -762,7 +738,6 @@ clearBtn.addEventListener("click", () => {
 
 renderHistory();
 
-// Chat button
 searchBtn.addEventListener("click", function () {
   chatBtn.style.display = "block";
 });
@@ -775,5 +750,4 @@ window.addEventListener("load", () => {
   chatBtn.style.display = "none";
 });
 
-// Remove no-js class
 document.documentElement.classList.remove('no-js');
