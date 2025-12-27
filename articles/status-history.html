@@ -39,6 +39,33 @@ h2{font-weight:700;margin-bottom:1.5rem}
 </head>
 <body>
 <h2>Status History</h2>
+<div class="month">December</div>
+<div class="day"><div class="num">27</div><div class="dow">Sat</div></div>
+
+<div class="incident" aria-expanded="false" onclick="toggleTimeline(this)">
+  <div>
+    <div class="incident-header">
+      <div class="status-dot status-red" id="parent-dot"></div>
+      <strong>Math/Unit Conversion issue</strong>
+    </div>
+    <div class="desc">This service's root cause has been identified.</div>
+  </div>
+  <small>18:19 UTC</small>
+</div>
+
+<div class="timeline" aria-hidden="true">
+  <div class="entry identified">
+    <h3>Identified</h3>
+    <p>The root cause has been identified and a fix is in progress.</p>
+    <div class="time">18:19 UTC</div>
+  </div>
+  <div class="entry investigating">
+    <h3>Investigating</h3>
+    <p>Our team is currently investigating this issue.</p>
+    <div class="time">17:21 UTC</div>
+  </div>
+</div>
+
 <div class="month">October</div>
 <div class="day"><div class="num">15</div><div class="dow">Wed</div></div>
 
