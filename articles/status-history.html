@@ -72,7 +72,7 @@ h2{font-weight:700;margin-bottom:1.5rem}
 <div class="incident" aria-expanded="false" onclick="toggleTimeline(this)">
   <div>
     <div class="incident-header">
-      <div class="status-dot status-red" id="parent-dot"></div>
+      <div class="status-dot status-green" id="parent-dot"></div>
       <strong>Redirection issue</strong>
     </div>
     <div class="desc">This service is back to its expected level</div>
@@ -114,17 +114,6 @@ function toggleTimeline(el){
   document.querySelectorAll('.incident').forEach(i=>i.setAttribute('aria-expanded','false'))
   if(!wasActive){next.classList.add('active');next.setAttribute('aria-hidden','false');el.setAttribute('aria-expanded','true')}
   updateParentDot(next)
-}
-function updateParentDot(timeline){
-  if(!timeline)return
-  const entries=Array.from(timeline.querySelectorAll('.entry'))
-  if(entries.length===0)return
-  const latest=entries[0]
-  const parentDot=document.getElementById('parent-dot')
-  parentDot.classList.remove('status-green','status-yellow','status-red')
-  if(latest.classList.contains('resolved'))parentDot.classList.add('status-green')
-  else if(latest.classList.contains('monitoring'))parentDot.classList.add('status-yellow')
-  else parentDot.classList.add('status-red')
 }
 (function init(){
   const timeline=document.querySelector('.timeline')
