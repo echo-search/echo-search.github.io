@@ -750,4 +750,153 @@ window.addEventListener("load", () => {
   chatBtn.style.display = "none";
 });
 
+(function setupCseSerpWrapper() {
+  const PROCESSED_ATTR = 'data-echo-processed';
+  const HIDDEN_ATTR = 'data-echo-hidden';
+
+  function safeDomainFromUrl(u) {
+    try {
+      const url = new URL(u);
+      return url.hostname;
+    } catch (e) {
+      const m = /^(?:https?:\/\/)?([^\/]+)(?:\/|$)/i.exec(u);
+      return (m && m[1]) ? m[1] : '';
+    }
+  }
+
+  function createSerpCard(titleAnchor, snippetEl, url) {
+    const domain = safeDomainFromUrl(url) || '';
+    const faviconUrl = domain ? `https://${domain}/favicon.ico` : '';
+
+    const card = document.createElement('div');
+    card.className = 'echo-serp-card';
+
+    const left = document.createElement('div');
+    left.className = 'echo-serp-left';
+    const fav = document.createElement('img');
+    fav.className = 'favicon';
+    fav.alt = `${domain} favicon`;
+    fav.src = faviconUrl;
+    fav.onerror = function() { this.style.visibility = 'hidden'; };
+    left.appendChild(fav);
+
+    const main = document.createElement('div');
+    main.className = 'echo-serp-main';
+
+    const siteRow = document.createElement('div');
+    siteRow.className = 'echo-site-row';
+    const siteLink = document.createElement('a');
+    siteLink.className = 'echo-site';
+    siteLink.href = domain ? `https://${domain}/` : '#';
+    siteLink.target = '_blank';
+    siteLink.rel = 'noopener noreferrer';
+    siteLink.textContent = domain;
+    siteRow.appendChild(siteLink);
+
+    const titleRow = document.createElement('h3');
+    titleRow.className = 'echo-title';
+    const titleLink = document.createElement('a');
+    titleLink.href = url || '#';
+    titleLink.className = 'echo-title-link';
+    titleLink.innerHTML = titleAnchor.innerHTML || titleAnchor.textContent || url;
+    titleLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      try {
+        titleAnchor.click();
+      } catch (err) {
+        window.location.href = url;
+      }
+    });
+    titleRow.appendChild(titleLink);
+
+    const snippetRow = document.createElement('p');
+    snippetRow.className = 'echo-snippet';
+    if (snippetEl) {
+      snippetRow.innerHTML = snippetEl.innerHTML;
+    } else {
+      snippetRow.textContent = '';
+    }
+
+    main.appendChild(siteRow);
+    main.appendChild(titleRow);
+    main.appendChild(snippetRow);
+
+    card.appendChild(left);
+    card.appendChild(main);
+
+    return card;
+  }
+
+  function processOneWebResult(resultEl) {
+    if (!resultEl || resultEl.getAttribute(PROCESSED_ATTR)) return;
+    resultEl.setAttribute(PROCESSED_ATTR, '1');
+
+    const titleAnchor = resultEl.querySelector('.gs-title a');
+    const snippetEl = resultEl.querySelector('.gs-snippet');
+
+    if (!titleAnchor) {
+      return;
+    }
+
+    const url = titleAnchor.href || '';
+
+    const card = createSerpCard(titleAnchor, snippetEl, url);
+
+    try {
+      if (resultEl.parentNode) {
+        resultEl.parentNode.insertBefore(card, resultEl.nextSibling);
+      }
+    } catch (e) {
+      console.error('Insertion failed for echo-serp-card', e);
+      return;
+    }
+
+    resultEl.setAttribute(HIDDEN_ATTR, 'true');
+    resultEl.style.display = 'none';
+    resultEl.style.visibility = 'hidden';
+    resultEl.style.pointerEvents = 'none';
+    resultEl.setAttribute('aria-hidden', 'true');
+  }
+
+  function processAllUnprocessed() {
+    const results = document.querySelectorAll('.gsc-webResult:not([data-echo-processed])');
+    results.forEach(r => {
+      try {
+        processOneWebResult(r);
+      } catch (e) {
+        console.error('Error processing gsc-webResult', e);
+      }
+    });
+  }
+
+  setTimeout(processAllUnprocessed, 500);
+
+  const observer = new MutationObserver((mutations) => {
+    processAllUnprocessed();
+  });
+
+  const containers = [
+    document.querySelector('.gcse-searchresults-only'),
+    document.querySelector('.gsc-results-wrapper-nooverlay'),
+    document.querySelector('.gsc-resultsbox-visible'),
+    document.body
+  ].filter(Boolean);
+
+  containers.forEach(c => {
+    try {
+      observer.observe(c, { childList: true, subtree: true });
+    } catch (e) {
+    }
+  });
+
+  let extraRuns = 0;
+  const extraInterval = setInterval(() => {
+    processAllUnprocessed();
+    extraRuns++;
+    if (extraRuns > 8) clearInterval(extraInterval);
+  }, 800);
+
+  window.__echoSearchProcessCseResults = processAllUnprocessed;
+})();
+
 document.documentElement.classList.remove('no-js');
