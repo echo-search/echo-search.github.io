@@ -419,17 +419,38 @@ fetch("units.json")
 function handleMathConversion(query) {
   query = query.trim().toLowerCase();
 
-  const match = query.match(/^([\d.]+)\s*([a-zA-Z]+)\s*(to|in)\s*([a-zA-Z]+)$/);
+  const match = query.match(/^([\d.]+)\s*([a-z°/]+)\s*(to|in)\s*([a-z°/]+)$/);
   if (!match) return null;
 
   const value = parseFloat(match[1]);
-  const from = match[2];
-  const to = match[4];
+  let from = match[2];
+  let to = match[4];
 
   for (const category in units) {
     const group = units[category];
-    if (group[from] !== undefined && group[to] !== undefined) {
-      return `${value} ${from} = ${value * group[from] / group[to]}`;
+
+    let fromUnit = null;
+    let toUnit = null;
+
+    for (const unitName in group) {
+      const unit = group[unitName];
+
+      if (unitName === from || unit.aliases?.includes(from)) {
+        fromUnit = unit;
+      }
+
+      if (unitName === to || unit.aliases?.includes(to)) {
+        toUnit = unit;
+      }
+    }
+
+    if (fromUnit && toUnit) {
+      if (category === "temperature") {
+        return convertTemperature(value, from, to);
+      }
+
+      const result = value * fromUnit.value / toUnit.value;
+      return `${value} ${from} = ${result} ${to}`;
     }
   }
 
