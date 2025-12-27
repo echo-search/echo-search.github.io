@@ -417,6 +417,11 @@ fetch("units.json")
   .catch(err => console.error("Failed to load units.json", err));
 
 function handleMathConversion(query) {
+
+  if (!unitsReady) {
+    return "Units are still loading…";
+  }
+  
   query = query.trim().toLowerCase();
 
   const match = query.match(/^([\d.]+)\s*([a-z°/]+)\s*(to|in)\s*([a-z°/]+)$/);
