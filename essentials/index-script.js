@@ -1,3 +1,5 @@
+document.documentElement.classList.remove('no-js');
+
 const surpriseBtn = document.getElementById("surpriseBtn");
 const voiceBtn = document.getElementById("voiceBtn");
 const searchInput = document.getElementById("searchInput");
@@ -749,5 +751,3 @@ chatBtn.addEventListener("click", () => {
 window.addEventListener("load", () => {
   chatBtn.style.display = "none";
 });
-
-document.documentElement.classList.remove('no-js');
