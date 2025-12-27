@@ -43,7 +43,14 @@ search-btn { width: 1em; height: 1em; }
 #emojiContainer span { position: absolute; font-size: 40px; pointer-events: none; user-select: none; }
 #accountLink { position: fixed; top: 15px; right: 15px; padding: 10px 18px; background: var(--accent); border: 1px solid #ccc; border-radius: 6px; text-decoration: none; font-size: 16px; z-index: 9999; }
 #accountLink:hover { background: var(--hover); }
-.gsc-webResult[data-echo-hidden="true"] { display: none !important; visibility: hidden !important; pointer-events: none !important; height: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; }
+.google-like-result { font-family: Arial, sans-serif; margin-bottom: 28px; max-width: 650px; }
+.google-site-line { display: flex; align-items: center; font-size: 14px; color: #202124; margin-bottom: 4px; }
+.google-favicon { width: 16px; height: 16px; margin-right: 6px; }
+.google-title { display: inline-block; font-size: 18px; color: #1a0dab; text-decoration: none; margin-bottom: 3px; }
+.google-title:hover { text-decoration: underline; }
+.google-snippet { font-size: 14px; color: #4d5156; line-height: 1.58; }
+.no-results { font-family: Arial, sans-serif; color: #202124; margin-top: 24px; }
+.no-results p { margin: 6px 0; }
 .no-js-msg { font-family: system-ui, sans-serif; color: #900; padding: 20px 20px 20px 70px; margin: 20px; border: 2px solid #900; border-radius: 10px; font-size: 1.2rem; background-color: transparent; background-image: url('/favicon.ico'); background-repeat: no-repeat; background-size: 40px 40px; background-position: 15px 15px; }
 body.default { --bg: #ffffff; --text: #000000; --accent: #00cec9; --hover: #00b2af; background: #ffffff; }
 body.retro { --bg: #fdf6e3; --text: #586e75; --accent: #2aa198; --hover: #23827e; background: url('retro.jpeg') no-repeat center center fixed; background-size: cover; }
