@@ -407,59 +407,46 @@ window.__gcse = {
   }
 };
 
-let units = {};
-
-fetch("units.json")
-  .then(res => res.json())
-  .then(data => {
-    units = data;
-  })
-  .catch(err => console.error("Failed to load units.json", err));
-
 function handleMathConversion(query) {
+  query = query.trim();
 
-  if (!unitsReady) {
-    return "Units are still loading…";
-  }
-  
-  query = query.trim().toLowerCase();
+  try {
+    if (/^[0-9+\-*/^().\sÃÃ·eE,]+$|^[a-zA-Z0-9+\-*/^().\sÃÃ·eE,]+$/.test(query)) {
+      return "Result: " + eval(query);
+    }
+  } catch(e) { }
 
-  const match = query.match(/^([\d.]+)\s*([a-z°/]+)\s*(to|in)\s*([a-z°/]+)$/);
-  if (!match) return null;
+  const units = {
+   "length": { "m": 1, "km": 1000, "cm": 0.01, "mm": 0.001, "in": 0.0254, "ft": 0.3048, "yd": 0.9144, "mi": 1609.344 },
+   "area": { "m2": 1, "km2": 1000000, "cm2": 0.0001, "mm2": 0.000001, "ha": 10000, "acre": 4046.8564224 },
+   "volume": { "l": 1, "ml": 0.001, "m3": 1000, "gal": 3.78541, "qt": 0.946353, "pint": 0.473176, "cup": 0.24 },
+   "mass": { "g": 1, "kg": 1000, "mg": 0.001, "t": 1000000, "lb": 453.59237, "oz": 28.3495 },
+   "time": { "s": 1, "min": 60, "h": 3600, "day": 86400, "week": 604800 },
+   "speed": { "m/s": 1, "km/h": 0.277777778, "mph": 0.44704 },
+   "data_storage": { "b": 1, "B": 8, "kb": 8192, "mb": 8388608, "gb": 8589934592, "tb": 8796093022208 },
+   "data_transfer_rate": { "bps": 1, "kbps": 1000, "mbps": 1000000, "gbps": 1000000000 },
+   "energy": { "j": 1, "kj": 1000, "cal": 4.184, "kcal": 4184, "wh": 3600, "kwh": 3600000 },
+   "pressure": { "pa": 1, "kpa": 1000, "bar": 100000, "psi": 6894.757, "atm": 101325 },
+   "angle": { "rad": 1, "deg": 0.01745329252 }
+  };
 
-  const value = parseFloat(match[1]);
-  let from = match[2];
-  let to = match[4];
+  const convMatch = query.match(/^([\d.]+)\s*([a-zA-Z\/]+)\s*to\s*([a-zA-Z\/]+)$/i);
+  if(convMatch) {
+    const value = parseFloat(convMatch[1]);
+    const from = convMatch[2].toLowerCase();
+    const to = convMatch[3].toLowerCase();
 
-  for (const category in units) {
-    const group = units[category];
-
-    let fromUnit = null;
-    let toUnit = null;
-
-    for (const unitName in group) {
-      const unit = group[unitName];
-
-      if (unitName === from || unit.aliases?.includes(from)) {
-        fromUnit = unit;
-      }
-
-      if (unitName === to || unit.aliases?.includes(to)) {
-        toUnit = unit;
+    for(const cat in units){
+      const u = units[cat];
+      if(u[from] !== undefined && u[to] !== undefined){
+        const result = value * u[from] / u[to];
+        return `${value} ${from} = ${result} ${to}`;
       }
     }
-
-    if (fromUnit && toUnit) {
-      if (category === "temperature") {
-        return convertTemperature(value, from, to);
-      }
-
-      const result = value * fromUnit.value / toUnit.value;
-      return `${value} ${from} = ${result} ${to}`;
-    }
+    return "Conversion units not recognized.";
   }
 
-  return "Units not recognized.";
+  return null;
 }
 
 async function handleDictionarySearch(query) {
