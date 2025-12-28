@@ -5,7 +5,6 @@
   <title>Open Source Update: Transitioning Forward</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="After one year of being open source, we will transition to a closed-source model starting June 3rd, 2026. This article explains why and what it means.">
-
   <style>
     :root {
       --hl: #00cec9;
@@ -14,7 +13,6 @@
       --text: #eaeaea;
       --muted: #9aa0a6;
     }
-
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -22,40 +20,49 @@
       color: var(--text);
       line-height: 1.8;
     }
-
     article {
       max-width: 900px;
       margin: auto;
       padding: 3.5rem 1.5rem;
     }
-
     h1 {
       font-size: 2.6rem;
       margin-bottom: 0.5rem;
       color: #ffffff;
     }
-
     h2 {
       margin-top: 3rem;
       color: #ffffff;
     }
-
     .date {
       color: var(--muted);
       margin-bottom: 2.5rem;
     }
-
     p {
       margin-bottom: 1.3rem;
     }
-
+    a {
+      color: blue;
+      text-decoration: underline;
+    }
     .highlight {
       background: var(--card);
       border-left: 5px solid var(--hl);
       padding: 1.3rem 1.5rem;
       margin: 2.5rem 0;
     }
-
+    .back-button {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 10px 20px;
+      background-color: #00cec9;
+      color: black;
+      margin: 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
     footer {
       margin-top: 4rem;
       font-size: 0.9rem;
@@ -137,7 +144,7 @@
   </p>
 
   <p>
-    After that date, the public repository will no longer be updated, and the source code will no longer be publicly available. Future development will continue privately.
+    After that date, the public repository will no longer be updated, and the source code will no longer be publicly available. Future development will continue privately. The GitHub repository will become private. However, the planning repository, <a href="https://github.com/echo-search/addtoechosearch/">Add to EchoSearch</a>, will still pe publicly available and will <b>always</b> be publicly available to see.
   </p>
 
   <p>
@@ -171,6 +178,8 @@
   <p>
     The open-source chapter of this project was an important one. It served its purpose, helped the project mature, and laid the groundwork for what comes next.
   </p>
+  
+  <a href="/" class="back-button">‹ Back to Home <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
 
   <footer>
     © 2025 — EchoSearch. Built for people, not for companies.
