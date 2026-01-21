@@ -56,3 +56,79 @@ body.forest { --bg: #1b2e1b; --text: #c8e6c9; --accent: #66bb6a; --hover: #4a8a4
 body.floral { --bg: #1a1a1a; --text: #f8f0e3; --accent: #a45a5a; --hover: #7c4141; background: url('floral.jpeg') no-repeat center center fixed; background-size: cover; }
 body.dark-mode.default { --bg: #121212; --text: #ffffff; --accent: #bb86fc; --hover: #9966d9; background-color: var(--bg); }
 .no-js body > *:not(noscript) { display: none; }
+/* ================================
+   EchoSearch – Google-like CSE SERP
+   Google renders, CSS clones
+   ================================ */
+
+/* Core layout: Google’s organic column */
+#echosearch-serp .gsc-control-cse,
+#echosearch-serp .gsc-results-wrapper-visible {
+  max-width: 652px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Remove Google / CSE chrome */
+#echosearch-serp .gsc-branding,
+#echosearch-serp .gsc-result-info,
+#echosearch-serp .gsc-adBlock,
+#echosearch-serp .gsc-adBlockVertical,
+#echosearch-serp .gsc-above-wrapper-area,
+#echosearch-serp .gsc-tabsArea,
+#echosearch-serp .gcsc-more-maybe-branding-root {
+  display: none !important;
+}
+
+/* Base typography */
+#echosearch-serp .gsc-control-cse,
+#echosearch-serp .gsc-webResult,
+#echosearch-serp .gs-title,
+#echosearch-serp .gs-snippet {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* Result titles (Google blue) */
+#echosearch-serp .gs-title a {
+  color: #1a0dab !important;
+  font-size: 18px !important;
+  line-height: 1.3 !important;
+  text-decoration: none !important;
+}
+
+#echosearch-serp .gs-title a:hover {
+  text-decoration: underline !important;
+}
+
+/* URL / breadcrumb line (modern Google grey) */
+#echosearch-serp .gsc-url-top,
+#echosearch-serp .gsc-url-bottom {
+  color: #5f6368 !important;
+  font-size: 14px !important;
+}
+
+/* Snippet text */
+#echosearch-serp .gs-snippet {
+  color: #4d5156 !important;
+  font-size: 14px !important;
+  line-height: 1.58 !important;
+  margin-top: 4px !important;
+}
+
+/* Result spacing (Google rhythm) */
+#echosearch-serp .gsc-webResult {
+  margin-bottom: 28px !important;
+}
+
+/* Remove table quirks used by CSE */
+#echosearch-serp .gsc-table-result {
+  border-collapse: collapse !important;
+}
+
+/* Clean background */
+#echosearch-serp {
+  background: #ffffff !important;
+}
