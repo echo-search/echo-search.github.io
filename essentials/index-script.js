@@ -137,16 +137,6 @@ function openResult(url) {
   }
 }
 
-function domainSearchHandler(query) {
-  query = query.trim();
-
-  const match = query.match(/^site:(.+)$/i);
-  if (!match) return null;
-
-  const domain = match[1].trim();
-  return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
-}
-
 (function () {
   if (!themeSelect) return;
 
