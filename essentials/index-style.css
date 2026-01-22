@@ -130,5 +130,5 @@ body.dark-mode.default { --bg: #121212; --text: #ffffff; --accent: #bb86fc; --ho
 
 /* Clean background */
 #echosearch-serp {
-  background: #ffffff !important;
+  background: transparent !important;
 }
