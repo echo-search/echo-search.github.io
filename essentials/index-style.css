@@ -77,7 +77,6 @@ body.dark-mode.default { --bg: #121212; --text: #ffffff; --accent: #bb86fc; --ho
 #echosearch-serp .gsc-adBlock,
 #echosearch-serp .gsc-adBlockVertical,
 #echosearch-serp .gsc-above-wrapper-area,
-#echosearch-serp .gsc-tabsArea,
 #echosearch-serp .gcsc-more-maybe-branding-root {
   display: none !important;
 }
