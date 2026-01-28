@@ -45,15 +45,25 @@ h2{font-weight:700;margin-bottom:1.5rem}
 <div class="incident" aria-expanded="false" onclick="toggleTimeline(this)">
   <div>
     <div class="incident-header">
-      <div class="status-dot status-red" id="parent-dot"></div>
+      <div class="status-dot status-green" id="parent-dot"></div>
       <strong>Math/Unit Conversion issue</strong>
     </div>
-    <div class="desc">This service's root cause has been identified.</div>
+    <div class="desc">This feature has returned to its expected level.</div>
   </div>
-  <small>18:19 UTC</small>
+  <small>18:43 UTC</small>
 </div>
 
 <div class="timeline" aria-hidden="true">
+  <div class="entry resolved">
+    <h3>Resolved</h3>
+    <p>This feature have returned to its expected level.</p>
+    <div class="time">18:43 UTC</div>
+  </div>
+  <div class="entry monitoring">
+    <h3>Monitoring</h3>
+    <p>A fix has been deployed and we're monitoring the results.</p>
+    <div class="time">18:37 UTC</div>
+  </div>
   <div class="entry identified">
     <h3>Identified</h3>
     <p>The root cause has been identified and a fix is in progress.</p>
