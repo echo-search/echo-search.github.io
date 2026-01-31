@@ -8,27 +8,27 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            background-color: #f0f2f5; 
-            margin: 0; 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
             color: #333;
         }
-        .login-container { 
-            background-color: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
-            width: 320px; 
-            text-align: center; 
+        .login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 320px;
+            text-align: center;
         }
-        h2 { 
-            color: #2c3e50; 
-            margin-bottom: 25px; 
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
             font-size: 1.8em;
         }
         h3 {
@@ -38,27 +38,28 @@
             font-size: 1.1em;
             font-weight: normal;
         }
-        input[type="email"], input[type="password"] { 
-            width: calc(100% - 20px); 
-            padding: 12px; 
-            margin-bottom: 15px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
+        input[type="email"], input[type="password"], input[type="tel"], input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             font-size: 1em;
         }
-        button { 
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1.1em; 
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
             font-weight: bold;
             transition: background-color 0.3s ease;
+            margin-top: 5px; /* Added margin for consistency */
         }
-        button.email-auth { 
+        button.email-auth {
             background-color: #4CAF50; /* Green for email actions */
-            color: white; 
+            color: white;
         }
         button.email-auth:hover {
             background-color: #45a049;
@@ -70,6 +71,13 @@
         }
         button.google-auth:hover {
             background-color: #c03d30;
+        }
+        button.phone-auth {
+            background-color: #1a73e8; /* Google Blue */
+            color: white;
+        }
+        button.phone-auth:hover {
+            background-color: #1669d7;
         }
         button.sign-out-button {
             background-color: #6c757d; /* Grey for sign out */
@@ -91,16 +99,16 @@
         .forgot-password a:hover {
             text-decoration: underline;
         }
-        #message, #auth-status { 
-            margin-top: 20px; 
+        #message, #auth-status {
+            margin-top: 20px;
             font-size: 0.95em;
             line-height: 1.4;
         }
-        .error { 
-            color: #d32f2f; 
+        .error {
+            color: #d32f2f;
         }
-        .success { 
-            color: #388e3c; 
+        .success {
+            color: #388e3c;
         }
         hr {
             border: 0;
@@ -111,24 +119,43 @@
         .hidden {
             display: none;
         }
+        #recaptcha-container {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>EchoSearch</h2>
         <p id="auth-status">Please sign in or sign up.</p>
-        
+
         <!-- Email/Password Section -->
         <div id="auth-forms">
             <h3>Sign In / Sign Up with Email</h3>
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
-            <button class="email-auth" onclick="signInEmailPassword()">Sign In</button>
+            <button class="email-auth" onclick="signInEmailPassword()">Sign In with Email</button>
             <div class="forgot-password">
                 <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
             </div>
-            <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up</button>
-            
+            <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up with Email</button>
+
+            <hr>
+
+            <!-- Phone Number Section -->
+            <h3>Sign In with Phone Number</h3>
+            <input type="tel" id="phoneNumber" placeholder="e.g., +15551234567" required>
+            <div id="recaptcha-container"></div>
+            <button class="phone-auth" id="sendCodeBtn" onclick="sendVerificationCode()">Send Verification Code</button>
+
+            <div id="verificationCodeSection" class="hidden">
+                <input type="text" id="verificationCode" placeholder="Enter Verification Code" required>
+                <button class="phone-auth" onclick="signInWithPhoneNumber()">Verify Code & Sign In</button>
+            </div>
+
             <hr>
 
             <!-- Google Sign-In Section -->
@@ -160,10 +187,19 @@
 
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const verificationCodeInput = document.getElementById('verificationCode');
+        const verificationCodeSection = document.getElementById('verificationCodeSection');
+        const sendCodeBtn = document.getElementById('sendCodeBtn');
+        const recaptchaContainer = document.getElementById('recaptcha-container');
+
         const messageElement = document.getElementById('message');
         const authStatusElement = document.getElementById('auth-status');
         const authForms = document.getElementById('auth-forms');
         const signOutSection = document.getElementById('sign-out-section');
+
+        let recaptchaVerifier;
+        let confirmationResult; // To store the confirmation result for phone verification
 
         function displayMessage(msg, isError = true) {
             messageElement.textContent = msg;
@@ -173,7 +209,6 @@
         // Helper function to map Firebase error codes to user-friendly messages
         function getFriendlyErrorMessage(error) {
             switch (error.code) {
-                // Grouping common "invalid credentials" errors which often correspond to HTTP 400
                 case 'auth/invalid-email':
                 case 'auth/user-not-found':
                 case 'auth/wrong-password':
@@ -187,28 +222,64 @@
                 case 'auth/network-request-failed':
                     return "Network error. Please check your internet connection.";
                 case 'auth/popup-closed-by-user':
-                    return "Google sign-in was cancelled.";
+                    return "Sign-in was cancelled.";
                 case 'auth/account-exists-with-different-credential':
                     return "An account already exists with the same email address but different sign-in credentials. Sign in using the original method.";
+                case 'auth/invalid-phone-number':
+                    return "The phone number is invalid.";
+                case 'auth/missing-phone-number':
+                    return "Please enter a phone number.";
+                case 'auth/too-many-requests':
+                    return "Too many requests. Please try again later.";
+                case 'auth/invalid-verification-code':
+                    return "The verification code is invalid.";
+                case 'auth/code-expired':
+                    return "The verification code has expired. Please resend.";
+                case 'auth/captcha-check-failed':
+                    return "reCAPTCHA verification failed. Please try again.";
                 default:
-                    // Fallback for other unexpected errors
                     return `An unexpected error occurred. Please try again. (Code: ${error.code})`;
             }
         }
 
         auth.onAuthStateChanged(function(user) {
             if (user) {
-                authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email}</span>!`;
+                authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email || user.phoneNumber}</span>!`;
                 displayMessage('', false);
                 authForms.classList.add('hidden');
                 signOutSection.classList.remove('hidden');
-                // window.location.href = "/"; 
+                // You might want to redirect the user after successful login
+                // window.location.href = "/";
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
                 displayMessage('', false);
                 authForms.classList.remove('hidden');
                 signOutSection.classList.add('hidden');
+                // Re-initialize reCAPTCHA if it was rendered for a previous session
+                if (recaptchaVerifier) {
+                    recaptchaVerifier.clear();
+                    recaptchaVerifier = null;
+                }
+                // Only render reCAPTCHA when needed (when auth forms are visible and no user is logged in)
+                if (authForms.classList.contains('hidden') === false) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'normal', // or 'invisible' if you want a seamless experience
+                        'callback': (response) => {
+                            // reCAPTCHA solved, allow sending SMS
+                            sendCodeBtn.disabled = false;
+                        },
+                        'expired-callback': () => {
+                            // Response expired. Ask user to solve reCAPTCHA again.
+                            sendCodeBtn.disabled = true;
+                            displayMessage("reCAPTCHA expired. Please re-verify.", true);
+                        }
+                    });
+                    recaptchaVerifier.render().then((widgetId) => {
+                        // The reCAPTCHA container is rendered. You might want to disable the send code button until it's solved.
+                        sendCodeBtn.disabled = true;
+                    });
+                }
             }
         });
 
@@ -265,6 +336,68 @@
                 });
         }
 
+        function sendVerificationCode() {
+            const phoneNumber = phoneNumberInput.value;
+            displayMessage('', false);
+
+            if (!phoneNumber) {
+                displayMessage("Please enter a phone number.", true);
+                return;
+            }
+
+            if (!recaptchaVerifier) {
+                displayMessage("reCAPTCHA is not initialized. Please refresh the page.", true);
+                return;
+            }
+
+            sendCodeBtn.disabled = true; // Disable button to prevent multiple requests
+
+            auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
+                .then((confirmation) => {
+                    confirmationResult = confirmation;
+                    verificationCodeSection.classList.remove('hidden');
+                    displayMessage("Verification code sent to your phone.", false);
+                    sendCodeBtn.disabled = false; // Re-enable if user needs to resend
+                })
+                .catch((error) => {
+                    displayMessage(getFriendlyErrorMessage(error), true);
+                    sendCodeBtn.disabled = false; // Re-enable on error
+                    // Reset reCAPTCHA if there was an error sending the code
+                    if (recaptchaVerifier) {
+                        recaptchaVerifier.clear();
+                        recaptchaVerifier = null;
+                        // Re-render reCAPTCHA
+                        auth.onAuthStateChanged(auth.currentUser); // Trigger a state change to re-render
+                    }
+                });
+        }
+
+        function signInWithPhoneNumber() {
+            const code = verificationCodeInput.value;
+            displayMessage('', false);
+
+            if (!code) {
+                displayMessage("Please enter the verification code.", true);
+                return;
+            }
+
+            if (!confirmationResult) {
+                displayMessage("No verification request initiated. Please send a code first.", true);
+                return;
+            }
+
+            confirmationResult.confirm(code)
+                .then((result) => {
+                    displayMessage("Signed in successfully with Phone Number!", false);
+                    verificationCodeSection.classList.add('hidden'); // Hide code input
+                    verificationCodeInput.value = ''; // Clear code input
+                })
+                .catch((error) => {
+                    displayMessage(getFriendlyErrorMessage(error), true);
+                });
+        }
+
+
         function resetPassword() {
             const email = emailInput.value;
             displayMessage('', false);
@@ -292,6 +425,10 @@
                     displayMessage(getFriendlyErrorMessage(error), true);
                 });
         }
+
+        // Initialize reCAPTCHA on page load if no user is signed in
+        // This is handled by onAuthStateChanged now for better integration
+        // with the sign-in flow.
     </script>
 </body>
 </html>
