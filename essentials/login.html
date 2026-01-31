@@ -146,7 +146,7 @@
             <hr>
 
             <!-- Phone Number Section -->
-            <h3>Sign In with Phone Number</h3>
+            <h3>Sign In / Sign Up with Phone Number</h3>
             <input type="tel" id="phoneNumber" placeholder="e.g., +15551234567" required>
             <div id="recaptcha-container"></div>
             <button class="phone-auth" id="sendCodeBtn" onclick="sendVerificationCode()">Send Verification Code</button>
@@ -242,46 +242,70 @@
             }
         }
 
+        // Function to initialize and render reCAPTCHA
+        function initializeRecaptcha() {
+            // Clear any existing reCAPTCHA instance before creating a new one
+            if (recaptchaVerifier && recaptchaVerifier.clear) {
+                recaptchaVerifier.clear();
+            }
+            // Ensure the recaptcha-container is visible
+            recaptchaContainer.classList.remove('hidden');
+
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'normal', // or 'invisible' if you want a seamless experience
+                'callback': (response) => {
+                    // reCAPTCHA solved, allow sending SMS
+                    sendCodeBtn.disabled = false;
+                    displayMessage("reCAPTCHA verified. You can now send the verification code.", false);
+                },
+                'expired-callback': () => {
+                    // Response expired. Ask user to solve reCAPTCHA again.
+                    sendCodeBtn.disabled = true;
+                    displayMessage("reCAPTCHA expired. Please re-verify.", true);
+                    // Re-render reCAPTCHA if it expires to get a new challenge
+                    initializeRecaptcha();
+                }
+            });
+
+            recaptchaVerifier.render().then((widgetId) => {
+                // The reCAPTCHA container is rendered. Disable send code button initially.
+                sendCodeBtn.disabled = true;
+                displayMessage("Please complete the reCAPTCHA.", false);
+            }).catch(error => {
+                console.error("Error rendering reCAPTCHA:", error);
+                displayMessage("Failed to render reCAPTCHA. Please try refreshing.", true);
+            });
+        }
+
         auth.onAuthStateChanged(function(user) {
             if (user) {
                 authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email || user.phoneNumber}</span>!`;
                 displayMessage('', false);
                 authForms.classList.add('hidden');
                 signOutSection.classList.remove('hidden');
-                // You might want to redirect the user after successful login
-                // window.location.href = "/";
+                // Clear and hide reCAPTCHA if not needed when a user is logged in
+                if (recaptchaVerifier && recaptchaVerifier.clear) {
+                    recaptchaVerifier.clear();
+                }
+                recaptchaContainer.classList.add('hidden');
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
                 displayMessage('', false);
                 authForms.classList.remove('hidden');
                 signOutSection.classList.add('hidden');
-                // Re-initialize reCAPTCHA if it was rendered for a previous session
-                if (recaptchaVerifier) {
-                    recaptchaVerifier.clear();
-                    recaptchaVerifier = null;
-                }
-                // Only render reCAPTCHA when needed (when auth forms are visible and no user is logged in)
-                if (authForms.classList.contains('hidden') === false) {
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                        'size': 'normal', // or 'invisible' if you want a seamless experience
-                        'callback': (response) => {
-                            // reCAPTCHA solved, allow sending SMS
-                            sendCodeBtn.disabled = false;
-                        },
-                        'expired-callback': () => {
-                            // Response expired. Ask user to solve reCAPTCHA again.
-                            sendCodeBtn.disabled = true;
-                            displayMessage("reCAPTCHA expired. Please re-verify.", true);
-                        }
-                    });
-                    recaptchaVerifier.render().then((widgetId) => {
-                        // The reCAPTCHA container is rendered. You might want to disable the send code button until it's solved.
-                        sendCodeBtn.disabled = true;
-                    });
-                }
+                // Ensure reCAPTCHA is initialized when the auth forms are visible and no user is logged in
+                initializeRecaptcha();
             }
         });
+
+        // Call initializeRecaptcha when the page loads, after Firebase is initialized
+        // Use DOMContentLoaded to ensure the element exists
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial reCAPTCHA setup (can be re-triggered by onAuthStateChanged if needed)
+            initializeRecaptcha();
+        });
+
 
         function signInEmailPassword() {
             const email = emailInput.value;
@@ -345,8 +369,10 @@
                 return;
             }
 
+            // Ensure recaptchaVerifier is initialized and rendered before proceeding
             if (!recaptchaVerifier) {
-                displayMessage("reCAPTCHA is not initialized. Please refresh the page.", true);
+                displayMessage("reCAPTCHA is not ready. Please wait a moment or refresh the page.", true);
+                initializeRecaptcha(); // Try to initialize it again
                 return;
             }
 
@@ -356,19 +382,14 @@
                 .then((confirmation) => {
                     confirmationResult = confirmation;
                     verificationCodeSection.classList.remove('hidden');
-                    displayMessage("Verification code sent to your phone.", false);
+                    displayMessage("Verification code sent to your phone. Please enter it below.", false);
                     sendCodeBtn.disabled = false; // Re-enable if user needs to resend
                 })
                 .catch((error) => {
                     displayMessage(getFriendlyErrorMessage(error), true);
                     sendCodeBtn.disabled = false; // Re-enable on error
                     // Reset reCAPTCHA if there was an error sending the code
-                    if (recaptchaVerifier) {
-                        recaptchaVerifier.clear();
-                        recaptchaVerifier = null;
-                        // Re-render reCAPTCHA
-                        auth.onAuthStateChanged(auth.currentUser); // Trigger a state change to re-render
-                    }
+                    initializeRecaptcha(); // Force a re-render of reCAPTCHA
                 });
         }
 
@@ -425,10 +446,6 @@
                     displayMessage(getFriendlyErrorMessage(error), true);
                 });
         }
-
-        // Initialize reCAPTCHA on page load if no user is signed in
-        // This is handled by onAuthStateChanged now for better integration
-        // with the sign-in flow.
     </script>
 </body>
 </html>
