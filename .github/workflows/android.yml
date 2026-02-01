@@ -12,11 +12,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: Set up Java 17
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: '17'
+
+      # Safety check – shows files so we KNOW gradlew exists
+      - name: Debug repo structure
+        run: |
+          pwd
+          ls -la
+          ls -la essentials || true
+          ls -la essentials/app || true
 
       - name: Make gradlew executable
         working-directory: essentials/app
@@ -31,3 +39,4 @@ jobs:
         with:
           name: EchoSearch-APK
           path: essentials/app/build/outputs/apk/release/app-release.apk
+          
