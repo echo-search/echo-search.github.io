@@ -1,0 +1,21 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' version '1.9.10'
+}
+
+android {
+    namespace 'com.echosearch.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.echosearch.app"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes { release { minifyEnabled false } }
+}
+
+dependencies { implementation "androidx.appcompat:appcompat:1.7.0" }
