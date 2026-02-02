@@ -449,6 +449,37 @@ function handleMathConversion(query) {
   return null;
 }
 
+async function handleSearch(input) {
+  // Match: "word in language"
+  const match = input.match(/^(.+?)\s+in\s+(.+)$/i);
+
+  // If not a translate-style query, do nothing
+  if (!match) return;
+
+  const word = match[1].trim();
+  const language = match[2].trim();
+
+  try {
+    const url =
+      "https://translate.googleapis.com/translate_a/single" +
+      "?client=gtx" +
+      "&sl=auto" +
+      "&tl=" + encodeURIComponent(language) +
+      "&dt=t" +
+      "&q=" + encodeURIComponent(word);
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    // Combine translated chunks
+    const translated = data[0].map(part => part[0]).join("");
+
+    alert(translated);
+  } catch (err) {
+    alert("Translation failed");
+  }
+}
+
 async function handleDictionarySearch(query) {
   const lower = query.toLowerCase().trim();
   const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
