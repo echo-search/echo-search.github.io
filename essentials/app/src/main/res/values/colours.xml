@@ -1,4 +1,7 @@
-<color name="widget_bg">#FFFFFF</color>
-<color name="widget_text">#666666</color>
-<color name="widget_icon">#5F6368</color>
-<color name="widget_stroke">#E0E0E0</color>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_bg">#FFFFFF</color>
+    <color name="widget_text">#666666</color>
+    <color name="widget_icon">#5F6368</color>
+    <color name="widget_stroke">#E0E0E0</color>
+</resources>
