@@ -1,3 +1,10 @@
+package com.echosearch.app
+
+import android.content.Intent
+import android.os.Bundle
+import android.speech.RecognizerIntent
+import androidx.appcompat.app.AppCompatActivity
+
 class VoiceSearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
