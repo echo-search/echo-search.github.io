@@ -1,40 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:padding="12dp"
-    android:background="@drawable/widget_bg">
+    android:background="@color/widget_bg">
 
     <ImageView
-        android:id="@+id/logo"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:src="@mipmap/ic_launcher"/>
 
     <TextView
-        android:id="@+id/search_hint"
-        android:layout_marginStart="12dp"
-        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
         android:text="Search EchoSearch"
         android:textColor="@color/widget_text"
         android:textSize="16sp"/>
 
     <ImageView
         android:id="@+id/mic"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="12dp"
-        android:src="@android:drawable/ic_btn_speak_now"
-        android:tint="@color/widget_icon"/>
-
-    <ImageView
-        android:id="@+id/search"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@android:drawable/ic_menu_search"
-        android:tint="@color/widget_icon"/>
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@android:drawable/ic_btn_speak_now"/>
 </LinearLayout>
