@@ -450,33 +450,143 @@ function handleMathConversion(query) {
 }
 
 async function handleSearch(input) {
-  // Match: "word in language"
   const match = input.match(/^(.+?)\s+in\s+(.+)$/i);
-
-  // If not a translate-style query, do nothing
-  if (!match) return;
+  if (!match) return null;
 
   const word = match[1].trim();
-  const language = match[2].trim();
+  let language = match[2].trim().toLowerCase();
+
+  const langMap = {
+    af: 'af', afrikaans: 'af',
+    sq: 'sq', albanian: 'sq',
+    am: 'am', amharic: 'am',
+    ar: 'ar', arabic: 'ar',
+    hy: 'hy', armenian: 'hy',
+    az: 'az', azerbaijani: 'az',
+    eu: 'eu', basque: 'eu',
+    be: 'be', belarusian: 'be',
+    bn: 'bn', bengali: 'bn',
+    bs: 'bs', bosnian: 'bs',
+    bg: 'bg', bulgarian: 'bg',
+    ca: 'ca', catalan: 'ca',
+    ceb: 'ceb', cebuano: 'ceb',
+    zh: 'zh-CN', chinese: 'zh-CN', 'chinese simplified': 'zh-CN', 'chinese (simplified)': 'zh-CN', 'zh-cn': 'zh-CN',
+    'zh-tw': 'zh-TW', 'chinese traditional': 'zh-TW', 'chinese (traditional)': 'zh-TW',
+    co: 'co', corsican: 'co',
+    hr: 'hr', croatian: 'hr',
+    cs: 'cs', czech: 'cs',
+    da: 'da', danish: 'da',
+    nl: 'nl', dutch: 'nl',
+    en: 'en', english: 'en',
+    eo: 'eo', esperanto: 'eo',
+    et: 'et', estonian: 'et',
+    fi: 'fi', finnish: 'fi',
+    fr: 'fr', french: 'fr',
+    fy: 'fy', frisian: 'fy',
+    gl: 'gl', galician: 'gl',
+    ka: 'ka', georgian: 'ka',
+    de: 'de', german: 'de',
+    el: 'el', greek: 'el',
+    gu: 'gu', gujarati: 'gu',
+    ht: 'ht', haitian: 'ht',
+    ha: 'ha', hausa: 'ha',
+    haw: 'haw', hawaiian: 'haw',
+    he: 'he', hebrew: 'he',
+    hi: 'hi', hindi: 'hi',
+    hmn: 'hmn', hmong: 'hmn',
+    hu: 'hu', hungarian: 'hu',
+    is: 'is', icelandic: 'is',
+    ig: 'ig', igbo: 'ig',
+    id: 'id', indonesian: 'id',
+    ga: 'ga', irish: 'ga',
+    it: 'it', italian: 'it',
+    ja: 'ja', japanese: 'ja',
+    jw: 'jw', javanese: 'jw',
+    kn: 'kn', kannada: 'kn',
+    kk: 'kk', kazakh: 'kk',
+    km: 'km', khmer: 'km',
+    ko: 'ko', korean: 'ko',
+    ku: 'ku', kurdish: 'ku',
+    ky: 'ky', kyrgyz: 'ky',
+    lo: 'lo', lao: 'lo',
+    la: 'la', latin: 'la',
+    lv: 'lv', latvian: 'lv',
+    lt: 'lt', lithuanian: 'lt',
+    lb: 'lb', luxembourgish: 'lb',
+    mk: 'mk', macedonian: 'mk',
+    mg: 'mg', malagasy: 'mg',
+    ms: 'ms', malay: 'ms',
+    ml: 'ml', malayalam: 'ml',
+    mt: 'mt', maltese: 'mt',
+    mi: 'mi', maori: 'mi',
+    mr: 'mr', marathi: 'mr',
+    mn: 'mn', mongolian: 'mn',
+    my: 'my', burmese: 'my',
+    ne: 'ne', nepali: 'ne',
+    no: 'no', norwegian: 'no',
+    ny: 'ny', chichewa: 'ny',
+    ps: 'ps', pashto: 'ps',
+    fa: 'fa', persian: 'fa',
+    pl: 'pl', polish: 'pl',
+    pt: 'pt', portuguese: 'pt',
+    pa: 'pa', punjabi: 'pa',
+    ro: 'ro', romanian: 'ro',
+    ru: 'ru', russian: 'ru',
+    sm: 'sm', samoan: 'sm',
+    gd: 'gd', scots_gaelic: 'gd', 'scots gaelic': 'gd',
+    sr: 'sr', serbian: 'sr',
+    st: 'st', sesotho: 'st',
+    sn: 'sn', shona: 'sn',
+    sd: 'sd', sindhi: 'sd',
+    si: 'si', sinhala: 'si',
+    sk: 'sk', slovak: 'sk',
+    sl: 'sl', slovenian: 'sl',
+    so: 'so', somali: 'so',
+    es: 'es', spanish: 'es',
+    su: 'su', sundanese: 'su',
+    sw: 'sw', swahili: 'sw',
+    sv: 'sv', swedish: 'sv',
+    tg: 'tg', tajik: 'tg',
+    ta: 'ta', tamil: 'ta',
+    te: 'te', telugu: 'te',
+    th: 'th', thai: 'th',
+    tr: 'tr', turkish: 'tr',
+    tk: 'tk', turkmen: 'tk',
+    uk: 'uk', ukrainian: 'uk',
+    ur: 'ur', urdu: 'ur',
+    uz: 'uz', uzbek: 'uz',
+    vi: 'vi', vietnamese: 'vi',
+    cy: 'cy', welsh: 'cy',
+    xh: 'xh', xhosa: 'xh',
+    yi: 'yi', yiddish: 'yi',
+    yo: 'yo', yoruba: 'yo',
+    zu: 'zu', zulu: 'zu'
+  };
+
+  language = language.replace(/\s+/g, ' ').trim();
+  const tl = langMap[language] || langMap[language.toLowerCase()] || language;
 
   try {
     const url =
       "https://translate.googleapis.com/translate_a/single" +
       "?client=gtx" +
       "&sl=auto" +
-      "&tl=" + encodeURIComponent(language) +
+      "&tl=" + encodeURIComponent(tl) +
       "&dt=t" +
       "&q=" + encodeURIComponent(word);
 
     const res = await fetch(url);
+    if (!res.ok) return 'Translation failed: network error ' + res.status;
     const data = await res.json();
 
-    // Combine translated chunks
-    const translated = data[0].map(part => part[0]).join("");
+    if (Array.isArray(data) && Array.isArray(data[0])) {
+      const translated = data[0].map(part => part[0]).join("");
+      return translated || "No translation returned.";
+    }
 
-    alert(translated);
+    return "No translation returned.";
   } catch (err) {
-    alert("Translation failed");
+    return "Translation failed: " + (err && err.message ? err.message : "unknown error");
   }
 }
 
@@ -598,15 +708,24 @@ searchBtn.addEventListener("click", async function() {
   const query = searchInput.value.trim();
   if(!query) return;
 
+  const translation = await handleSearch(query);
+  if (translation !== null) {
+    alert(translation);
+    searchInput.value = "";
+    return;
+  }
+
   const def = await handleDictionarySearch(query);
   if (def) {
     alert(def);
+    searchInput.value = "";
     return;
   }
 
   const result = handleMathConversion(query);
   if(result) {
     alert(result);
+    searchInput.value = "";
     return;
   }
 
