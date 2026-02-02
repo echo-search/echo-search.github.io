@@ -17,11 +17,21 @@ class MainActivity : AppCompatActivity() {
         val settings: WebSettings = webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
-        settings.userAgentString = settings.userAgentString + " EchoSearchApp"
+        settings.userAgentString =
+            settings.userAgentString + " EchoSearchApp"
 
         webView.webViewClient = WebViewClient()
 
-        // Load EchoSearch
-        webView.loadUrl("https://echo-search.github.io")
+        val query = intent.getStringExtra("query")
+
+        if (query != null) {
+            webView.loadUrl(
+                "https://echo-search.github.io/#gsc.tab=0&gsc.q=$query&gsc.sort="
+            )
+        } else {
+            webView.loadUrl(
+                "https://echo-search.github.io"
+            )
+        }
     }
 }
