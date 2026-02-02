@@ -15,9 +15,16 @@ class EchoSearchWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (id in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.echosearch_widget)
+            val views = RemoteViews(
+                context.packageName,
+                R.layout.echosearch_widget
+            )
 
-            val openAppIntent = Intent(context, MainActivity::class.java)
+            val openAppIntent =
+                Intent(context, MainActivity::class.java).apply {
+                    putExtra("query", "")
+                }
+
             val openAppPI = PendingIntent.getActivity(
                 context, 0, openAppIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
