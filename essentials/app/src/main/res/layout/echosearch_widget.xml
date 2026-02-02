@@ -4,27 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="12dp"
-    android:background="@color/widget_bg">
-
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@mipmap/ic_launcher"/>
+    android:background="@color/widget_bg"
+    android:padding="12dp">
 
     <TextView
+        android:id="@+id/widget_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="12dp"
-        android:text="Search EchoSearch"
+        android:text="EchoSearch"
         android:textColor="@color/widget_text"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <ImageView
         android:id="@+id/mic"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:src="@android:drawable/ic_btn_speak_now"/>
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_mic" />
 </LinearLayout>
