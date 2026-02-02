@@ -79,14 +79,6 @@
         button.phone-auth:hover {
             background-color: #1669d7;
         }
-        button.anonymous-auth {
-            background-color: #607d8b; /* Grey-blue for anonymous */
-            color: white;
-            margin-top: 15px;
-        }
-        button.anonymous-auth:hover {
-            background-color: #455a64;
-        }
         button.sign-out-button {
             background-color: #6c757d; /* Grey for sign out */
             color: white;
@@ -169,12 +161,6 @@
             <!-- Google Sign-In Section -->
             <h3>Or use Google</h3>
             <button class="google-auth" onclick="signInWithGoogle()">Sign in with Google</button>
-
-            <hr>
-
-            <!-- Anonymous Sign-In Section -->
-            <h3>Or browse anonymously</h3>
-            <button class="anonymous-auth" onclick="signInAnonymously()">Sign In Anonymously</button>
         </div>
 
         <div id="sign-out-section" class="hidden">
@@ -261,8 +247,6 @@
                     return "reCAPTCHA verification failed. Please try again.";
                 case 'auth/web-storage-unsupported':
                     return "Your browser does not support web storage (e.g., cookies), which is required for sign-in. Please try a different browser or enable cookies.";
-                case 'auth/operation-not-allowed': // Added for anonymous auth specific error
-                    return "Anonymous sign-in is not enabled. Please enable it in Firebase Console > Authentication > Sign-in method.";
                 default:
                     return `An unexpected error occurred. Please try again. (Code: ${error.code})`;
             }
@@ -341,11 +325,7 @@
         auth.onAuthStateChanged(function(user) {
             console.log("[AuthState] onAuthStateChanged fired. User:", user ? user.uid : "null");
             if (user) {
-                let userIdentifier = user.displayName || user.email || user.phoneNumber;
-                if (user.isAnonymous) {
-                    userIdentifier = `Anonymous User (UID: ${user.uid.substring(0, 8)}...)`; // Shorten UID for display
-                }
-                authStatusElement.innerHTML = `Welcome, <span class="success">${userIdentifier}</span>!`;
+                authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email || user.phoneNumber}</span>!`;
                 displayMessage('', false);
                 authForms.classList.add('hidden');
                 signOutSection.classList.remove('hidden');
@@ -425,20 +405,6 @@
                 })
                 .catch((error) => {
                     displayMessage(getFriendlyErrorMessage(error), true);
-                });
-        }
-
-        function signInAnonymously() {
-            displayMessage('', false);
-            console.log("[AnonymousAuth] Attempting anonymous sign-in.");
-            auth.signInAnonymously()
-                .then(() => {
-                    displayMessage("Signed in anonymously!", false);
-                    console.log("[AnonymousAuth] Successfully signed in anonymously.");
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                    console.error("[AnonymousAuth] Error signing in anonymously:", error);
                 });
         }
 
