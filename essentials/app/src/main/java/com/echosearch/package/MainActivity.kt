@@ -22,6 +22,6 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
 
         // Load EchoSearch
-        webView.loadUrl("https://echo-search-engine.netlify.app")
+        webView.loadUrl("https://echo-search.github.io")
     }
 }
