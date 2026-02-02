@@ -470,8 +470,8 @@ async function handleSearch(input) {
     bg: 'bg', bulgarian: 'bg',
     ca: 'ca', catalan: 'ca',
     ceb: 'ceb', cebuano: 'ceb',
-    zh: 'zh-CN', chinese: 'zh-CN', 'chinese simplified': 'zh-CN', 'chinese (simplified)': 'zh-CN', 'zh-cn': 'zh-CN',
-    'zh-tw': 'zh-TW', 'chinese traditional': 'zh-TW', 'chinese (traditional)': 'zh-TW',
+    zh: 'zh', chinese: 'zh', 'chinese simplified': 'zh', 'chinese (simplified)': 'zh', 'zh-cn': 'zh',
+    'zh-tw': 'zh', 'chinese traditional': 'zh', 'chinese (traditional)': 'zh',
     co: 'co', corsican: 'co',
     hr: 'hr', croatian: 'hr',
     cs: 'cs', czech: 'cs',
@@ -567,23 +567,16 @@ async function handleSearch(input) {
   const tl = langMap[language] || langMap[language.toLowerCase()] || language;
 
   try {
-    const url =
-      "https://translate.googleapis.com/translate_a/single" +
-      "?client=gtx" +
-      "&sl=auto" +
-      "&tl=" + encodeURIComponent(tl) +
-      "&dt=t" +
-      "&q=" + encodeURIComponent(word);
-
-    const res = await fetch(url);
+    const url = "https://libretranslate.de/translate";
+    const payload = { q: word, source: "auto", target: tl, format: "text" };
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
     if (!res.ok) return 'Translation failed: network error ' + res.status;
     const data = await res.json();
-
-    if (Array.isArray(data) && Array.isArray(data[0])) {
-      const translated = data[0].map(part => part[0]).join("");
-      return translated || "No translation returned.";
-    }
-
+    if (data && data.translatedText) return data.translatedText;
     return "No translation returned.";
   } catch (err) {
     return "Translation failed: " + (err && err.message ? err.message : "unknown error");
@@ -712,6 +705,7 @@ searchBtn.addEventListener("click", async function() {
   if (translation !== null) {
     alert(translation);
     searchInput.value = "";
+    chatBtn.style.display = "block";
     return;
   }
 
@@ -719,6 +713,7 @@ searchBtn.addEventListener("click", async function() {
   if (def) {
     alert(def);
     searchInput.value = "";
+    chatBtn.style.display = "block";
     return;
   }
 
@@ -726,11 +721,13 @@ searchBtn.addEventListener("click", async function() {
   if(result) {
     alert(result);
     searchInput.value = "";
+    chatBtn.style.display = "block";
     return;
   }
 
   doSearch(query);
   searchInput.value = "";
+  chatBtn.style.display = "block";
 });
 
 let currentScript = null;
@@ -893,10 +890,6 @@ clearBtn.addEventListener("click", () => {
 });
 
 renderHistory();
-
-searchBtn.addEventListener("click", function () {
-  chatBtn.style.display = "block";
-});
 
 chatBtn.addEventListener("click", () => {
   window.open("https://chatgpt.com", "_blank");
