@@ -459,19 +459,21 @@ async function handleWeather(input) {
   const isTomorrow = !!tomorrowMatch;
 
   try {
-    // 1️⃣ Geocode place → lat/lon
+    // 1) Geocode place → lat/lon (limit=1)
     const geoRes = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`
+      `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}`
     );
+    if (!geoRes.ok) return `Couldn't find "${place}".`;
     const geo = await geoRes.json();
     if (!geo.length) return `Couldn't find "${place}".`;
 
     const { lat, lon, display_name } = geo[0];
 
-    // 2️⃣ Fetch weather
+    // 2) Fetch weather - fixed URL and timezone=auto
     const wRes = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
     );
+    if (!wRes.ok) return "Weather lookup failed.";
     const w = await wRes.json();
 
     // Weather code → emoji
@@ -484,6 +486,9 @@ async function handleWeather(input) {
 
     // 🌤 Tomorrow
     if (isTomorrow) {
+      if (!w.daily || !Array.isArray(w.daily.temperature_2m_max) || w.daily.temperature_2m_max.length < 2) {
+        return `No forecast available for tomorrow in ${display_name}.`;
+      }
       return `
 🌍 Tomorrow in ${display_name}
 
@@ -494,39 +499,44 @@ ${icon(w.daily.weathercode[1])}
     }
 
     // 🌦 Today + next 6 hours
-    const nowHour = new Date().toISOString().slice(0,13);
-    const start = w.hourly.time.findIndex(t => t.startsWith(nowHour));
+    // Build local hour prefix (YYYY-MM-DDTHH) to match returned hourly.time (timezone=auto aligns times)
+    const pad = n => String(n).padStart(2, '0');
+    const d = new Date();
+    const nowHour = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}`;
+
+    let start = -1;
+    if (w.hourly && Array.isArray(w.hourly.time)) {
+      start = w.hourly.time.findIndex(t => t.startsWith(nowHour));
+    }
+
+    // fallback to 0 if not found
+    if (start === -1) start = 0;
 
     let hours = "";
     for (let i = start; i < start + 6; i++) {
       if (!w.hourly.time[i]) break;
-      hours += `\n${w.hourly.time[i].slice(11,16)} — ${icon(w.hourly.weathercode[i])} ${w.hourly.temperature_2m[i]}°C`;
+      hours += `\n${w.hourly.time[i].slice(11,16)} — ${icon(w.hourly.weathercode[i]) || ''} ${w.hourly.temperature_2m[i]}°C`;
     }
 
     return `
 🌍 Weather in ${display_name}
 
-${icon(w.current_weather.weathercode)}
-🌡️ Now: ${w.current_weather.temperature}°C
-🌬️ Wind: ${w.current_weather.windspeed} km/h
+${icon(w.current_weather?.weathercode)}
+🌡️ Now: ${w.current_weather?.temperature}°C
+🌬️ Wind: ${w.current_weather?.windspeed ?? 'N/A'} km/h
 
 🕒 Next hours:${hours}
     `.trim();
 
   } catch (e) {
+    console.error('handleWeather error', e);
     return "Weather lookup failed.";
   }
 }
 
 /* =========================
-   🔌 FINAL WIRING (REQUIRED)
+   🔌 EVENT HANDLERS & WIRING
    ========================= */
-
-const result = await handleWeather(userInput);
-if (result) {
-  alert(result);
-  return;
-}
 
 const langMap = {
   af: 'af', afrikaans: 'af',
@@ -790,6 +800,19 @@ function doSearch(query) {
 searchBtn.addEventListener("click", async function() {
   const query = searchInput.value.trim();
   if(!query) return;
+
+  // WEATHER: check first and short-circuit if matched
+  try {
+    const weatherResult = await handleWeather(query);
+    if (weatherResult) {
+      alert(weatherResult);
+      searchInput.value = "";
+      chatBtn.style.display = "block";
+      return;
+    }
+  } catch (e) {
+    console.error('Weather handler threw', e);
+  }
 
   const translation = await handleSearch(query);
   if (translation !== null) {
