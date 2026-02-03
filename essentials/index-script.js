@@ -449,6 +449,85 @@ function handleMathConversion(query) {
   return null;
 }
 
+async function handleWeather(input) {
+  const tomorrowMatch = input.match(/^weather\s+tomorrow\s+in\s+(.+)$/i);
+  const todayMatch = input.match(/^weather\s+in\s+(.+)$/i);
+
+  if (!tomorrowMatch && !todayMatch) return null;
+
+  const place = (tomorrowMatch || todayMatch)[1].trim();
+  const isTomorrow = !!tomorrowMatch;
+
+  try {
+    // 1️⃣ Geocode place → lat/lon
+    const geoRes = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`
+    );
+    const geo = await geoRes.json();
+    if (!geo.length) return `Couldn't find "${place}".`;
+
+    const { lat, lon, display_name } = geo[0];
+
+    // 2️⃣ Fetch weather
+    const wRes = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
+    );
+    const w = await wRes.json();
+
+    // Weather code → emoji
+    const icon = c => ({
+      0:"☀️",1:"🌤️",2:"⛅",3:"☁️",
+      45:"🌫️",48:"🌫️",
+      51:"🌦️",61:"🌧️",71:"❄️",
+      95:"⛈️"
+    }[c] || "🌡️");
+
+    // 🌤 Tomorrow
+    if (isTomorrow) {
+      return `
+🌍 Tomorrow in ${display_name}
+
+${icon(w.daily.weathercode[1])}
+🌡️ High: ${w.daily.temperature_2m_max[1]}°C
+🌡️ Low: ${w.daily.temperature_2m_min[1]}°C
+      `.trim();
+    }
+
+    // 🌦 Today + next 6 hours
+    const nowHour = new Date().toISOString().slice(0,13);
+    const start = w.hourly.time.findIndex(t => t.startsWith(nowHour));
+
+    let hours = "";
+    for (let i = start; i < start + 6; i++) {
+      if (!w.hourly.time[i]) break;
+      hours += `\n${w.hourly.time[i].slice(11,16)} — ${icon(w.hourly.weathercode[i])} ${w.hourly.temperature_2m[i]}°C`;
+    }
+
+    return `
+🌍 Weather in ${display_name}
+
+${icon(w.current_weather.weathercode)}
+🌡️ Now: ${w.current_weather.temperature}°C
+🌬️ Wind: ${w.current_weather.windspeed} km/h
+
+🕒 Next hours:${hours}
+    `.trim();
+
+  } catch (e) {
+    return "Weather lookup failed.";
+  }
+}
+
+/* =========================
+   🔌 FINAL WIRING (REQUIRED)
+   ========================= */
+
+const result = await handleWeather(userInput);
+if (result) {
+  alert(result);
+  return;
+}
+
 const langMap = {
   af: 'af', afrikaans: 'af',
   sq: 'sq', albanian: 'sq',
