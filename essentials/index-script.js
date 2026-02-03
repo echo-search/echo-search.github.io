@@ -567,16 +567,46 @@ async function handleSearch(input) {
   const tl = langMap[language] || langMap[language.toLowerCase()] || language;
 
   try {
-    const url = "https://libretranslate.de/translate";
-    const payload = { q: word, source: "auto", target: tl, format: "text" };
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    const url = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=" + encodeURIComponent(tl) + "&q=" + encodeURIComponent(word);
+    const res = await fetch(url, { method: "GET", headers: { "Accept": "application/json" }});
     if (!res.ok) return 'Translation failed: network error ' + res.status;
-    const data = await res.json();
-    if (data && data.translatedText) return data.translatedText;
+    let data;
+    try {
+      data = await res.json();
+    } catch (e) {
+      const text = await res.text();
+      try {
+        data = JSON.parse(text);
+      } catch (ee) {
+        data = text;
+      }
+    }
+
+    function extractTextFrom(obj) {
+      if (!obj && obj !== 0) return "";
+      if (typeof obj === "string") return obj;
+      if (typeof obj === "number") return String(obj);
+      if (Array.isArray(obj)) {
+        for (const item of obj) {
+          const t = extractTextFrom(item);
+          if (t) return t;
+        }
+        return "";
+      }
+      if (typeof obj === "object") {
+        for (const k in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, k)) {
+            const t = extractTextFrom(obj[k]);
+            if (t) return t;
+          }
+        }
+      }
+      return "";
+    }
+
+    const translated = extractTextFrom(data);
+    if (translated) return translated;
+    if (typeof data === "string") return data;
     return "No translation returned.";
   } catch (err) {
     return "Translation failed: " + (err && err.message ? err.message : "unknown error");
