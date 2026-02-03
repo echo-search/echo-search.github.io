@@ -734,7 +734,7 @@ function play67Effect() {
   for (let i = 0; i < 80; i++) {
     setTimeout(() => {
       const emoji = document.createElement("span");
-      emoji.textContent = "6ï¸â£7ï¸â£";
+      emoji.textContent = "6️⃣7️⃣";
 
       const x = Math.random() * window.innerWidth;
       const y = Math.random() * window.innerHeight;
