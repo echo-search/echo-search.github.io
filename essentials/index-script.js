@@ -449,6 +449,27 @@ function handleMathConversion(query) {
   return null;
 }
 
+async function handleWhoIs(input) {
+  const match = input.match(/^who\s+is\s+(.+)$/i);
+  if (!match) return null;
+
+  const person = match[1].trim();
+
+  try {
+    const res = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(person)}`
+    );
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data.extract) return null;
+
+    return alert(`${data.title}\n\n${data.extract}`);
+  } catch {
+    return null;
+  }
+}
+
 async function handleWeather(input) {
   const tomorrowMatch = input.match(/^weather\s+tomorrow\s+in\s+(.+)$/i);
   const todayMatch = input.match(/^weather\s+in\s+(.+)$/i);
@@ -817,6 +838,13 @@ searchBtn.addEventListener("click", async function() {
   const translation = await handleSearch(query);
   if (translation !== null) {
     alert(translation);
+    searchInput.value = "";
+    chatBtn.style.display = "block";
+    return;
+  }
+
+  const result = await handleWhoIs(query);
+  if (result !== null) {
     searchInput.value = "";
     chatBtn.style.display = "block";
     return;
