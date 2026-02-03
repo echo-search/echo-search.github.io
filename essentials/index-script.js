@@ -449,167 +449,148 @@ function handleMathConversion(query) {
   return null;
 }
 
+const langMap = {
+  af: 'af', afrikaans: 'af',
+  sq: 'sq', albanian: 'sq',
+  am: 'am', amharic: 'am',
+  ar: 'ar', arabic: 'ar',
+  hy: 'hy', armenian: 'hy',
+  az: 'az', azerbaijani: 'az',
+  eu: 'eu', basque: 'eu',
+  be: 'be', belarusian: 'be',
+  bn: 'bn', bengali: 'bn',
+  bs: 'bs', bosnian: 'bs',
+  bg: 'bg', bulgarian: 'bg',
+  ca: 'ca', catalan: 'ca',
+  ceb: 'ceb', cebuano: 'ceb',
+  zh: 'zh', chinese: 'zh',
+  'chinese simplified': 'zh',
+  'chinese (simplified)': 'zh',
+  'simplified chinese': 'zh',
+  'traditional chinese': 'zh',
+  'chinese traditional': 'zh',
+  'chinese (traditional)': 'zh',
+  'zh-cn': 'zh', 'zh-tw': 'zh',
+  co: 'co', corsican: 'co',
+  hr: 'hr', croatian: 'hr',
+  cs: 'cs', czech: 'cs',
+  da: 'da', danish: 'da',
+  nl: 'nl', dutch: 'nl',
+  en: 'en', english: 'en',
+  'british english': 'en',
+  'uk english': 'en',
+  eo: 'eo', esperanto: 'eo',
+  et: 'et', estonian: 'et',
+  fi: 'fi', finnish: 'fi',
+  fr: 'fr', french: 'fr',
+  fy: 'fy', frisian: 'fy',
+  gl: 'gl', galician: 'gl',
+  ka: 'ka', georgian: 'ka',
+  de: 'de', german: 'de',
+  el: 'el', greek: 'el',
+  gu: 'gu', gujarati: 'gu',
+  ht: 'ht', haitian: 'ht',
+  ha: 'ha', hausa: 'ha',
+  haw: 'haw', hawaiian: 'haw',
+  he: 'he', hebrew: 'he',
+  hi: 'hi', hindi: 'hi',
+  hmn: 'hmn', hmong: 'hmn',
+  hu: 'hu', hungarian: 'hu',
+  is: 'is', icelandic: 'is',
+  ig: 'ig', igbo: 'ig',
+  id: 'id', indonesian: 'id',
+  ga: 'ga', irish: 'ga',
+  it: 'it', italian: 'it',
+  ja: 'ja', japanese: 'ja',
+  jw: 'jw', javanese: 'jw',
+  kn: 'kn', kannada: 'kn',
+  kk: 'kk', kazakh: 'kk',
+  km: 'km', khmer: 'km',
+  ko: 'ko', korean: 'ko',
+  ku: 'ku', kurdish: 'ku',
+  ky: 'ky', kyrgyz: 'ky',
+  lo: 'lo', lao: 'lo',
+  la: 'la', latin: 'la',
+  lv: 'lv', latvian: 'lv',
+  lt: 'lt', lithuanian: 'lt',
+  lb: 'lb', luxembourgish: 'lb',
+  mk: 'mk', macedonian: 'mk',
+  mg: 'mg', malagasy: 'mg',
+  ms: 'ms', malay: 'ms',
+  ml: 'ml', malayalam: 'ml',
+  mt: 'mt', maltese: 'mt',
+  mi: 'mi', maori: 'mi',
+  mr: 'mr', marathi: 'mr',
+  mn: 'mn', mongolian: 'mn',
+  my: 'my', burmese: 'my',
+  ne: 'ne', nepali: 'ne',
+  no: 'no', norwegian: 'no',
+  ny: 'ny', chichewa: 'ny',
+  ps: 'ps', pashto: 'ps',
+  fa: 'fa', persian: 'fa',
+  pl: 'pl', polish: 'pl',
+  pt: 'pt', portuguese: 'pt',
+  pa: 'pa', punjabi: 'pa',
+  ro: 'ro', romanian: 'ro',
+  ru: 'ru', russian: 'ru',
+  sm: 'sm', samoan: 'sm',
+  gd: 'gd', 'scots gaelic': 'gd',
+  sr: 'sr', serbian: 'sr',
+  st: 'st', sesotho: 'st',
+  sn: 'sn', shona: 'sn',
+  sd: 'sd', sindhi: 'sd',
+  si: 'si', sinhala: 'si',
+  sk: 'sk', slovak: 'sk',
+  sl: 'sl', slovenian: 'sl',
+  so: 'so', somali: 'so',
+  es: 'es', spanish: 'es',
+  su: 'su', sundanese: 'su',
+  sw: 'sw', swahili: 'sw',
+  sv: 'sv', swedish: 'sv',
+  tg: 'tg', tajik: 'tg',
+  ta: 'ta', tamil: 'ta',
+  te: 'te', telugu: 'te',
+  th: 'th', thai: 'th',
+  tr: 'tr', turkish: 'tr',
+  tk: 'tk', turkmen: 'tk',
+  uk: 'uk', ukrainian: 'uk',
+  ur: 'ur', urdu: 'ur',
+  uz: 'uz', uzbek: 'uz',
+  vi: 'vi', vietnamese: 'vi',
+  cy: 'cy', welsh: 'cy',
+  xh: 'xh', xhosa: 'xh',
+  yi: 'yi', yiddish: 'yi',
+  yo: 'yo', yoruba: 'yo',
+  zu: 'zu', zulu: 'zu'
+};
+
 async function handleSearch(input) {
-  const match = input.match(/^(.+?)\s+in\s+(.+)$/i);
+  // Trigger ONLY on: one word + "in" + language
+  const match = input.match(/^([a-zA-Z]+)\s+in\s+([a-zA-Z\s]+)$/i);
   if (!match) return null;
 
   const word = match[1].trim();
-  let language = match[2].trim().toLowerCase();
 
-  const langMap = {
-    af: 'af', afrikaans: 'af',
-    sq: 'sq', albanian: 'sq',
-    am: 'am', amharic: 'am',
-    ar: 'ar', arabic: 'ar',
-    hy: 'hy', armenian: 'hy',
-    az: 'az', azerbaijani: 'az',
-    eu: 'eu', basque: 'eu',
-    be: 'be', belarusian: 'be',
-    bn: 'bn', bengali: 'bn',
-    bs: 'bs', bosnian: 'bs',
-    bg: 'bg', bulgarian: 'bg',
-    ca: 'ca', catalan: 'ca',
-    ceb: 'ceb', cebuano: 'ceb',
-    zh: 'zh', chinese: 'zh', 'chinese simplified': 'zh', 'chinese (simplified)': 'zh', 'zh-cn': 'zh',
-    'zh-tw': 'zh', 'chinese traditional': 'zh', 'chinese (traditional)': 'zh',
-    co: 'co', corsican: 'co',
-    hr: 'hr', croatian: 'hr',
-    cs: 'cs', czech: 'cs',
-    da: 'da', danish: 'da',
-    nl: 'nl', dutch: 'nl',
-    en: 'en', english: 'en',
-    eo: 'eo', esperanto: 'eo',
-    et: 'et', estonian: 'et',
-    fi: 'fi', finnish: 'fi',
-    fr: 'fr', french: 'fr',
-    fy: 'fy', frisian: 'fy',
-    gl: 'gl', galician: 'gl',
-    ka: 'ka', georgian: 'ka',
-    de: 'de', german: 'de',
-    el: 'el', greek: 'el',
-    gu: 'gu', gujarati: 'gu',
-    ht: 'ht', haitian: 'ht',
-    ha: 'ha', hausa: 'ha',
-    haw: 'haw', hawaiian: 'haw',
-    he: 'he', hebrew: 'he',
-    hi: 'hi', hindi: 'hi',
-    hmn: 'hmn', hmong: 'hmn',
-    hu: 'hu', hungarian: 'hu',
-    is: 'is', icelandic: 'is',
-    ig: 'ig', igbo: 'ig',
-    id: 'id', indonesian: 'id',
-    ga: 'ga', irish: 'ga',
-    it: 'it', italian: 'it',
-    ja: 'ja', japanese: 'ja',
-    jw: 'jw', javanese: 'jw',
-    kn: 'kn', kannada: 'kn',
-    kk: 'kk', kazakh: 'kk',
-    km: 'km', khmer: 'km',
-    ko: 'ko', korean: 'ko',
-    ku: 'ku', kurdish: 'ku',
-    ky: 'ky', kyrgyz: 'ky',
-    lo: 'lo', lao: 'lo',
-    la: 'la', latin: 'la',
-    lv: 'lv', latvian: 'lv',
-    lt: 'lt', lithuanian: 'lt',
-    lb: 'lb', luxembourgish: 'lb',
-    mk: 'mk', macedonian: 'mk',
-    mg: 'mg', malagasy: 'mg',
-    ms: 'ms', malay: 'ms',
-    ml: 'ml', malayalam: 'ml',
-    mt: 'mt', maltese: 'mt',
-    mi: 'mi', maori: 'mi',
-    mr: 'mr', marathi: 'mr',
-    mn: 'mn', mongolian: 'mn',
-    my: 'my', burmese: 'my',
-    ne: 'ne', nepali: 'ne',
-    no: 'no', norwegian: 'no',
-    ny: 'ny', chichewa: 'ny',
-    ps: 'ps', pashto: 'ps',
-    fa: 'fa', persian: 'fa',
-    pl: 'pl', polish: 'pl',
-    pt: 'pt', portuguese: 'pt',
-    pa: 'pa', punjabi: 'pa',
-    ro: 'ro', romanian: 'ro',
-    ru: 'ru', russian: 'ru',
-    sm: 'sm', samoan: 'sm',
-    gd: 'gd', scots_gaelic: 'gd', 'scots gaelic': 'gd',
-    sr: 'sr', serbian: 'sr',
-    st: 'st', sesotho: 'st',
-    sn: 'sn', shona: 'sn',
-    sd: 'sd', sindhi: 'sd',
-    si: 'si', sinhala: 'si',
-    sk: 'sk', slovak: 'sk',
-    sl: 'sl', slovenian: 'sl',
-    so: 'so', somali: 'so',
-    es: 'es', spanish: 'es',
-    su: 'su', sundanese: 'su',
-    sw: 'sw', swahili: 'sw',
-    sv: 'sv', swedish: 'sv',
-    tg: 'tg', tajik: 'tg',
-    ta: 'ta', tamil: 'ta',
-    te: 'te', telugu: 'te',
-    th: 'th', thai: 'th',
-    tr: 'tr', turkish: 'tr',
-    tk: 'tk', turkmen: 'tk',
-    uk: 'uk', ukrainian: 'uk',
-    ur: 'ur', urdu: 'ur',
-    uz: 'uz', uzbek: 'uz',
-    vi: 'vi', vietnamese: 'vi',
-    cy: 'cy', welsh: 'cy',
-    xh: 'xh', xhosa: 'xh',
-    yi: 'yi', yiddish: 'yi',
-    yo: 'yo', yoruba: 'yo',
-    zu: 'zu', zulu: 'zu'
-  };
+  let language = match[2]
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
 
-  language = language.replace(/\s+/g, ' ').trim();
-  const tl = langMap[language] || langMap[language.toLowerCase()] || language;
+  if (!langMap[language]) return null;
+
+  const tl = langMap[language];
 
   try {
-    const url = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=" + encodeURIComponent(tl) + "&q=" + encodeURIComponent(word);
-    const res = await fetch(url, { method: "GET", headers: { "Accept": "application/json" }});
-    if (!res.ok) return 'Translation failed: network error ' + res.status;
-    let data;
-    try {
-      data = await res.json();
-    } catch (e) {
-      const text = await res.text();
-      try {
-        data = JSON.parse(text);
-      } catch (ee) {
-        data = text;
-      }
-    }
+    const res = await fetch(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${encodeURIComponent(word)}`
+    );
 
-    function extractTextFrom(obj) {
-      if (!obj && obj !== 0) return "";
-      if (typeof obj === "string") return obj;
-      if (typeof obj === "number") return String(obj);
-      if (Array.isArray(obj)) {
-        for (const item of obj) {
-          const t = extractTextFrom(item);
-          if (t) return t;
-        }
-        return "";
-      }
-      if (typeof obj === "object") {
-        for (const k in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, k)) {
-            const t = extractTextFrom(obj[k]);
-            if (t) return t;
-          }
-        }
-      }
-      return "";
-    }
+    if (!res.ok) return "Translation failed.";
 
-    const translated = extractTextFrom(data);
-    if (translated) return translated;
-    if (typeof data === "string") return data;
-    return "No translation returned.";
-  } catch (err) {
-    return "Translation failed: " + (err && err.message ? err.message : "unknown error");
+    const data = await res.json();
+    return data?.[0]?.[0]?.[0] || "No translation returned.";
+  } catch {
+    return "Translation failed.";
   }
 }
 
