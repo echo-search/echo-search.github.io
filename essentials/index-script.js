@@ -723,6 +723,27 @@ async function handleDictionarySearch(query) {
   return "No definition found.";
 }
 
+async function handleWhoIs(input) {
+  const match = input.match(/^who\s+is\s+(.+)$/i);
+  if (!match) return null;
+
+  const person = match[1].trim();
+
+  try {
+    const res = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(person)}`
+    );
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data.extract) return null;
+
+    return `${data.title}\n\n${data.extract}`;
+  } catch {
+    return null;
+  }
+}
+
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -814,6 +835,20 @@ searchBtn.addEventListener("click", async function() {
     console.error('Weather handler threw', e);
   }
 
+  // WHO IS: check for Wikipedia lookup
+  try {
+    const whoIsResult = await handleWhoIs(query);
+    if (whoIsResult) {
+      alert(whoIsResult);
+      searchInput.value = "";
+      chatBtn.style.display = "block";
+      return;
+    }
+  } catch (e) {
+    console.error('WhoIs handler threw', e);
+  }
+
+  // TRANSLATION: check for translation
   const translation = await handleSearch(query);
   if (translation !== null) {
     alert(translation);
@@ -822,6 +857,7 @@ searchBtn.addEventListener("click", async function() {
     return;
   }
 
+  // DICTIONARY: check for dictionary definition
   const def = await handleDictionarySearch(query);
   if (def) {
     alert(def);
@@ -830,6 +866,7 @@ searchBtn.addEventListener("click", async function() {
     return;
   }
 
+  // MATH/CONVERSION: check for math or unit conversion
   const result = handleMathConversion(query);
   if(result) {
     alert(result);
@@ -838,6 +875,7 @@ searchBtn.addEventListener("click", async function() {
     return;
   }
 
+  // If none of the above, perform regular search
   doSearch(query);
   searchInput.value = "";
   chatBtn.style.display = "block";
