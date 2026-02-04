@@ -32,7 +32,7 @@ const facts = [
     "Why don't eggs tell jokes? They'd crack each other up.",
     "What do you call a fish wearing a bowtie? Sofishticated.",
     "Why did the bicycle fall over? It was two-tired.",
-    "I tried to catch fog yesterdayâ¦ Mist.",
+    "I tried to catch fog yesterday… Mist.",
     "Why don't oysters donate to charity? Because they're shellfish.",
     "What do you call cheese that isn't yours? Nacho cheese.",
     "Why did the tomato blush? Because it saw the salad dressing!",
@@ -190,7 +190,7 @@ function domainSearchHandler(query) {
 
     const sep = document.createElement('option');
     sep.disabled = true;
-    sep.textContent = 'ââââââââââ Custom Themes ââââââââââ';
+    sep.textContent = '──────────────── Custom Themes ────────────────';
     themeSelect.appendChild(sep);
 
     const customs = loadCustomThemes();
@@ -411,7 +411,7 @@ function handleMathConversion(query) {
   query = query.trim();
 
   try {
-    if (/^[0-9+\-*/^().\sÃÂÃÂ·eE,]+$|^[a-zA-Z0-9+\-*/^().\sÃÂÃÂ·eE,]+$/.test(query)) {
+    if (/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
       return "Result: " + eval(query);
     }
   } catch(e) { }
@@ -459,7 +459,7 @@ async function handleWeather(input) {
   const isTomorrow = !!tomorrowMatch;
 
   try {
-    // 1) Geocode place â lat/lon (limit=1)
+    // 1) Geocode place → lat/lon (limit=1)
     const geoRes = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}`
     );
@@ -476,29 +476,29 @@ async function handleWeather(input) {
     if (!wRes.ok) return "Weather lookup failed.";
     const w = await wRes.json();
 
-    // Weather code â emoji
+    // Weather code → emoji
     const icon = c => ({
-      0:"âï¸",1:"ð¤ï¸",2:"â",3:"âï¸",
-      45:"ð«ï¸",48:"ð«ï¸",
-      51:"ð¦ï¸",61:"ð§ï¸",71:"âï¸",
-      95:"âï¸"
-    }[c] || "ð¡ï¸");
+      0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",
+      45:"🌫️",48:"🌫️",
+      51:"🌦️",61:"🌧️",71:"🌨️",
+      95:"⛈️"
+    }[c] || "🌡️");
 
-    // ð¤ Tomorrow
+    // 🌤 Tomorrow
     if (isTomorrow) {
       if (!w.daily || !Array.isArray(w.daily.temperature_2m_max) || w.daily.temperature_2m_max.length < 2) {
         return `No forecast available for tomorrow in ${display_name}.`;
       }
       return `
-ð Tomorrow in ${display_name}
+🌍 Tomorrow in ${display_name}
 
 ${icon(w.daily.weathercode[1])}
-ð¡ï¸ High: ${w.daily.temperature_2m_max[1]}Â°C
-ð¡ï¸ Low: ${w.daily.temperature_2m_min[1]}Â°C
+🌡️ High: ${w.daily.temperature_2m_max[1]}°C
+🌡️ Low: ${w.daily.temperature_2m_min[1]}°C
       `.trim();
     }
 
-    // ð¦ Today + next 6 hours
+    // 🌦 Today + next 6 hours
     // Build local hour prefix (YYYY-MM-DDTHH) to match returned hourly.time (timezone=auto aligns times)
     const pad = n => String(n).padStart(2, '0');
     const d = new Date();
@@ -515,17 +515,17 @@ ${icon(w.daily.weathercode[1])}
     let hours = "";
     for (let i = start; i < start + 6; i++) {
       if (!w.hourly.time[i]) break;
-      hours += `\n${w.hourly.time[i].slice(11,16)} â ${icon(w.hourly.weathercode[i]) || ''} ${w.hourly.temperature_2m[i]}Â°C`;
+      hours += `\n${w.hourly.time[i].slice(11,16)} — ${icon(w.hourly.weathercode[i]) || ''} ${w.hourly.temperature_2m[i]}°C`;
     }
 
     return `
-ð Weather in ${display_name}
+🌍 Weather in ${display_name}
 
 ${icon(w.current_weather?.weathercode)}
-ð¡ï¸ Now: ${w.current_weather?.temperature}Â°C
-ð¬ï¸ Wind: ${w.current_weather?.windspeed ?? 'N/A'} km/h
+🌡️ Now: ${w.current_weather?.temperature}°C
+🌬️ Wind: ${w.current_weather?.windspeed ?? 'N/A'} km/h
 
-ð Next hours:${hours}
+⏰ Next hours:${hours}
     `.trim();
 
   } catch (e) {
@@ -535,7 +535,7 @@ ${icon(w.current_weather?.weathercode)}
 }
 
 /* =========================
-   ð EVENT HANDLERS & WIRING
+   🔌 EVENT HANDLERS & WIRING
    ========================= */
 
 const langMap = {
@@ -583,7 +583,7 @@ const langMap = {
   haw: 'haw', hawaiian: 'haw',
   he: 'he', hebrew: 'he',
   hi: 'hi', hindi: 'hi',
-  hmn: 'hmn', hmong: 'hmn',
+  hmn: 'hmn', hmong: 'hmng',
   hu: 'hu', hungarian: 'hu',
   is: 'is', icelandic: 'is',
   ig: 'ig', igbo: 'ig',
