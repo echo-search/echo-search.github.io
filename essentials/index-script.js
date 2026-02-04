@@ -1,3 +1,8 @@
+// Full updated index-script.js
+// Replaces alert() usage with an on-page feature panel that shows
+// results for: translation, weather, dictionary, math/conversion, and who-is.
+// Also adds a small calculator prefilled with the math expression for math results.
+
 document.documentElement.classList.remove('no-js');
 
 const surpriseBtn = document.getElementById("surpriseBtn");
@@ -17,6 +22,116 @@ const slider = document.getElementById("openInNewTabSlider");
 const btn67 = document.getElementById("btn67");
 const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
+
+// NEW: feature result panel element (will be created if not present)
+let featurePanel = document.getElementById('featureResult');
+
+function ensurePanel() {
+  if (!featurePanel) {
+    featurePanel = document.createElement('div');
+    featurePanel.id = 'featureResult';
+    featurePanel.className = 'feature-result hidden';
+    document.body.appendChild(featurePanel);
+  }
+}
+ensurePanel();
+
+function showFeatureResult({ type = 'generic', title = '', html = '', data = null }) {
+  ensurePanel();
+  featurePanel.innerHTML = `
+    <div class="feature-backdrop"></div>
+    <div class="feature-card" role="dialog" aria-modal="true">
+      <div class="feature-header">
+        <h3>${title || 'Result'}</h3>
+        <button id="featureClose" aria-label="Close result">✕</button>
+      </div>
+      <div class="feature-content">${html}</div>
+    </div>
+  `;
+  featurePanel.classList.remove('hidden');
+  featurePanel.setAttribute('aria-hidden', 'false');
+
+  // wire close buttons / backdrop
+  const closeBtn = document.getElementById('featureClose');
+  const backdrop = featurePanel.querySelector('.feature-backdrop');
+  closeBtn.addEventListener('click', () => {
+    featurePanel.classList.add('hidden');
+    featurePanel.setAttribute('aria-hidden', 'true');
+  });
+  backdrop.addEventListener('click', () => {
+    featurePanel.classList.add('hidden');
+    featurePanel.setAttribute('aria-hidden', 'true');
+  });
+
+  // If the panel includes a calculator form, hook its handlers
+  const calcForm = featurePanel.querySelector('.mini-calc-form');
+  if (calcForm) {
+    const display = featurePanel.querySelector('.calc-display');
+    const eqBtn = featurePanel.querySelector('.calc-eq');
+    const clearBtnCalc = featurePanel.querySelector('.calc-clear');
+
+    if (eqBtn) {
+      eqBtn.addEventListener('click', () => {
+        const expr = display.value.trim();
+        const res = safeEvaluateExpression(expr);
+        const out = (res === null) ? 'Invalid expression' : res;
+        const outEl = featurePanel.querySelector('.calc-result');
+        if (outEl) outEl.textContent = String(out);
+      });
+    }
+
+    if (clearBtnCalc) {
+      clearBtnCalc.addEventListener('click', () => {
+        display.value = '';
+        const outEl = featurePanel.querySelector('.calc-result');
+        if (outEl) outEl.textContent = '';
+      });
+    }
+
+    // delegate numeric/operator button clicks (if present)
+    featurePanel.addEventListener('click', (ev) => {
+      if (ev.target.matches('.calc-btn')) {
+        const v = ev.target.getAttribute('data-val');
+        const disp = featurePanel.querySelector('.calc-display');
+        if (disp) {
+          // insert at cursor or append
+          const start = disp.selectionStart || disp.value.length;
+          const end = disp.selectionEnd || start;
+          disp.value = disp.value.slice(0, start) + v + disp.value.slice(end);
+          disp.focus();
+          disp.selectionStart = disp.selectionEnd = start + v.length;
+        }
+      }
+    });
+  }
+}
+
+/* ====== Utility: safer expression evaluation (allows digits, operators, parentheses, dot, spaces) ====== */
+function safeEvaluateExpression(expr) {
+  if (!expr || typeof expr !== 'string') return null;
+  // normalize × ÷ ^ → *, /, **
+  let normalized = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**').replace(/,/g, '');
+  // allow only safe chars: digits, + - * / % . ( ) spaces e/E
+  // Note: allow '*' and '/' and '%' and '**' via allowed chars
+  if (!/^[0-9+\-*/%().\s*eE]+$/.test(normalized)) return null;
+  try {
+    // Use Function rather than eval; still risky for untrusted contexts but limited by regex
+    // eslint-disable-next-line no-new-func
+    const fn = new Function(`return (${normalized});`);
+    const result = fn();
+    if (typeof result === 'number' && !Number.isNaN(result) && Number.isFinite(result)) {
+      return result;
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ===========================================================
+   Existing helpers (mostly unchanged) but updated to return
+   structured objects instead of raw strings for the feature panel
+   =========================================================== */
 
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
@@ -124,10 +239,14 @@ const facts = [
 
 let openNewTab = false;
 
-slider.addEventListener("click", () => {
-  slider.classList.toggle("active");
-  openNewTab = slider.classList.contains("active");
-});
+if (slider) {
+  slider.addEventListener("click", () => {
+    slider.classList.toggle("active");
+    openNewTab = slider.classList.contains("active");
+  });
+} else {
+  openNewTab = false;
+}
 
 function openResult(url) {
   if (openNewTab) {
@@ -135,8 +254,8 @@ function openResult(url) {
   } else {
     window.location.href = url;
   }
-  
 }
+
 function domainSearchHandler(query) {
   query = query.trim();
 
@@ -147,6 +266,10 @@ function domainSearchHandler(query) {
   return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
 }
 
+/* ------------------------
+   Theme selection code
+   (kept from original)
+   ------------------------ */
 (function () {
   if (!themeSelect) return;
 
@@ -352,11 +475,15 @@ function domainSearchHandler(query) {
 
 })();
 
-surpriseBtn.addEventListener("click", () => {
-  const fact = facts[Math.floor(Math.random() * facts.length)];
-  alert(fact);
-});
+/* Surprise fact button (keeps the short alert behavior) */
+if (surpriseBtn) {
+  surpriseBtn.addEventListener("click", () => {
+    const fact = facts[Math.floor(Math.random() * facts.length)];
+    alert(fact);
+  });
+}
 
+/* Voice recognition (unchanged) */
 let recognition;
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -366,56 +493,79 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   recognition.interimResults = false;
 
   recognition.onstart = () => {
-    voiceBtn.classList.add("listening");
+    if (voiceBtn) voiceBtn.classList.add("listening");
   };
 
   recognition.onend = () => {
-    voiceBtn.classList.remove("listening");
+    if (voiceBtn) voiceBtn.classList.remove("listening");
   };
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    searchInput.value = transcript;
-    doSearch(transcript);
+    if (searchInput) {
+      searchInput.value = transcript;
+      doSearch(transcript);
+    }
   };
 
-  voiceBtn.addEventListener("click", () => {
-    try { recognition.start(); } catch (e) { }
-  });
+  if (voiceBtn) {
+    voiceBtn.addEventListener("click", () => {
+      try { recognition.start(); } catch (e) { }
+    });
+  }
 } else {
-  voiceBtn.disabled = true;
-  voiceBtn.title = "Voice input not supported in this browser.";
+  if (voiceBtn) {
+    voiceBtn.disabled = true;
+    voiceBtn.title = "Voice input not supported in this browser.";
+  }
 }
 
+/* Google custom search callback (unchanged) */
 window.__gcse = {
   callback: function() {
     const urlParams = new URLSearchParams(window.location.search);
     const queryFromUrl = urlParams.get('q');
     if (queryFromUrl) {
-      const searchElement = google.search.cse.element.getElement("searchbox1");
-      if (searchElement) {
-        searchElement.execute(queryFromUrl);
-        window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+      if (window.google && google.search && google.search.cse && google.search.cse.element) {
+        const searchElement = google.search.cse.element.getElement("searchbox1");
+        if (searchElement) {
+          searchElement.execute(queryFromUrl);
+          window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+        }
       }
     }
-   
-    searchInput.addEventListener("keydown", function(e) {
-      if (e.key === "Enter") {
-        searchBtn.click();
-      }
-    });
+
+    if (searchInput) {
+      searchInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          searchBtn.click();
+        }
+      });
+    }
   }
 };
 
+/* =============================
+   Enhanced handlers (return structured objects)
+   ============================= */
+
 function handleMathConversion(query) {
-  query = query.trim();
+  query = String(query).trim();
 
-  try {
-    if (/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
-      return "Result: " + eval(query);
+  // direct arithmetic -> safe eval
+  if (/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
+    // Try to evaluate numeric expression only (ensure there's at least one digit)
+    if (/[0-9]/.test(query)) {
+      // normalize and evaluate
+      const normalized = query.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**').replace(/,/g, '');
+      const result = safeEvaluateExpression(normalized);
+      if (result !== null) {
+        return { type: 'math', expression: query, normalizedExpression: normalized, result };
+      }
     }
-  } catch(e) { }
+  }
 
+  // unit conversions
   const units = {
    "length": { "m": 1, "km": 1000, "cm": 0.01, "mm": 0.001, "in": 0.0254, "ft": 0.3048, "yd": 0.9144, "mi": 1609.344 },
    "area": { "m2": 1, "km2": 1000000, "cm2": 0.0001, "mm2": 0.000001, "ha": 10000, "acre": 4046.8564224 },
@@ -440,10 +590,10 @@ function handleMathConversion(query) {
       const u = units[cat];
       if(u[from] !== undefined && u[to] !== undefined){
         const result = value * u[from] / u[to];
-        return `${value} ${from} = ${result} ${to}`;
+        return { type: 'conversion', inputValue: value, from, to, result };
       }
     }
-    return "Conversion units not recognized.";
+    return { type: 'conversion', error: "Conversion units not recognized." };
   }
 
   return null;
@@ -463,17 +613,17 @@ async function handleWeather(input) {
     const geoRes = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}`
     );
-    if (!geoRes.ok) return `Couldn't find "${place}".`;
+    if (!geoRes.ok) return { type: 'weather', error: `Couldn't find "${place}".` };
     const geo = await geoRes.json();
-    if (!geo.length) return `Couldn't find "${place}".`;
+    if (!geo.length) return { type: 'weather', error: `Couldn't find "${place}".` };
 
     const { lat, lon, display_name } = geo[0];
 
-    // 2) Fetch weather - fixed URL and timezone=auto
+    // 2) Fetch weather - timezone=auto
     const wRes = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
     );
-    if (!wRes.ok) return "Weather lookup failed.";
+    if (!wRes.ok) return { type: 'weather', error: "Weather lookup failed." };
     const w = await wRes.json();
 
     // Weather code → emoji
@@ -487,19 +637,19 @@ async function handleWeather(input) {
     // 🌤 Tomorrow
     if (isTomorrow) {
       if (!w.daily || !Array.isArray(w.daily.temperature_2m_max) || w.daily.temperature_2m_max.length < 2) {
-        return `No forecast available for tomorrow in ${display_name}.`;
+        return { type: 'weather', error: `No forecast available for tomorrow in ${display_name}.` };
       }
-      return `
-🌍 Tomorrow in ${display_name}
-
-${icon(w.daily.weathercode[1])}
-🌡️ High: ${w.daily.temperature_2m_max[1]}°C
-🌡️ Low: ${w.daily.temperature_2m_min[1]}°C
-      `.trim();
+      return {
+        type: 'weather',
+        place: display_name,
+        when: 'tomorrow',
+        icon: icon(w.daily.weathercode[1]),
+        high: w.daily.temperature_2m_max[1],
+        low: w.daily.temperature_2m_min[1]
+      };
     }
 
     // 🌦 Today + next 6 hours
-    // Build local hour prefix (YYYY-MM-DDTHH) to match returned hourly.time (timezone=auto aligns times)
     const pad = n => String(n).padStart(2, '0');
     const d = new Date();
     const nowHour = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}`;
@@ -512,32 +662,35 @@ ${icon(w.daily.weathercode[1])}
     // fallback to 0 if not found
     if (start === -1) start = 0;
 
-    let hours = "";
+    let nextHours = [];
     for (let i = start; i < start + 6; i++) {
       if (!w.hourly.time[i]) break;
-      hours += `\n${w.hourly.time[i].slice(11,16)} — ${icon(w.hourly.weathercode[i]) || ''} ${w.hourly.temperature_2m[i]}°C`;
+      nextHours.push({
+        time: w.hourly.time[i].slice(11,16),
+        icon: icon(w.hourly.weathercode[i]),
+        temp: w.hourly.temperature_2m[i]
+      });
     }
 
-    return `
-🌍 Weather in ${display_name}
-
-${icon(w.current_weather?.weathercode)}
-🌡️ Now: ${w.current_weather?.temperature}°C
-🌬️ Wind: ${w.current_weather?.windspeed ?? 'N/A'} km/h
-
-⏰ Next hours:${hours}
-    `.trim();
+    return {
+      type: 'weather',
+      place: display_name,
+      when: 'today',
+      current: { temp: w.current_weather?.temperature, wind: w.current_weather?.windspeed, icon: icon(w.current_weather?.weathercode) },
+      nextHours
+    };
 
   } catch (e) {
     console.error('handleWeather error', e);
-    return "Weather lookup failed.";
+    return { type: 'weather', error: "Weather lookup failed." };
   }
 }
 
 /* =========================
-   🔌 EVENT HANDLERS & WIRING
+   EVENT HANDLERS & WIRING
    ========================= */
 
+/* Translation handler: pattern "word in language" */
 const langMap = {
   af: 'af', afrikaans: 'af',
   sq: 'sq', albanian: 'sq',
@@ -655,7 +808,7 @@ const langMap = {
 
 async function handleSearch(input) {
   // Trigger ONLY on: one word + "in" + language
-  const match = input.match(/^([a-zA-Z]+)\s+in\s+([a-zA-Z\s]+)$/i);
+  const match = input.match(/^([^\s]+)\s+in\s+([a-zA-Z\s]+)$/i);
   if (!match) return null;
 
   const word = match[1].trim();
@@ -674,24 +827,27 @@ async function handleSearch(input) {
       `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&q=${encodeURIComponent(word)}`
     );
 
-    if (!res.ok) return "Translation failed.";
+    if (!res.ok) return { type: 'translation', error: 'Translation failed.' };
 
     const data = await res.json();
-    return data?.[0]?.[0]?.[0] || "No translation returned.";
+    const translated = data?.[0]?.[0]?.[0] || null;
+    if (!translated) return { type: 'translation', error: 'No translation returned.' };
+
+    return { type: 'translation', from: word, to: translated, targetLang: tl };
   } catch {
-    return "Translation failed.";
+    return { type: 'translation', error: 'Translation failed.' };
   }
 }
 
 async function handleDictionarySearch(query) {
-  const lower = query.toLowerCase().trim();
+  const lower = String(query).toLowerCase().trim();
   const triggers = ["meaning of", "definition of", "define", "dictionary", "meaning"];
   const isDictionaryQuery = triggers.some(word => lower.includes(word));
 
   if (!isDictionaryQuery) return null;
 
   const word = lower.replace(/(meaning of|definition of|define|dictionary|meaning)/g, "").trim();
-  if (!word) return "Please enter a word to define.";
+  if (!word) return { type: 'dictionary', error: 'Please enter a word to define.' };
 
   const wordUpper = word.toUpperCase();
 
@@ -703,7 +859,7 @@ async function handleDictionarySearch(query) {
         const entry = localData[wordUpper];
         const meaning = entry.meaning || "No meaning found.";
         const example = entry.example || "No example available.";
-        return `${word}: ${meaning}\nExample: ${example}`;
+        return { type: 'dictionary', word, meaning, example, source: 'local' };
       }
     }
   } catch (e) {}
@@ -715,12 +871,12 @@ async function handleDictionarySearch(query) {
       if (Array.isArray(data) && data[0]?.meanings?.[0]?.definitions?.[0]) {
         const meaning = data[0].meanings[0].definitions[0].definition;
         const example = data[0].meanings[0].definitions[0].example || "No example available.";
-        return `${word}: ${meaning}\nExample: ${example}`;
+        return { type: 'dictionary', word, meaning, example, source: 'api' };
       }
     }
   } catch (e) {}
 
-  return "No definition found.";
+  return { type: 'dictionary', error: 'No definition found.' };
 }
 
 async function handleWhoIs(input) {
@@ -738,12 +894,147 @@ async function handleWhoIs(input) {
     const data = await res.json();
     if (!data.extract) return null;
 
-    return `${data.title}\n\n${data.extract}`;
+    return { type: 'whois', title: data.title, extract: data.extract, url: data.content_urls?.desktop?.page || null };
   } catch {
     return null;
   }
 }
 
+/* =========================
+   EVENT HANDLERS & WIRING (continued)
+   ========================= */
+
+let currentScript = null;
+let currentFocus = -1;
+let isNavigating = false;
+
+window.handleGoogleSuggestions = function(data) {
+  const matches = data[1]; 
+  if (!suggestionsBox) return;
+  suggestionsBox.innerHTML = '';
+
+  if (!matches || matches.length === 0) {
+    suggestionsBox.style.display = 'none';
+    return;
+  }
+
+  matches.forEach((match, index) => {
+    const li = document.createElement('li');
+    li.textContent = match;
+    li.setAttribute('data-index', index);
+
+    li.addEventListener('click', () => {
+      searchInput.value = match;      
+      suggestionsBox.style.display = 'none';
+      currentFocus = -1;
+      doSearch(match);
+    });
+
+    suggestionsBox.appendChild(li);
+  });
+
+  suggestionsBox.style.display = 'block';
+  currentFocus = -1;
+};
+
+function fetchSuggestions(query) {
+  if (currentScript) {
+    currentScript.remove();
+    currentScript = null;
+  }
+
+  const script = document.createElement('script');
+  currentScript = script;
+  script.src = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}&callback=handleGoogleSuggestions`;
+
+  script.onload = () => {
+    setTimeout(() => {
+      if (script.parentNode) script.remove();
+    }, 1000);
+  };
+
+  script.onerror = () => {
+    if (script.parentNode) script.remove();
+  };
+
+  document.body.appendChild(script);
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    if (isNavigating) {
+      isNavigating = false;
+      return;
+    }
+
+    const query = searchInput.value.trim();
+
+    try {
+      const compact = searchInput.value.replace(/\s+/g, '');
+      if (compact === '67') {
+        if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
+          play67Effect();
+          window.__last67Played = Date.now();
+        }
+      }
+    } catch (e) {
+      console.error('67 detection error', e);
+    }
+
+    if (!query) {
+      suggestionsBox.innerHTML = '';
+      suggestionsBox.style.display = 'none';
+      currentFocus = -1;
+      return;
+    }
+
+    fetchSuggestions(query);
+  });
+
+  searchInput.addEventListener('keydown', function(e) {
+    const items = suggestionsBox ? suggestionsBox.getElementsByTagName('li') : [];
+    if (!items.length) return;
+
+    if (e.key === "ArrowDown") {
+      isNavigating = true;
+      currentFocus++;
+      updateActive(items);
+      e.preventDefault();
+    } else if (e.key === "ArrowUp") {
+      isNavigating = true;
+      currentFocus--;
+      updateActive(items);
+      e.preventDefault();
+    } else if (e.key === "Enter") {
+      if (currentFocus > -1) {
+        e.preventDefault();
+        if (items[currentFocus]) items[currentFocus].click();
+      }
+    }
+  });
+}
+
+function updateActive(items) {
+  if (!items) return false;
+
+  for (let i = 0; i < items.length; i++) {
+    items[i].classList.remove("active");
+  }
+
+  if (currentFocus >= items.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = items.length - 1;
+
+  items[currentFocus].classList.add("active");
+  searchInput.value = items[currentFocus].textContent;
+}
+
+document.addEventListener('click', e => {
+  if (searchInput && !searchInput.contains(e.target) && suggestionsBox && !suggestionsBox.contains(e.target)) {
+    if (suggestionsBox) suggestionsBox.style.display = 'none';
+  }
+});
+
+/* 67 effect (unchanged) */
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -775,8 +1066,9 @@ function play67Effect() {
   }, 3000);
 }
 
+/* doSearch() retains behavior but will not use alert(); panel will be used in searchBtn flow */
 function doSearch(query) {
-  if (!query.trim()) return;
+  if (!query || !query.trim()) return;
 
   const compact = query.replace(/\s+/g, '');
   if (compact === '67') {
@@ -811,216 +1103,211 @@ function doSearch(query) {
     return;
   }
 
-  const searchElement = google.search.cse.element.getElement("searchbox1");
+  const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
   if (searchElement) {
     searchElement.execute(query);
     window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
   }
 }
 
-searchBtn.addEventListener("click", async function() {
-  const query = searchInput.value.trim();
-  if(!query) return;
+/* Search button main flow: use handlers and then render into panel */
+if (searchBtn) {
+  searchBtn.addEventListener("click", async function() {
+    const query = searchInput.value.trim();
+    if(!query) return;
 
-  // WEATHER: check first and short-circuit if matched
-  try {
-    const weatherResult = await handleWeather(query);
-    if (weatherResult) {
-      alert(weatherResult);
-      searchInput.value = "";
-      chatBtn.style.display = "block";
-      return;
-    }
-  } catch (e) {
-    console.error('Weather handler threw', e);
-  }
-
-  // WHO IS: check for Wikipedia lookup
-  try {
-    const whoIsResult = await handleWhoIs(query);
-    if (whoIsResult) {
-      alert(whoIsResult);
-      searchInput.value = "";
-      chatBtn.style.display = "block";
-      return;
-    }
-  } catch (e) {
-    console.error('WhoIs handler threw', e);
-  }
-
-  // TRANSLATION: check for translation
-  const translation = await handleSearch(query);
-  if (translation !== null) {
-    alert(translation);
-    searchInput.value = "";
-    chatBtn.style.display = "block";
-    return;
-  }
-
-  // DICTIONARY: check for dictionary definition
-  const def = await handleDictionarySearch(query);
-  if (def) {
-    alert(def);
-    searchInput.value = "";
-    chatBtn.style.display = "block";
-    return;
-  }
-
-  // MATH/CONVERSION: check for math or unit conversion
-  const result = handleMathConversion(query);
-  if(result) {
-    alert(result);
-    searchInput.value = "";
-    chatBtn.style.display = "block";
-    return;
-  }
-
-  // If none of the above, perform regular search
-  doSearch(query);
-  searchInput.value = "";
-  chatBtn.style.display = "block";
-});
-
-let currentScript = null;
-let currentFocus = -1;
-let isNavigating = false;
-
-window.handleGoogleSuggestions = function(data) {
-  const matches = data[1]; 
-  suggestionsBox.innerHTML = '';
-  
-  if (!matches || matches.length === 0) {
-    suggestionsBox.style.display = 'none';
-    return;
-  }
-  
-  matches.forEach((match, index) => {
-    const li = document.createElement('li');
-    li.textContent = match;
-    li.setAttribute('data-index', index);
-    
-    li.addEventListener('click', () => {
-      searchInput.value = match;      
-      suggestionsBox.style.display = 'none';
-      currentFocus = -1;
-      doSearch(match);
-    });
-    
-    suggestionsBox.appendChild(li);
-  });
-  
-  suggestionsBox.style.display = 'block';
-  currentFocus = -1;
-};
-
-function fetchSuggestions(query) {
-  if (currentScript) {
-    currentScript.remove();
-    currentScript = null;
-  }
-  
-  const script = document.createElement('script');
-  currentScript = script;
-  script.src = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}&callback=handleGoogleSuggestions`;
-  
-  script.onload = () => {
-    setTimeout(() => {
-      if (script.parentNode) script.remove();
-    }, 1000);
-  };
-  
-  script.onerror = () => {
-    if (script.parentNode) script.remove();
-  };
-  
-  document.body.appendChild(script);
-}
-
-searchInput.addEventListener('input', (e) => {
-  if (isNavigating) {
-    isNavigating = false;
-    return;
-  }
-
-  const query = searchInput.value.trim();
-  
-  try {
-    const compact = searchInput.value.replace(/\s+/g, '');
-    if (compact === '67') {
-      if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
-        play67Effect();
-        window.__last67Played = Date.now();
+    // WEATHER: check first and short-circuit if matched
+    try {
+      const weatherResult = await handleWeather(query);
+      if (weatherResult) {
+        if (weatherResult.error) {
+          showFeatureResult({ title: 'Weather', html: `<p>${escapeHtml(weatherResult.error)}</p>` });
+        } else if (weatherResult.type === 'weather') {
+          if (weatherResult.when === 'tomorrow') {
+            const html = `
+              <div class="weather-block">
+                <div class="weather-place">${escapeHtml(weatherResult.place)}</div>
+                <div class="weather-icon">${weatherResult.icon}</div>
+                <div class="weather-temps">High: <strong>${weatherResult.high}°C</strong> — Low: <strong>${weatherResult.low}°C</strong></div>
+              </div>
+            `;
+            showFeatureResult({ title: `Weather — ${escapeHtml(weatherResult.place)}`, html });
+          } else {
+            const hoursHtml = (weatherResult.nextHours || []).map(h => `<div class="hour-item">${h.time} — ${h.icon} ${h.temp}°C</div>`).join('');
+            const html = `
+              <div class="weather-block">
+                <div class="weather-place">${escapeHtml(weatherResult.place)}</div>
+                <div class="weather-now">${weatherResult.current.icon} Now: <strong>${weatherResult.current.temp}°C</strong> — Wind: ${weatherResult.current.wind ?? 'N/A'} km/h</div>
+                <div class="weather-next"><strong>Next hours</strong>${hoursHtml}</div>
+              </div>
+            `;
+            showFeatureResult({ title: `Weather — ${escapeHtml(weatherResult.place)}`, html });
+          }
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return;
+        }
       }
+    } catch (e) {
+      console.error('Weather handler threw', e);
     }
-  } catch (e) {
-    console.error('67 detection error', e);
-  }
-  
-  if (!query) {
-    suggestionsBox.innerHTML = '';
-    suggestionsBox.style.display = 'none';
-    currentFocus = -1;
-    return;
-  }
-  
-  fetchSuggestions(query);
-});
 
-searchInput.addEventListener('keydown', function(e) {
-  const items = suggestionsBox.getElementsByTagName('li');
-  if (!items.length) return;
-  
-  if (e.key === "ArrowDown") {
-    isNavigating = true;
-    currentFocus++;
-    updateActive(items);
-    e.preventDefault();
-  } else if (e.key === "ArrowUp") {
-    isNavigating = true;
-    currentFocus--;
-    updateActive(items);
-    e.preventDefault();
-  } else if (e.key === "Enter") {
-    if (currentFocus > -1) {
-      e.preventDefault();
-      if (items[currentFocus]) items[currentFocus].click();
+    // WHO IS: check for Wikipedia lookup
+    try {
+      const whoIsResult = await handleWhoIs(query);
+      if (whoIsResult) {
+        if (whoIsResult.type === 'whois') {
+          const html = `
+            <div class="whois-block">
+              <div class="whois-title"><strong>${escapeHtml(whoIsResult.title)}</strong></div>
+              <div class="whois-extract">${escapeHtml(whoIsResult.extract)}</div>
+              ${whoIsResult.url ? `<div class="whois-link"><a href="${whoIsResult.url}" target="_blank" rel="noopener">Read more on Wikipedia</a></div>` : ''}
+            </div>
+          `;
+          showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('WhoIs handler threw', e);
     }
-  }
-});
 
-function updateActive(items) {
-  if (!items) return false;
-  
-  for (let i = 0; i < items.length; i++) {
-    items[i].classList.remove("active");
-  }
-  
-  if (currentFocus >= items.length) currentFocus = 0;
-  if (currentFocus < 0) currentFocus = items.length - 1;
-  
-  items[currentFocus].classList.add("active");
-  searchInput.value = items[currentFocus].textContent;
+    // TRANSLATION: check for translation
+    try {
+      const translation = await handleSearch(query);
+      if (translation) {
+        if (translation.error) {
+          showFeatureResult({ title: 'Translation', html: `<p>${escapeHtml(translation.error)}</p>` });
+        } else if (translation.type === 'translation') {
+          const html = `
+            <div class="translation-block">
+              <div class="translation-example">${escapeHtml(translation.from)} <span class="arrow">→</span> <strong>${escapeHtml(translation.to)}</strong></div>
+              <div class="translation-meta">Target language: ${escapeHtml(translation.targetLang)}</div>
+            </div>
+          `;
+          showFeatureResult({ title: 'Translation', html });
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Translation handler threw', e);
+    }
+
+    // DICTIONARY: check for dictionary definition
+    try {
+      const def = await handleDictionarySearch(query);
+      if (def) {
+        if (def.error) {
+          showFeatureResult({ title: 'Definition', html: `<p>${escapeHtml(def.error)}</p>` });
+        } else {
+          const html = `
+            <div class="dict-block">
+              <div class="dict-word"><strong>${escapeHtml(def.word)}</strong></div>
+              <div class="dict-meaning">${escapeHtml(def.meaning)}</div>
+              <div class="dict-example">Example: ${escapeHtml(def.example)}</div>
+              <div class="dict-source">Source: ${escapeHtml(def.source || 'unknown')}</div>
+            </div>
+          `;
+          showFeatureResult({ title: `Definition — ${escapeHtml(def.word)}`, html });
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Dictionary handler threw', e);
+    }
+
+    // MATH/CONVERSION: check for math or unit conversion
+    try {
+      const result = handleMathConversion(query);
+      if(result) {
+        if (result.type === 'math') {
+          const html = `
+            <div class="math-block">
+              <div class="math-expression">Expression: <code>${escapeHtml(result.expression)}</code></div>
+              <div class="math-answer">Answer: <strong>${escapeHtml(String(result.result))}</strong></div>
+
+              <div class="mini-calc">
+                <div class="mini-calc-title">Calculator</div>
+                <form class="mini-calc-form" onsubmit="return false;">
+                  <input class="calc-display" aria-label="Calculator input" value="${escapeHtml(result.expression)}" />
+                  <div class="calc-controls">
+                    <div class="calc-keypad" role="group" aria-label="Calculator keypad">
+                      <button type="button" class="calc-btn" data-val="7">7</button>
+                      <button type="button" class="calc-btn" data-val="8">8</button>
+                      <button type="button" class="calc-btn" data-val="9">9</button>
+                      <button type="button" class="calc-btn" data-val="/">÷</button>
+
+                      <button type="button" class="calc-btn" data-val="4">4</button>
+                      <button type="button" class="calc-btn" data-val="5">5</button>
+                      <button type="button" class="calc-btn" data-val="6">6</button>
+                      <button type="button" class="calc-btn" data-val="*">×</button>
+
+                      <button type="button" class="calc-btn" data-val="1">1</button>
+                      <button type="button" class="calc-btn" data-val="2">2</button>
+                      <button type="button" class="calc-btn" data-val="3">3</button>
+                      <button type="button" class="calc-btn" data-val="-">−</button>
+
+                      <button type="button" class="calc-btn" data-val="0">0</button>
+                      <button type="button" class="calc-btn" data-val=".">.</button>
+                      <button type="button" class="calc-eq">=</button>
+                      <button type="button" class="calc-btn" data-val="+">+</button>
+                    </div>
+                    <div class="calc-actions">
+                      <button type="button" class="calc-clear">Clear</button>
+                      <div class="calc-result" aria-live="polite"></div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `;
+          showFeatureResult({ title: 'Calculator', html });
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return;
+        } else if (result.type === 'conversion') {
+          if (result.error) {
+            showFeatureResult({ title: 'Conversion', html: `<p>${escapeHtml(result.error)}</p>` });
+          } else {
+            const html = `<div class="conv-block">${result.inputValue} ${escapeHtml(result.from)} = <strong>${escapeHtml(String(result.result))} ${escapeHtml(result.to)}</strong></div>`;
+            showFeatureResult({ title: 'Conversion', html });
+            searchInput.value = "";
+            if (chatBtn) chatBtn.style.display = "block";
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Math handler threw', e);
+    }
+
+    // If none of the above, perform regular search
+    doSearch(query);
+    searchInput.value = "";
+    if (chatBtn) chatBtn.style.display = "block";
+  });
 }
-
-document.addEventListener('click', e => {
-  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-    suggestionsBox.style.display = 'none';
-  }
-});
 
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
 function renderHistory() {
+  if (!historyList) return;
   historyList.innerHTML = "";
 
   if (history.length === 0) {
-    historyTitle.style.display = "none";
-    clearBtn.style.display = "none";
+    if (historyTitle) historyTitle.style.display = "none";
+    if (clearBtn) clearBtn.style.display = "none";
     return;
   }
 
-  historyTitle.style.display = "block";
-  clearBtn.style.display = "inline-block";
+  if (historyTitle) historyTitle.style.display = "block";
+  if (clearBtn) clearBtn.style.display = "inline-block";
 
   history.forEach((item) => {
     const li = document.createElement("li");
@@ -1034,18 +1321,33 @@ function saveHistory() {
   localStorage.setItem("searchHistory", JSON.stringify(history));
 }
 
-clearBtn.addEventListener("click", () => {
-  history = [];
-  saveHistory();
-  renderHistory();
-});
+if (clearBtn) {
+  clearBtn.addEventListener("click", () => {
+    history = [];
+    saveHistory();
+    renderHistory();
+  });
+}
 
 renderHistory();
 
-chatBtn.addEventListener("click", () => {
-  window.open("https://chatgpt.com", "_blank");
-});
+if (chatBtn) {
+  chatBtn.addEventListener("click", () => {
+    window.open("https://chatgpt.com", "_blank");
+  });
+}
 
 window.addEventListener("load", () => {
-  chatBtn.style.display = "none";
+  if (chatBtn) chatBtn.style.display = "none";
 });
+
+/* =========================
+   small helpers
+   ========================= */
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, function (m) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]);
+  });
+}
