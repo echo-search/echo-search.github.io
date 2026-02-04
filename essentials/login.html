@@ -335,12 +335,16 @@
                     recaptchaVerifier.clear();
                 }
                 recaptchaContainer.classList.add('hidden');
+                // Ensure verification code section is hidden when a user logs in (e.g., via email/password or Google)
+                verificationCodeSection.classList.add('hidden');
             } else {
                 authStatusElement.innerHTML = "Please sign in or sign up.";
                 authStatusElement.classList.remove('success');
                 displayMessage('', false);
                 authForms.classList.remove('hidden');
                 signOutSection.classList.add('hidden');
+                // Ensure verification code section is hidden when no user is logged in
+                verificationCodeSection.classList.add('hidden');
                 // Ensure reCAPTCHA is initialized when the auth forms are visible and no user is logged in
                 console.log("[AuthState] No user logged in, initializing reCAPTCHA.");
                 initializeRecaptcha();
@@ -448,6 +452,7 @@
             auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
                 .then((confirmation) => {
                     confirmationResult = confirmation;
+                    // Show the verification code input section
                     verificationCodeSection.classList.remove('hidden');
                     displayMessage("Verification code sent to your phone. Please enter it below.", false);
                     sendCodeBtn.disabled = false; // Re-enable if user needs to resend
@@ -492,7 +497,8 @@
             confirmationResult.confirm(code)
                 .then((result) => {
                     displayMessage("Signed in successfully with Phone Number!", false);
-                    verificationCodeSection.classList.add('hidden'); // Hide code input
+                    // Hide the verification code input section after successful sign-in
+                    verificationCodeSection.classList.add('hidden');
                     verificationCodeInput.value = ''; // Clear code input
                     console.log("[PhoneAuth] User signed in successfully with phone number.");
                 })
