@@ -760,7 +760,7 @@ const langMap = {
 };
 
 async function handleSearch(input) {
-  const match = input.match(/^([^\s]+)\s+in\s+([a-zA-Z\s]+)$/i);
+  const match = input.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
   if (!match) return null;
 
   const word = match[1].trim();
