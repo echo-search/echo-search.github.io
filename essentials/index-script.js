@@ -853,6 +853,17 @@ async function handleWhoIs(input) {
 }
 
 async function handleWikipediaSearch(query) {
+const tMatch = query.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
+if (tMatch) {
+  const lang = tMatch[2]
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ');
+
+  if (langMap[lang]) {
+    return null;
+  }
+}
   if (!query || typeof query !== 'string') return null;
 
   const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","must","shall","will","have","has","had","having","the","a","an","this","that","these","those","there","here","and","or","but","if","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","such","only","own","same","so","than","too","very","just","also","even","ever","never","not","no","nor","i","you","he","she","it","we","they","me","him","her","us","them","my","your","his","its","our","their" ];
