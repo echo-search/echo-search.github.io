@@ -1,8 +1,3 @@
-// Full updated index-script.js
-// Replaces alert() usage with an on-page feature panel that shows
-// results for: translation, weather, dictionary, math/conversion, and who-is.
-// Also adds a small calculator prefilled with the math expression for math results.
-
 document.documentElement.classList.remove('no-js');
 
 const surpriseBtn = document.getElementById("surpriseBtn");
@@ -23,7 +18,6 @@ const btn67 = document.getElementById("btn67");
 const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
 
-// NEW: feature result panel element (will be created if not present)
 let featurePanel = document.getElementById('featureResult');
 
 function ensurePanel() {
@@ -51,7 +45,6 @@ function showFeatureResult({ type = 'generic', title = '', html = '', data = nul
   featurePanel.classList.remove('hidden');
   featurePanel.setAttribute('aria-hidden', 'false');
 
-  // wire close buttons / backdrop
   const closeBtn = document.getElementById('featureClose');
   const backdrop = featurePanel.querySelector('.feature-backdrop');
   closeBtn.addEventListener('click', () => {
@@ -63,7 +56,6 @@ function showFeatureResult({ type = 'generic', title = '', html = '', data = nul
     featurePanel.setAttribute('aria-hidden', 'true');
   });
 
-  // If the panel includes a calculator form, hook its handlers
   const calcForm = featurePanel.querySelector('.mini-calc-form');
   if (calcForm) {
     const display = featurePanel.querySelector('.calc-display');
@@ -88,13 +80,11 @@ function showFeatureResult({ type = 'generic', title = '', html = '', data = nul
       });
     }
 
-    // delegate numeric/operator button clicks (if present)
     featurePanel.addEventListener('click', (ev) => {
       if (ev.target.matches('.calc-btn')) {
         const v = ev.target.getAttribute('data-val');
         const disp = featurePanel.querySelector('.calc-display');
         if (disp) {
-          // insert at cursor or append
           const start = disp.selectionStart || disp.value.length;
           const end = disp.selectionEnd || start;
           disp.value = disp.value.slice(0, start) + v + disp.value.slice(end);
@@ -106,17 +96,11 @@ function showFeatureResult({ type = 'generic', title = '', html = '', data = nul
   }
 }
 
-/* ====== Utility: safer expression evaluation (allows digits, operators, parentheses, dot, spaces) ====== */
 function safeEvaluateExpression(expr) {
   if (!expr || typeof expr !== 'string') return null;
-  // normalize × ÷ ^ → *, /, **
   let normalized = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**').replace(/,/g, '');
-  // allow only safe chars: digits, + - * / % . ( ) spaces e/E
-  // Note: allow '*' and '/' and '%' and '**' via allowed chars
   if (!/^[0-9+\-*/%().\s*eE]+$/.test(normalized)) return null;
   try {
-    // Use Function rather than eval; still risky for untrusted contexts but limited by regex
-    // eslint-disable-next-line no-new-func
     const fn = new Function(`return (${normalized});`);
     const result = fn();
     if (typeof result === 'number' && !Number.isNaN(result) && Number.isFinite(result)) {
@@ -127,11 +111,6 @@ function safeEvaluateExpression(expr) {
     return null;
   }
 }
-
-/* ===========================================================
-   Existing helpers (mostly unchanged) but updated to return
-   structured objects instead of raw strings for the feature panel
-   =========================================================== */
 
 function saveLifetime(query) {
   const entry = { query, time: Date.now() };
@@ -266,10 +245,6 @@ function domainSearchHandler(query) {
   return `https://www.google.com/search?q=site:${encodeURIComponent(domain)}`;
 }
 
-/* ------------------------
-   Theme selection code
-   (kept from original)
-   ------------------------ */
 (function () {
   if (!themeSelect) return;
 
@@ -475,7 +450,6 @@ function domainSearchHandler(query) {
 
 })();
 
-/* Surprise fact button (keeps the short alert behavior) */
 if (surpriseBtn) {
   surpriseBtn.addEventListener("click", () => {
     const fact = facts[Math.floor(Math.random() * facts.length)];
@@ -483,7 +457,6 @@ if (surpriseBtn) {
   });
 }
 
-/* Voice recognition (unchanged) */
 let recognition;
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -520,7 +493,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   }
 }
 
-/* Google custom search callback (unchanged) */
 window.__gcse = {
   callback: function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -545,18 +517,11 @@ window.__gcse = {
   }
 };
 
-/* =============================
-   Enhanced handlers (return structured objects)
-   ============================= */
-
 function handleMathConversion(query) {
   query = String(query).trim();
 
-  // direct arithmetic -> safe eval
   if (/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)) {
-    // Try to evaluate numeric expression only (ensure there's at least one digit)
     if (/[0-9]/.test(query)) {
-      // normalize and evaluate
       const normalized = query.replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**').replace(/,/g, '');
       const result = safeEvaluateExpression(normalized);
       if (result !== null) {
@@ -565,7 +530,6 @@ function handleMathConversion(query) {
     }
   }
 
-  // unit conversions
   const units = {
    "length": { "m": 1, "km": 1000, "cm": 0.01, "mm": 0.001, "in": 0.0254, "ft": 0.3048, "yd": 0.9144, "mi": 1609.344 },
    "area": { "m2": 1, "km2": 1000000, "cm2": 0.0001, "mm2": 0.000001, "ha": 10000, "acre": 4046.8564224 },
@@ -609,7 +573,6 @@ async function handleWeather(input) {
   const isTomorrow = !!tomorrowMatch;
 
   try {
-    // 1) Geocode place → lat/lon (limit=1)
     const geoRes = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}`
     );
@@ -619,14 +582,12 @@ async function handleWeather(input) {
 
     const { lat, lon, display_name } = geo[0];
 
-    // 2) Fetch weather - timezone=auto
     const wRes = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
     );
     if (!wRes.ok) return { type: 'weather', error: "Weather lookup failed." };
     const w = await wRes.json();
 
-    // Weather code → emoji
     const icon = c => ({
       0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",
       45:"🌫️",48:"🌫️",
@@ -634,7 +595,6 @@ async function handleWeather(input) {
       95:"⛈️"
     }[c] || "🌡️");
 
-    // 🌤 Tomorrow
     if (isTomorrow) {
       if (!w.daily || !Array.isArray(w.daily.temperature_2m_max) || w.daily.temperature_2m_max.length < 2) {
         return { type: 'weather', error: `No forecast available for tomorrow in ${display_name}.` };
@@ -649,7 +609,6 @@ async function handleWeather(input) {
       };
     }
 
-    // 🌦 Today + next 6 hours
     const pad = n => String(n).padStart(2, '0');
     const d = new Date();
     const nowHour = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}`;
@@ -659,7 +618,6 @@ async function handleWeather(input) {
       start = w.hourly.time.findIndex(t => t.startsWith(nowHour));
     }
 
-    // fallback to 0 if not found
     if (start === -1) start = 0;
 
     let nextHours = [];
@@ -686,11 +644,6 @@ async function handleWeather(input) {
   }
 }
 
-/* =========================
-   EVENT HANDLERS & WIRING
-   ========================= */
-
-/* Translation handler: pattern "word in language" */
 const langMap = {
   af: 'af', afrikaans: 'af',
   sq: 'sq', albanian: 'sq',
@@ -807,7 +760,6 @@ const langMap = {
 };
 
 async function handleSearch(input) {
-  // Trigger ONLY on: one word + "in" + language
   const match = input.match(/^([^\s]+)\s+in\s+([a-zA-Z\s]+)$/i);
   if (!match) return null;
 
@@ -900,9 +852,57 @@ async function handleWhoIs(input) {
   }
 }
 
-/* =========================
-   EVENT HANDLERS & WIRING (continued)
-   ========================= */
+async function handleWikipediaSearch(query) {
+  if (!query || typeof query !== 'string') return null;
+
+  const stopWords = [
+    "who","whom","whose","what","which","when","where","why","how",
+    "is","are","was","were","be","been","being",
+    "do","does","did","doing",
+    "can","could","should","would","may","might","must","shall","will",
+    "have","has","had","having",
+    "the","a","an","this","that","these","those",
+    "there","here",
+    "and","or","but","if","because","as","until","while",
+    "of","at","by","for","with","about","against","between","into",
+    "through","during","before","after","above","below","to","from",
+    "up","down","in","out","on","off","over","under",
+    "again","further","then","once",
+    "such","only","own","same","so","than","too","very",
+    "just","also","even","ever","never",
+    "not","no","nor",
+    "i","you","he","she","it","we","they",
+    "me","him","her","us","them",
+    "my","your","his","its","our","their"
+  ];
+
+  const cleanedQuery = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(word => word && !stopWords.includes(word))
+    .join(" ");
+
+  if (!cleanedQuery) return null;
+
+  try {
+    const res = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanedQuery)}`
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+
+    if (data && data.extract) {
+      return { type: 'wikipedia', title: data.title || cleanedQuery, extract: data.extract, url: data.content_urls?.desktop?.page || null };
+    }
+
+    return null;
+  } catch (e) {
+    console.error('handleWikipediaSearch error', e);
+    return null;
+  }
+}
 
 let currentScript = null;
 let currentFocus = -1;
@@ -1034,7 +1034,6 @@ document.addEventListener('click', e => {
   }
 });
 
-/* 67 effect (unchanged) */
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -1066,7 +1065,6 @@ function play67Effect() {
   }, 3000);
 }
 
-/* doSearch() retains behavior but will not use alert(); panel will be used in searchBtn flow */
 function doSearch(query) {
   if (!query || !query.trim()) return;
 
@@ -1110,13 +1108,11 @@ function doSearch(query) {
   }
 }
 
-/* Search button main flow: use handlers and then render into panel */
 if (searchBtn) {
   searchBtn.addEventListener("click", async function() {
     const query = searchInput.value.trim();
     if(!query) return;
 
-    // WEATHER: check first and short-circuit if matched
     try {
       const weatherResult = await handleWeather(query);
       if (weatherResult) {
@@ -1152,7 +1148,6 @@ if (searchBtn) {
       console.error('Weather handler threw', e);
     }
 
-    // WHO IS: check for Wikipedia lookup
     try {
       const whoIsResult = await handleWhoIs(query);
       if (whoIsResult) {
@@ -1174,7 +1169,6 @@ if (searchBtn) {
       console.error('WhoIs handler threw', e);
     }
 
-    // TRANSLATION: check for translation
     try {
       const translation = await handleSearch(query);
       if (translation) {
@@ -1197,7 +1191,6 @@ if (searchBtn) {
       console.error('Translation handler threw', e);
     }
 
-    // DICTIONARY: check for dictionary definition
     try {
       const def = await handleDictionarySearch(query);
       if (def) {
@@ -1222,7 +1215,6 @@ if (searchBtn) {
       console.error('Dictionary handler threw', e);
     }
 
-    // MATH/CONVERSION: check for math or unit conversion
     try {
       const result = handleMathConversion(query);
       if(result) {
@@ -1287,7 +1279,25 @@ if (searchBtn) {
       console.error('Math handler threw', e);
     }
 
-    // If none of the above, perform regular search
+    try {
+      const wikiResult = await handleWikipediaSearch(query);
+      if (wikiResult) {
+        const html = `
+          <div class="wiki-block">
+            <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
+            <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
+            ${wikiResult.url ? `<div class="wiki-link"><a href="${wikiResult.url}" target="_blank" rel="noopener">Read more on Wikipedia</a></div>` : ''}
+          </div>
+        `;
+        showFeatureResult({ title: `Wikipedia — ${escapeHtml(wikiResult.title)}`, html });
+        searchInput.value = "";
+        if (chatBtn) chatBtn.style.display = "block";
+        return;
+      }
+    } catch (e) {
+      console.error('Wikipedia handler threw', e);
+    }
+
     doSearch(query);
     searchInput.value = "";
     if (chatBtn) chatBtn.style.display = "block";
@@ -1340,10 +1350,6 @@ if (chatBtn) {
 window.addEventListener("load", () => {
   if (chatBtn) chatBtn.style.display = "none";
 });
-
-/* =========================
-   small helpers
-   ========================= */
 
 function escapeHtml(s) {
   if (s == null) return '';
