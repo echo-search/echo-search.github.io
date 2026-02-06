@@ -82,6 +82,50 @@ search-btn { width: 1em; height: 1em; }
 @media (max-width:600px) {
 .feature-card { top:6%; width: 96%; padding: 0.5rem; }
 .calc-actions { width: 120px; }}
+/* --- Added: styling for dictionary listen button and Wikipedia "screen 2" rendering --- */
+
+.dict-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dict-listen {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  font-size: 1.0rem;
+  padding: 4px;
+  margin: 0;
+  cursor: pointer;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background 0.15s, transform 0.08s;
+}
+.dict-listen:hover:not(:disabled) { background: rgba(0,0,0,0.04); transform: translateY(-1px); }
+.dict-listen:active:not(:disabled) { transform: translateY(0); }
+.dict-listen:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* When wiki results are rendered into the gcse-results area we create a .feature-card-like block
+   but we don't want the absolute/overlay positioning that .feature-card uses elsewhere. */
+.wiki-screen2 {
+  position: static !important;
+  transform: none !important;
+  left: auto !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  box-shadow: none !important;
+  background: var(--bg, #fff);
+  color: var(--text, #000);
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin: 0.6rem auto;
+  box-sizing: border-box;
+}
+.wiki-screen2 .feature-header h3 { margin: 0 0 0.35rem 0; font-size: 1rem; }
+.wiki-screen2 .feature-content { padding: 0; }
 .no-js-msg { font-family: system-ui, sans-serif; color: #900; padding: 20px 20px 20px 70px; margin: 20px; border: 2px solid #900; border-radius: 10px; font-size: 1.2rem; background-color: transparent; background-image: url('/favicon.ico'); background-repeat: no-repeat; background-size: 40px 40px; background-position: 15px 15px; }
 #echosearch-serp .gsc-control-cse, #echosearch-serp .gsc-results-wrapper-visible { max-width: 652px !important; margin: 0 auto !important; padding: 0 !important; border: none !important; background: transparent !important; }
 #echosearch-serp .gsc-branding, #echosearch-serp .gsc-result-info, #echosearch-serp .gsc-adBlock, #echosearch-serp .gsc-adBlockVertical, #echosearch-serp .gsc-above-wrapper-area, #echosearch-serp .gcsc-more-maybe-branding-root { display: none !important; }
