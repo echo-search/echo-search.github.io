@@ -583,7 +583,7 @@ async function handleWeather(input) {
     const { lat, lon, display_name } = geo[0];
 
     const wRes = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto’
     );
     if (!wRes.ok) return { type: 'weather', error: "Weather lookup failed." };
     const w = await wRes.json();
@@ -823,7 +823,17 @@ async function handleDictionarySearch(query) {
       if (Array.isArray(data) && data[0]?.meanings?.[0]?.definitions?.[0]) {
         const meaning = data[0].meanings[0].definitions[0].definition;
         const example = data[0].meanings[0].definitions[0].example || "No example available.";
-        return { type: 'dictionary', word, meaning, example, source: 'api' };
+        // find an audio pronunciation (if any)
+        let audioUrl = null;
+        if (Array.isArray(data[0].phonetics)) {
+          const phon = data[0].phonetics.find(p => p.audio && p.audio.trim());
+          if (phon && phon.audio) {
+            audioUrl = phon.audio.trim();
+            // normalize protocol-relative URLs
+            if (audioUrl.startsWith('//')) audioUrl = 'https:' + audioUrl;
+          }
+        }
+        return { type: 'dictionary', word, meaning, example, source: 'api', audio: audioUrl || null };
       }
     }
   } catch (e) {}
@@ -949,20 +959,20 @@ async function handleWikipediaSearch(query) {
   if (/^(today's date|todays date|date today)$/.test(tCheck)) return null;
   if (/^time in\s+/.test(tCheck)) return null;
 
-const tMatch = query.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
-if (tMatch) {
-  const lang = tMatch[2]
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, ' ');
+  const tMatch = query.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
+  if (tMatch) {
+    const lang = tMatch[2]
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ');
 
-  if (langMap[lang]) {
-    return null;
+    if (langMap[lang]) {
+      return null;
+    }
   }
-}
   if (!query || typeof query !== 'string') return null;
 
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","must","shall","will","have","has","had","having","the","a","an","this","that","these","those","there","here","and","or","but","if","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","such","only","own","same","so","than","too","very","just","also","even","ever","never","not","no","nor","i","you","he","she","it","we","they","me","him","her","us","them","my","his","its","our","their" ] ;
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","must","shall","will","have","has","had","having","the","a","an","this","that","these","those","there","here","and","or","but","if","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","such","only","own","same","so","than","too","very","just","also","even","ever","never","not","no","nor","i","you","he","she","it","we","they","me","him","her","us","them","my","his","its","our","their"];
 
   const cleanedQuery = query
     .toLowerCase()
@@ -1299,15 +1309,48 @@ if (searchBtn) {
         if (def.error) {
           showFeatureResult({ title: 'Definition', html: `<p>${escapeHtml(def.error)}</p>` });
         } else {
+          // build the listen button next to the word: [button][word]
+          const listenButtonHtml = `<button id="dictListenBtn" class="dict-listen" aria-label="Play pronunciation">🔊</button>`;
           const html = `
             <div class="dict-block">
-              <div class="dict-word"><strong>${escapeHtml(def.word)}</strong></div>
+              <div class="dict-word">${listenButtonHtml} <strong>${escapeHtml(def.word)}</strong></div>
               <div class="dict-meaning">${escapeHtml(def.meaning)}</div>
               <div class="dict-example">Example: ${escapeHtml(def.example)}</div>
               <div class="dict-source">Source: ${escapeHtml(def.source || 'unknown')}</div>
             </div>
           `;
           showFeatureResult({ title: `Definition — ${escapeHtml(def.word)}`, html });
+
+          // attach audio handler inside the feature panel
+          try {
+            const listenBtn = featurePanel.querySelector('#dictListenBtn');
+            if (listenBtn) {
+              if (def.audio) {
+                listenBtn.addEventListener('click', () => {
+                  try {
+                    let audioEl = featurePanel.querySelector('#dictAudioElem');
+                    if (!audioEl) {
+                      audioEl = document.createElement('audio');
+                      audioEl.id = 'dictAudioElem';
+                      audioEl.src = def.audio;
+                      featurePanel.appendChild(audioEl);
+                    }
+                    audioEl.currentTime = 0;
+                    audioEl.play().catch(() => {});
+                  } catch (e) { console.error('Audio play failed', e); }
+                });
+              } else {
+                // disable if no audio available
+                listenBtn.disabled = true;
+                listenBtn.title = "No pronunciation audio available.";
+                listenBtn.style.opacity = "0.5";
+                listenBtn.style.cursor = "not-allowed";
+              }
+            }
+          } catch (e) {
+            console.error('Failed to attach dictionary audio handler', e);
+          }
+
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
           return;
@@ -1384,6 +1427,7 @@ if (searchBtn) {
     try {
       const wikiResult = await handleWikipediaSearch(query);
       if (wikiResult) {
+        // Instead of showing in the popup, render Wikipedia result into "screen 2" (the gcse results area)
         const html = `
           <div class="wiki-block">
             <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
@@ -1391,9 +1435,10 @@ if (searchBtn) {
             ${wikiResult.url ? `<div class="wiki-link"><a href="${wikiResult.url}" target="_blank" rel="noopener">Read more on Wikipedia</a></div>` : ''}
           </div>
         `;
-        showFeatureResult({ title: `Wikipedia — ${escapeHtml(wikiResult.title)}`, html });
+        renderToScreen2(`Wikipedia — ${escapeHtml(wikiResult.title)}`, html);
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
+        return;
       }
     } catch (e) {
       console.error('Wikipedia handler threw', e);
@@ -1404,6 +1449,26 @@ if (searchBtn) {
     if (chatBtn) chatBtn.style.display = "block";
 
   });
+}
+
+/**
+ * renderToScreen2(title, html)
+ * - Renders content into the gcse-results container (screen 2).
+ */
+function renderToScreen2(title, html) {
+  if (!gcseResults) return;
+  const container = document.createElement('div');
+  container.className = 'feature-card wiki-screen2';
+  container.innerHTML = `
+    <div class="feature-header">
+      <h3>${title}</h3>
+    </div>
+    <div class="feature-content">${html}</div>
+  `;
+  // Replace existing contents
+  gcseResults.innerHTML = '';
+  gcseResults.appendChild(container);
+  window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
 }
 
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
