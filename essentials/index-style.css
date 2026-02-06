@@ -23,6 +23,7 @@ input[type="search"]:focus { box-shadow: 0 0 8px var(--accent); }
 button { margin: 0.5rem; padding: 0.6rem 1.2rem; border-radius: 30px; border: none; background: var(--accent); color: var(--text); font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 1rem; }
 button:hover { background: var(--hover); }
 search-btn { width: 1em; height: 1em; }
+#and { height: 16px; }
 #historyList { list-style: none; padding: 0; margin: 0; max-width: 100%; border: 1px solid var(--accent); border-radius: 6px; background: white; color: black; }
 #historyList li { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee; }
 #historyList li:hover { background-color: #f0f0f0; }
@@ -46,21 +47,7 @@ search-btn { width: 1em; height: 1em; }
 .feature-result.hidden { display: none; }
 .feature-result { position: fixed; inset: 0; z-index: 10000; font-family: var(--font); }
 .feature-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(2px); }
-.feature-card {
-  position: absolute;
-  left: 50%;
-  top: 10%;
-  transform: translateX(-50%);
-  width: min(920px, 94%);
-  max-height: 78vh;
-  overflow: auto;
-  background: var(--bg, #fff);
-  color: var(--text, #000);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  padding: 0.5rem;
-  border: 1px solid rgba(0,0,0,0.06);
-}
+.feature-card { position: absolute; left: 50%; top: 10%; transform: translateX(-50%); width: min(920px, 94%) max-height: 78vh; overflow: auto; background: var(--bg, #fff); color: var(--text, #000); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); padding: 0.5rem; border: 1px solid rgba(0,0,0,0.06); }
 .feature-header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.06); }
 .feature-header h3 { margin:0; font-size:1.05rem; }
 .feature-header button { background: transparent; border: none; cursor: pointer; font-size: 1.1rem; padding: 6px; }
