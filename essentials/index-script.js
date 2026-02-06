@@ -583,7 +583,7 @@ async function handleWeather(input) {
     const { lat, lon, display_name } = geo[0];
 
     const wRes = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=a[...]
     );
     if (!wRes.ok) return { type: 'weather', error: "Weather lookup failed." };
     const w = await wRes.json();
@@ -852,7 +852,103 @@ async function handleWhoIs(input) {
   }
 }
 
+// ===============================
+// ⏰ TIME & DATE — FULL SNIPPET
+// ===============================
+
+// preload all supported IANA timezones (runs once)
+const ALL_TIMEZONES = (typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function')
+  ? Intl.supportedValuesOf("timeZone")
+  : [];
+
+/**
+ * handleTimeAndDate(query)
+ * - Detects phrases like:
+ *   - "today's date", "date today", "todays date"
+ *   - "time in <city>"
+ * - Returns a string result when matched (caller should show via showFeatureResult).
+ * - IMPORTANT: This handler is synchronous (no network), and must short-circuit the normal search flow.
+ */
+function handleTimeAndDate(query) {
+  if (!query || typeof query !== 'string') return null;
+  const q = query.toLowerCase().trim();
+
+  // ---- TODAY'S DATE ----
+  if (
+    q === "today's date" ||
+    q === "todays date" ||
+    q === "date today"
+  ) {
+    return new Date().toDateString();
+  }
+
+  // ---- TIME IN <CITY> ----
+  const match = q.match(/^time in (.+)$/);
+  if (match) {
+    const city = match[1].trim();
+    const timezone = cityToTimezone(city);
+
+    if (!timezone) return null;
+
+    const time = new Date().toLocaleTimeString("en-GB", {
+      timeZone: timezone,
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    return `Time in ${capitalize(city)}: ${time}`;
+  }
+
+  return null;
+}
+
+function cityToTimezone(city) {
+  if (!city) return null;
+  const c = city
+    .toLowerCase()
+    .replace(/[.,]/g, "")
+    .replace(/\s+/g, "_");
+
+  // exact match first
+  for (const tz of ALL_TIMEZONES) {
+    try {
+      if (tz.toLowerCase().endsWith("/" + c)) {
+        return tz;
+      }
+    } catch (e) { /* ignore malformed tz */ }
+  }
+
+  // fuzzy fallback
+  for (const tz of ALL_TIMEZONES) {
+    try {
+      if (tz.toLowerCase().includes(c)) {
+        return tz;
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  return null;
+}
+
+function capitalize(str) {
+  if (!str) return '';
+  return str
+    .split(" ")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+// ===============================
+// End Time & Date snippet
+// ===============================
+
 async function handleWikipediaSearch(query) {
+  // Avoid processing queries that clearly belong to the time/date handler
+  if (!query || typeof query !== 'string') return null;
+  const tCheck = query.trim().toLowerCase();
+  if (/^(today's date|todays date|date today)$/.test(tCheck)) return null;
+  if (/^time in\s+/.test(tCheck)) return null;
+
 const tMatch = query.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
 if (tMatch) {
   const lang = tMatch[2]
@@ -866,7 +962,7 @@ if (tMatch) {
 }
   if (!query || typeof query !== 'string') return null;
 
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","must","shall","will","have","has","had","having","the","a","an","this","that","these","those","there","here","and","or","but","if","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","such","only","own","same","so","than","too","very","just","also","even","ever","never","not","no","nor","i","you","he","she","it","we","they","me","him","her","us","them","my","his","its","our","their" ];
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","must","shall","will","have","has","had","having","the","a","an","this","that","these","those","there","here","and","or","but","if","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","such","only","own","same","so","than","too","very","just","also","even","ever","never","not","no","nor","i","you","he","she","it","we","they","me","him","her","us","them","my","his","its","our","their" ] ;
 
   const cleanedQuery = query
     .toLowerCase()
@@ -1161,6 +1257,20 @@ if (searchBtn) {
       console.error('WhoIs handler threw', e);
     }
 
+    // TIME & DATE: synchronous handler that must short-circuit the search flow and appear in the popup.
+    try {
+      const timeResult = handleTimeAndDate(query);
+      if (timeResult) {
+        const html = `<div class="time-block">${escapeHtml(timeResult)}</div>`;
+        showFeatureResult({ title: 'Time & Date', html });
+        searchInput.value = "";
+        if (chatBtn) chatBtn.style.display = "block";
+        return; // IMPORTANT: do NOT continue with search when a time/date match is found
+      }
+    } catch (e) {
+      console.error('Time handler threw', e);
+    }
+
     try {
       const translation = await handleSearch(query);
       if (translation) {
@@ -1292,6 +1402,7 @@ if (searchBtn) {
     doSearch(query);
     searchInput.value = "";
     if (chatBtn) chatBtn.style.display = "block";
+
   });
 }
 
