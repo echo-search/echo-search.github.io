@@ -583,7 +583,7 @@ async function handleWeather(input) {
     const { lat, lon, display_name } = geo[0];
 
     const wRes = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=a[...]
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
     );
     if (!wRes.ok) return { type: 'weather', error: "Weather lookup failed." };
     const w = await wRes.json();
