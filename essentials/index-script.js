@@ -1438,7 +1438,6 @@ if (searchBtn) {
         renderToScreen2(`Wikipedia — ${escapeHtml(wikiResult.title)}`, html);
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
-        return;
       }
     } catch (e) {
       console.error('Wikipedia handler threw', e);
