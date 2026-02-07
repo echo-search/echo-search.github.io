@@ -26,7 +26,7 @@ function ensurePanel(){
 ensurePanel();
 function showFeatureResult({type='generic',title='',html='',data=null}){
   ensurePanel();
-  featurePanel.innerHTML = '<div class="feature-backdrop"></div><div class="feature-card" role="dialog" aria-modal="true"><div class="feature-header"><h3>'+escapeHtml(title||'Result')+'</h3><button id="featureClose" aria-label="Close result">✕</button></div><div class="feature-content">'+html+'</div></div>';
+  featurePanel.innerHTML = '<div class="feature-backdrop"></div><div class="feature-card" role="dialog" aria-modal="true"><div class="feature-header"><h3>'+escapeHtml(title||'Result')+'</h3><button id="featureClose" aria-label="Close">✕</button></div><div class="feature-content">'+(html||'')+'</div></div>';
   featurePanel.classList.remove('hidden');
   featurePanel.setAttribute('aria-hidden','false');
   const closeBtn = document.getElementById('featureClose');
@@ -220,7 +220,7 @@ function domainSearchHandler(query){
   return 'https://www.google.com/search?q=site:'+encodeURIComponent(domain);
 }
 if(themeSelect){
-  const presets = [{name:'Default',value:'default'},{name:'Dark',value:'dark'},{name:'Retro',value:'retro'},{name:'Neon',value:'neon'},{name:'Ocean',value:'ocean'},{name:'Midnight',value:'midnight'},{name:'Sunset',value:'sunset'},{name:'Matrix',value:'matrix'},{name:'Cyberpunk',value:'cyberpunk'},{name:'Forest',value:'forest'},{name:'Floral',value:'floral'}];
+  const presets = [{name:'Default',value:'default'},{name:'Dark',value:'dark'},{name:'Retro',value:'retro'},{name:'Neon',value:'neon'},{name:'Ocean',value:'ocean'},{name:'Midnight',value:'midnight'},{[...]
   function loadCustomThemes(){
     try{ const raw = localStorage.getItem('customThemes'); return raw ? JSON.parse(raw) : []; }catch(e){ return []; }
   }
@@ -228,17 +228,17 @@ if(themeSelect){
   function populateThemeSelect(){
     themeSelect.innerHTML = '';
     presets.forEach(p=>{ const opt = document.createElement('option'); opt.value = 'preset:'+p.value; opt.textContent = p.name; themeSelect.appendChild(opt); });
-    const sep = document.createElement('option'); sep.disabled = true; sep.textContent = '──────────────── Custom Themes ────────────────'; themeSelect.appendChild(sep);
+    const sep = document.createElement('option'); sep.disabled = true; sep.textContent = '──────────────── Custom Themes ───────────────��[...]
     const customs = loadCustomThemes();
-    if(customs.length === 0){ const noCustom = document.createElement('option'); noCustom.disabled = true; noCustom.textContent = 'No custom themes'; themeSelect.appendChild(noCustom); } else { customs.forEach((t,i)=>{ const opt = document.createElement('option'); opt.value = 'custom:'+i; opt.textContent = t.name || ('Custom '+(i+1)); themeSelect.appendChild(opt); }); }
+    if(customs.length === 0){ const noCustom = document.createElement('option'); noCustom.disabled = true; noCustom.textContent = 'No custom themes'; themeSelect.appendChild(noCustom); } else { custom[...]
   }
   function clearPresetClasses(){ const presetValues = presets.map(p=>p.value); presetValues.forEach(cls=>document.body.classList.remove(cls)); document.body.classList.remove('dark-mode'); }
-  function applyPreset(name){ clearPresetClasses(); if(name === 'dark'){ document.body.classList.add('dark-mode'); } else { document.body.classList.add(name); } document.documentElement.style.removeProperty('--bg'); document.documentElement.style.removeProperty('--accent'); document.documentElement.style.removeProperty('--hover'); document.documentElement.style.removeProperty('--text'); document.body.style.backgroundImage = ''; }
-  function applyCustom(themeObj){ clearPresetClasses(); if(!themeObj || typeof themeObj !== 'object') return; if(themeObj.bgColor) document.documentElement.style.setProperty('--bg', themeObj.bgColor); else document.documentElement.style.removeProperty('--bg'); if(themeObj.textColor) document.documentElement.style.setProperty('--text', themeObj.textColor); else document.documentElement.style.removeProperty('--text'); if(themeObj.accent) document.documentElement.style.setProperty('--accent', themeObj.accent); else document.documentElement.style.removeProperty('--accent'); if(themeObj.hover) document.documentElement.style.setProperty('--hover', themeObj.hover); else document.documentElement.style.removeProperty('--hover'); if(themeObj.bgImage){ document.body.style.backgroundImage = 'url("'+themeObj.bgImage+'")'; document.body.style.backgroundSize = 'cover'; } else { if(!/^linear-gradient|radial-gradient/i.test(themeObj.bgColor||'')) document.body.style.backgroundImage = ''; } }
+  function applyPreset(name){ clearPresetClasses(); if(name === 'dark'){ document.body.classList.add('dark-mode'); } else { document.body.classList.add(name); } document.documentElement.style.removePr[...]
+  function applyCustom(themeObj){ clearPresetClasses(); if(!themeObj || typeof themeObj !== 'object') return; if(themeObj.bgColor) document.documentElement.style.setProperty('--bg', themeObj.bgColor);[...]
   function persistSelectedTheme(descriptor){ try{ localStorage.setItem('selectedTheme', JSON.stringify(descriptor)); }catch(e){} }
-  function restoreSelectedTheme(){ try{ const raw = localStorage.getItem('selectedTheme'); if(!raw) return; const desc = JSON.parse(raw); if(desc.type === 'preset' && desc.name){ const v = 'preset:'+desc.name; const opt = Array.from(themeSelect.options).find(o=>o.value===v); if(opt) themeSelect.value = v; applyPreset(desc.name); } else if(desc.type === 'custom' && typeof desc.index === 'number'){ const customs = loadCustomThemes(); const themeObj = customs[desc.index]; if(themeObj){ const v = 'custom:'+desc.index; const opt = Array.from(themeSelect.options).find(o=>o.value===v); if(opt) themeSelect.value = v; applyCustom(themeObj); } } }catch(e){} }
+  function restoreSelectedTheme(){ try{ const raw = localStorage.getItem('selectedTheme'); if(!raw) return; const desc = JSON.parse(raw); if(desc.type === 'preset' && desc.name){ const v = 'preset:'+d[...]
   themeSelect.addEventListener('change', (e)=>{
-    const v = e.target.value; if(!v) return; if(v.startsWith('preset:')){ const name = v.split(':')[1]; applyPreset(name); persistSelectedTheme({type:'preset',name}); } else if(v.startsWith('custom:')){ const index = parseInt(v.split(':')[1],10); const customs = loadCustomThemes(); const themeObj = customs[index]; if(themeObj){ applyCustom(themeObj); persistSelectedTheme({type:'custom',index}); } }
+    const v = e.target.value; if(!v) return; if(v.startsWith('preset:')){ const name = v.split(':')[1]; applyPreset(name); persistSelectedTheme({type:'preset',name}); } else if(v.startsWith('custom:')[...]
   });
   populateThemeSelect();
   restoreSelectedTheme();
@@ -285,7 +285,7 @@ if(typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'Spe
     recognition.interimResults = false;
     recognition.onstart = ()=>{ if(voiceBtn) voiceBtn.classList.add("listening"); };
     recognition.onend = ()=>{ if(voiceBtn) voiceBtn.classList.remove("listening"); };
-    recognition.onresult = (event)=>{ try{ const transcript = event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript; if(transcript && searchInput){ searchInput.value = transcript; doSearch(transcript); } }catch(e){} };
+    recognition.onresult = (event)=>{ try{ const transcript = event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript; if(transcript && searchInput){ searchInput.val[...]
     if(voiceBtn) voiceBtn.addEventListener("click", ()=>{ try{ recognition.start(); }catch(e){} });
   }catch(e){ recognition = null; }
 }else{
@@ -309,72 +309,101 @@ window.__gcse = { callback: function(){
     }
   }catch(e){}
 } };
-function handleMathConversion(query){
-  if(!query) return null;
-  query = String(query).trim();
-  if(/^[0-9+\-*/^().\s×÷eE,]+$|^[a-zA-Z0-9+\-*/^().\s×÷eE,]+$/.test(query)){
-    if(/[0-9]/.test(query)){
-      const normalized = query.replace(/×/g,'*').replace(/÷/g,'/').replace(/\^/g,'**').replace(/,/g,'');
-      const result = safeEvaluateExpression(normalized);
-      if(result !== null) return {type:'math',expression:query,normalizedExpression:normalized,result};
-    }
-  }
-  const units = {"length":{"m":1,"km":1000,"cm":0.01,"mm":0.001,"in":0.0254,"ft":0.3048,"yd":0.9144,"mi":1609.344},"area":{"m2":1,"km2":1000000,"cm2":0.0001,"mm2":0.000001,"ha":10000,"acre":4046.8564224},"volume":{"l":1,"ml":0.001,"m3":1000,"gal":3.78541,"qt":0.946353,"pint":0.473176,"cup":0.24},"mass":{"g":1,"kg":1000,"mg":0.001,"t":1000000,"lb":453.59237,"oz":28.3495},"time":{"s":1,"min":60,"h":3600,"day":86400,"week":604800},"speed":{"m/s":1,"km/h":0.277777778,"mph":0.44704},"data_storage":{"b":1,"B":8,"kb":8192,"mb":8388608,"gb":8589934592,"tb":8796093022208},"data_transfer_rate":{"bps":1,"kbps":1000,"mbps":1000000,"gbps":1000000000},"energy":{"j":1,"kj":1000,"cal":4.184,"kcal":4184,"wh":3600,"kwh":3600000},"pressure":{"pa":1,"kpa":1000,"bar":100000,"psi":6894.757,"atm":101325},"angle":{"rad":1,"deg":0.01745329252}};
-  const convMatch = query.match(/^([\d.]+)\s*([a-zA-Z\/]+)\s*to\s*([a-zA-Z\/]+)$/i);
-  if(convMatch){
-    const value = parseFloat(convMatch[1]);
-    const from = convMatch[2].toLowerCase();
-    const to = convMatch[3].toLowerCase();
-    for(const cat in units){
-      const u = units[cat];
-      if(u[from] !== undefined && u[to] !== undefined){
-        const result = value * u[from] / u[to];
-        return {type:'conversion',inputValue:value,from,to,result};
-      }
-    }
-    return {type:'conversion',error:"Conversion units not recognized."};
-  }
-  return null;
-}
-async function handleWeather(input){
-  if(!input) return null;
-  const trimmed = String(input).trim();
-  const tomorrowMatch = trimmed.match(/^weather\s+tomorrow\s+in\s+(.+)$/i);
-  const todayMatch = trimmed.match(/^weather\s+in\s+(.+)$/i);
-  if(!tomorrowMatch && !todayMatch) return null;
-  const place = (tomorrowMatch || todayMatch)[1].trim();
-  const isTomorrow = !!tomorrowMatch;
-  try{
-    const geoRes = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(place));
-    if(!geoRes.ok) return {type:'weather',error:`Couldn't find "${place}".`};
-    const geo = await geoRes.json();
-    if(!Array.isArray(geo) || geo.length === 0) return {type:'weather',error:`Couldn't find "${place}".`};
-    const {lat,lon,display_name} = geo[0];
-    const wRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto');
-    if(!wRes.ok) return {type:'weather',error:"Weather lookup failed."};
-    const w = await wRes.json();
-    const icon = c => ({0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌦️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",80:"🌧️",81:"🌧️",82:"🌧️",95:"⛈️",96:"⛈️",99:"⛈️"}[c] || "🌡️");
-    if(isTomorrow){
-      if(!w.daily || !Array.isArray(w.daily.temperature_2m_max) || w.daily.temperature_2m_max.length < 2) return {type:'weather',error:`No forecast available for tomorrow in ${display_name}.`};
-      return {type:'weather',place:display_name,when:'tomorrow',icon:icon(w.daily.weathercode[1]),high:w.daily.temperature_2m_max[1],low:w.daily.temperature_2m_min[1]};
-    }
-    const pad = n => String(n).padStart(2,'0');
-    const d = new Date();
-    const nowHour = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}`;
-    let start = -1;
-    if(w.hourly && Array.isArray(w.hourly.time)) start = w.hourly.time.findIndex(t=>t.startsWith(nowHour));
-    if(start === -1) start = 0;
-    let nextHours = [];
-    for(let i = start; i < start + 6; i++){
-      if(!w.hourly.time || !w.hourly.time[i]) break;
-      nextHours.push({time: w.hourly.time[i].slice(11,16), icon: icon(w.hourly.weathercode && w.hourly.weathercode[i]), temp: w.hourly.temperature_2m && w.hourly.temperature_2m[i]});
-    }
-    return {type:'weather',place:display_name,when:'today',current:{temp: w.current_weather?.temperature ?? null, wind: w.current_weather?.windspeed ?? null, icon: icon(w.current_weather?.weathercode)}, nextHours};
-  }catch(e){
-    return {type:'weather',error:"Weather lookup failed."};
+
+/* ===========================
+   New TIME HANDLER (replaces previous time snippet)
+   - Uses Nominatim to geocode user-provided place text
+   - Uses timeapi.io to fetch local time for coordinates
+   - Does NOT use alert(); shows result in the feature popup via showFeatureResult()
+   =========================== */
+
+async function geocodeLocation(place) {
+  if (!place) return null;
+
+  try {
+    const res = await fetch(
+      'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(place)
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    return {
+      lat: Number(data[0].lat),
+      lon: Number(data[0].lon),
+      name: data[0].display_name
+    };
+  } catch {
+    return null;
   }
 }
-const langMap = {af:'af',afrikaans:'af',sq:'sq',albanian:'sq',am:'am',amharic:'am',ar:'ar',arabic:'ar',hy:'hy',armenian:'hy',az:'az',azerbaijani:'az',eu:'eu',basque:'eu',be:'be',belarusian:'be',bn:'bn',bengali:'bn',bs:'bs',bosnian:'bs',bg:'bg',bulgarian:'bg',ca:'ca',catalan:'ca',ceb:'ceb',cebuano:'ceb',zh:'zh',chinese:'zh','chinese simplified':'zh','chinese (simplified)':'zh','simplified chinese':'zh','traditional chinese':'zh','chinese traditional':'zh','chinese (traditional)':'zh','zh-cn':'zh','zh-tw':'zh',co:'co',corsican:'co',hr:'hr',croatian:'hr',cs:'cs',czech:'cs',da:'da',danish:'da',nl:'nl',dutch:'nl',en:'en',english:'en','british english':'en','uk english':'en',eo:'eo',esperanto:'eo',et:'et',estonian:'et',fi:'fi',finnish:'fi',fr:'fr',french:'fr',fy:'fy',frisian:'fy',gl:'gl',galician:'gl',ka:'ka',georgian:'ka',de:'de',german:'de',el:'el',greek:'el',gu:'gu',gujarati:'gu',ht:'ht',haitian:'ht',ha:'ha',hausa:'ha',haw:'haw',hawaiian:'haw',he:'he',hebrew:'he',hi:'hi',hindi:'hi',hmn:'hmn',hmong:'hmng',hu:'hu',hungarian:'hu',is:'is',icelandic:'is',ig:'ig',igbo:'ig',id:'id',indonesian:'id',ga:'ga',irish:'ga',it:'it',italian:'it',ja:'ja',japanese:'ja',jw:'jw',javanese:'jw',kn:'kn',kannada:'kn',kk:'kk',kazakh:'kk',km:'km',khmer:'km',ko:'ko',korean:'ko',ku:'ku',kurdish:'ku',ky:'ky',kyrgyz:'ky',lo:'lo',lao:'lo',la:'la',latin:'la',lv:'lv',latvian:'lv',lt:'lt',lithuanian:'lt',lb:'lb',luxembourgish:'lb',mk:'mk',macedonian:'mk',mg:'mg',malagasy:'mg',ms:'ms',malay:'ms',ml:'ml',malayalam:'ml',mt:'mt',maltese:'mt',mi:'mi',maori:'mi',mr:'mr',marathi:'mr',mn:'mn',mongolian:'mn',my:'my',burmese:'my',ne:'ne',nepali:'ne',no:'no',norwegian:'no',ny:'ny',chichewa:'ny',ps:'ps',pashto:'ps',fa:'fa',persian:'fa',pl:'pl',polish:'pl',pt:'pt',portuguese:'pt',pa:'pa',punjabi:'pa',ro:'ro',romanian:'ro',ru:'ru',russian:'ru',sm:'sm',samoan:'sm',gd:'gd','scots gaelic':'gd',sr:'sr',serbian:'sr',st:'st',sesotho:'st',sn:'sn',shona:'sn',sd:'sd',sindhi:'sd',si:'si',sinhala:'si',sk:'sk',slovak:'sk',sl:'sl',slovenian:'sl',so:'so',somali:'so',es:'es',spanish:'es',su:'su',sundanese:'su',sw:'sw',swahili:'sw',sv:'sv',swedish:'sv',tg:'tg',tajik:'tg',ta:'ta',tamil:'ta',te:'te',telugu:'te',th:'th',thai:'th',tr:'tr',turkish:'tr',tk:'tk',turkmen:'tk',uk:'uk',ukrainian:'uk',ur:'ur',urdu:'ur',uz:'uz',uzbek:'uz',vi:'vi',vietnamese:'vi',cy:'cy',welsh:'cy',xh:'xh',xhosa:'xh',yi:'yi',yiddish:'yi',yo:'yo',yoruba:'yo',zu:'zu',zulu:'zu'};
+
+/* ===========================
+   EXTRACT LOCATION
+   Handles:
+   time in london
+   time at tokyo
+   time for california
+   =========================== */
+
+function extractLocation(query) {
+  const match = query.match(/\btime\s+(?:in|at|for)\s+(.+)$/i);
+  return match ? match[1].trim() : null;
+}
+
+/* ===========================
+   TIME HANDLER
+   - Returns true if the query was a time query and was handled (popup shown)
+   - Returns false if the query does not match a time query (so caller can continue)
+   =========================== */
+
+async function handleTime(query) {
+  const locationText = extractLocation(query);
+  if (!locationText) return false;
+
+  const geo = await geocodeLocation(locationText);
+  if (!geo) {
+    showFeatureResult({ title: 'Time — Not found', html: '<p>Location not found.</p>' });
+    return true;
+  }
+
+  // Get timezone + local time from coordinates
+  try {
+    const res = await fetch(
+      `https://timeapi.io/api/Time/current/coordinate?latitude=${geo.lat}&longitude=${geo.lon}`
+    );
+
+    if (!res.ok) {
+      showFeatureResult({ title: 'Time — Error', html: '<p>Could not fetch time.</p>' });
+      return true;
+    }
+
+    const data = await res.json();
+
+    const hour = String(data.hour ?? data.hours ?? new Date().getHours()).padStart(2, '0');
+    const minute = String(data.minute ?? data.minutes ?? new Date().getMinutes()).padStart(2, '0');
+
+    const tz = data.timeZone ?? data.timezone ?? '';
+    const dateStr = (data.year && data.month && data.day) ? `${data.year}-${String(data.month).padStart(2,'0')}-${String(data.day).padStart(2,'0')}` : '';
+
+    const htmlParts = [];
+    htmlParts.push('<div class="time-block">');
+    htmlParts.push('<div class="time-place">' + escapeHtml(geo.name) + '</div>');
+    htmlParts.push('<div class="time-now"><strong>' + escapeHtml(hour + ':' + minute) + '</strong>' + (tz ? ' <span class="tz">(' + escapeHtml(tz) + ')</span>' : '') + '</div>');
+    if (dateStr) htmlParts.push('<div class="time-date">' + escapeHtml(dateStr) + '</div>');
+    htmlParts.push('</div>');
+
+    showFeatureResult({ title: 'Time — ' + escapeHtml(geo.name), html: htmlParts.join('') });
+    return true;
+  } catch (e) {
+    showFeatureResult({ title: 'Time — Error', html: '<p>Could not fetch time.</p>' });
+    return true;
+  }
+}
+
+const langMap = {af:'af',afrikaans:'af',sq:'sq',albanian:'sq',am:'am',amharic:'am',ar:'ar',arabic:'ar',hy:'hy',armenian:'hy',az:'az',azerbaijani:'az',eu:'eu',basque:'eu',be:'be',belarusian:'be',bn:'bn[...]
 async function handleSearch(input){
   if(!input || typeof input !== 'string') return null;
   const match = input.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
@@ -452,32 +481,6 @@ async function handleWhoIs(input){
     return null;
   }
 }
-const ALL_TIMEZONES = (typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf("timeZone") : [];
-function handleTimeAndDate(query){
-  if(!query || typeof query !== 'string') return null;
-  const q = query.toLowerCase().trim();
-  if(q === "today's date" || q === "todays date" || q === "date today") return new Date().toDateString();
-  const match = q.match(/^time in (.+)$/);
-  if(match){
-    const city = match[1].trim();
-    const timezone = cityToTimezone(city);
-    if(!timezone) return null;
-    const time = new Date().toLocaleTimeString("en-GB",{timeZone:timezone,hour:"2-digit",minute:"2-digit"});
-    return 'Time in '+capitalize(city)+': '+time;
-  }
-  return null;
-}
-function cityToTimezone(city){
-  if(!city) return null;
-  const c = city.toLowerCase().replace(/[.,]/g,"").replace(/\s+/g,"_");
-  for(const tz of ALL_TIMEZONES){
-    try{ if(tz.toLowerCase().endsWith("/"+c)) return tz; }catch(e){}
-  }
-  for(const tz of ALL_TIMEZONES){
-    try{ if(tz.toLowerCase().includes(c)) return tz; }catch(e){}
-  }
-  return null;
-}
 function capitalize(str){ if(!str) return ''; return str.split(" ").map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(" "); }
 async function handleWikipediaSearch(query){
   if(!query || typeof query !== 'string') return null;
@@ -489,7 +492,7 @@ async function handleWikipediaSearch(query){
     const lang = tMatch[2].toLowerCase().trim().replace(/\s+/g,' ');
     if(langMap[lang]) return null;
   }
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","will","shall","the","a","an","of","for","to","in","on","at","by","with","about","as","from","into","like"];
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","[...]
   const cleanedQuery = query.toLowerCase().split(/\s+/).filter(word=>word && !stopWords.includes(word)).join(" ");
   if(!cleanedQuery) return null;
   try{
@@ -632,11 +635,11 @@ if(searchBtn){
         if(weatherResult.error){ showFeatureResult({title:'Weather',html:'<p>'+escapeHtml(weatherResult.error)+'</p>'}); }
         else if(weatherResult.type === 'weather'){
           if(weatherResult.when === 'tomorrow'){
-            const html = '<div class="weather-block"><div class="weather-place">'+escapeHtml(weatherResult.place)+'</div><div class="weather-icon">'+escapeHtml(weatherResult.icon)+'</div><div class="weather-temps">High: <strong>'+escapeHtml(String(weatherResult.high))+'°C</strong> — Low: <strong>'+escapeHtml(String(weatherResult.low))+'°C</strong></div></div>';
+            const html = '<div class="weather-block"><div class="weather-place">'+escapeHtml(weatherResult.place)+'</div><div class="weather-icon">'+escapeHtml(weatherResult.icon)+'</div><div class="w[...]
             showFeatureResult({title:'Weather — '+escapeHtml(weatherResult.place),html});
           }else{
             const hoursHtml = (weatherResult.nextHours || []).map(h=>'<div class="hour-item">'+escapeHtml(h.time)+' — '+escapeHtml(h.icon)+' '+escapeHtml(String(h.temp))+'°C</div>').join('');
-            const html = '<div class="weather-block"><div class="weather-place">'+escapeHtml(weatherResult.place)+'</div><div class="weather-now">'+escapeHtml(weatherResult.current.icon)+' Now: <strong>'+escapeHtml(String(weatherResult.current.temp))+'°C</strong> — Wind: '+escapeHtml(String(weatherResult.current.wind ?? 'N/A'))+' km/h</div><div class="weather-next"><strong>Next hours</strong>'+hoursHtml+'</div></div>';
+            const html = '<div class="weather-block"><div class="weather-place">'+escapeHtml(weatherResult.place)+'</div><div class="weather-now">'+escapeHtml(weatherResult.current.icon)+' Now: <stron[...]
             showFeatureResult({title:'Weather — '+escapeHtml(weatherResult.place),html});
           }
           if(searchInput) searchInput.value = "";
@@ -648,7 +651,7 @@ if(searchBtn){
     try{
       const whoIsResult = await handleWhoIs(query);
       if(whoIsResult){
-        const html = '<div class="whois-block"><div class="whois-title"><strong>'+escapeHtml(whoIsResult.title)+'</strong></div><div class="whois-extract">'+escapeHtml(whoIsResult.extract)+'</div>'+(whoIsResult.url?('<div class="whois-link"><a href="'+escapeHtml(whoIsResult.url)+'" target="_blank" rel="noopener">Read more on Wikipedia</a></div>'):'')+'</div>';
+        const html = '<div class="whois-block"><div class="whois-title"><strong>'+escapeHtml(whoIsResult.title)+'</strong></div><div class="whois-extract">'+escapeHtml(whoIsResult.extract)+'</div>'+(w[...]
         showFeatureResult({title:'Who is '+escapeHtml(whoIsResult.title),html});
         if(searchInput) searchInput.value = "";
         if(chatBtn) chatBtn.style.display = "block";
@@ -656,10 +659,9 @@ if(searchBtn){
       }
     }catch(e){}
     try{
-      const timeResult = handleTimeAndDate(query);
-      if(timeResult){
-        const html = '<div class="time-block">'+escapeHtml(timeResult)+'</div>';
-        showFeatureResult({title:'Time & Date',html});
+      // NEW: handle time queries asynchronously and show popup result
+      const handledTime = await handleTime(query);
+      if(handledTime){
         if(searchInput) searchInput.value = "";
         if(chatBtn) chatBtn.style.display = "block";
         return;
@@ -670,7 +672,7 @@ if(searchBtn){
       if(translation){
         if(translation.error){ showFeatureResult({title:'Translation',html:'<p>'+escapeHtml(translation.error)+'</p>'}); }
         else if(translation.type === 'translation'){
-          const html = '<div class="translation-block"><div class="translation-example">'+escapeHtml(translation.from)+' <span class="arrow">→</span> <strong>'+escapeHtml(translation.to)+'</strong></div><div class="translation-meta">Target language: '+escapeHtml(translation.targetLang)+'</div></div>';
+          const html = '<div class="translation-block"><div class="translation-example">'+escapeHtml(translation.from)+' <span class="arrow">→</span> <strong>'+escapeHtml(translation.to)+'</strong><[...]
           showFeatureResult({title:'Translation',html});
           if(searchInput) searchInput.value = "";
           if(chatBtn) chatBtn.style.display = "block";
@@ -684,7 +686,7 @@ if(searchBtn){
         if(def.error){ showFeatureResult({title:'Definition',html:'<p>'+escapeHtml(def.error)+'</p>'}); }
         else{
           const listenButtonHtml = '<button id="dictListenBtn" class="dict-listen" aria-label="Play pronunciation">🔊</button>';
-          const html = '<div class="dict-block"><div class="dict-word">'+listenButtonHtml+' <strong>'+escapeHtml(def.word)+'</strong></div><div class="dict-meaning">'+escapeHtml(def.meaning)+'</div><div class="dict-example">Example: '+escapeHtml(def.example)+'</div><div class="dict-source">Source: '+escapeHtml(def.source || 'unknown')+'</div></div>';
+          const html = '<div class="dict-block"><div class="dict-word">'+listenButtonHtml+' <strong>'+escapeHtml(def.word)+'</strong></div><div class="dict-meaning">'+escapeHtml(def.meaning)+'</div><d[...]
           showFeatureResult({title:'Definition — '+escapeHtml(def.word),html});
           try{
             const listenBtn = featurePanel.querySelector('#dictListenBtn');
@@ -721,21 +723,21 @@ if(searchBtn){
       const result = handleMathConversion(query);
       if(result){
         if(result.type === 'math'){
-          const html = '<div class="math-block"><div class="math-expression">Expression: <code>'+escapeHtml(result.expression)+'</code></div><div class="math-answer">Answer: <strong>'+escapeHtml(String(result.result))+'</strong></div><div class="mini-calc"><div class="mini-calc-title">Calculator</div><form class="mini-calc-form" onsubmit="return false;"><input class="calc-display" aria-label="Calculator input" value="'+escapeHtml(result.expression)+'" /><div class="calc-controls"><div class="calc-keypad" role="group" aria-label="Calculator keypad"><button type="button" class="calc-btn" data-val="7">7</button><button type="button" class="calc-btn" data-val="8">8</button><button type="button" class="calc-btn" data-val="9">9</button><button type="button" class="calc-btn" data-val="/">÷</button><button type="button" class="calc-btn" data-val="4">4</button><button type="button" class="calc-btn" data-val="5">5</button><button type="button" class="calc-btn" data-val="6">6</button><button type="button" class="calc-btn" data-val="*">×</button><button type="button" class="calc-btn" data-val="1">1</button><button type="button" class="calc-btn" data-val="2">2</button><button type="button" class="calc-btn" data-val="3">3</button><button type="button" class="calc-btn" data-val="-">−</button><button type="button" class="calc-btn" data-val="0">0</button><button type="button" class="calc-btn" data-val=".">.</button><button type="button" class="calc-eq">=</button><button type="button" class="calc-btn" data-val="+">+</button></div><div class="calc-actions"><button type="button" class="calc-clear">Clear</button><div class="calc-result" aria-live="polite"></div></div></div></form></div></div>';
+          const html = '<div class="math-block"><div class="math-expression">Expression: <code>'+escapeHtml(result.expression)+'</code></div><div class="math-answer">Answer: <strong>'+escapeHtml(Strin[...]
           showFeatureResult({title:'Calculator',html});
           if(searchInput) searchInput.value = "";
           if(chatBtn) chatBtn.style.display = "block";
           return;
         }else if(result.type === 'conversion'){
           if(result.error){ showFeatureResult({title:'Conversion',html:'<p>'+escapeHtml(result.error)+'</p>'}); }
-          else{ const html = '<div class="conv-block">'+escapeHtml(String(result.inputValue))+' '+escapeHtml(result.from)+' = <strong>'+escapeHtml(String(result.result))+' '+escapeHtml(result.to)+'</strong></div>'; showFeatureResult({title:'Conversion',html}); if(searchInput) searchInput.value = ""; if(chatBtn) chatBtn.style.display = "block"; return; }
+          else{ const html = '<div class="conv-block">'+escapeHtml(String(result.inputValue))+' '+escapeHtml(result.from)+' = <strong>'+escapeHtml(String(result.result))+' '+escapeHtml(result.to)+'</s[...]
         }
       }
     }catch(e){}
     try{
       const wikiResult = await handleWikipediaSearch(query);
       if(wikiResult){
-        renderToScreen2('Wikipedia — '+escapeHtml(wikiResult.title), '<div class="wiki-block"><div class="wiki-title"><strong>'+escapeHtml(wikiResult.title)+'</strong></div><div class="wiki-extract">'+escapeHtml(wikiResult.extract)+'</div>'+(wikiResult.url?('<div class="wiki-link"><a href="'+escapeHtml(wikiResult.url)+'" target="_blank" rel="noopener">Read more on Wikipedia</a></div>'):'')+'</div>');
+        renderToScreen2('Wikipedia — '+escapeHtml(wikiResult.title), '<div class="wiki-block"><div class="wiki-title"><strong>'+escapeHtml(wikiResult.title)+'</strong></div><div class="wiki-extract"[...]
         if(searchInput) searchInput.value = "";
         if(chatBtn) chatBtn.style.display = "block";
       }
