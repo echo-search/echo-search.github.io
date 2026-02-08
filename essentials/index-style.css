@@ -35,7 +35,7 @@ search-btn { width: 1em; height: 1em; }
 .version-badge:hover { background: #d0d0d0; }
 #articles-link { text-align: right; margin: 10px 20px; }
 #articles-link a { color: blue; text-decoration: underline; }
-.toggle-text { font-size: 12px; color: #888; }
+.toggle-text { font-size: 12px; color: #545454; }
 .slider-switch { width: 46px; height: 26px; background-color: #555; border-radius: 26px; position: relative; cursor: pointer; transition: 0.25s; }
 .slider-switch::before { content: ""; width: 20px; height: 20px; background: #fff; position: absolute; left: 3px; bottom: 3px; border-radius: 999px; transition: 0.25s; }
 .slider-switch.active { background-color: var(--accent); }
