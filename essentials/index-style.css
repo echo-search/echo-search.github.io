@@ -41,8 +41,14 @@ search-btn { width: 1em; height: 1em; }
 .slider-switch.active { background-color: var(--accent); }
 .slider-switch.active::before { transform: translateX(20px); }
 #emojiContainer span { position: absolute; font-size: 40px; pointer-events: none; user-select: none; }
-#accountLink { position: fixed; top: 15px; right: 15px; padding: 10px 18px; background: var(--accent); border: 1px solid #ccc; border-radius: 6px; text-decoration: none; font-size: 16px; z-index: 9999; }
-#accountLink:hover { background: var(--hover); }
+#accountLink { position: fixed; top: 15px; right: 15px; padding: 10px 18px; background: var(--accent); border: 1px solid #ccc; border-radius: 6px; text-decoration: none; font-size: 16px; z-index: 9999; display: flex; align-items: center; gap: 8px; transition: transform 0.25s ease, background 0.2s ease; }
+#accountLink:hover { background: var(--hover); transform: translateX(-6px); }
+#accountLink:focus { transform: translateX(-6px); }
+#accountLink.active { transform: translateX(-6px); }
+#accountLink .label { max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; transition: max-width 0.25s ease, opacity 0.2s ease; }
+#accountLink:hover .label { max-width: 140px; opacity: 1; }
+#accountLink:focus .label { max-width: 140px; opacity: 1; }
+#accountLink.active .label { max-width: 140px; opacity: 1; }
 .feature-result.hidden { display: none; }
 .feature-result { position: fixed; inset: 0; z-index: 10000; font-family: var(--font); }
 .feature-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(2px); }
