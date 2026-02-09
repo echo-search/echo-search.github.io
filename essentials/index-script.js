@@ -227,11 +227,15 @@ if (slider) {
   openNewTab = false;
 }
 
-function openResult(url) {
-  if (openNewTab) {
-    window.open(url, "_blank");
-  } else {
-    window.location.href = url;
+function openResult(url, forceNewTab = false) {
+  try {
+    if (forceNewTab || openNewTab) {
+      window.open(url, "_blank");
+    } else {
+      window.location.href = url;
+    }
+  } catch (e) {
+    try { window.open(url, "_blank"); } catch (e2) {}
   }
 }
 
@@ -288,7 +292,7 @@ function domainSearchHandler(query) {
 
     const sep = document.createElement('option');
     sep.disabled = true;
-    sep.textContent = '──────────────── Custom Themes ────────────────';
+    sep.textContent = '───���──────────── Custom Themes ────────────────';
     themeSelect.appendChild(sep);
 
     const customs = loadCustomThemes();
@@ -1002,6 +1006,101 @@ async function handleWikipediaSearch(query) {
   }
 }
 
+// ----------------------
+// Wiki: full article fetch & sanitization
+// ----------------------
+
+let lastWikiState = null; // { type, title, summaryHtml, pageUrl, query }
+
+function sanitizeWikiHtml(html) {
+  if (!html) return '';
+  // remove script tags
+  let out = html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+  // remove event handler attributes (on*)
+  out = out.replace(/\s(on\w+)=["'][^"']*["']/gi, '');
+  // remove javascript: links
+  out = out.replace(/href=(["'])javascript:[^"']*\1/gi, '');
+  return out;
+}
+
+/**
+ * fetchAndShowFullArticle(titleOrUrl)
+ * - Fetches the full article HTML from MediaWiki API (action=parse) and shows it in the feature modal.
+ * - Adds a back button to return to the summary that was previously shown.
+ */
+async function fetchAndShowFullArticle(titleOrUrl) {
+  if (!titleOrUrl) return;
+
+  // Determine title from URL or accept title
+  let title = titleOrUrl;
+  try {
+    const m = String(titleOrUrl).match(/\/wiki\/([^#?/]+)/);
+    if (m && m[1]) {
+      title = decodeURIComponent(m[1]);
+    }
+  } catch (e) {
+    // fallback to provided string
+  }
+
+  const api = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&prop=text&format=json&formatversion=2&origin=*`;
+
+  showFeatureResult({ title: `Loading — ${escapeHtml(String(title))}`, html: `<div style="padding:16px;">Loading full article…</div>` });
+
+  try {
+    const res = await fetch(api);
+    if (!res.ok) {
+      showFeatureResult({ title: `Full article — ${escapeHtml(String(title))}`, html: `<p>Unable to load full article. You can open it on Wikipedia: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>` });
+      return;
+    }
+    const data = await res.json();
+    const pageHtml = data?.parse?.text || data?.parse?.text || (data?.text && data.text);
+    if (!pageHtml) {
+      showFeatureResult({ title: `Full article — ${escapeHtml(String(title))}`, html: `<p>Full article could not be retrieved. <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>` });
+      return;
+    }
+
+    // sanitize a bit before inserting
+    const sanitized = sanitizeWikiHtml(pageHtml);
+
+    const backBtnHtml = `<button id="wikiBackBtn" class="wiki-back" style="margin-right:8px;">Back to summary</button>`;
+    const externalLink = `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>`;
+
+    const fullHtml = `
+      <div class="wiki-full-header" style="margin-bottom:12px;">
+        ${backBtnHtml}
+        ${externalLink}
+      </div>
+      <div class="wiki-full-article">${sanitized}</div>
+    `;
+
+    showFeatureResult({ title: `${escapeHtml(String(title))} — Full article`, html: fullHtml });
+
+    // attach back handler to restore summary if available
+    const backBtn = featurePanel.querySelector('#wikiBackBtn');
+    if (backBtn && lastWikiState && lastWikiState.summaryHtml) {
+      backBtn.addEventListener('click', () => {
+        showFeatureResult({ title: `Wikipedia — ${escapeHtml(lastWikiState.title)}`, html: lastWikiState.summaryHtml });
+        // reattach the summary's read more button
+        const rm = featurePanel.querySelector('#wikiReadMoreBtn');
+        if (rm) {
+          rm.addEventListener('click', () => {
+            const url = rm.getAttribute('data-url') || lastWikiState.pageUrl;
+            fetchAndShowFullArticle(url);
+          });
+        }
+      });
+    }
+
+  } catch (e) {
+    console.error('fetchAndShowFullArticle error', e);
+    showFeatureResult({ title: `Full article — ${escapeHtml(String(title))}`, html: `<p>Error loading full article. <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>` });
+  }
+}
+
+// ----------------------
+// Suggestions & input handling
+// ----------------------
+
 let currentScript = null;
 let currentFocus = -1;
 let isNavigating = false;
@@ -1132,6 +1231,9 @@ document.addEventListener('click', e => {
   }
 });
 
+// ----------------------
+// 67 effect
+// ----------------------
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -1162,6 +1264,10 @@ function play67Effect() {
     container.innerHTML = "";
   }, 3000);
 }
+
+// ----------------------
+// Search execution & rendering
+// ----------------------
 
 function doSearch(query) {
   if (!query || !query.trim()) return;
@@ -1204,9 +1310,14 @@ function doSearch(query) {
     searchElement.execute(query);
     window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
   } else {
-    // fallback: open a Google search in a new tab if CSE isn't available
+    // No CSE available: open Google results in a new tab so current page (and the wiki popup) remain visible.
     const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-    openResult(googleUrl);
+    try {
+      window.open(googleUrl, '_blank');
+    } catch (e) {
+      // fallback: navigate
+      openResult(googleUrl, true);
+    }
   }
 }
 
@@ -1232,62 +1343,6 @@ function renderToScreen2(title, html, options = {}) {
     gcseResults.appendChild(container);
   }
   window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
-}
-
-/**
- * openFullWikipedia(titleOrUrl)
- * - Attempts to display the full article inside a modal iframe.
- * - If embedding fails or is blocked, provides a link and opens in a new tab as fallback.
- */
-function openFullWikipedia(titleOrUrl) {
-  let url;
-  try {
-    if (titleOrUrl && /^https?:\/\//i.test(titleOrUrl)) {
-      url = titleOrUrl;
-    } else {
-      url = `https://en.wikipedia.org/wiki/${encodeURIComponent(titleOrUrl)}`;
-    }
-  } catch (e) {
-    url = `https://en.wikipedia.org/wiki/${encodeURIComponent(String(titleOrUrl))}`;
-  }
-
-  const html = `
-    <div class="wiki-full">
-      <div class="wiki-full-actions">
-        <a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="open-external">Open full article in a new tab</a>
-      </div>
-      <div class="wiki-full-frame-wrapper" style="height:70vh;">
-        <iframe id="wikiFullFrame" src="${escapeHtml(url)}" style="width:100%;height:100%;border:0;" title="Full Wikipedia article"></iframe>
-      </div>
-      <div class="wiki-full-fallback" style="margin-top:8px;color:#666;font-size:0.9em;">
-        If the article doesn't appear above, click "Open full article in a new tab".
-      </div>
-    </div>
-  `;
-
-  showFeatureResult({ title: 'Full article', html });
-
-  // If browser blocks embedding (X-Frame-Options), the iframe will remain blank.
-  // We still provide the external link. Also open in new tab as an explicit fallback.
-  const frame = document.getElementById('wikiFullFrame');
-  if (!frame) return;
-
-  // If iframe load doesn't show content after a short timeout, open in new tab as fallback.
-  let loaded = false;
-  frame.addEventListener('load', () => {
-    loaded = true;
-  });
-
-  setTimeout(() => {
-    if (!loaded) {
-      // Try to open in a new tab as a fallback
-      try {
-        window.open(url, '_blank');
-      } catch (e) {
-        // ignore
-      }
-    }
-  }, 3000);
 }
 
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
@@ -1344,6 +1399,13 @@ function escapeHtml(s) {
   });
 }
 
+// ----------------------
+// Main search button handler
+// - For Wikipedia (non-whois) we display the summary in the popup first,
+//   and also trigger the regular search results to appear (CSE or new tab).
+// - Read more fetches the full article via MediaWiki API and renders it inside the popup (no iframe).
+// ----------------------
+
 if (searchBtn) {
   searchBtn.addEventListener("click", async function() {
     const query = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
@@ -1398,15 +1460,32 @@ if (searchBtn) {
               </div>
             </div>
           `;
+
+          // store last wiki state so "Back" from full article works
+          lastWikiState = {
+            type: 'whois',
+            title: whoIsResult.title,
+            summaryHtml: html,
+            pageUrl: readMoreUrl,
+            query
+          };
+
+          // Show summary in popup (appears first)
           showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
 
-          // attach read more handler (shows full article)
+          // Insert the summary HTML into the popup content region so it's displayed similarly to previous behavior
+          const content = featurePanel.querySelector('.feature-content');
+          if (content) {
+            content.innerHTML = html;
+          }
+
+          // attach read more handler for whois
           try {
             const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
             if (readBtn) {
               readBtn.addEventListener('click', () => {
                 const url = readBtn.getAttribute('data-url') || readMoreUrl;
-                openFullWikipedia(url);
+                fetchAndShowFullArticle(url);
               });
             }
           } catch (e) {
@@ -1579,67 +1658,76 @@ if (searchBtn) {
       console.error('Math handler threw', e);
     }
 
+    // ---------- WIKIPEDIA (non-whois) ----------
     try {
       const wikiResult = await handleWikipediaSearch(query);
       if (wikiResult) {
-        // Render Wikipedia result into "screen 2" (the gcse results area) but do NOT replace search results.
-        // Also, ensure the normal search results are shown alongside the wiki summary.
         const readMoreUrl = wikiResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiResult.title)}`;
-        const html = `
+        const summaryHtml = `
           <div class="wiki-block">
             <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
             <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
             <div class="wiki-actions" style="margin-top:8px;">
               <button id="wikiReadMoreBtn" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
             </div>
-            ${wikiResult.url ? `<div class="wiki-link" style="margin-top:6px;"><a href="${escapeHtml(wikiResult.url)}" target="_blank" rel="noopener">Open on Wikipedia</a></div>` : ''}
           </div>
         `;
 
-        // Append the wiki summary to the results screen (do not remove existing contents).
-        renderToScreen2(`Wikipedia — ${escapeHtml(wikiResult.title)}`, html, { append: true });
+        // store state so full article can return to summary
+        lastWikiState = {
+          type: 'wikipedia',
+          title: wikiResult.title,
+          summaryHtml,
+          pageUrl: readMoreUrl,
+          query
+        };
 
-        // Attempt to show regular search results as well (run the site CSE or fallback to Google)
-        try {
-          // ensure the site's search is executed for the same query
-          const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
-          if (searchElement) {
-            searchElement.execute(query);
-            // note: renderToScreen2 used append so we won't wipe the wiki content
-          } else {
-            // fallback to opening a Google results area in a new window or embed the google search results:
-            // Use doSearch which will either use CSE or fallback to a Google search page.
-            doSearch(query);
-          }
-        } catch (e) {
-          console.error('Failed to execute search alongside Wikipedia result', e);
-          doSearch(query);
-        }
+        // show the summary first in the popup
+        showFeatureResult({ title: `Wikipedia — ${escapeHtml(wikiResult.title)}`, html: summaryHtml });
 
-        // attach read more handler for the appended wiki result
+        // attach read more handler in the popup
         try {
-          // since renderToScreen2 appended, find the last appended wikiReadMoreBtn
-          const allButtons = gcseResults.querySelectorAll('#wikiReadMoreBtn');
-          const readBtn = allButtons ? allButtons[allButtons.length - 1] : null;
+          const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
           if (readBtn) {
             readBtn.addEventListener('click', () => {
               const url = readBtn.getAttribute('data-url') || readMoreUrl;
-              openFullWikipedia(url);
+              fetchAndShowFullArticle(url);
             });
           }
         } catch (e) {
           console.error('Failed to attach Wikipedia read more handler', e);
         }
 
+        // Also ensure regular search results are shown (CSE if available, else Google in new tab).
+        try {
+          const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
+          if (searchElement) {
+            // Execute CSE; results will render in the page (screen 2)
+            searchElement.execute(query);
+            // Optionally also append a small header in gcseResults indicating wiki was shown in popup
+            // Do not remove existing results here.
+          } else {
+            // fallback: open Google results in a new tab so user can view search results while popup remains
+            const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            try {
+              window.open(googleUrl, '_blank');
+            } catch (e) {
+              openResult(googleUrl, true);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to show search results alongside Wikipedia summary', e);
+        }
+
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
-        // do NOT return here; we've already triggered the search above (or doSearch was called)
+        return; // we've already handled search execution; stop further flow
       }
     } catch (e) {
       console.error('Wikipedia handler threw', e);
     }
 
-    // If we reach here, perform a normal search (doSearch) for the query (this ensures the search flow continues).
+    // If nothing above handled it, fall back to normal search
     doSearch(query);
     searchInput.value = "";
     if (chatBtn) chatBtn.style.display = "block";
