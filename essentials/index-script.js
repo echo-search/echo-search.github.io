@@ -972,7 +972,7 @@ async function handleWikipediaSearch(query) {
   }
   if (!query || typeof query !== 'string') return null;
 
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might",];
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","the","a","an","of","in","on","for","to","by","with","about","as","at","from","into","over","after","before","between","under","above"];
 
   const cleanedQuery = query
     .toLowerCase()
@@ -1203,12 +1203,150 @@ function doSearch(query) {
   if (searchElement) {
     searchElement.execute(query);
     window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+  } else {
+    // fallback: open a Google search in a new tab if CSE isn't available
+    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    openResult(googleUrl);
   }
+}
+
+/**
+ * renderToScreen2(title, html, options)
+ * - Renders content into the gcse-results container (screen 2).
+ * - options.append: when true, do not clear existing results; append.
+ */
+function renderToScreen2(title, html, options = {}) {
+  if (!gcseResults) return;
+  const container = document.createElement('div');
+  container.className = 'feature-card wiki-screen2';
+  container.innerHTML = `
+    <div class="feature-header">
+      <h3>${title}</h3>
+    </div>
+    <div class="feature-content">${html}</div>
+  `;
+  if (options.append) {
+    gcseResults.appendChild(container);
+  } else {
+    gcseResults.innerHTML = '';
+    gcseResults.appendChild(container);
+  }
+  window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+}
+
+/**
+ * openFullWikipedia(titleOrUrl)
+ * - Attempts to display the full article inside a modal iframe.
+ * - If embedding fails or is blocked, provides a link and opens in a new tab as fallback.
+ */
+function openFullWikipedia(titleOrUrl) {
+  let url;
+  try {
+    if (titleOrUrl && /^https?:\/\//i.test(titleOrUrl)) {
+      url = titleOrUrl;
+    } else {
+      url = `https://en.wikipedia.org/wiki/${encodeURIComponent(titleOrUrl)}`;
+    }
+  } catch (e) {
+    url = `https://en.wikipedia.org/wiki/${encodeURIComponent(String(titleOrUrl))}`;
+  }
+
+  const html = `
+    <div class="wiki-full">
+      <div class="wiki-full-actions">
+        <a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="open-external">Open full article in a new tab</a>
+      </div>
+      <div class="wiki-full-frame-wrapper" style="height:70vh;">
+        <iframe id="wikiFullFrame" src="${escapeHtml(url)}" style="width:100%;height:100%;border:0;" title="Full Wikipedia article"></iframe>
+      </div>
+      <div class="wiki-full-fallback" style="margin-top:8px;color:#666;font-size:0.9em;">
+        If the article doesn't appear above, click "Open full article in a new tab".
+      </div>
+    </div>
+  `;
+
+  showFeatureResult({ title: 'Full article', html });
+
+  // If browser blocks embedding (X-Frame-Options), the iframe will remain blank.
+  // We still provide the external link. Also open in new tab as an explicit fallback.
+  const frame = document.getElementById('wikiFullFrame');
+  if (!frame) return;
+
+  // If iframe load doesn't show content after a short timeout, open in new tab as fallback.
+  let loaded = false;
+  frame.addEventListener('load', () => {
+    loaded = true;
+  });
+
+  setTimeout(() => {
+    if (!loaded) {
+      // Try to open in a new tab as a fallback
+      try {
+        window.open(url, '_blank');
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, 3000);
+}
+
+let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
+function renderHistory() {
+  if (!historyList) return;
+  historyList.innerHTML = "";
+
+  if (history.length === 0) {
+    if (historyTitle) historyTitle.style.display = "none";
+    if (clearBtn) clearBtn.style.display = "none";
+    return;
+  }
+
+  if (historyTitle) historyTitle.style.display = "block";
+  if (clearBtn) clearBtn.style.display = "inline-block";
+
+  history.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.addEventListener("click", () => doSearch(item));
+    historyList.appendChild(li);
+  });
+}
+
+function saveHistory() {
+  localStorage.setItem("searchHistory", JSON.stringify(history));
+}
+
+if (clearBtn) {
+  clearBtn.addEventListener("click", () => {
+    history = [];
+    saveHistory();
+    renderHistory();
+  });
+}
+
+renderHistory();
+
+if (chatBtn) {
+  chatBtn.addEventListener("click", () => {
+    window.open("https://chatgpt.com", "_blank");
+  });
+}
+
+window.addEventListener("load", () => {
+  if (chatBtn) chatBtn.style.display = "none";
+});
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, function (m) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]);
+  });
 }
 
 if (searchBtn) {
   searchBtn.addEventListener("click", async function() {
-    const query = searchInput.value.trim();
+    const query = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
     if(!query) return;
 
     try {
@@ -1250,14 +1388,31 @@ if (searchBtn) {
       const whoIsResult = await handleWhoIs(query);
       if (whoIsResult) {
         if (whoIsResult.type === 'whois') {
+          const readMoreUrl = whoIsResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(whoIsResult.title)}`;
           const html = `
             <div class="whois-block">
               <div class="whois-title"><strong>${escapeHtml(whoIsResult.title)}</strong></div>
               <div class="whois-extract">${escapeHtml(whoIsResult.extract)}</div>
-              ${whoIsResult.url ? `<div class="whois-link"><a href="${whoIsResult.url}" target="_blank" rel="noopener">Read more on Wikipedia</a></div>` : ''}
+              <div class="whois-actions" style="margin-top:8px;">
+                <button id="wikiReadMoreBtn" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
+              </div>
             </div>
           `;
           showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
+
+          // attach read more handler (shows full article)
+          try {
+            const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
+            if (readBtn) {
+              readBtn.addEventListener('click', () => {
+                const url = readBtn.getAttribute('data-url') || readMoreUrl;
+                openFullWikipedia(url);
+              });
+            }
+          } catch (e) {
+            console.error('Failed to attach WhoIs read more handler', e);
+          }
+
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
           return;
@@ -1427,99 +1582,67 @@ if (searchBtn) {
     try {
       const wikiResult = await handleWikipediaSearch(query);
       if (wikiResult) {
-        // Instead of showing in the popup, render Wikipedia result into "screen 2" (the gcse results area)
+        // Render Wikipedia result into "screen 2" (the gcse results area) but do NOT replace search results.
+        // Also, ensure the normal search results are shown alongside the wiki summary.
+        const readMoreUrl = wikiResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiResult.title)}`;
         const html = `
           <div class="wiki-block">
             <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
             <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
-            ${wikiResult.url ? `<div class="wiki-link"><a href="${wikiResult.url}" target="_blank" rel="noopener">Read more on Wikipedia</a></div>` : ''}
+            <div class="wiki-actions" style="margin-top:8px;">
+              <button id="wikiReadMoreBtn" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
+            </div>
+            ${wikiResult.url ? `<div class="wiki-link" style="margin-top:6px;"><a href="${escapeHtml(wikiResult.url)}" target="_blank" rel="noopener">Open on Wikipedia</a></div>` : ''}
           </div>
         `;
-        renderToScreen2(`Wikipedia — ${escapeHtml(wikiResult.title)}`, html);
+
+        // Append the wiki summary to the results screen (do not remove existing contents).
+        renderToScreen2(`Wikipedia — ${escapeHtml(wikiResult.title)}`, html, { append: true });
+
+        // Attempt to show regular search results as well (run the site CSE or fallback to Google)
+        try {
+          // ensure the site's search is executed for the same query
+          const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
+          if (searchElement) {
+            searchElement.execute(query);
+            // note: renderToScreen2 used append so we won't wipe the wiki content
+          } else {
+            // fallback to opening a Google results area in a new window or embed the google search results:
+            // Use doSearch which will either use CSE or fallback to a Google search page.
+            doSearch(query);
+          }
+        } catch (e) {
+          console.error('Failed to execute search alongside Wikipedia result', e);
+          doSearch(query);
+        }
+
+        // attach read more handler for the appended wiki result
+        try {
+          // since renderToScreen2 appended, find the last appended wikiReadMoreBtn
+          const allButtons = gcseResults.querySelectorAll('#wikiReadMoreBtn');
+          const readBtn = allButtons ? allButtons[allButtons.length - 1] : null;
+          if (readBtn) {
+            readBtn.addEventListener('click', () => {
+              const url = readBtn.getAttribute('data-url') || readMoreUrl;
+              openFullWikipedia(url);
+            });
+          }
+        } catch (e) {
+          console.error('Failed to attach Wikipedia read more handler', e);
+        }
+
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
+        // do NOT return here; we've already triggered the search above (or doSearch was called)
       }
     } catch (e) {
       console.error('Wikipedia handler threw', e);
     }
 
+    // If we reach here, perform a normal search (doSearch) for the query (this ensures the search flow continues).
     doSearch(query);
     searchInput.value = "";
     if (chatBtn) chatBtn.style.display = "block";
 
-  });
-}
-
-/**
- * renderToScreen2(title, html)
- * - Renders content into the gcse-results container (screen 2).
- */
-function renderToScreen2(title, html) {
-  if (!gcseResults) return;
-  const container = document.createElement('div');
-  container.className = 'feature-card wiki-screen2';
-  container.innerHTML = `
-    <div class="feature-header">
-      <h3>${title}</h3>
-    </div>
-    <div class="feature-content">${html}</div>
-  `;
-  // Replace existing contents
-  gcseResults.innerHTML = '';
-  gcseResults.appendChild(container);
-  window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
-}
-
-let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-
-function renderHistory() {
-  if (!historyList) return;
-  historyList.innerHTML = "";
-
-  if (history.length === 0) {
-    if (historyTitle) historyTitle.style.display = "none";
-    if (clearBtn) clearBtn.style.display = "none";
-    return;
-  }
-
-  if (historyTitle) historyTitle.style.display = "block";
-  if (clearBtn) clearBtn.style.display = "inline-block";
-
-  history.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    li.addEventListener("click", () => doSearch(item));
-    historyList.appendChild(li);
-  });
-}
-
-function saveHistory() {
-  localStorage.setItem("searchHistory", JSON.stringify(history));
-}
-
-if (clearBtn) {
-  clearBtn.addEventListener("click", () => {
-    history = [];
-    saveHistory();
-    renderHistory();
-  });
-}
-
-renderHistory();
-
-if (chatBtn) {
-  chatBtn.addEventListener("click", () => {
-    window.open("https://chatgpt.com", "_blank");
-  });
-}
-
-window.addEventListener("load", () => {
-  if (chatBtn) chatBtn.style.display = "none";
-});
-
-function escapeHtml(s) {
-  if (s == null) return '';
-  return String(s).replace(/[&<>"']/g, function (m) {
-    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]);
   });
 }
