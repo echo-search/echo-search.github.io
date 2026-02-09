@@ -1007,31 +1007,44 @@ async function handleWikipediaSearch(query) {
 }
 
 // ----------------------
-// Wiki: full article fetch & sanitization
+// Wiki: full article fetch & sanitization (transclusion)
 // ----------------------
 
 let lastWikiState = null; // { type, title, summaryHtml, pageUrl, query }
 
+/**
+ * sanitizeWikiHtml(html)
+ * - Basic sanitization: strip <script>, remove inline event handlers, strip potentially dangerous attributes.
+ * - Keeps markup useful for display (headings, paragraphs, lists, images).
+ */
 function sanitizeWikiHtml(html) {
   if (!html) return '';
-  // remove script tags
-  let out = html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-  // remove event handler attributes (on*)
+  // remove script/style tags and their contents
+  let out = html.replace(/<(script|style)[\s\S]*?>[\s\S]*?<\/\1>/gi, '');
+  // remove on* event handlers
   out = out.replace(/\s(on\w+)=["'][^"']*["']/gi, '');
-  // remove javascript: links
-  out = out.replace(/href=(["'])javascript:[^"']*\1/gi, '');
+  // remove javascript: hrefs
+  out = out.replace(/href=(["'])javascript:[^"']*\1/gi, 'href="#"');
+  // remove forms (just in case)
+  out = out.replace(/<form[\s\S]*?>[\s\S]*?<\/form>/gi, '');
+  // strip meta tags
+  out = out.replace(/<meta[\s\S]*?>/gi, '');
+  // remove edit links and other wiki editor UI by simple heuristics (ids/classes)
+  out = out.replace(/<div[^>]*class="[^"]*(mw-editsection|toc|reference|rellink|mw-references-wrap)[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
+  // strip any inline scripts left in attributes
+  out = out.replace(/javascript:/gi, '#');
   return out;
 }
 
 /**
- * fetchAndShowFullArticle(titleOrUrl)
- * - Fetches the full article HTML from MediaWiki API (action=parse) and shows it in the feature modal.
- * - Adds a back button to return to the summary that was previously shown.
+ * fetchFullArticleHtml(titleOrUrl)
+ * - Uses MediaWiki parse API to get the article HTML as produced by MediaWiki.
+ * - Returns sanitized HTML string or throws.
  */
-async function fetchAndShowFullArticle(titleOrUrl) {
-  if (!titleOrUrl) return;
+async function fetchFullArticleHtml(titleOrUrl) {
+  if (!titleOrUrl) throw new Error('No title or url provided');
 
-  // Determine title from URL or accept title
+  // Try to extract title from a Wikipedia URL if needed
   let title = titleOrUrl;
   try {
     const m = String(titleOrUrl).match(/\/wiki\/([^#?/]+)/);
@@ -1039,48 +1052,57 @@ async function fetchAndShowFullArticle(titleOrUrl) {
       title = decodeURIComponent(m[1]);
     }
   } catch (e) {
-    // fallback to provided string
+    // ignore and use provided string
   }
 
+  // MediaWiki parse API
   const api = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&prop=text&format=json&formatversion=2&origin=*`;
 
-  showFeatureResult({ title: `Loading — ${escapeHtml(String(title))}`, html: `<div style="padding:16px;">Loading full article…</div>` });
+  const res = await fetch(api);
+  if (!res.ok) throw new Error('Failed to fetch full article');
+  const data = await res.json();
+
+  // parse.text contains the full content HTML
+  const pageHtml = data?.parse?.text;
+  if (!pageHtml) throw new Error('No page HTML returned');
+
+  return sanitizeWikiHtml(pageHtml);
+}
+
+/**
+ * fetchAndShowFullArticle(titleOrUrl)
+ * - Fetches full article HTML and shows it in the popup modal (transcluded inside the site's UI).
+ * - Adds a back button which restores the summary in the popup if available.
+ */
+async function fetchAndShowFullArticle(titleOrUrl) {
+  if (!titleOrUrl) return;
+
+  const titleDisplay = (typeof titleOrUrl === 'string') ? titleOrUrl.replace(/_/g, ' ') : 'Article';
+  showFeatureResult({ title: `Loading — ${escapeHtml(titleDisplay)}`, html: `<div style="padding:16px;">Loading full article…</div>` });
 
   try {
-    const res = await fetch(api);
-    if (!res.ok) {
-      showFeatureResult({ title: `Full article — ${escapeHtml(String(title))}`, html: `<p>Unable to load full article. You can open it on Wikipedia: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>` });
-      return;
-    }
-    const data = await res.json();
-    const pageHtml = data?.parse?.text || data?.parse?.text || (data?.text && data.text);
-    if (!pageHtml) {
-      showFeatureResult({ title: `Full article — ${escapeHtml(String(title))}`, html: `<p>Full article could not be retrieved. <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>` });
-      return;
-    }
+    const sanitizedHtml = await fetchFullArticleHtml(titleOrUrl);
 
-    // sanitize a bit before inserting
-    const sanitized = sanitizeWikiHtml(pageHtml);
-
+    // Build header with back button and external link
     const backBtnHtml = `<button id="wikiBackBtn" class="wiki-back" style="margin-right:8px;">Back to summary</button>`;
-    const externalLink = `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>`;
+    const externalLink = `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(titleOrUrl)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>`;
 
     const fullHtml = `
       <div class="wiki-full-header" style="margin-bottom:12px;">
         ${backBtnHtml}
         ${externalLink}
       </div>
-      <div class="wiki-full-article">${sanitized}</div>
+      <div class="wiki-full-article">${sanitizedHtml}</div>
     `;
 
-    showFeatureResult({ title: `${escapeHtml(String(title))} — Full article`, html: fullHtml });
+    showFeatureResult({ title: `${escapeHtml(titleDisplay)} — Full article`, html: fullHtml });
 
-    // attach back handler to restore summary if available
+    // Attach back button to restore last summary in the popup (if it exists)
     const backBtn = featurePanel.querySelector('#wikiBackBtn');
     if (backBtn && lastWikiState && lastWikiState.summaryHtml) {
       backBtn.addEventListener('click', () => {
         showFeatureResult({ title: `Wikipedia — ${escapeHtml(lastWikiState.title)}`, html: lastWikiState.summaryHtml });
-        // reattach the summary's read more button
+        // reattach read more listener inside popup summary
         const rm = featurePanel.querySelector('#wikiReadMoreBtn');
         if (rm) {
           rm.addEventListener('click', () => {
@@ -1093,8 +1115,49 @@ async function fetchAndShowFullArticle(titleOrUrl) {
 
   } catch (e) {
     console.error('fetchAndShowFullArticle error', e);
-    showFeatureResult({ title: `Full article — ${escapeHtml(String(title))}`, html: `<p>Error loading full article. <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(title)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>` });
+    showFeatureResult({
+      title: `Full article`,
+      html: `<p>Unable to load full article inside the popup. You can open it on Wikipedia: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(titleOrUrl)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>`
+    });
   }
+}
+
+// ----------------------
+// Inline wiki summary rendering (on page, not in popup)
+// ----------------------
+
+/**
+ * renderWikiInline(title, html)
+ * - Renders the wiki summary inline on the page (not in popup).
+ * - It creates or updates an element with id 'wikiInline' placed before gcseResults (or at top of body if gcseResults missing).
+ */
+function renderWikiInline(title, html) {
+  let wrapper = document.getElementById('wikiInline');
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.id = 'wikiInline';
+    wrapper.className = 'wiki-inline';
+    // Place above gcseResults if possible, otherwise at top of main content
+    if (gcseResults && gcseResults.parentNode) {
+      gcseResults.parentNode.insertBefore(wrapper, gcseResults);
+    } else {
+      document.body.insertBefore(wrapper, document.body.firstChild);
+    }
+  }
+  wrapper.innerHTML = `
+    <div class="wiki-inline-card feature-card">
+      <div class="feature-header"><h3>Wikipedia — ${escapeHtml(title)}</h3></div>
+      <div class="feature-content">${html}</div>
+    </div>
+  `;
+  // Scroll into view
+  wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Remove inline wiki summary
+function clearWikiInline() {
+  const wrapper = document.getElementById('wikiInline');
+  if (wrapper && wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
 }
 
 // ----------------------
@@ -1310,39 +1373,14 @@ function doSearch(query) {
     searchElement.execute(query);
     window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
   } else {
-    // No CSE available: open Google results in a new tab so current page (and the wiki popup) remain visible.
+    // No CSE available: open Google results in a new tab so current page (and the wiki inline) remain visible.
     const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
     try {
       window.open(googleUrl, '_blank');
     } catch (e) {
-      // fallback: navigate
       openResult(googleUrl, true);
     }
   }
-}
-
-/**
- * renderToScreen2(title, html, options)
- * - Renders content into the gcse-results container (screen 2).
- * - options.append: when true, do not clear existing results; append.
- */
-function renderToScreen2(title, html, options = {}) {
-  if (!gcseResults) return;
-  const container = document.createElement('div');
-  container.className = 'feature-card wiki-screen2';
-  container.innerHTML = `
-    <div class="feature-header">
-      <h3>${title}</h3>
-    </div>
-    <div class="feature-content">${html}</div>
-  `;
-  if (options.append) {
-    gcseResults.appendChild(container);
-  } else {
-    gcseResults.innerHTML = '';
-    gcseResults.appendChild(container);
-  }
-  window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
 }
 
 let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
@@ -1401,9 +1439,9 @@ function escapeHtml(s) {
 
 // ----------------------
 // Main search button handler
-// - For Wikipedia (non-whois) we display the summary in the popup first,
-//   and also trigger the regular search results to appear (CSE or new tab).
-// - Read more fetches the full article via MediaWiki API and renders it inside the popup (no iframe).
+// - Wikipedia (non-whois) will render inline on the page first (not in popup).
+// - When user clicks "Read more" for wiki inline, we fetch the full article via MediaWiki and show it inside the site's popup (transcluded HTML).
+// - We still trigger normal search results (CSE or fallback) when a wiki summary is shown.
 // ----------------------
 
 if (searchBtn) {
@@ -1470,10 +1508,10 @@ if (searchBtn) {
             query
           };
 
-          // Show summary in popup (appears first)
+          // Show summary in popup (whois keeps popup behavior)
           showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
 
-          // Insert the summary HTML into the popup content region so it's displayed similarly to previous behavior
+          // Insert the summary HTML into the popup content region so it's displayed similarly
           const content = featurePanel.querySelector('.feature-content');
           if (content) {
             content.innerHTML = html;
@@ -1664,16 +1702,17 @@ if (searchBtn) {
       if (wikiResult) {
         const readMoreUrl = wikiResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiResult.title)}`;
         const summaryHtml = `
-          <div class="wiki-block">
+          <div class="wiki-summary">
             <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
             <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
             <div class="wiki-actions" style="margin-top:8px;">
-              <button id="wikiReadMoreBtn" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
+              <button id="wikiReadMoreBtnInline" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
+              <a href="${escapeHtml(readMoreUrl)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>
             </div>
           </div>
         `;
 
-        // store state so full article can return to summary
+        // store state for back navigation from full article
         lastWikiState = {
           type: 'wikipedia',
           title: wikiResult.title,
@@ -1682,32 +1721,32 @@ if (searchBtn) {
           query
         };
 
-        // show the summary first in the popup
-        showFeatureResult({ title: `Wikipedia — ${escapeHtml(wikiResult.title)}`, html: summaryHtml });
+        // Render summary inline on the page (NOT in popup)
+        renderWikiInline(wikiResult.title, summaryHtml);
 
-        // attach read more handler in the popup
+        // Attach click handler to inline read more button (delegated or direct)
         try {
-          const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
-          if (readBtn) {
-            readBtn.addEventListener('click', () => {
-              const url = readBtn.getAttribute('data-url') || readMoreUrl;
-              fetchAndShowFullArticle(url);
-            });
+          // The button is in the newly created #wikiInline element
+          const inline = document.getElementById('wikiInline');
+          if (inline) {
+            const readBtn = inline.querySelector('#wikiReadMoreBtnInline');
+            if (readBtn) {
+              readBtn.addEventListener('click', () => {
+                const url = readBtn.getAttribute('data-url') || readMoreUrl;
+                // When clicked, fetch full article and show in popup as transcluded HTML
+                fetchAndShowFullArticle(url);
+              });
+            }
           }
         } catch (e) {
-          console.error('Failed to attach Wikipedia read more handler', e);
+          console.error('Failed to attach read more handler to inline wiki summary', e);
         }
 
-        // Also ensure regular search results are shown (CSE if available, else Google in new tab).
         try {
           const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
           if (searchElement) {
-            // Execute CSE; results will render in the page (screen 2)
             searchElement.execute(query);
-            // Optionally also append a small header in gcseResults indicating wiki was shown in popup
-            // Do not remove existing results here.
           } else {
-            // fallback: open Google results in a new tab so user can view search results while popup remains
             const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
             try {
               window.open(googleUrl, '_blank');
@@ -1721,13 +1760,14 @@ if (searchBtn) {
 
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
-        return; // we've already handled search execution; stop further flow
+        return;
+      } else {
+        clearWikiInline();
       }
     } catch (e) {
       console.error('Wikipedia handler threw', e);
     }
 
-    // If nothing above handled it, fall back to normal search
     doSearch(query);
     searchInput.value = "";
     if (chatBtn) chatBtn.style.display = "block";
