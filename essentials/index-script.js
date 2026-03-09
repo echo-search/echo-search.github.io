@@ -587,7 +587,7 @@ async function handleWeather(input) {
     const { lat, lon, display_name } = geo[0];
 
     const wRes = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=a[...]
     );
     if (!wRes.ok) return { type: 'weather', error: "Weather lookup failed." };
     const w = await wRes.json();
@@ -976,7 +976,7 @@ async function handleWikipediaSearch(query) {
   }
   if (!query || typeof query !== 'string') return null;
 
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","the","a","an","of","in","on","for","to","by","with","about","as","at","from","into","over","after","before","between","under","above"];
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","[...]
 
   const cleanedQuery = query
     .toLowerCase()
@@ -1332,9 +1332,14 @@ function play67Effect() {
 // Search execution & rendering
 // ----------------------
 
-function doSearch(query) {
+// Updated doSearch: run instant-answer detection at the very start,
+// and if an instant-answer is found, display it and short-circuit further search behavior.
+async function doSearch(query) {
   if (!query || !query.trim()) return;
 
+  query = String(query).trim();
+
+  // Special 67 shortcut
   const compact = query.replace(/\s+/g, '');
   if (compact === '67') {
     if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
@@ -1344,6 +1349,324 @@ function doSearch(query) {
     return;
   }
 
+  // --------- INSTANT-ANSWER DETECTION (run at very beginning) ----------
+  // Order matches the previous search button behavior.
+  try {
+    // Weather
+    try {
+      const weatherResult = await handleWeather(query);
+      if (weatherResult) {
+        if (weatherResult.error) {
+          showFeatureResult({ title: 'Weather', html: `<p>${escapeHtml(weatherResult.error)}</p>` });
+        } else if (weatherResult.type === 'weather') {
+          if (weatherResult.when === 'tomorrow') {
+            const html = `
+              <div class="weather-block">
+                <div class="weather-place">${escapeHtml(weatherResult.place)}</div>
+                <div class="weather-icon">${weatherResult.icon}</div>
+                <div class="weather-temps">High: <strong>${weatherResult.high}°C</strong> — Low: <strong>${weatherResult.low}°C</strong></div>
+              </div>
+            `;
+            showFeatureResult({ title: `Weather — ${escapeHtml(weatherResult.place)}`, html });
+          } else {
+            const hoursHtml = (weatherResult.nextHours || []).map(h => `<div class="hour-item">${h.time} — ${h.icon} ${h.temp}°C</div>`).join('');
+            const html = `
+              <div class="weather-block">
+                <div class="weather-place">${escapeHtml(weatherResult.place)}</div>
+                <div class="weather-now">${weatherResult.current.icon} Now: <strong>${weatherResult.current.temp}°C</strong> — Wind: ${weatherResult.current.wind ?? 'N/A'} km/h</div>
+                <div class="weather-next"><strong>Next hours</strong>${hoursHtml}</div>
+              </div>
+            `;
+            showFeatureResult({ title: `Weather — ${escapeHtml(weatherResult.place)}`, html });
+          }
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return; // short-circuit: instant-answer displayed
+        }
+      }
+    } catch (e) {
+      console.error('Weather handler threw', e);
+    }
+
+    // WhoIs
+    try {
+      const whoIsResult = await handleWhoIs(query);
+      if (whoIsResult) {
+        if (whoIsResult.type === 'whois') {
+          const readMoreUrl = whoIsResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(whoIsResult.title)}`;
+          const html = `
+            <div class="whois-block">
+              <div class="whois-title"><strong>${escapeHtml(whoIsResult.title)}</strong></div>
+              <div class="whois-extract">${escapeHtml(whoIsResult.extract)}</div>
+              <div class="whois-actions" style="margin-top:8px;">
+                <button id="wikiReadMoreBtn" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
+              </div>
+            </div>
+          `;
+
+          // store last wiki state so "Back" from full article works
+          lastWikiState = {
+            type: 'whois',
+            title: whoIsResult.title,
+            summaryHtml: html,
+            pageUrl: readMoreUrl,
+            query
+          };
+
+          // Show summary in popup (whois keeps popup behavior)
+          showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
+
+          // Insert the summary HTML into the popup content region so it's displayed similarly
+          const content = featurePanel.querySelector('.feature-content');
+          if (content) {
+            content.innerHTML = html;
+          }
+
+          // attach read more handler for whois
+          try {
+            const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
+            if (readBtn) {
+              readBtn.addEventListener('click', () => {
+                const url = readBtn.getAttribute('data-url') || readMoreUrl;
+                fetchAndShowFullArticle(url);
+              });
+            }
+          } catch (e) {
+            console.error('Failed to attach WhoIs read more handler', e);
+          }
+
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return; // short-circuit
+        }
+      }
+    } catch (e) {
+      console.error('WhoIs handler threw', e);
+    }
+
+    // Time & Date (synchronous)
+    try {
+      const timeResult = handleTimeAndDate(query);
+      if (timeResult) {
+        const html = `<div class="time-block">${escapeHtml(timeResult)}</div>`;
+        showFeatureResult({ title: 'Time & Date', html });
+        searchInput.value = "";
+        if (chatBtn) chatBtn.style.display = "block";
+        return; // IMPORTANT: do NOT continue with search when a time/date match is found
+      }
+    } catch (e) {
+      console.error('Time handler threw', e);
+    }
+
+    // Translation (handleSearch)
+    try {
+      const translation = await handleSearch(query);
+      if (translation) {
+        if (translation.error) {
+          showFeatureResult({ title: 'Translation', html: `<p>${escapeHtml(translation.error)}</p>` });
+        } else if (translation.type === 'translation') {
+          const html = `
+            <div class="translation-block">
+              <div class="translation-example">${escapeHtml(translation.from)} <span class="arrow">→</span> <strong>${escapeHtml(translation.to)}</strong></div>
+              <div class="translation-meta">Target language: ${escapeHtml(translation.targetLang)}</div>
+            </div>
+          `;
+          showFeatureResult({ title: 'Translation', html });
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return; // short-circuit
+        }
+      }
+    } catch (e) {
+      console.error('Translation handler threw', e);
+    }
+
+    // Dictionary
+    try {
+      const def = await handleDictionarySearch(query);
+      if (def) {
+        if (def.error) {
+          showFeatureResult({ title: 'Definition', html: `<p>${escapeHtml(def.error)}</p>` });
+        } else {
+          // build the listen button next to the word: [button][word]
+          const listenButtonHtml = `<button id="dictListenBtn" class="dict-listen" aria-label="Play pronunciation">🔊</button>`;
+          const html = `
+            <div class="dict-block">
+              <div class="dict-word">${listenButtonHtml} <strong>${escapeHtml(def.word)}</strong></div>
+              <div class="dict-meaning">${escapeHtml(def.meaning)}</div>
+              <div class="dict-example">Example: ${escapeHtml(def.example)}</div>
+              <div class="dict-source">Source: ${escapeHtml(def.source || 'unknown')}</div>
+            </div>
+          `;
+          showFeatureResult({ title: `Definition — ${escapeHtml(def.word)}`, html });
+
+          // attach audio handler inside the feature panel
+          try {
+            const listenBtn = featurePanel.querySelector('#dictListenBtn');
+            if (listenBtn) {
+              if (def.audio) {
+                listenBtn.addEventListener('click', () => {
+                  try {
+                    let audioEl = featurePanel.querySelector('#dictAudioElem');
+                    if (!audioEl) {
+                      audioEl = document.createElement('audio');
+                      audioEl.id = 'dictAudioElem';
+                      audioEl.src = def.audio;
+                      featurePanel.appendChild(audioEl);
+                    }
+                    audioEl.currentTime = 0;
+                    audioEl.play().catch(() => {});
+                  } catch (e) { console.error('Audio play failed', e); }
+                });
+              } else {
+                // disable if no audio available
+                listenBtn.disabled = true;
+                listenBtn.title = "No pronunciation audio available.";
+                listenBtn.style.opacity = "0.5";
+                listenBtn.style.cursor = "not-allowed";
+              }
+            }
+          } catch (e) {
+            console.error('Failed to attach dictionary audio handler', e);
+          }
+
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return; // short-circuit
+        }
+      }
+    } catch (e) {
+      console.error('Dictionary handler threw', e);
+    }
+
+    // Math & Conversions
+    try {
+      const result = handleMathConversion(query);
+      if(result) {
+        if (result.type === 'math') {
+          const html = `
+            <div class="math-block">
+              <div class="math-expression">Expression: <code>${escapeHtml(result.expression)}</code></div>
+              <div class="math-answer">Answer: <strong>${escapeHtml(String(result.result))}</strong></div>
+
+              <div class="mini-calc">
+                <div class="mini-calc-title">Calculator</div>
+                <form class="mini-calc-form" onsubmit="return false;">
+                  <input class="calc-display" aria-label="Calculator input" value="${escapeHtml(result.expression)}" />
+                  <div class="calc-controls">
+                    <div class="calc-keypad" role="group" aria-label="Calculator keypad">
+                      <button type="button" class="calc-btn" data-val="7">7</button>
+                      <button type="button" class="calc-btn" data-val="8">8</button>
+                      <button type="button" class="calc-btn" data-val="9">9</button>
+                      <button type="button" class="calc-btn" data-val="/">÷</button>
+
+                      <button type="button" class="calc-btn" data-val="4">4</button>
+                      <button type="button" class="calc-btn" data-val="5">5</button>
+                      <button type="button" class="calc-btn" data-val="6">6</button>
+                      <button type="button" class="calc-btn" data-val="*">×</button>
+
+                      <button type="button" class="calc-btn" data-val="1">1</button>
+                      <button type="button" class="calc-btn" data-val="2">2</button>
+                      <button type="button" class="calc-btn" data-val="3">3</button>
+                      <button type="button" class="calc-btn" data-val="-">−</button>
+
+                      <button type="button" class="calc-btn" data-val="0">0</button>
+                      <button type="button" class="calc-btn" data-val=".">.</button>
+                      <button type="button" class="calc-eq">=</button>
+                      <button type="button" class="calc-btn" data-val="+">+</button>
+                    </div>
+                    <div class="calc-actions">
+                      <button type="button" class="calc-clear">Clear</button>
+                      <div class="calc-result" aria-live="polite"></div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `;
+          showFeatureResult({ title: 'Calculator', html });
+          searchInput.value = "";
+          if (chatBtn) chatBtn.style.display = "block";
+          return; // short-circuit
+        } else if (result.type === 'conversion') {
+          if (result.error) {
+            showFeatureResult({ title: 'Conversion', html: `<p>${escapeHtml(result.error)}</p>` });
+          } else {
+            const html = `<div class="conv-block">${result.inputValue} ${escapeHtml(result.from)} = <strong>${escapeHtml(String(result.result))} ${escapeHtml(result.to)}</strong></div>`;
+            showFeatureResult({ title: 'Conversion', html });
+            searchInput.value = "";
+            if (chatBtn) chatBtn.style.display = "block";
+            return; // short-circuit
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Math handler threw', e);
+    }
+
+    // Wikipedia (non-whois) - render inline and (per requirement) stop the normal search flow when matched.
+    try {
+      const wikiResult = await handleWikipediaSearch(query);
+      if (wikiResult) {
+        const readMoreUrl = wikiResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiResult.title)}`;
+        const summaryHtml = `
+          <div class="wiki-summary">
+            <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
+            <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
+            <div class="wiki-actions" style="margin-top:8px;">
+              <button id="wikiReadMoreBtnInline" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
+              <a href="${escapeHtml(readMoreUrl)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>
+            </div>
+          </div>
+        `;
+
+        // store state for back navigation from full article
+        lastWikiState = {
+          type: 'wikipedia',
+          title: wikiResult.title,
+          summaryHtml,
+          pageUrl: readMoreUrl,
+          query
+        };
+
+        // Render summary inline on the page (NOT in popup)
+        renderWikiInline(wikiResult.title, summaryHtml);
+
+        // Attach click handler to inline read more button (delegated or direct)
+        try {
+          // The button is in the newly created #wikiInline element
+          const inline = document.getElementById('wikiInline');
+          if (inline) {
+            const readBtn = inline.querySelector('#wikiReadMoreBtnInline');
+            if (readBtn) {
+              readBtn.addEventListener('click', () => {
+                const url = readBtn.getAttribute('data-url') || readMoreUrl;
+                // When clicked, fetch full article and show in popup as transcluded HTML
+                fetchAndShowFullArticle(url);
+              });
+            }
+          }
+        } catch (e) {
+          console.error('Failed to attach read more handler to inline wiki summary', e);
+        }
+
+        searchInput.value = "";
+        if (chatBtn) chatBtn.style.display = "block";
+        return; // short-circuit (do not continue to normal search)
+      } else {
+        clearWikiInline();
+      }
+    } catch (e) {
+      console.error('Wikipedia handler threw', e);
+    }
+  } catch (e) {
+    console.error('Instant-answer detection error', e);
+    // continue to normal search flow if instant-answer detection fails
+  }
+
+  // ---------- NO INSTANT ANSWER FOUND: continue with normal search behavior ----------
+
+  // Maintain history behavior as before
   history = history.filter(h => h !== query);
   history.unshift(query);
   saveLifetime(query);
@@ -1371,7 +1694,11 @@ function doSearch(query) {
   const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
   if (searchElement) {
     searchElement.execute(query);
-    window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+    if (gcseResults) {
+      try {
+        window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+      } catch (e) {}
+    }
   } else {
     // No CSE available: open Google results in a new tab so current page (and the wiki inline) remain visible.
     const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
@@ -1430,347 +1757,20 @@ window.addEventListener("load", () => {
   if (chatBtn) chatBtn.style.display = "none";
 });
 
+// Replace the previous large searchBtn handler with a small wrapper to call doSearch,
+// so instant-answer detection runs regardless of how the search was initiated.
+if (searchBtn) {
+  searchBtn.addEventListener("click", function() {
+    const query = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+    if (!query) return;
+    // call doSearch (async) — we don't need to await here
+    doSearch(query);
+  });
+}
+
 function escapeHtml(s) {
   if (s == null) return '';
   return String(s).replace(/[&<>"']/g, function (m) {
     return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]);
-  });
-}
-
-// ----------------------
-// Main search button handler
-// - Wikipedia (non-whois) will render inline on the page first (not in popup).
-// - When user clicks "Read more" for wiki inline, we fetch the full article via MediaWiki and show it inside the site's popup (transcluded HTML).
-// - We still trigger normal search results (CSE or fallback) when a wiki summary is shown.
-// ----------------------
-
-if (searchBtn) {
-  searchBtn.addEventListener("click", async function() {
-    const query = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
-    if(!query) return;
-
-    try {
-      const weatherResult = await handleWeather(query);
-      if (weatherResult) {
-        if (weatherResult.error) {
-          showFeatureResult({ title: 'Weather', html: `<p>${escapeHtml(weatherResult.error)}</p>` });
-        } else if (weatherResult.type === 'weather') {
-          if (weatherResult.when === 'tomorrow') {
-            const html = `
-              <div class="weather-block">
-                <div class="weather-place">${escapeHtml(weatherResult.place)}</div>
-                <div class="weather-icon">${weatherResult.icon}</div>
-                <div class="weather-temps">High: <strong>${weatherResult.high}°C</strong> — Low: <strong>${weatherResult.low}°C</strong></div>
-              </div>
-            `;
-            showFeatureResult({ title: `Weather — ${escapeHtml(weatherResult.place)}`, html });
-          } else {
-            const hoursHtml = (weatherResult.nextHours || []).map(h => `<div class="hour-item">${h.time} — ${h.icon} ${h.temp}°C</div>`).join('');
-            const html = `
-              <div class="weather-block">
-                <div class="weather-place">${escapeHtml(weatherResult.place)}</div>
-                <div class="weather-now">${weatherResult.current.icon} Now: <strong>${weatherResult.current.temp}°C</strong> — Wind: ${weatherResult.current.wind ?? 'N/A'} km/h</div>
-                <div class="weather-next"><strong>Next hours</strong>${hoursHtml}</div>
-              </div>
-            `;
-            showFeatureResult({ title: `Weather — ${escapeHtml(weatherResult.place)}`, html });
-          }
-          searchInput.value = "";
-          if (chatBtn) chatBtn.style.display = "block";
-          return;
-        }
-      }
-    } catch (e) {
-      console.error('Weather handler threw', e);
-    }
-
-    try {
-      const whoIsResult = await handleWhoIs(query);
-      if (whoIsResult) {
-        if (whoIsResult.type === 'whois') {
-          const readMoreUrl = whoIsResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(whoIsResult.title)}`;
-          const html = `
-            <div class="whois-block">
-              <div class="whois-title"><strong>${escapeHtml(whoIsResult.title)}</strong></div>
-              <div class="whois-extract">${escapeHtml(whoIsResult.extract)}</div>
-              <div class="whois-actions" style="margin-top:8px;">
-                <button id="wikiReadMoreBtn" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
-              </div>
-            </div>
-          `;
-
-          // store last wiki state so "Back" from full article works
-          lastWikiState = {
-            type: 'whois',
-            title: whoIsResult.title,
-            summaryHtml: html,
-            pageUrl: readMoreUrl,
-            query
-          };
-
-          // Show summary in popup (whois keeps popup behavior)
-          showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
-
-          // Insert the summary HTML into the popup content region so it's displayed similarly
-          const content = featurePanel.querySelector('.feature-content');
-          if (content) {
-            content.innerHTML = html;
-          }
-
-          // attach read more handler for whois
-          try {
-            const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
-            if (readBtn) {
-              readBtn.addEventListener('click', () => {
-                const url = readBtn.getAttribute('data-url') || readMoreUrl;
-                fetchAndShowFullArticle(url);
-              });
-            }
-          } catch (e) {
-            console.error('Failed to attach WhoIs read more handler', e);
-          }
-
-          searchInput.value = "";
-          if (chatBtn) chatBtn.style.display = "block";
-          return;
-        }
-      }
-    } catch (e) {
-      console.error('WhoIs handler threw', e);
-    }
-
-    // TIME & DATE: synchronous handler that must short-circuit the search flow and appear in the popup.
-    try {
-      const timeResult = handleTimeAndDate(query);
-      if (timeResult) {
-        const html = `<div class="time-block">${escapeHtml(timeResult)}</div>`;
-        showFeatureResult({ title: 'Time & Date', html });
-        searchInput.value = "";
-        if (chatBtn) chatBtn.style.display = "block";
-        return; // IMPORTANT: do NOT continue with search when a time/date match is found
-      }
-    } catch (e) {
-      console.error('Time handler threw', e);
-    }
-
-    try {
-      const translation = await handleSearch(query);
-      if (translation) {
-        if (translation.error) {
-          showFeatureResult({ title: 'Translation', html: `<p>${escapeHtml(translation.error)}</p>` });
-        } else if (translation.type === 'translation') {
-          const html = `
-            <div class="translation-block">
-              <div class="translation-example">${escapeHtml(translation.from)} <span class="arrow">→</span> <strong>${escapeHtml(translation.to)}</strong></div>
-              <div class="translation-meta">Target language: ${escapeHtml(translation.targetLang)}</div>
-            </div>
-          `;
-          showFeatureResult({ title: 'Translation', html });
-          searchInput.value = "";
-          if (chatBtn) chatBtn.style.display = "block";
-          return;
-        }
-      }
-    } catch (e) {
-      console.error('Translation handler threw', e);
-    }
-
-    try {
-      const def = await handleDictionarySearch(query);
-      if (def) {
-        if (def.error) {
-          showFeatureResult({ title: 'Definition', html: `<p>${escapeHtml(def.error)}</p>` });
-        } else {
-          // build the listen button next to the word: [button][word]
-          const listenButtonHtml = `<button id="dictListenBtn" class="dict-listen" aria-label="Play pronunciation">🔊</button>`;
-          const html = `
-            <div class="dict-block">
-              <div class="dict-word">${listenButtonHtml} <strong>${escapeHtml(def.word)}</strong></div>
-              <div class="dict-meaning">${escapeHtml(def.meaning)}</div>
-              <div class="dict-example">Example: ${escapeHtml(def.example)}</div>
-              <div class="dict-source">Source: ${escapeHtml(def.source || 'unknown')}</div>
-            </div>
-          `;
-          showFeatureResult({ title: `Definition — ${escapeHtml(def.word)}`, html });
-
-          // attach audio handler inside the feature panel
-          try {
-            const listenBtn = featurePanel.querySelector('#dictListenBtn');
-            if (listenBtn) {
-              if (def.audio) {
-                listenBtn.addEventListener('click', () => {
-                  try {
-                    let audioEl = featurePanel.querySelector('#dictAudioElem');
-                    if (!audioEl) {
-                      audioEl = document.createElement('audio');
-                      audioEl.id = 'dictAudioElem';
-                      audioEl.src = def.audio;
-                      featurePanel.appendChild(audioEl);
-                    }
-                    audioEl.currentTime = 0;
-                    audioEl.play().catch(() => {});
-                  } catch (e) { console.error('Audio play failed', e); }
-                });
-              } else {
-                // disable if no audio available
-                listenBtn.disabled = true;
-                listenBtn.title = "No pronunciation audio available.";
-                listenBtn.style.opacity = "0.5";
-                listenBtn.style.cursor = "not-allowed";
-              }
-            }
-          } catch (e) {
-            console.error('Failed to attach dictionary audio handler', e);
-          }
-
-          searchInput.value = "";
-          if (chatBtn) chatBtn.style.display = "block";
-          return;
-        }
-      }
-    } catch (e) {
-      console.error('Dictionary handler threw', e);
-    }
-
-    try {
-      const result = handleMathConversion(query);
-      if(result) {
-        if (result.type === 'math') {
-          const html = `
-            <div class="math-block">
-              <div class="math-expression">Expression: <code>${escapeHtml(result.expression)}</code></div>
-              <div class="math-answer">Answer: <strong>${escapeHtml(String(result.result))}</strong></div>
-
-              <div class="mini-calc">
-                <div class="mini-calc-title">Calculator</div>
-                <form class="mini-calc-form" onsubmit="return false;">
-                  <input class="calc-display" aria-label="Calculator input" value="${escapeHtml(result.expression)}" />
-                  <div class="calc-controls">
-                    <div class="calc-keypad" role="group" aria-label="Calculator keypad">
-                      <button type="button" class="calc-btn" data-val="7">7</button>
-                      <button type="button" class="calc-btn" data-val="8">8</button>
-                      <button type="button" class="calc-btn" data-val="9">9</button>
-                      <button type="button" class="calc-btn" data-val="/">÷</button>
-
-                      <button type="button" class="calc-btn" data-val="4">4</button>
-                      <button type="button" class="calc-btn" data-val="5">5</button>
-                      <button type="button" class="calc-btn" data-val="6">6</button>
-                      <button type="button" class="calc-btn" data-val="*">×</button>
-
-                      <button type="button" class="calc-btn" data-val="1">1</button>
-                      <button type="button" class="calc-btn" data-val="2">2</button>
-                      <button type="button" class="calc-btn" data-val="3">3</button>
-                      <button type="button" class="calc-btn" data-val="-">−</button>
-
-                      <button type="button" class="calc-btn" data-val="0">0</button>
-                      <button type="button" class="calc-btn" data-val=".">.</button>
-                      <button type="button" class="calc-eq">=</button>
-                      <button type="button" class="calc-btn" data-val="+">+</button>
-                    </div>
-                    <div class="calc-actions">
-                      <button type="button" class="calc-clear">Clear</button>
-                      <div class="calc-result" aria-live="polite"></div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          `;
-          showFeatureResult({ title: 'Calculator', html });
-          searchInput.value = "";
-          if (chatBtn) chatBtn.style.display = "block";
-          return;
-        } else if (result.type === 'conversion') {
-          if (result.error) {
-            showFeatureResult({ title: 'Conversion', html: `<p>${escapeHtml(result.error)}</p>` });
-          } else {
-            const html = `<div class="conv-block">${result.inputValue} ${escapeHtml(result.from)} = <strong>${escapeHtml(String(result.result))} ${escapeHtml(result.to)}</strong></div>`;
-            showFeatureResult({ title: 'Conversion', html });
-            searchInput.value = "";
-            if (chatBtn) chatBtn.style.display = "block";
-            return;
-          }
-        }
-      }
-    } catch (e) {
-      console.error('Math handler threw', e);
-    }
-
-    // ---------- WIKIPEDIA (non-whois) ----------
-    try {
-      const wikiResult = await handleWikipediaSearch(query);
-      if (wikiResult) {
-        const readMoreUrl = wikiResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiResult.title)}`;
-        const summaryHtml = `
-          <div class="wiki-summary">
-            <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
-            <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
-            <div class="wiki-actions" style="margin-top:8px;">
-              <button id="wikiReadMoreBtnInline" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
-              <a href="${escapeHtml(readMoreUrl)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>
-            </div>
-          </div>
-        `;
-
-        // store state for back navigation from full article
-        lastWikiState = {
-          type: 'wikipedia',
-          title: wikiResult.title,
-          summaryHtml,
-          pageUrl: readMoreUrl,
-          query
-        };
-
-        // Render summary inline on the page (NOT in popup)
-        renderWikiInline(wikiResult.title, summaryHtml);
-
-        // Attach click handler to inline read more button (delegated or direct)
-        try {
-          // The button is in the newly created #wikiInline element
-          const inline = document.getElementById('wikiInline');
-          if (inline) {
-            const readBtn = inline.querySelector('#wikiReadMoreBtnInline');
-            if (readBtn) {
-              readBtn.addEventListener('click', () => {
-                const url = readBtn.getAttribute('data-url') || readMoreUrl;
-                // When clicked, fetch full article and show in popup as transcluded HTML
-                fetchAndShowFullArticle(url);
-              });
-            }
-          }
-        } catch (e) {
-          console.error('Failed to attach read more handler to inline wiki summary', e);
-        }
-
-        try {
-          const searchElement = (window.google && google.search && google.search.cse && google.search.cse.element) ? google.search.cse.element.getElement("searchbox1") : null;
-          if (searchElement) {
-            searchElement.execute(query);
-          } else {
-            const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-            try {
-              window.open(googleUrl, '_blank');
-            } catch (e) {
-              openResult(googleUrl, true);
-            }
-          }
-        } catch (e) {
-          console.error('Failed to show search results alongside Wikipedia summary', e);
-        }
-
-        searchInput.value = "";
-        if (chatBtn) chatBtn.style.display = "block";
-        return;
-      } else {
-        clearWikiInline();
-      }
-    } catch (e) {
-      console.error('Wikipedia handler threw', e);
-    }
-
-    doSearch(query);
-    searchInput.value = "";
-    if (chatBtn) chatBtn.style.display = "block";
-
   });
 }
