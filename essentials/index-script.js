@@ -20,6 +20,10 @@ const container = document.getElementById("emojiContainer");
 
 let featurePanel = document.getElementById('featureResult');
 
+window.onerror = function(msg, url, line, col, error) {
+  alert(msg + " (line " + line + ")");
+};
+
 function ensurePanel() {
   if (!featurePanel) {
     featurePanel = document.createElement('div');
