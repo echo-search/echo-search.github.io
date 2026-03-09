@@ -976,7 +976,7 @@ async function handleWikipediaSearch(query) {
   }
   if (!query || typeof query !== 'string') return null;
 
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","[...]
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","[...]"]
 
   const cleanedQuery = query
     .toLowerCase()
