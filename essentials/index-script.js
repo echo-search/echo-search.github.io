@@ -812,7 +812,7 @@ async function handleDictionarySearch(query) {
   const wordUpper = word.toUpperCase();
 
   try {
-    const localRes = await fetch("/essentials/dictionary.json");
+    const localRes = await fetch("dictionary.json");
     if (localRes.ok) {
       const localData = await localRes.json();
       if (localData && localData[wordUpper]) {
