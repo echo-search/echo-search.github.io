@@ -296,7 +296,7 @@ function domainSearchHandler(query) {
 
     const sep = document.createElement('option');
     sep.disabled = true;
-    sep.textContent = '───���──────────── Custom Themes ────────────────';
+    sep.textContent = '───────────── Custom Themes ─────────────────';
     themeSelect.appendChild(sep);
 
     const customs = loadCustomThemes();
@@ -831,13 +831,11 @@ async function handleDictionarySearch(query) {
       if (Array.isArray(data) && data[0]?.meanings?.[0]?.definitions?.[0]) {
         const meaning = data[0].meanings[0].definitions[0].definition;
         const example = data[0].meanings[0].definitions[0].example || "No example available.";
-        // find an audio pronunciation (if any)
         let audioUrl = null;
         if (Array.isArray(data[0].phonetics)) {
           const phon = data[0].phonetics.find(p => p.audio && p.audio.trim());
           if (phon && phon.audio) {
             audioUrl = phon.audio.trim();
-            // normalize protocol-relative URLs
             if (audioUrl.startsWith('//')) audioUrl = 'https:' + audioUrl;
           }
         }
@@ -870,28 +868,14 @@ async function handleWhoIs(input) {
   }
 }
 
-// ===============================
-// ⏰ TIME & DATE — FULL SNIPPET
-// ===============================
-
-// preload all supported IANA timezones (runs once)
 const ALL_TIMEZONES = (typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function')
   ? Intl.supportedValuesOf("timeZone")
   : [];
 
-/**
- * handleTimeAndDate(query)
- * - Detects phrases like:
- *   - "today's date", "date today", "todays date"
- *   - "time in <city>"
- * - Returns a string result when matched (caller should show via showFeatureResult).
- * - IMPORTANT: This handler is synchronous (no network), and must short-circuit the normal search flow.
- */
 function handleTimeAndDate(query) {
   if (!query || typeof query !== 'string') return null;
   const q = query.toLowerCase().trim();
 
-  // ---- TODAY'S DATE ----
   if (
     q === "today's date" ||
     q === "todays date" ||
@@ -900,7 +884,6 @@ function handleTimeAndDate(query) {
     return new Date().toDateString();
   }
 
-  // ---- TIME IN <CITY> ----
   const match = q.match(/^time in (.+)$/);
   if (match) {
     const city = match[1].trim();
@@ -927,22 +910,20 @@ function cityToTimezone(city) {
     .replace(/[.,]/g, "")
     .replace(/\s+/g, "_");
 
-  // exact match first
   for (const tz of ALL_TIMEZONES) {
     try {
       if (tz.toLowerCase().endsWith("/" + c)) {
         return tz;
       }
-    } catch (e) { /* ignore malformed tz */ }
+    } catch (e) {}
   }
 
-  // fuzzy fallback
   for (const tz of ALL_TIMEZONES) {
     try {
       if (tz.toLowerCase().includes(c)) {
         return tz;
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
   }
 
   return null;
@@ -956,12 +937,7 @@ function capitalize(str) {
     .join(" ");
 }
 
-// ===============================
-// End Time & Date snippet
-// ===============================
-
 async function handleWikipediaSearch(query) {
-  // Avoid processing queries that clearly belong to the time/date handler
   if (!query || typeof query !== 'string') return null;
   const tCheck = query.trim().toLowerCase();
   if (/^(today's date|todays date|date today)$/.test(tCheck)) return null;
@@ -980,7 +956,7 @@ async function handleWikipediaSearch(query) {
   }
   if (!query || typeof query !== 'string') return null;
 
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might","[...]"]
+  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might"];
 
   const cleanedQuery = query
     .toLowerCase()
@@ -1010,74 +986,43 @@ async function handleWikipediaSearch(query) {
   }
 }
 
-// ----------------------
-// Wiki: full article fetch & sanitization (transclusion)
-// ----------------------
+let lastWikiState = null;
 
-let lastWikiState = null; // { type, title, summaryHtml, pageUrl, query }
-
-/**
- * sanitizeWikiHtml(html)
- * - Basic sanitization: strip <script>, remove inline event handlers, strip potentially dangerous attributes.
- * - Keeps markup useful for display (headings, paragraphs, lists, images).
- */
 function sanitizeWikiHtml(html) {
   if (!html) return '';
-  // remove script/style tags and their contents
   let out = html.replace(/<(script|style)[\s\S]*?>[\s\S]*?<\/\1>/gi, '');
-  // remove on* event handlers
   out = out.replace(/\s(on\w+)=["'][^"']*["']/gi, '');
-  // remove javascript: hrefs
   out = out.replace(/href=(["'])javascript:[^"']*\1/gi, 'href="#"');
-  // remove forms (just in case)
   out = out.replace(/<form[\s\S]*?>[\s\S]*?<\/form>/gi, '');
-  // strip meta tags
   out = out.replace(/<meta[\s\S]*?>/gi, '');
-  // remove edit links and other wiki editor UI by simple heuristics (ids/classes)
   out = out.replace(/<div[^>]*class="[^"]*(mw-editsection|toc|reference|rellink|mw-references-wrap)[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
-  // strip any inline scripts left in attributes
   out = out.replace(/javascript:/gi, '#');
   return out;
 }
 
-/**
- * fetchFullArticleHtml(titleOrUrl)
- * - Uses MediaWiki parse API to get the article HTML as produced by MediaWiki.
- * - Returns sanitized HTML string or throws.
- */
 async function fetchFullArticleHtml(titleOrUrl) {
   if (!titleOrUrl) throw new Error('No title or url provided');
 
-  // Try to extract title from a Wikipedia URL if needed
   let title = titleOrUrl;
   try {
     const m = String(titleOrUrl).match(/\/wiki\/([^#?/]+)/);
     if (m && m[1]) {
       title = decodeURIComponent(m[1]);
     }
-  } catch (e) {
-    // ignore and use provided string
-  }
+  } catch (e) {}
 
-  // MediaWiki parse API
   const api = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&prop=text&format=json&formatversion=2&origin=*`;
 
   const res = await fetch(api);
   if (!res.ok) throw new Error('Failed to fetch full article');
   const data = await res.json();
 
-  // parse.text contains the full content HTML
   const pageHtml = data?.parse?.text;
   if (!pageHtml) throw new Error('No page HTML returned');
 
   return sanitizeWikiHtml(pageHtml);
 }
 
-/**
- * fetchAndShowFullArticle(titleOrUrl)
- * - Fetches full article HTML and shows it in the popup modal (transcluded inside the site's UI).
- * - Adds a back button which restores the summary in the popup if available.
- */
 async function fetchAndShowFullArticle(titleOrUrl) {
   if (!titleOrUrl) return;
 
@@ -1087,7 +1032,6 @@ async function fetchAndShowFullArticle(titleOrUrl) {
   try {
     const sanitizedHtml = await fetchFullArticleHtml(titleOrUrl);
 
-    // Build header with back button and external link
     const backBtnHtml = `<button id="wikiBackBtn" class="wiki-back" style="margin-right:8px;">Back to summary</button>`;
     const externalLink = `<a href="https://en.wikipedia.org/wiki/${encodeURIComponent(titleOrUrl)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>`;
 
@@ -1101,12 +1045,10 @@ async function fetchAndShowFullArticle(titleOrUrl) {
 
     showFeatureResult({ title: `${escapeHtml(titleDisplay)} — Full article`, html: fullHtml });
 
-    // Attach back button to restore last summary in the popup (if it exists)
     const backBtn = featurePanel.querySelector('#wikiBackBtn');
     if (backBtn && lastWikiState && lastWikiState.summaryHtml) {
       backBtn.addEventListener('click', () => {
         showFeatureResult({ title: `Wikipedia — ${escapeHtml(lastWikiState.title)}`, html: lastWikiState.summaryHtml });
-        // reattach read more listener inside popup summary
         const rm = featurePanel.querySelector('#wikiReadMoreBtn');
         if (rm) {
           rm.addEventListener('click', () => {
@@ -1126,22 +1068,12 @@ async function fetchAndShowFullArticle(titleOrUrl) {
   }
 }
 
-// ----------------------
-// Inline wiki summary rendering (on page, not in popup)
-// ----------------------
-
-/**
- * renderWikiInline(title, html)
- * - Renders the wiki summary inline on the page (not in popup).
- * - It creates or updates an element with id 'wikiInline' placed before gcseResults (or at top of body if gcseResults missing).
- */
 function renderWikiInline(title, html) {
   let wrapper = document.getElementById('wikiInline');
   if (!wrapper) {
     wrapper = document.createElement('div');
     wrapper.id = 'wikiInline';
     wrapper.className = 'wiki-inline';
-    // Place above gcseResults if possible, otherwise at top of main content
     if (gcseResults && gcseResults.parentNode) {
       gcseResults.parentNode.insertBefore(wrapper, gcseResults);
     } else {
@@ -1154,26 +1086,20 @@ function renderWikiInline(title, html) {
       <div class="feature-content">${html}</div>
     </div>
   `;
-  // Scroll into view
   wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Remove inline wiki summary
 function clearWikiInline() {
   const wrapper = document.getElementById('wikiInline');
   if (wrapper && wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
 }
-
-// ----------------------
-// Suggestions & input handling
-// ----------------------
 
 let currentScript = null;
 let currentFocus = -1;
 let isNavigating = false;
 
 window.handleGoogleSuggestions = function(data) {
-  const matches = data[1]; 
+  const matches = data[1];
   if (!suggestionsBox) return;
   suggestionsBox.innerHTML = '';
 
@@ -1188,7 +1114,7 @@ window.handleGoogleSuggestions = function(data) {
     li.setAttribute('data-index', index);
 
     li.addEventListener('click', () => {
-      searchInput.value = match;      
+      searchInput.value = match;
       suggestionsBox.style.display = 'none';
       currentFocus = -1;
       doSearch(match);
@@ -1298,9 +1224,6 @@ document.addEventListener('click', e => {
   }
 });
 
-// ----------------------
-// 67 effect
-// ----------------------
 function play67Effect() {
   if (!audio67 || !container) return;
 
@@ -1332,18 +1255,11 @@ function play67Effect() {
   }, 3000);
 }
 
-// ----------------------
-// Search execution & rendering
-// ----------------------
-
-// Updated doSearch: run instant-answer detection at the very start,
-// and if an instant-answer is found, display it and short-circuit further search behavior.
 async function doSearch(query) {
   if (!query || !query.trim()) return;
 
   query = String(query).trim();
 
-  // Special 67 shortcut
   const compact = query.replace(/\s+/g, '');
   if (compact === '67') {
     if (!window.__last67Played || (Date.now() - window.__last67Played > 3000)) {
@@ -1353,10 +1269,7 @@ async function doSearch(query) {
     return;
   }
 
-  // --------- INSTANT-ANSWER DETECTION (run at very beginning) ----------
-  // Order matches the previous search button behavior.
   try {
-    // Weather
     try {
       const weatherResult = await handleWeather(query);
       if (weatherResult) {
@@ -1385,14 +1298,13 @@ async function doSearch(query) {
           }
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
-          return; // short-circuit: instant-answer displayed
+          return;
         }
       }
     } catch (e) {
       console.error('Weather handler threw', e);
     }
 
-    // WhoIs
     try {
       const whoIsResult = await handleWhoIs(query);
       if (whoIsResult) {
@@ -1408,7 +1320,6 @@ async function doSearch(query) {
             </div>
           `;
 
-          // store last wiki state so "Back" from full article works
           lastWikiState = {
             type: 'whois',
             title: whoIsResult.title,
@@ -1417,16 +1328,13 @@ async function doSearch(query) {
             query
           };
 
-          // Show summary in popup (whois keeps popup behavior)
           showFeatureResult({ title: `Who is ${escapeHtml(whoIsResult.title)}`, html });
 
-          // Insert the summary HTML into the popup content region so it's displayed similarly
           const content = featurePanel.querySelector('.feature-content');
           if (content) {
             content.innerHTML = html;
           }
 
-          // attach read more handler for whois
           try {
             const readBtn = featurePanel.querySelector('#wikiReadMoreBtn');
             if (readBtn) {
@@ -1441,14 +1349,13 @@ async function doSearch(query) {
 
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
-          return; // short-circuit
+          return;
         }
       }
     } catch (e) {
       console.error('WhoIs handler threw', e);
     }
 
-    // Time & Date (synchronous)
     try {
       const timeResult = handleTimeAndDate(query);
       if (timeResult) {
@@ -1456,13 +1363,12 @@ async function doSearch(query) {
         showFeatureResult({ title: 'Time & Date', html });
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
-        return; // IMPORTANT: do NOT continue with search when a time/date match is found
+        return;
       }
     } catch (e) {
       console.error('Time handler threw', e);
     }
 
-    // Translation (handleSearch)
     try {
       const translation = await handleSearch(query);
       if (translation) {
@@ -1478,21 +1384,19 @@ async function doSearch(query) {
           showFeatureResult({ title: 'Translation', html });
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
-          return; // short-circuit
+          return;
         }
       }
     } catch (e) {
       console.error('Translation handler threw', e);
     }
 
-    // Dictionary
     try {
       const def = await handleDictionarySearch(query);
       if (def) {
         if (def.error) {
           showFeatureResult({ title: 'Definition', html: `<p>${escapeHtml(def.error)}</p>` });
         } else {
-          // build the listen button next to the word: [button][word]
           const listenButtonHtml = `<button id="dictListenBtn" class="dict-listen" aria-label="Play pronunciation">🔊</button>`;
           const html = `
             <div class="dict-block">
@@ -1504,7 +1408,6 @@ async function doSearch(query) {
           `;
           showFeatureResult({ title: `Definition — ${escapeHtml(def.word)}`, html });
 
-          // attach audio handler inside the feature panel
           try {
             const listenBtn = featurePanel.querySelector('#dictListenBtn');
             if (listenBtn) {
@@ -1523,7 +1426,6 @@ async function doSearch(query) {
                   } catch (e) { console.error('Audio play failed', e); }
                 });
               } else {
-                // disable if no audio available
                 listenBtn.disabled = true;
                 listenBtn.title = "No pronunciation audio available.";
                 listenBtn.style.opacity = "0.5";
@@ -1536,14 +1438,13 @@ async function doSearch(query) {
 
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
-          return; // short-circuit
+          return;
         }
       }
     } catch (e) {
       console.error('Dictionary handler threw', e);
     }
 
-    // Math & Conversions
     try {
       const result = handleMathConversion(query);
       if(result) {
@@ -1591,7 +1492,7 @@ async function doSearch(query) {
           showFeatureResult({ title: 'Calculator', html });
           searchInput.value = "";
           if (chatBtn) chatBtn.style.display = "block";
-          return; // short-circuit
+          return;
         } else if (result.type === 'conversion') {
           if (result.error) {
             showFeatureResult({ title: 'Conversion', html: `<p>${escapeHtml(result.error)}</p>` });
@@ -1600,7 +1501,7 @@ async function doSearch(query) {
             showFeatureResult({ title: 'Conversion', html });
             searchInput.value = "";
             if (chatBtn) chatBtn.style.display = "block";
-            return; // short-circuit
+            return;
           }
         }
       }
@@ -1608,7 +1509,6 @@ async function doSearch(query) {
       console.error('Math handler threw', e);
     }
 
-    // Wikipedia (non-whois) - render inline and (per requirement) stop the normal search flow when matched.
     try {
       const wikiResult = await handleWikipediaSearch(query);
       if (wikiResult) {
@@ -1624,7 +1524,6 @@ async function doSearch(query) {
           </div>
         `;
 
-        // store state for back navigation from full article
         lastWikiState = {
           type: 'wikipedia',
           title: wikiResult.title,
@@ -1633,19 +1532,15 @@ async function doSearch(query) {
           query
         };
 
-        // Render summary inline on the page (NOT in popup)
         renderWikiInline(wikiResult.title, summaryHtml);
 
-        // Attach click handler to inline read more button (delegated or direct)
         try {
-          // The button is in the newly created #wikiInline element
           const inline = document.getElementById('wikiInline');
           if (inline) {
             const readBtn = inline.querySelector('#wikiReadMoreBtnInline');
             if (readBtn) {
               readBtn.addEventListener('click', () => {
                 const url = readBtn.getAttribute('data-url') || readMoreUrl;
-                // When clicked, fetch full article and show in popup as transcluded HTML
                 fetchAndShowFullArticle(url);
               });
             }
@@ -1656,7 +1551,7 @@ async function doSearch(query) {
 
         searchInput.value = "";
         if (chatBtn) chatBtn.style.display = "block";
-        return; // short-circuit (do not continue to normal search)
+        return;
       } else {
         clearWikiInline();
       }
@@ -1665,12 +1560,8 @@ async function doSearch(query) {
     }
   } catch (e) {
     console.error('Instant-answer detection error', e);
-    // continue to normal search flow if instant-answer detection fails
   }
 
-  // ---------- NO INSTANT ANSWER FOUND: continue with normal search behavior ----------
-
-  // Maintain history behavior as before
   history = history.filter(h => h !== query);
   history.unshift(query);
   saveLifetime(query);
@@ -1704,7 +1595,6 @@ async function doSearch(query) {
       } catch (e) {}
     }
   } else {
-    // No CSE available: open Google results in a new tab so current page (and the wiki inline) remain visible.
     const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
     try {
       window.open(googleUrl, '_blank');
@@ -1761,13 +1651,10 @@ window.addEventListener("load", () => {
   if (chatBtn) chatBtn.style.display = "none";
 });
 
-// Replace the previous large searchBtn handler with a small wrapper to call doSearch,
-// so instant-answer detection runs regardless of how the search was initiated.
 if (searchBtn) {
   searchBtn.addEventListener("click", function() {
     const query = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
     if (!query) return;
-    // call doSearch (async) — we don't need to await here
     doSearch(query);
   });
 }
