@@ -503,8 +503,8 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
 window.__gcse = {
   callback: function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryFromUrl = urlParams.get('q');
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const queryFromUrl = hashParams.get('gsc.q');
     if (queryFromUrl) {
       if (window.google && google.search && google.search.cse && google.search.cse.element) {
         const searchElement = google.search.cse.element.getElement("searchbox1");
