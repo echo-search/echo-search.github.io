@@ -17,13 +17,10 @@ const slider = document.getElementById("openInNewTabSlider");
 const btn67 = document.getElementById("btn67");
 const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
-
-let featurePanel = document.getElementById('featureResult');
-
 const frame = document.getElementById("aiFrame");
 
-frame.style.display = "block";
-frame.src = `jav-ai.netlify.app/echo-ai-embed.html?q=${encodeURIComponent(query)}`;
+
+let featurePanel = document.getElementById('featureResult');
 
 window.onerror = function(msg, url, line, col, error) {
   alert(msg + " (line " + line + ")");
@@ -1261,6 +1258,11 @@ function play67Effect() {
 }
 
 async function doSearch(query) {
+
+const frame = document.getElementById("aiFrame");
+
+frame.style.display = "block";
+frame.src = `jav-ai.netlify.app/echo-ai-embed.html?q=${encodeURIComponent(query)}`;
 
 if (query.length > 3) {
   frame.style.display = "block";
