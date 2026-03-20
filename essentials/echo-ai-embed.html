@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Echo AI Embed</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  padding: 10px;
+}
+
+#answer {
+  font-size: 15px;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div id="answer">Thinking...</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const query = params.get("q");
+
+async function run() {
+  if (!query) return;
+
+  try {
+    const res = await fetch("jav-ai.netlify.app/netlify/functions/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ query })
+    });
+
+    const data = await res.json();
+    document.getElementById("answer").innerText = data.answer;
+
+    // auto resize 👇
+    window.parent.postMessage(
+      { height: document.body.scrollHeight },
+      "*"
+    );
+
+  } catch (e) {
+    document.getElementById("answer").innerText = "Error loading AI.";
+  }
+}
+
+run();
+</script>
+
+</body>
+</html>

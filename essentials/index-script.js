@@ -1262,7 +1262,7 @@ async function doSearch(query) {
 const frame = document.getElementById("aiFrame");
 
 frame.style.display = "block";
-frame.src = `jav-ai.netlify.app/echo-ai-embed.html?q=${encodeURIComponent(query)}`;
+frame.src = `echo-ai-embed.html?q=${encodeURIComponent(query)}`;
 
 if (query.length > 3) {
   frame.style.display = "block";
