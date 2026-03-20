@@ -140,10 +140,15 @@ function formatMessage(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
+  // code blocks
   text = text.replace(/```([\s\S]*?)```/g, (_, code) =>
     `<pre><code>${code}</code></pre>`
   );
 
+  // bold formatting
+  text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+
+  // paragraphs + line breaks
   text = text.replace(/\n\n+/g, "</p><p>");
   text = text.replace(/\n/g, "<br>");
 
