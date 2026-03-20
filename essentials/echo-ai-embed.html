@@ -68,6 +68,23 @@ async function run() {
   }
 }
 
+function formatMessage(text) {
+  text = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  text = text.replace(/```([\s\S]*?)```/g, (_, code) =>
+    `<pre><code>${code}</code></pre>`
+  );
+
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/\n\n+/g, "</p><p>");
+  text = text.replace(/\n/g, "<br>");
+
+  return `<p>${text}</p>`;
+}
+
 run();
 </script>
 
