@@ -30,7 +30,7 @@ async function run() {
   if (!query) return;
 
   try {
-    const res = await fetch("jav-ai.netlify.app/netlify/functions/chat", {
+    const res = await fetch("jav-ai.netlify.app/.netlify/functions/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
