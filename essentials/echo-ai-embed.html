@@ -78,7 +78,7 @@ function formatMessage(text) {
     `<pre><code>${code}</code></pre>`
   );
 
-  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/\*\*(.*?)\*\*/g, "<br>$1</br>");
   text = text.replace(/\n\n+/g, "</p><p>");
   text = text.replace(/\n/g, "<br>");
 
