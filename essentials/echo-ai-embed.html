@@ -27,21 +27,37 @@ const params = new URLSearchParams(window.location.search);
 const query = params.get("q");
 
 async function run() {
-  if (!query) return;
+  if (!query) {
+    document.getElementById("answer").innerText = "No query provided.";
+    return;
+  }
 
   try {
-    const res = await fetch("jav-ai.netlify.app/.netlify/functions/chat", {
+    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({
+        messages: [
+          {
+            role: "system",
+            content: "Give short, clear answers like a search engine AI overview."
+          },
+          {
+            role: "user",
+            content: query
+          }
+        ]
+      })
     });
 
     const data = await res.json();
-    document.getElementById("answer").innerText = data.answer;
 
-    // auto resize 👇
+    document.getElementById("answer").innerText =
+      data.reply || "No response from AI.";
+
+    // 🔄 auto resize iframe
     window.parent.postMessage(
       { height: document.body.scrollHeight },
       "*"
