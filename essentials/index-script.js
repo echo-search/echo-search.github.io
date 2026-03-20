@@ -1685,3 +1685,12 @@ window.addEventListener("message", (e) => {
     document.getElementById("aiFrame").style.height = e.data.height + "px";
   }
 });
+
+const iframe = document.querySelector("iframe");
+
+const styles = getComputedStyle(document.documentElement);
+
+iframe.contentWindow.postMessage({
+  text: styles.getPropertyValue("--text"),
+  bg: styles.getPropertyValue("--bg")
+}, "*");

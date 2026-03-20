@@ -164,6 +164,15 @@ function resize() {
   }, 100);
 }
 
+window.addEventListener("message", (event) => {
+  if (event.data.text) {
+    document.documentElement.style.setProperty("--text", event.data.text);
+  }
+  if (event.data.bg) {
+    document.documentElement.style.setProperty("--bg", event.data.bg);
+  }
+});
+
 run();
 </script>
 
