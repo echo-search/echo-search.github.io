@@ -20,6 +20,11 @@ const container = document.getElementById("emojiContainer");
 
 let featurePanel = document.getElementById('featureResult');
 
+const frame = document.getElementById("aiFrame");
+
+frame.style.display = "block";
+frame.src = `jav-ai.netlify.app/echo-ai-embed.html?q=${encodeURIComponent(query)}`;
+
 window.onerror = function(msg, url, line, col, error) {
   alert(msg + " (line " + line + ")");
 };
@@ -1256,6 +1261,13 @@ function play67Effect() {
 }
 
 async function doSearch(query) {
+
+if (query.length > 3) {
+  frame.style.display = "block";
+} else {
+  frame.style.display = "none";
+}
+
   if (!query || !query.trim()) return;
 
   query = String(query).trim();
@@ -1665,3 +1677,9 @@ function escapeHtml(s) {
     return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]);
   });
 }
+
+window.addEventListener("message", (e) => {
+  if (e.data.height) {
+    document.getElementById("aiFrame").style.height = e.data.height + "px";
+  }
+});
