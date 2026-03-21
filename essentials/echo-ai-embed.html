@@ -91,6 +91,11 @@ code {
 </div>
 
 <script>
+if (!document.referrer.includes("echo-search.github.io")) {
+  document.body.innerHTML = "This embed is not allowed.";
+  throw new Error("Unauthorized iframe");
+}
+
 const params = new URLSearchParams(window.location.search);
 const query = params.get("q");
 
