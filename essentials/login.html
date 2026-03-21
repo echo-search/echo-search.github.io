@@ -1,541 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Sign Up to EchoSearch</title>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-            margin: 0;
-            color: #333;
-        }
-        .login-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            width: 320px;
-            text-align: center;
-        }
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-        h3 {
-            color: #555;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            font-weight: normal;
-        }
-        input[type="email"], input[type="password"], input[type="tel"], input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            margin-top: 5px; /* Added margin for consistency */
-        }
-        button.email-auth {
-            background-color: #4CAF50; /* Green for email actions */
-            color: white;
-        }
-        button.email-auth:hover {
-            background-color: #45a049;
-        }
-        button.google-auth {
-            background-color: #db4437; /* Google Red */
-            color: white;
-            margin-top: 15px;
-        }
-        button.google-auth:hover {
-            background-color: #c03d30;
-        }
-        button.phone-auth {
-            background-color: #1a73e8; /* Google Blue */
-            color: white;
-        }
-        button.phone-auth:hover {
-            background-color: #1669d7;
-        }
-        button.sign-out-button {
-            background-color: #6c757d; /* Grey for sign out */
-            color: white;
-            margin-top: 20px;
-        }
-        button.sign-out-button:hover {
-            background-color: #5a6268;
-        }
-        .forgot-password {
-            margin-top: 10px;
-            text-align: right;
-        }
-        .forgot-password a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 0.9em;
-        }
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-        #message, #auth-status {
-            margin-top: 20px;
-            font-size: 0.95em;
-            line-height: 1.4;
-        }
-        .error {
-            color: #d32f2f;
-        }
-        .success {
-            color: #388e3c;
-        }
-        hr {
-            border: 0;
-            height: 1px;
-            background: #eee;
-            margin: 30px 0;
-        }
-        .hidden {
-            display: none;
-        }
-        #recaptcha-container {
-            margin-top: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login / Sign Up to EchoSearch</title>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Firebase SDK v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
-<body>
-    <div class="login-container">
-        <h2>EchoSearch</h2>
-        <p id="auth-status">Please sign in or sign up.</p>
+<body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
 
-        <!-- Email/Password Section -->
-        <div id="auth-forms">
-            <h3>Sign In / Sign Up with Email</h3>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button class="email-auth" onclick="signInEmailPassword()">Sign In with Email</button>
-            <div class="forgot-password">
-                <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">EchoSearch</h2>
+          <p id="auth-status" class="text-center">Please sign in or sign up.</p>
+
+          <div id="auth-forms">
+
+            <!-- Email Section -->
+            <h5 class="mb-3">Sign In / Sign Up with Email</h5>
+            <div class="mb-2">
+              <input type="email" id="email" class="form-control" placeholder="Email" required>
             </div>
-            <button class="email-auth" style="margin-top: 10px; background-color: #007bff;" onclick="signUpEmailPassword()">Sign Up with Email</button>
+            <div class="mb-2">
+              <input type="password" id="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button class="btn btn-success w-100 mb-2" onclick="signInEmailPassword()">Sign In with Email</button>
+            <div class="text-end mb-2">
+              <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
+            </div>
+            <button class="btn btn-primary w-100 mb-3" onclick="signUpEmailPassword()">Sign Up with Email</button>
 
             <hr>
 
-            <!-- Phone Number Section -->
-            <h3>Sign In / Sign Up with Phone Number</h3>
-            <input type="tel" id="phoneNumber" placeholder="e.g., +15551234567" required>
-            <div id="recaptcha-container"></div>
-            <button class="phone-auth" id="sendCodeBtn" onclick="sendVerificationCode()">Send Verification Code</button>
-
-            <div id="verificationCodeSection" class="hidden">
-                <input type="text" id="verificationCode" placeholder="Enter Verification Code" required>
-                <button class="phone-auth" onclick="signInWithPhoneNumber()">Verify Code & Sign In</button>
+            <!-- Phone Section -->
+            <h5 class="mb-3">Sign In / Sign Up with Phone</h5>
+            <div class="mb-2">
+              <input type="tel" id="phoneNumber" class="form-control" placeholder="+15551234567" required>
+            </div>
+            <div id="recaptcha-container" class="mb-2"></div>
+            <button class="btn btn-primary w-100 mb-2" id="sendCodeBtn" onclick="sendVerificationCode()" disabled>Send Verification Code</button>
+            <div id="verificationCodeSection" class="mb-2 d-none">
+              <input type="text" id="verificationCode" class="form-control mb-2" placeholder="Enter Verification Code" required>
+              <button class="btn btn-primary w-100" onclick="signInWithPhoneNumber()">Verify Code & Sign In</button>
             </div>
 
             <hr>
 
-            <!-- Google Sign-In Section -->
-            <h3>Or use Google</h3>
-            <button class="google-auth" onclick="signInWithGoogle()">Sign in with Google</button>
-        </div>
+            <!-- Google Sign-In -->
+            <h5 class="mb-3">Or use Google</h5>
+            <button class="btn btn-danger w-100" onclick="signInWithGoogle()">Sign in with Google</button>
 
-        <div id="sign-out-section" class="hidden">
-            <button class="sign-out-button" onclick="signOutUser()">Sign Out</button>
-        </div>
+          </div>
 
-        <p id="message"></p>
+          <!-- Sign Out -->
+          <div id="sign-out-section" class="d-none mt-3">
+            <button class="btn btn-secondary w-100" onclick="signOutUser()">Sign Out</button>
+          </div>
+
+          <p id="message" class="mt-3 text-center"></p>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script>
-        const firebaseConfig = {
-         apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
-         authDomain: "echosearchh.firebaseapp.com",
-         projectId: "echosearchh",
-         storageBucket: "echosearchh.firebasestorage.app",
-         messagingSenderId: "202629312430",
-         appId: "1:202629312430:web:1895b1e1b0bd508f86223f",
-         measurementId: "G-S2S8NLVQDT"
-       };
+<!-- Bootstrap 5 JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
+<script>
+const firebaseConfig = {
+ apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
+ authDomain: "echosearchh.firebaseapp.com",
+ projectId: "echosearchh",
+ storageBucket: "echosearchh.firebasestorage.app",
+ messagingSenderId: "202629312430",
+ appId: "1:202629312430:web:1895b1e1b0bd508f86223f"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const phoneNumberInput = document.getElementById('phoneNumber');
-        const verificationCodeInput = document.getElementById('verificationCode');
-        const verificationCodeSection = document.getElementById('verificationCodeSection');
-        const sendCodeBtn = document.getElementById('sendCodeBtn');
-        const recaptchaContainer = document.getElementById('recaptcha-container');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const phoneNumberInput = document.getElementById('phoneNumber');
+const verificationCodeInput = document.getElementById('verificationCode');
+const verificationCodeSection = document.getElementById('verificationCodeSection');
+const sendCodeBtn = document.getElementById('sendCodeBtn');
+const recaptchaContainer = document.getElementById('recaptcha-container');
 
-        const messageElement = document.getElementById('message');
-        const authStatusElement = document.getElementById('auth-status');
-        const authForms = document.getElementById('auth-forms');
-        const signOutSection = document.getElementById('sign-out-section');
+const messageElement = document.getElementById('message');
+const authStatusElement = document.getElementById('auth-status');
+const authForms = document.getElementById('auth-forms');
+const signOutSection = document.getElementById('sign-out-section');
 
-        let recaptchaVerifier;
-        let confirmationResult; // To store the confirmation result for phone verification
-        let recaptchaWidgetId; // To store the widget ID for manual reset
+let recaptchaVerifier;
+let confirmationResult;
 
-        function displayMessage(msg, isError = true) {
-            messageElement.textContent = msg;
-            messageElement.className = isError ? 'error' : 'success';
-            console.log(`[UI Message] ${isError ? 'ERROR' : 'SUCCESS'}: ${msg}`);
+function displayMessage(msg, isError = true) {
+    messageElement.textContent = msg;
+    messageElement.className = isError ? 'text-danger mt-3 text-center' : 'text-success mt-3 text-center';
+}
 
-            // Display error as a popup if it's an error
-            if (isError) {
-                alert('Error: ' + msg);
-            }
-        }
+function getFriendlyErrorMessage(error) {
+    switch(error.code) {
+        case 'auth/invalid-email': return "Invalid email address.";
+        case 'auth/user-not-found': return "No user found with this email.";
+        case 'auth/wrong-password': return "Incorrect password.";
+        case 'auth/email-already-in-use': return "Email already registered.";
+        case 'auth/weak-password': return "Password should be at least 6 characters.";
+        case 'auth/invalid-phone-number': return "Invalid phone number.";
+        case 'auth/missing-phone-number': return "Enter a phone number.";
+        case 'auth/too-many-requests': return "Too many requests. Try again later.";
+        case 'auth/invalid-verification-code': return "Invalid verification code.";
+        case 'auth/code-expired': return "Verification code expired.";
+        default: return `Error: ${error.message}`;
+    }
+}
 
-        // Helper function to map Firebase error codes to user-friendly messages
-        function getFriendlyErrorMessage(error) {
-            console.error("Firebase Error:", error); // Log the raw error for debugging
-            switch (error.code) {
-                case 'auth/invalid-email':
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
-                    return "Invalid email and/or password. Please check.";
-                case 'auth/user-disabled':
-                    return "This account has been disabled. Please contact support.";
-                case 'auth/email-already-in-use':
-                    return "This email is already registered. Please sign in or use a different email.";
-                case 'auth/weak-password':
-                    return "Password should be at least 6 characters long.";
-                case 'auth/network-request-failed':
-                    return "Network error. Please check your internet connection.";
-                case 'auth/popup-closed-by-user':
-                    return "Sign-in was cancelled.";
-                case 'auth/account-exists-with-different-credential':
-                    return "An account already exists with the same email address but different sign-in credentials. Sign in using the original method.";
-                case 'auth/invalid-phone-number':
-                    return "The phone number is invalid.";
-                case 'auth/missing-phone-number':
-                    return "Please enter a phone number.";
-                case 'auth/too-many-requests':
-                    return "Too many requests. Please try again later.";
-                case 'auth/invalid-verification-code':
-                    return "The verification code is invalid.";
-                case 'auth/code-expired':
-                    return "The verification code has expired. Please resend.";
-                case 'auth/captcha-check-failed':
-                    return "reCAPTCHA verification failed. Please try again.";
-                case 'auth/web-storage-unsupported':
-                    return "Your browser does not support web storage (e.g., cookies), which is required for sign-in. Please try a different browser or enable cookies.";
-                default:
-                    return `An unexpected error occurred. Please try again. (Code: ${error.code})`;
-            }
-        }
+// Email Auth
+function signInEmailPassword() {
+    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
+    .then(() => displayMessage("Signed in successfully!", false))
+    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+}
+function signUpEmailPassword() {
+    auth.createUserWithEmailAndPassword(emailInput.value, passwordInput.value)
+    .then(() => displayMessage("Account created successfully!", false))
+    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+}
+function resetPassword() {
+    auth.sendPasswordResetEmail(emailInput.value)
+    .then(() => displayMessage("Password reset email sent!", false))
+    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+}
 
-        // Function to initialize and render reCAPTCHA
-        function initializeRecaptcha() {
-            console.log("[reCAPTCHA] Attempting to initialize reCAPTCHA.");
-            // If an existing reCAPTCHA widget exists, reset it or destroy it first
-            if (recaptchaWidgetId !== undefined) {
-                try {
-                    // Use grecaptcha.reset with the widgetId if it exists
-                    if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
-                        grecaptcha.reset(recaptchaWidgetId);
-                        console.log(`[reCAPTCHA] Existing reCAPTCHA widget ${recaptchaWidgetId} reset.`);
-                    } else if (recaptchaVerifier && recaptchaVerifier.clear) { // Fallback if grecaptcha is not directly available
-                        recaptchaVerifier.clear();
-                        console.log("[reCAPTCHA] Existing recaptchaVerifier cleared.");
-                    }
-                } catch (e) {
-                    console.warn("[reCAPTCHA] Error while trying to reset/clear existing reCAPTCHA:", e);
-                }
-            }
+// Google Auth
+function signInWithGoogle() {
+    auth.signInWithPopup(googleProvider)
+    .then(() => displayMessage("Signed in with Google!", false))
+    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+}
 
-            // Ensure the recaptcha-container is visible
-            if (recaptchaContainer) {
-                recaptchaContainer.classList.remove('hidden');
-                recaptchaContainer.innerHTML = ''; // Clear previous reCAPTCHA content
-                console.log("[reCAPTCHA] recaptcha-container cleared and made visible.");
-            } else {
-                console.error("[reCAPTCHA] #recaptcha-container element not found!");
-                displayMessage("Critical error: reCAPTCHA container not found in HTML. Check your page structure.", true);
-                return; // Cannot proceed without container
-            }
+// Phone Auth
+function initializeRecaptcha() {
+    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'normal',
+        'callback': () => sendCodeBtn.disabled = false,
+        'expired-callback': () => { sendCodeBtn.disabled = true; }
+    });
+    recaptchaVerifier.render();
+}
+function sendVerificationCode() {
+    confirmationResult = null;
+    auth.signInWithPhoneNumber(phoneNumberInput.value, recaptchaVerifier)
+    .then(result => {
+        confirmationResult = result;
+        verificationCodeSection.classList.remove('d-none');
+        displayMessage("Verification code sent!", false);
+    })
+    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+}
+function signInWithPhoneNumber() {
+    if (!confirmationResult) return displayMessage("Please request a verification code first.");
+    confirmationResult.confirm(verificationCodeInput.value)
+    .then(() => displayMessage("Signed in with phone!", false))
+    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+}
 
+// Sign Out
+function signOutUser() {
+    auth.signOut().then(() => displayMessage("Signed out successfully!", false));
+}
 
-            // Ensure window.recaptchaVerifier is set to null before creating a new one
-            window.recaptchaVerifier = null;
-            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'normal', // or 'invisible' for a seamless experience
-                'callback': (response) => {
-                    // reCAPTCHA solved, allow sending SMS
-                    sendCodeBtn.disabled = false;
-                    displayMessage("reCAPTCHA verified. You can now send the verification code.", false);
-                    console.log("[reCAPTCHA] Callback: reCAPTCHA successfully solved.");
-                },
-                'expired-callback': () => {
-                    // Response expired. Ask user to solve reCAPTCHA again.
-                    sendCodeBtn.disabled = true;
-                    displayMessage("reCAPTCHA expired. Please re-verify.", true);
-                    console.warn("[reCAPTCHA] Callback: reCAPTCHA expired. Re-initializing.");
-                    // Re-render reCAPTCHA if it expires to get a new challenge
-                    initializeRecaptcha();
-                },
-                'error-callback': (error) => {
-                    // Handle reCAPTCHA error, e.g., display an error message to the user
-                    console.error("[reCAPTCHA] Callback: reCAPTCHA error:", error);
-                    displayMessage("reCAPTCHA encountered an error. Please try again or refresh the page.", true);
-                    sendCodeBtn.disabled = true;
-                }
-            });
+// Auth state listener
+auth.onAuthStateChanged(user => {
+    if (user) {
+        authStatusElement.innerHTML = `Welcome, <span class="text-success">${user.displayName || user.email || user.phoneNumber}</span>`;
+        authForms.classList.add('d-none');
+        signOutSection.classList.remove('d-none');
+    } else {
+        authStatusElement.textContent = "Please sign in or sign up.";
+        authForms.classList.remove('d-none');
+        signOutSection.classList.add('d-none');
+    }
+});
 
-            recaptchaVerifier.render().then((widgetId) => {
-                recaptchaWidgetId = widgetId; // Store the widget ID
-                console.log(`[reCAPTCHA] reCAPTCHA widget rendered successfully with ID: ${widgetId}`);
-                sendCodeBtn.disabled = true; // Disable send code button initially until solved
-                displayMessage("Please complete the reCAPTCHA.", false);
-            }).catch(error => {
-                console.error("[reCAPTCHA] Error rendering reCAPTCHA:", error);
-                displayMessage("Failed to render reCAPTCHA. Please try refreshing. Check console for details.", true);
-                sendCodeBtn.disabled = true;
-                recaptchaVerifier = null; // Clear verifier on render error
-            });
-        }
-
-        auth.onAuthStateChanged(function(user) {
-            console.log("[AuthState] onAuthStateChanged fired. User:", user ? user.uid : "null");
-            if (user) {
-                authStatusElement.innerHTML = `Welcome, <span class="success">${user.displayName || user.email || user.phoneNumber}</span>!`;
-                displayMessage('', false);
-                authForms.classList.add('hidden');
-                signOutSection.classList.remove('hidden');
-                // Clear and hide reCAPTCHA if not needed when a user is logged in
-                if (recaptchaVerifier && recaptchaVerifier.clear) {
-                    console.log("[AuthState] User logged in, clearing reCAPTCHA.");
-                    recaptchaVerifier.clear();
-                }
-                recaptchaContainer.classList.add('hidden');
-                // Ensure verification code section is hidden when a user logs in (e.g., via email/password or Google)
-                verificationCodeSection.classList.add('hidden');
-            } else {
-                authStatusElement.innerHTML = "Please sign in or sign up.";
-                authStatusElement.classList.remove('success');
-                displayMessage('', false);
-                authForms.classList.remove('hidden');
-                signOutSection.classList.add('hidden');
-                // Ensure verification code section is hidden when no user is logged in
-                verificationCodeSection.classList.add('hidden');
-                // Ensure reCAPTCHA is initialized when the auth forms are visible and no user is logged in
-                console.log("[AuthState] No user logged in, initializing reCAPTCHA.");
-                initializeRecaptcha();
-            }
-        });
-
-        // Call initializeRecaptcha when the page loads, after Firebase is initialized
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("[DOM] DOMContentLoaded fired.");
-            // We'll rely on onAuthStateChanged to trigger the initial reCAPTCHA setup
-            // initializeRecaptcha(); // Removed as onAuthStateChanged handles it
-        });
-
-
-        function signInEmailPassword() {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            displayMessage('', false);
-
-            if (!email || !password) {
-                displayMessage("Please enter both email and password to sign in.", true);
-                return;
-            }
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    displayMessage("Signed in successfully with Email!", false);
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                });
-        }
-
-        function signUpEmailPassword() {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            displayMessage('', false);
-
-            if (!email || !password) {
-                displayMessage("Please enter both email and password to sign up.", true);
-                return;
-            }
-            if (password.length < 6) {
-                 displayMessage("Password must be at least 6 characters long.", true);
-                 return;
-            }
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    displayMessage("Account created successfully! You are now signed in.", false);
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                });
-        }
-
-        function signInWithGoogle() {
-            displayMessage('', false);
-            auth.signInWithPopup(googleProvider)
-                .then((result) => {
-                    displayMessage("Signed in successfully with Google!", false);
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                });
-        }
-
-        function sendVerificationCode() {
-            const phoneNumber = phoneNumberInput.value;
-            displayMessage('', false);
-            console.log("[PhoneAuth] sendVerificationCode called.");
-
-            if (!phoneNumber) {
-                displayMessage("Please enter a phone number.", true);
-                console.warn("[PhoneAuth] Phone number input empty.");
-                return;
-            }
-
-            // Check if reCAPTCHA is ready
-            if (!recaptchaVerifier || typeof recaptchaVerifier.render !== 'function' || recaptchaWidgetId === undefined) {
-                console.warn("[PhoneAuth] reCAPTCHA is not ready or not fully rendered. Current state:", { recaptchaVerifier, recaptchaWidgetId });
-                displayMessage("reCAPTCHA is not ready. Please wait for it to load, or try refreshing the page.", true);
-                // Attempt to re-initialize if it's clearly not ready
-                if (!recaptchaVerifier) {
-                     console.log("[PhoneAuth] recaptchaVerifier is null/undefined, attempting aggressive re-initialization.");
-                     initializeRecaptcha();
-                } else if (recaptchaWidgetId === undefined) {
-                     console.log("[PhoneAuth] recaptchaWidgetId is undefined, re-rendering existing verifier.");
-                     recaptchaVerifier.render().then(id => {
-                        recaptchaWidgetId = id;
-                        console.log(`[PhoneAuth] reCAPTCHA re-rendered on demand with ID: ${id}`);
-                        sendCodeBtn.disabled = true; // Still needs to be solved
-                     }).catch(err => {
-                        console.error("[PhoneAuth] Error during on-demand re-render:", err);
-                        displayMessage("Failed to re-render reCAPTCHA. Please refresh.", true);
-                        sendCodeBtn.disabled = true;
-                     });
-                }
-                return;
-            }
-
-            sendCodeBtn.disabled = true; // Disable button to prevent multiple requests
-            console.log(`[PhoneAuth] Attempting to send verification code to ${phoneNumber} using reCAPTCHA widget ID ${recaptchaWidgetId}.`);
-
-            auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
-                .then((confirmation) => {
-                    confirmationResult = confirmation;
-                    // Show the verification code input section
-                    verificationCodeSection.classList.remove('hidden');
-                    displayMessage("Verification code sent to your phone. Please enter it below.", false);
-                    sendCodeBtn.disabled = false; // Re-enable if user needs to resend
-                    console.log("[PhoneAuth] Verification code sent successfully.");
-
-                    // Clear reCAPTCHA challenge after use, and re-initialize for next attempt if needed
-                    if (recaptchaVerifier && recaptchaVerifier.clear) {
-                        console.log("[PhoneAuth] Clearing reCAPTCHA after successful code send.");
-                        recaptchaVerifier.clear();
-                        recaptchaWidgetId = undefined; // Reset widget ID
-                        // Re-initialize reCAPTCHA to be ready for potential re-sends or next user
-                        initializeRecaptcha();
-                    }
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                    sendCodeBtn.disabled = false; // Re-enable on error
-                    console.error("[PhoneAuth] Error sending verification code:", error);
-                    // Force a re-render of reCAPTCHA on error
-                    console.log("[PhoneAuth] Error occurred, re-initializing reCAPTCHA.");
-                    initializeRecaptcha();
-                });
-        }
-
-        function signInWithPhoneNumber() {
-            const code = verificationCodeInput.value;
-            displayMessage('', false);
-            console.log("[PhoneAuth] signInWithPhoneNumber called with code.");
-
-            if (!code) {
-                displayMessage("Please enter the verification code.", true);
-                console.warn("[PhoneAuth] Verification code input empty.");
-                return;
-            }
-
-            if (!confirmationResult) {
-                displayMessage("No verification request initiated. Please send a code first.", true);
-                console.warn("[PhoneAuth] confirmationResult is null.");
-                return;
-            }
-
-            confirmationResult.confirm(code)
-                .then((result) => {
-                    displayMessage("Signed in successfully with Phone Number!", false);
-                    // Hide the verification code input section after successful sign-in
-                    verificationCodeSection.classList.add('hidden');
-                    verificationCodeInput.value = ''; // Clear code input
-                    console.log("[PhoneAuth] User signed in successfully with phone number.");
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                    console.error("[PhoneAuth] Error confirming verification code:", error);
-                });
-        }
-
-
-        function resetPassword() {
-            const email = emailInput.value;
-            displayMessage('', false);
-
-            if (!email) {
-                displayMessage("Please enter your email address to reset your password.", true);
-                return;
-            }
-
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    displayMessage(`Password reset email sent to ${email}. Please check your inbox.`, false);
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                });
-        }
-
-        function signOutUser() {
-            auth.signOut()
-                .then(() => {
-                    displayMessage("You have been signed out.", false);
-                })
-                .catch((error) => {
-                    displayMessage(getFriendlyErrorMessage(error), true);
-                });
-        }
-    </script>
+window.onload = initializeRecaptcha;
+</script>
 </body>
 </html>
