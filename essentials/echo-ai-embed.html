@@ -149,6 +149,9 @@ function formatMessage(text) {
 
   text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 
+  // Replace * at start of lines or after newlines with bullet point
+  text = text.replace(/(^|\n)\s*\*\s+/g, "$1• ");
+
   text = text.replace(/\n\n+/g, "</p><p>");
   text = text.replace(/\n/g, "<br>");
 
