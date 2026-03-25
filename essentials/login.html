@@ -11,6 +11,10 @@
 <!-- Firebase SDK v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<!-- NEW Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 </head>
 <body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
 
@@ -54,9 +58,29 @@
 
             <hr>
 
-            <!-- Google Sign-In -->
+            <!-- Google Sign-In (GIS Button) -->
             <h5 class="mb-3">Or use Google</h5>
-            <button class="btn btn-danger w-100" onclick="signInWithGoogle()">Sign in with Google</button>
+
+            <!-- GIS onload -->
+            <div 
+              id="g_id_onload"
+              data-client_id="202629312430-9e0k5efjjk22tu88lpootisaus8gsqv9.apps.googleusercontent.com"
+              data-context="signin"
+              data-ux_mode="popup"
+              data-callback="handleGoogleCredential"
+              data-auto_prompt="false">
+            </div>
+
+            <!-- GIS button -->
+            <div 
+              class="g_id_signin w-100"
+              data-type="standard"
+              data-size="large"
+              data-theme="filled_blue"
+              data-shape="rectangular"
+              data-text="sign_in_with"
+              data-logo_alignment="left">
+            </div>
 
           </div>
 
@@ -76,6 +100,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+/* ---------------------------
+   Firebase Init
+----------------------------*/
 const firebaseConfig = {
  apiKey: "AIzaSyBsJcShq-p4kDcRYyas_fYdWN7VWvgRi_I",
  authDomain: "echosearchh.firebaseapp.com",
@@ -86,7 +113,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
@@ -94,7 +120,6 @@ const phoneNumberInput = document.getElementById('phoneNumber');
 const verificationCodeInput = document.getElementById('verificationCode');
 const verificationCodeSection = document.getElementById('verificationCodeSection');
 const sendCodeBtn = document.getElementById('sendCodeBtn');
-const recaptchaContainer = document.getElementById('recaptcha-container');
 
 const messageElement = document.getElementById('message');
 const authStatusElement = document.getElementById('auth-status');
@@ -104,6 +129,9 @@ const signOutSection = document.getElementById('sign-out-section');
 let recaptchaVerifier;
 let confirmationResult;
 
+/* ---------------------------
+   UI helper functions
+----------------------------*/
 function displayMessage(msg, isError = true) {
     messageElement.textContent = msg;
     messageElement.className = isError ? 'text-danger mt-3 text-center' : 'text-success mt-3 text-center';
@@ -125,31 +153,44 @@ function getFriendlyErrorMessage(error) {
     }
 }
 
-// Email Auth
+/* ---------------------------
+   Email Auth
+----------------------------*/
 function signInEmailPassword() {
     auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
     .then(() => displayMessage("Signed in successfully!", false))
     .catch(err => displayMessage(getFriendlyErrorMessage(err)));
 }
+
 function signUpEmailPassword() {
     auth.createUserWithEmailAndPassword(emailInput.value, passwordInput.value)
     .then(() => displayMessage("Account created successfully!", false))
     .catch(err => displayMessage(getFriendlyErrorMessage(err)));
 }
+
 function resetPassword() {
     auth.sendPasswordResetEmail(emailInput.value)
     .then(() => displayMessage("Password reset email sent!", false))
     .catch(err => displayMessage(getFriendlyErrorMessage(err)));
 }
 
-// Google Auth
-function signInWithGoogle() {
-    auth.signInWithPopup(googleProvider)
-    .then(() => displayMessage("Signed in with Google!", false))
-    .catch(err => displayMessage(getFriendlyErrorMessage(err)));
+/* ---------------------------
+   Google Sign-In (NEW GIS)
+----------------------------*/
+function handleGoogleCredential(response) {
+    const jwt = response.credential;
+
+    // Convert Google JWT → Firebase Credential
+    const firebaseCred = firebase.auth.GoogleAuthProvider.credential(jwt);
+
+    auth.signInWithCredential(firebaseCred)
+      .then(() => displayMessage("Signed in with Google!", false))
+      .catch(err => displayMessage(getFriendlyErrorMessage(err)));
 }
 
-// Phone Auth
+/* ---------------------------
+   Phone Auth
+----------------------------*/
 function initializeRecaptcha() {
     recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
         'size': 'normal',
@@ -158,6 +199,7 @@ function initializeRecaptcha() {
     });
     recaptchaVerifier.render();
 }
+
 function sendVerificationCode() {
     confirmationResult = null;
     auth.signInWithPhoneNumber(phoneNumberInput.value, recaptchaVerifier)
@@ -168,19 +210,24 @@ function sendVerificationCode() {
     })
     .catch(err => displayMessage(getFriendlyErrorMessage(err)));
 }
+
 function signInWithPhoneNumber() {
-    if (!confirmationResult) return displayMessage("Please request a verification code first.");
+    if (!confirmationResult) return displayMessage("Request a verification code first.");
     confirmationResult.confirm(verificationCodeInput.value)
     .then(() => displayMessage("Signed in with phone!", false))
     .catch(err => displayMessage(getFriendlyErrorMessage(err)));
 }
 
-// Sign Out
+/* ---------------------------
+   Sign Out
+----------------------------*/
 function signOutUser() {
     auth.signOut().then(() => displayMessage("Signed out successfully!", false));
 }
 
-// Auth state listener
+/* ---------------------------
+   Auth State Listener
+----------------------------*/
 auth.onAuthStateChanged(user => {
     if (user) {
         authStatusElement.innerHTML = `Welcome, <span class="text-success">${user.displayName || user.email || user.phoneNumber}</span>`;
