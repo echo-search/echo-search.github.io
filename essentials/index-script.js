@@ -939,55 +939,6 @@ function capitalize(str) {
     .join(" ");
 }
 
-async function handleWikipediaSearch(query) {
-  if (!query || typeof query !== 'string') return null;
-  const tCheck = query.trim().toLowerCase();
-  if (/^(today's date|todays date|date today)$/.test(tCheck)) return null;
-  if (/^time in\s+/.test(tCheck)) return null;
-
-  const tMatch = query.match(/^(.+?)\s+in\s+([a-zA-Z\s]+)$/i);
-  if (tMatch) {
-    const lang = tMatch[2]
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, ' ');
-
-    if (langMap[lang]) {
-      return null;
-    }
-  }
-  if (!query || typeof query !== 'string') return null;
-
-  const stopWords = ["who","whom","whose","what","which","when","where","why","how","is","are","was","were","be","been","being","do","does","did","doing","can","could","should","would","may","might"];
-
-  const cleanedQuery = query
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(word => word && !stopWords.includes(word))
-    .join(" ");
-
-  if (!cleanedQuery) return null;
-
-  try {
-    const res = await fetch(
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanedQuery)}`
-    );
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-
-    if (data && data.extract) {
-      return { type: 'wikipedia', title: data.title || cleanedQuery, extract: data.extract, url: data.content_urls?.desktop?.page || null };
-    }
-
-    return null;
-  } catch (e) {
-    console.error('handleWikipediaSearch error', e);
-    return null;
-  }
-}
-
 let lastWikiState = null;
 
 function sanitizeWikiHtml(html) {
@@ -1068,32 +1019,6 @@ async function fetchAndShowFullArticle(titleOrUrl) {
       html: `<p>Unable to load full article inside the popup. You can open it on Wikipedia: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(titleOrUrl)}" target="_blank" rel="noopener">Open on Wikipedia</a></p>`
     });
   }
-}
-
-function renderWikiInline(title, html) {
-  let wrapper = document.getElementById('wikiInline');
-  if (!wrapper) {
-    wrapper = document.createElement('div');
-    wrapper.id = 'wikiInline';
-    wrapper.className = 'wiki-inline';
-    if (gcseResults && gcseResults.parentNode) {
-      gcseResults.parentNode.insertBefore(wrapper, gcseResults);
-    } else {
-      document.body.insertBefore(wrapper, document.body.firstChild);
-    }
-  }
-  wrapper.innerHTML = `
-    <div class="wiki-inline-card feature-card">
-      <div class="feature-header"><h3>Wikipedia — ${escapeHtml(title)}</h3></div>
-      <div class="feature-content">${html}</div>
-    </div>
-  `;
-  wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function clearWikiInline() {
-  const wrapper = document.getElementById('wikiInline');
-  if (wrapper && wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
 }
 
 let currentScript = null;
@@ -1523,55 +1448,6 @@ if (query.length > 3) {
       console.error('Math handler threw', e);
     }
 
-    try {
-      const wikiResult = await handleWikipediaSearch(query);
-      if (wikiResult) {
-        const readMoreUrl = wikiResult.url || `https://en.wikipedia.org/wiki/${encodeURIComponent(wikiResult.title)}`;
-        const summaryHtml = `
-          <div class="wiki-summary">
-            <div class="wiki-title"><strong>${escapeHtml(wikiResult.title)}</strong></div>
-            <div class="wiki-extract">${escapeHtml(wikiResult.extract)}</div>
-            <div class="wiki-actions" style="margin-top:8px;">
-              <button id="wikiReadMoreBtnInline" class="wiki-readmore" data-url="${escapeHtml(readMoreUrl)}">Read more</button>
-              <a href="${escapeHtml(readMoreUrl)}" target="_blank" rel="noopener" style="margin-left:8px;">Open on Wikipedia</a>
-            </div>
-          </div>
-        `;
-
-        lastWikiState = {
-          type: 'wikipedia',
-          title: wikiResult.title,
-          summaryHtml,
-          pageUrl: readMoreUrl,
-          query
-        };
-
-        renderWikiInline(wikiResult.title, summaryHtml);
-
-        try {
-          const inline = document.getElementById('wikiInline');
-          if (inline) {
-            const readBtn = inline.querySelector('#wikiReadMoreBtnInline');
-            if (readBtn) {
-              readBtn.addEventListener('click', () => {
-                const url = readBtn.getAttribute('data-url') || readMoreUrl;
-                fetchAndShowFullArticle(url);
-              });
-            }
-          }
-        } catch (e) {
-          console.error('Failed to attach read more handler to inline wiki summary', e);
-        }
-
-        searchInput.value = "";
-        if (chatBtn) chatBtn.style.display = "block";
-        return;
-      } else {
-        clearWikiInline();
-      }
-    } catch (e) {
-      console.error('Wikipedia handler threw', e);
-    }
   } catch (e) {
     console.error('Instant-answer detection error', e);
   }
