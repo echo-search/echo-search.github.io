@@ -91,7 +91,10 @@ code {
 </div>
 
 <script>
-if (!document.referrer.includes("echo-search.github.io")) {
+if (
+  !document.referrer.startsWith("https://echo-search.github.io/") &&
+  !document.referrer.startsWith("https://echo-search.github.io/safesearch/")
+) {
   document.body.innerHTML = "This embed is not allowed.";
   throw new Error("Unauthorized iframe");
 }
