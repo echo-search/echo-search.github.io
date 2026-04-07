@@ -167,7 +167,7 @@ async function send() {
   add("ai", "Thinking...");
 
   try {
-    const res = await fetch("/.netlify/functions/chat", {
+    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
       method: "POST",
       body: JSON.stringify({ messages })
     });

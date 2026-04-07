@@ -1533,7 +1533,7 @@ renderHistory();
 
 if (chatBtn) {
   chatBtn.addEventListener("click", () => {
-    window.open("https://chatgpt.com", "_blank");
+    window.open("/essentials/echo_ai", "_blank");
   });
 }
 
