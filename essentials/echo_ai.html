@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Echo AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#0d1117;
+  color:#c9d1d9;
+  display:flex;
+  flex-direction:column;
+  height:100vh
+}
+
+header{
+  padding:14px;
+  border-bottom:1px solid #30363d;
+  text-align:center;
+  font-weight:600
+}
+
+#chat{
+  flex:1;
+  padding:16px;
+  overflow-y:auto
+}
+
+.msg{
+  margin-bottom:18px;
+  line-height:1.6
+}
+
+.user{
+  display:flex;
+  justify-content:flex-end
+}
+
+.user .bubble{
+  max-width:70%;
+  background:#1f6feb;
+  color:#ffffff;
+  padding:10px 14px;
+  border-radius:14px 14px 0 14px;
+  white-space:pre-wrap
+}
+
+.ai .bubble{
+  max-width:100%
+}
+
+footer{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-top:1px solid #30363d
+}
+
+input{
+  flex:1;
+  padding:10px;
+  background:#0d1117;
+  border:1px solid #30363d;
+  border-radius:6px;
+  color:#c9d1d9
+}
+
+button{
+  padding:10px 14px;
+  background:#238636;
+  border:none;
+  border-radius:6px;
+  font-weight:600;
+  color:#ffffff;
+  cursor:pointer
+}
+
+button.secondary{
+  background:#30363d
+}
+
+pre{
+  background:#0d1117;
+  border:1px solid #30363d;
+  border-radius:6px;
+  padding:14px;
+  overflow-x:auto;
+  margin:12px 0
+}
+
+code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:0.9em
+}
+
+.msg p{
+  margin:0 0 10px 0
+}
+</style>
+</head>
+
+<body>
+
+<header>Echo AI</header>
+
+<div id="chat"></div>
+
+<footer>
+  <input id="input" placeholder="Type a message…" />
+  <button class="secondary" onclick="startVoice()">🎤</button>
+  <button onclick="send()">Send</button>
+</footer>
+
+<script>
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+
+const messages = [
+  { role: "system", content: "You are Echo AI, a helpful assistant." }
+];
+
+function formatMessage(text) {
+  text = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  text = text.replace(/```([\s\S]*?)```/g, (_, code) =>
+    `<pre><code>${code}</code></pre>`
+  );
+
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/\n\n+/g, "</p><p>");
+  text = text.replace(/\n/g, "<br>");
+
+  return `<p>${text}</p>`;
+}
+
+function add(role, text) {
+  const msg = document.createElement("div");
+  msg.className = `msg ${role}`;
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.innerHTML = formatMessage(text);
+
+  msg.appendChild(bubble);
+  chat.appendChild(msg);
+
+  msg.querySelectorAll("pre code").forEach(block => {
+    hljs.highlightElement(block);
+  });
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function send() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = "";
+  add("user", text);
+  messages.push({ role: "user", content: text });
+  add("ai", "Thinking...");
+
+  try {
+    const res = await fetch("/.netlify/functions/chat", {
+      method: "POST",
+      body: JSON.stringify({ messages })
+    });
+
+    const data = await res.json();
+    chat.lastChild.remove();
+    add("ai", data.reply);
+    messages.push({ role: "assistant", content: data.reply });
+  } catch {
+    chat.lastChild.remove();
+    add("ai", "Server error.");
+  }
+}
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") send();
+});
+
+function startVoice() {
+  if (!("webkitSpeechRecognition" in window)) {
+    alert("Voice input not supported.");
+    return;
+  }
+
+  const rec = new webkitSpeechRecognition();
+  rec.lang = "en-US";
+  rec.onresult = e => {
+    input.value = e.results[0][0].transcript;
+    send();
+  };
+  rec.start();
+}
+
+</script>
+
+</body>
+</html>
