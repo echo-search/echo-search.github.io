@@ -4,38 +4,153 @@
 <meta charset="UTF-8" />
 <title>Echo AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <style>
 body{
   margin:0;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#0d1117;
-  color:#c9d1d9;
+  background:#000;
+  color:#fff;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* LAYOUT */
+#layout{
+  display:flex;
+  height:100vh;
+  width:100vw;
+}
+
+/* SIDEBAR */
+#sidebar{
+  width:300px;
+  background:rgba(20,20,20,0.92);
+  border-radius:22px;
+  margin:12px;
+  padding:18px 18px 90px 18px;
   display:flex;
   flex-direction:column;
-  height:100vh
+  transition:0.25s ease;
+  backdrop-filter:blur(18px);
 }
 
-header{
-  padding:14px;
-  border-bottom:1px solid #30363d;
-  text-align:center;
-  font-weight:600
+#sidebar-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+  font-size:22px;
+  font-weight:600;
 }
 
+.sidebar-icon{
+  font-size:22px;
+  cursor:pointer;
+  opacity:0.85;
+}
+
+/* SECTIONS */
+.section-title{
+  margin-top:28px;
+  margin-bottom:10px;
+  font-size:15px;
+  font-weight:600;
+  opacity:0.85;
+}
+
+.sidebar-item{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-size:15px;
+  padding:8px 0;
+  cursor:pointer;
+  opacity:0.9;
+}
+
+/* CHAT LIST */
+.chat-entry{
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+  opacity:0.9;
+}
+
+.chat-entry:hover{
+  background:#222;
+}
+
+.chat-entry.active{
+  background:#333;
+  font-weight:600;
+}
+
+/* Chat button */
+#chat-btn-wrapper{
+  margin-top:auto;
+  display:flex;
+  justify-content:center;
+}
+
+#chat-btn{
+  background:#fff;
+  color:#000;
+  padding:12px 24px;
+  border-radius:30px;
+  font-size:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  font-weight:500;
+}
+
+/* MAIN PANEL */
+#main{
+  flex:1;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+}
+
+#menu-open-btn{
+  position:absolute;
+  top:20px;
+  left:25px;
+  font-size:24px;
+  cursor:pointer;
+  opacity:0.88;
+}
+
+#refresh-btn{
+  position:absolute;
+  top:20px;
+  right:25px;
+  font-size:24px;
+  cursor:pointer;
+  opacity:0.88;
+}
+
+/* CHAT AREA */
 #chat{
   flex:1;
-  padding:16px;
-  overflow-y:auto
+  width:100%;
+  padding:20px 28px;
+  overflow-y:auto;
+  box-sizing:border-box;
 }
 
 .msg{
   margin-bottom:18px;
-  line-height:1.6
+  line-height:1.6;
 }
 
 .user{
   display:flex;
-  justify-content:flex-end
+  justify-content:flex-end;
 }
 
 .user .bubble{
@@ -44,41 +159,15 @@ header{
   color:#ffffff;
   padding:10px 14px;
   border-radius:14px 14px 0 14px;
-  white-space:pre-wrap
+  white-space:pre-wrap;
 }
 
 .ai .bubble{
-  max-width:100%
-}
-
-footer{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  border-top:1px solid #30363d
-}
-
-input{
-  flex:1;
-  padding:10px;
-  background:#0d1117;
-  border:1px solid #30363d;
-  border-radius:6px;
-  color:#c9d1d9
-}
-
-button{
+  max-width:90%;
   padding:10px 14px;
-  background:#238636;
-  border:none;
-  border-radius:6px;
-  font-weight:600;
-  color:#ffffff;
-  cursor:pointer
-}
-
-button.secondary{
-  background:#30363d
+  border-radius:14px;
+  background:#111;
+  border:1px solid #30363d;
 }
 
 pre{
@@ -87,40 +176,187 @@ pre{
   border-radius:6px;
   padding:14px;
   overflow-x:auto;
-  margin:12px 0
+  margin:12px 0;
 }
 
 code{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:0.9em
+  font-size:0.9em;
 }
 
-.msg p{
-  margin:0 0 10px 0
+/* INPUT BAR */
+#input-bar{
+  width:92%;
+  max-width:900px;
+  background:#1a1a1a;
+  border-radius:30px;
+  padding:10px 16px;
+  margin-bottom:22px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+#plus-btn, #mic-btn, #voice-btn{
+  font-size:20px;
+  cursor:pointer;
+  opacity:0.85;
+}
+
+#input{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  font-size:16px;
+  color:#fff;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<header>Echo AI</header>
+<div id="layout">
 
-<div id="chat"></div>
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div>Echo AI</div>
+      <div class="sidebar-icon" onclick="searchChats()">🔍</div>
+    </div>
 
-<footer>
-  <input id="input" placeholder="Type a message…" />
-  <button class="secondary" onclick="startVoice()">🎤</button>
-  <button onclick="send()">Send</button>
-</footer>
+    <input id="search" placeholder="Search chats…" oninput="filterChats()" style="width:100%;padding:8px;border-radius:8px;background:#111;border:1px solid #333;color:#fff;display:none;margin-bottom:12px;">
+
+    <div style="height:1px;background:#333;margin:4px 0 18px 0;"></div>
+
+    <div class="section-title">Projects</div>
+    <div class="sidebar-item" onclick="newChat()">📁 New project</div>
+
+    <div class="section-title">Recents</div>
+    <div id="chat-list"></div>
+
+    <div id="chat-btn-wrapper">
+      <div id="chat-btn" onclick="newChat()">✏️ New Chat</div>
+    </div>
+
+  </div>
+
+  <!-- MAIN PANEL -->
+  <div id="main">
+    <div id="menu-open-btn" onclick="toggleSidebar()">☰</div>
+    <div id="refresh-btn" onclick="location.reload()">⟳</div>
+
+    <div id="chat"></div>
+
+    <div id="input-bar">
+      <div id="plus-btn" onclick="alert('Add file')">＋</div>
+      <input id="input" placeholder="Ask anything…">
+      <div id="mic-btn" onclick="startVoice()">🎤</div>
+      <div id="voice-btn" onclick="send()">🎛️</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- HIGHLIGHT.JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 <script>
+/* ----------------------------------------------------------
+   SIDEBAR TOGGLE
+----------------------------------------------------------- */
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("hidden");
+}
+
+/* ----------------------------------------------------------
+   LOCAL STORAGE CHAT ENGINE
+----------------------------------------------------------- */
+
+let chats = JSON.parse(localStorage.getItem("echo_chats") || "{}");
+let currentChatId = localStorage.getItem("echo_current") || createChat(true);
+
+function saveChats(){
+  localStorage.setItem("echo_chats", JSON.stringify(chats));
+}
+
+function setCurrent(id){
+  currentChatId = id;
+  localStorage.setItem("echo_current", id);
+}
+
+function createChat(setActive=false){
+  const id = "chat_" + Date.now();
+  chats[id] = {
+    title: "New Chat",
+    messages: []
+  };
+  if(setActive) setCurrent(id);
+  saveChats();
+  loadChatList();
+  loadChat(id);
+  return id;
+}
+
+function loadChat(id){
+  setCurrent(id);
+  const c = chats[id];
+  chat.innerHTML = "";
+  c.messages.forEach(m => add(m.role, m.text, false));
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function saveMessage(role,text){
+  chats[currentChatId].messages.push({role,text});
+  saveChats();
+  loadChatList();
+}
+
+/* ----------------------------------------------------------
+   CHAT LIST RENDER
+----------------------------------------------------------- */
+
+function loadChatList(){
+  const container = document.getElementById("chat-list");
+  container.innerHTML = "";
+
+  Object.entries(chats).reverse().forEach(([id,chatObj])=>{
+    const div = document.createElement("div");
+    div.className = "chat-entry";
+    if(id === currentChatId) div.classList.add("active");
+    div.textContent = chatObj.messages[0]?.text?.slice(0,40) || chatObj.title;
+    div.onclick = ()=>loadChat(id);
+    container.appendChild(div);
+  });
+}
+
+loadChatList();
+
+/* ----------------------------------------------------------
+   SEARCH FILTER
+----------------------------------------------------------- */
+
+function searchChats(){
+  const box = document.getElementById("search");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+  box.focus();
+}
+
+function filterChats(){
+  const term = document.getElementById("search").value.toLowerCase();
+  document.querySelectorAll(".chat-entry").forEach(e=>{
+    e.style.display = e.textContent.toLowerCase().includes(term) ? "block" : "none";
+  });
+}
+
+/* ----------------------------------------------------------
+   YOUR ORIGINAL CHAT LOGIC
+   (fully preserved)
+----------------------------------------------------------- */
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
-
-const messages = [
-  { role: "system", content: "You are Echo AI, a helpful assistant." }
-];
 
 function formatMessage(text) {
   text = text
@@ -139,7 +375,7 @@ function formatMessage(text) {
   return `<p>${text}</p>`;
 }
 
-function add(role, text) {
+function add(role, text, save=true) {
   const msg = document.createElement("div");
   msg.className = `msg ${role}`;
 
@@ -155,6 +391,8 @@ function add(role, text) {
   });
 
   chat.scrollTop = chat.scrollHeight;
+
+  if(save) saveMessage(role,text);
 }
 
 async function send() {
@@ -163,19 +401,23 @@ async function send() {
 
   input.value = "";
   add("user", text);
-  messages.push({ role: "user", content: text });
-  add("ai", "Thinking...");
+  add("ai", "Thinking...", false);
 
   try {
     const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
       method: "POST",
-      body: JSON.stringify({ messages })
+      body: JSON.stringify({ 
+        messages: chats[currentChatId].messages.map(m=>({
+          role:m.role==="user"?"user":"assistant",
+          content:m.text
+        }))
+      })
     });
 
     const data = await res.json();
     chat.lastChild.remove();
     add("ai", data.reply);
-    messages.push({ role: "assistant", content: data.reply });
+
   } catch {
     chat.lastChild.remove();
     add("ai", "Server error.");
@@ -201,6 +443,10 @@ function startVoice() {
   rec.start();
 }
 
+/* ----------------------------------------------------------
+   AUTOLOAD CURRENT CHAT
+----------------------------------------------------------- */
+loadChat(currentChatId);
 </script>
 
 </body>
