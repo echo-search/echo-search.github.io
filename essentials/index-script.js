@@ -1184,6 +1184,8 @@ function play67Effect() {
 
 async function doSearch(query) {
 
+if (chatBtn) chatBtn.style.display = "block";
+
 const frame = document.getElementById("aiFrame");
 
 frame.style.display = "block";
