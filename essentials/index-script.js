@@ -1572,3 +1572,18 @@ iframe.contentWindow.postMessage({
   text: styles.getPropertyValue("--text"),
   bg: styles.getPropertyValue("--bg")
 }, "*");
+
+function checkWifi() {
+    if (!navigator.onLine) {
+        document.getElementById("offline-box").style.display = "block";
+    }
+}
+window.addEventListener("load", checkWifi);
+window.addEventListener("online", () => {
+    document.getElementById("offline-box").style.display = "none";
+});
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/essentials/service-worker.js")
+        .catch(err => console.log("SW failed:", err));
+}
