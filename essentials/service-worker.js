@@ -1,5 +1,5 @@
 const CACHE = "echo-offline-cache-v2"; // <-- bumped version
-const OFFLINE_URL = "/essentials/offline-page.html";
+const OFFLINE_URL = "/essentials/offline-game.html";
 
 self.addEventListener("install", event => {
     event.waitUntil(
