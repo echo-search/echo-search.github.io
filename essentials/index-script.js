@@ -1574,13 +1574,41 @@ iframe.contentWindow.postMessage({
 }, "*");
 
 function checkWifi() {
-    if (!navigator.onLine) {
-        document.getElementById("offline-box").style.display = "block";
-    }
+  const offlineBox = document.getElementById("offline-box");
+  if (!offlineBox) return;
+
+  const show = () => offlineBox.style.display = "block";
+  const hide = () => offlineBox.style.display = "none";
+
+  if (navigator.onLine === false) {
+    show();
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+  fetch("/favicon.ico", {
+    method: "HEAD",
+    cache: "no-store",
+    signal: controller.signal
+  })
+    .then(resp => {
+      clearTimeout(timeoutId);
+      resp && resp.ok ? hide() : show();
+    })
+    .catch(() => {
+      clearTimeout(timeoutId);
+      show();
+    });
 }
+
 window.addEventListener("load", checkWifi);
 window.addEventListener("online", () => {
-    document.getElementById("offline-box").style.display = "none";
+  document.getElementById("offline-box").style.display = "none";
+});
+window.addEventListener("offline", () => {
+  document.getElementById("offline-box").style.display = "block";
 });
 
 if ("serviceWorker" in navigator) {
