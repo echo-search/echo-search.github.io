@@ -493,7 +493,30 @@ function formatAI(text){
 
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// SEND
+
+  async function genTitle(userText) {
+  try {
+    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
+      method: "POST",
+      body: JSON.stringify({
+        messages: [
+          { role: "system", content: "Generate a short, 1–4 word title for this message. Nothing else. Just the title." },
+          { role: "user", content: userText }
+        ]
+      })
+    });
+
+    const data = await res.json();
+    const title = data.content
+      ? data.content.map(b => (b.type === "text" ? b.text : "")).join("").trim()
+      : "New Chat";
+
+    return title || "New Chat";
+  } catch (e) {
+    return "New Chat";
+  }
+}
+
 async function send(){
   const input=document.getElementById('input');
   const text=input.value.trim();
@@ -526,9 +549,9 @@ async function send(){
   ];
 
   try {
-    const res = await fetch("jav-ai.netlify.app/.netlify/functions/chat", {
+    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
       method: "POST",
-      body: JSON.stringify({ messages })
+      body: JSON.stringify({ messages: msgs })
     });
     
     const data=await res.json();
