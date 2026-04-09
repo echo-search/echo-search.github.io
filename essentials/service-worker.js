@@ -1,4 +1,4 @@
-const CACHE = "echo-offline-cache-v1";
+const CACHE = "echo-offline-cache-v2"; // <-- bumped version
 const OFFLINE_URL = "/essentials/offline-page.html";
 
 self.addEventListener("install", event => {
@@ -8,6 +8,17 @@ self.addEventListener("install", event => {
                 OFFLINE_URL
             ]);
         })
+    );
+});
+
+self.addEventListener("activate", event => {
+    event.waitUntil(
+        caches.keys().then(keys =>
+            Promise.all(
+                keys.filter(key => key !== CACHE)
+                    .map(key => caches.delete(key))
+            )
+        )
     );
 });
 
