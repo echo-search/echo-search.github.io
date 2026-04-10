@@ -1,1 +1,1 @@
-This folder is for articles/files that help users how to make EchoSearch their default search engine on Chrome.
+This folder is for the files that help users 'How to make EchoSearch your Default Search Engine in Chrome'
