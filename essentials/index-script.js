@@ -1580,36 +1580,49 @@ function checkWifi() {
   const show = () => offlineBox.style.display = "block";
   const hide = () => offlineBox.style.display = "none";
 
+  // If browser already reports offline, show immediately
   if (navigator.onLine === false) {
     show();
     return;
   }
 
+  // Primary probe: a small cross-origin GET to a 204 endpoint.
+  // Use no-cors so the browser doesn't block the request; when offline this will reject.
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-  fetch("/favicon.ico", {
-    method: "HEAD",
-    cache: "no-store",
+  fetch('https://www.gstatic.com/generate_204', {
+    method: 'GET',
+    mode: 'no-cors',
+    cache: 'no-store',
     signal: controller.signal
   })
-    .then(resp => {
+    .then(() => {
       clearTimeout(timeoutId);
-      resp && resp.ok ? hide() : show();
+      // request succeeded -> online
+      hide();
     })
     .catch(() => {
       clearTimeout(timeoutId);
-      show();
+      // Primary probe failed -> fallback to local favicon HEAD check (original behavior)
+      const controller2 = new AbortController();
+      const t2 = setTimeout(() => controller2.abort(), 3000);
+
+      fetch("/favicon.ico", {
+        method: "HEAD",
+        cache: "no-store",
+        signal: controller2.signal
+      })
+        .then(resp => {
+          clearTimeout(t2);
+          (resp && resp.ok) ? hide() : show();
+        })
+        .catch(() => {
+          clearTimeout(t2);
+          show();
+        });
     });
 }
-
-window.addEventListener("load", checkWifi);
-window.addEventListener("online", () => {
-  document.getElementById("offline-box").style.display = "none";
-});
-window.addEventListener("offline", () => {
-  document.getElementById("offline-box").style.display = "block";
-});
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/essentials/service-worker.js")
