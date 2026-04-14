@@ -59,7 +59,7 @@ If you want to go above and beyond, you can let us know your idea(s) and you can
 If you don't want to edit but suggest idea(s), post an issue on the issues tab on the Github repository and describe what you want. We really want to hear from you as we are stuck in our own ideas and we don't know the public's reaction to our thinking 😆.
 
 ## Version History
-Maintaining a version history is critical to understanding the growth and evolution of EchoSearch. Each update includes new features, performance improvements, bug fixes, and other refinements. Users can review the version history on [https://echo-search.github.io/Articles/version-history.html](https://echo-search.github.io/Articles/version-history.html) to track changes and understand how the platform has developed over time. Version history includes:
+Maintaining a version history is critical to understanding the growth and evolution of EchoSearch. Each update includes new features, performance improvements, bug fixes, and other refinements. Users can review the version history on [https://echo-search.github.io/articles/version-history.html](https://echo-search.github.io/articles/version-history.html) to track changes and understand how the platform has developed over time. Version history includes:
 * Release notes describing added features or enhancements.
 * Documentation of bug fixes and performance improvements.
 * Information on changes to interface behavior or new customization options.
