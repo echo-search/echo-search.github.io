@@ -1088,12 +1088,63 @@ async function send() {
   document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
 
   try {
-    // FIX ISSUE 2: include system messages
-    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: [...systemMessages, ...msgs] })
-    });
+  const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: [...systemMessages, ...msgs] })
+  });
+
+  // Check HTTP status before attempting to parse
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status} ${res.statusText}`);
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (parseErr) {
+    throw new Error("Invalid JSON response from API.");
+  }
+
+  document.getElementById('think-row')?.remove();
+
+  // Parse: prefer data.reply, fall back to data.content blocks
+  let reply = "";
+
+  if (typeof data?.reply === "string" && data.reply.trim()) {
+    // Primary format: { reply: "..." }
+    reply = data.reply.trim();
+  } else if (Array.isArray(data?.content) && data.content.length > 0) {
+    // Fallback format: { content: [{ type: "text", text: "..." }] }
+    reply = data.content
+      .filter(b => b?.type === "text" && typeof b?.text === "string")
+      .map(b => b.text)
+      .join("")
+      .trim();
+  }
+
+  // Guarantee a non-empty reply
+  if (!reply) {
+    reply = "No response from AI.";
+  }
+
+  msgs.push({ role: 'assistant', content: reply });
+  if (!state.isTemp) save();
+
+  appendMsgEl('assistant', reply, true, true);
+
+} catch (e) {
+  document.getElementById('think-row')?.remove();
+  const errMsg = e.message?.startsWith("API error") || e.message?.startsWith("Invalid JSON")
+    ? `Error: ${e.message}`
+    : "Connection error. Please check your network and try again.";
+
+  msgs.push({ role: 'assistant', content: errMsg });
+  if (!state.isTemp) save();
+  appendMsgEl('assistant', errMsg, true, false);
+}
+
+document.getElementById('send-btn').disabled = false;
 
     const data = await res.json();
     document.getElementById('think-row')?.remove();
