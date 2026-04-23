@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <title>Echo AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="Echo AI is an AI chatbout built by the creators of EchoSearch, and it has real-time search access from the search results that the AI receives from EchoSearch."/>
+<meta name="description" content="Echo AI chat with real-time search access from EchoSearch."/>
 <!-- highlight.js -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -29,7 +29,6 @@
 }
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;display:flex;height:100vh;overflow:hidden;font-size:13px;line-height:1.6}
 
-/* highlight.js custom tweaks */
 .hljs {
   background: var(--bg2) !important;
   border-radius: 10px;
@@ -39,13 +38,11 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   background: transparent;
 }
 
-/* SCROLLBARS */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:var(--text3)}
 
-/* SIDEBAR */
 #sidebar{
   width:var(--sidebar);
   background:var(--bg2);
@@ -124,10 +121,8 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .item-actions button:hover{color:var(--text2);background:var(--bg5)}
 .item-actions button svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
 
-/* MAIN */
 #main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--bg)}
 
-/* TOPBAR */
 #topbar{
   padding:12px 20px;display:flex;align-items:center;gap:10px;
   border-bottom:1px solid transparent;position:relative;z-index:5
@@ -149,7 +144,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 }
 .temp-badge svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
 
-/* SPEED CONTROL */
 #speed-ctrl{
   display:flex;align-items:center;gap:2px;
   background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:3px;
@@ -162,7 +156,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .speed-btn.active{background:var(--bg5);color:var(--text)}
 .speed-btn:hover:not(.active){color:var(--text2)}
 
-/* CHAT AREA */
 #chat{flex:1;overflow-y:auto;padding:0;scroll-behavior:smooth}
 
 #empty-state{
@@ -184,7 +177,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* MESSAGES */
 .msg-wrap{padding:28px 0 0;animation:fadeIn 0.22s ease}
 .msg-wrap:last-child{padding-bottom:24px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -231,7 +223,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   color:var(--text2);margin:10px 0;font-style:italic
 }
 
-/* CURSOR */
 .cursor{
   display:inline-block;width:2px;height:1em;background:var(--text2);
   vertical-align:text-bottom;margin-left:1px;border-radius:1px;
@@ -239,7 +230,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 }
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* MSG ACTIONS */
 .msg-actions{
   display:flex;gap:4px;margin-top:10px;
   opacity:0;transition:opacity 0.15s;margin-left:32px
@@ -253,7 +243,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .msg-actions button:hover{background:var(--bg3);color:var(--text2)}
 .msg-actions button svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
 
-/* STREAMING CONTROLS */
 #stream-controls{
   display:none;align-items:center;gap:8px;
   max-width:740px;margin:0 auto;padding:8px 28px 0
@@ -273,7 +262,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 }
 #skip-btn:hover{color:var(--text2)}
 
-/* INPUT */
 #input-area{padding:10px 28px 20px;max-width:740px;margin:0 auto;width:100%}
 #input-box{
   background:var(--bg2);border:1px solid var(--border);
@@ -316,7 +304,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 #voice-btn.active{background:#c0392b;border-color:#c0392b;color:#fff}
 .input-hint{text-align:center;margin-top:8px;font-size:10px;color:var(--text3)}
 
-/* MODAL */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,0.75);
   display:flex;align-items:center;justify-content:center;z-index:100;
@@ -342,7 +329,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .btn-cancel{background:var(--bg4);color:var(--text2)}
 .btn-cancel:hover{background:var(--bg5)}
 
-/* CONTEXT MENU */
 .ctx-menu{
   position:fixed;background:var(--bg2);border:1px solid var(--border2);
   border-radius:12px;padding:5px;min-width:160px;z-index:200;
@@ -360,7 +346,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 .ctx-item svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
 .ctx-divider{height:1px;background:var(--border);margin:4px 0}
 
-/* TOAST */
 .toast{
   position:fixed;bottom:88px;left:50%;transform:translateX(-50%);
   background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
@@ -371,7 +356,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(8px)}}
 
-/* Mobile */
 #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10}
 @media(max-width:680px){
   #sidebar{position:fixed;left:0;top:0;bottom:0;z-index:20;transform:translateX(-100%)}
@@ -503,7 +487,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   </div>
 </div>
 
-<!-- Modals -->
 <div id="new-chat-modal" class="modal-overlay" style="display:none" onclick="closeModals(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <h3>New conversation</h3>
@@ -520,7 +503,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     <h3>New project</h3>
     <input type="text" id="project-name-input" placeholder="Project name…"/>
     <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModals()">Cancel</button>
+      <button class="btn-cancel" onclick="closeModals()">Close</button>
       <button class="btn-primary" onclick="createProject()">Create</button>
     </div>
   </div>
@@ -557,9 +540,6 @@ let state = {
 const SPEEDS = { slow: 12, normal: 28, fast: 80 };
 let currentSpeed = 'normal';
 
-// ============================================================
-// HIGHLIGHT.JS INTEGRATION
-// ============================================================
 function highlightCodeBlocks() {
   document.querySelectorAll('.ai-body pre code').forEach((block) => {
     if (typeof hljs !== 'undefined' && hljs.highlightElement) {
@@ -693,10 +673,6 @@ function load() {
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
-
-// ============================================================
-// SIDEBAR
-// ============================================================
 function toggleSidebar() {
   const s = document.getElementById('sidebar');
   const ov = document.getElementById('sidebar-overlay');
@@ -709,12 +685,10 @@ function closeSidebar() {
   document.getElementById('sidebar-overlay').classList.remove('show');
 }
 
-// ============================================================
-// CHAT MANAGEMENT
-// ============================================================
 function newChat() {
   if (state.isTemp) { clearTempMessages(); return; }
-  const chat = { id: uid(), name: 'New conversation', messages: [], createdAt: Date.now(), projectId: null };
+  const chatCount = state.chats.filter(c => !c.projectId).length + 1;
+  const chat = { id: uid(), name: `Chat ${chatCount}`, messages: [], createdAt: Date.now(), projectId: null };
   state.chats.unshift(chat);
   state.activeChatId = chat.id;
   save();
@@ -728,7 +702,11 @@ function openNewChatModal() {
 }
 
 function createNamedChat() {
-  const name = document.getElementById('chat-name-input').value.trim() || 'New conversation';
+  let name = document.getElementById('chat-name-input').value.trim();
+  if (!name) {
+    const chatCount = state.chats.filter(c => !c.projectId).length + 1;
+    name = `Chat ${chatCount}`;
+  }
   document.getElementById('chat-name-input').value = '';
   closeModals();
   const chat = { id: uid(), name, messages: [], createdAt: Date.now(), projectId: null };
@@ -751,9 +729,6 @@ function loadChat(id) {
 
 function getActiveChat() { return state.chats.find(c => c.id === state.activeChatId) || null; }
 
-// ============================================================
-// PROJECTS
-// ============================================================
 function openNewProjectModal() {
   document.getElementById('new-project-modal').style.display = 'flex';
   setTimeout(() => document.getElementById('project-name-input').focus(), 80);
@@ -768,9 +743,6 @@ function createProject() {
   renderSidebar();
 }
 
-// ============================================================
-// TEMP CHAT
-// ============================================================
 let tempMessages = [];
 
 function toggleTempChat() {
@@ -797,9 +769,6 @@ function clearTempMessages() {
   renderChat();
 }
 
-// ============================================================
-// RENDER SIDEBAR
-// ============================================================
 function renderSidebar() {
   const pl = document.getElementById('projects-list');
   if (pl) {
@@ -825,9 +794,6 @@ function renderSidebar() {
   }
 }
 
-// ============================================================
-// RENDER CHAT
-// ============================================================
 function renderChat() {
   const chat = document.getElementById('chat');
   if (!chat) return;
@@ -923,27 +889,21 @@ function buildMsgActions(text) {
   return actions;
 }
 
-// ============================================================
-// FORMAT AI TEXT
-// ============================================================
 function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function esc(str) { return escapeHtml(str); }
+
 function formatAI(text) {
   let h = String(text);
-  
-  // First, protect code blocks from other formatting
   const codeBlocks = [];
   h = h.replace(/```([\w]*)\n?([\s\S]*?)```/g, (match, lang, code) => {
     const idx = codeBlocks.length;
     const language = lang || 'plaintext';
-    // Store the code block with its original whitespace preserved
     codeBlocks.push(`<pre><code class="language-${language}">${escapeHtml(code)}</code></pre>`);
     return `__CODE_BLOCK_${idx}__`;
   });
-  
-  // Apply other markdown formatting (but NOT to code blocks)
   h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
   h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   h = h.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
@@ -953,8 +913,6 @@ function formatAI(text) {
   h = h.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
   h = h.replace(/^\s*[-*] (.+)$/gm, '<li>$1</li>');
   h = h.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
-  
-  // Handle paragraphs (but avoid breaking inside code blocks)
   const parts = h.split(/\n\n+/);
   let result = parts.map(p => {
     p = p.trim();
@@ -962,16 +920,10 @@ function formatAI(text) {
     if (p.startsWith('<')) return p;
     return `<p>${p.replace(/\n/g, '<br>')}</p>`;
   }).filter(Boolean).join('');
-  
-  // Restore code blocks
   result = result.replace(/__CODE_BLOCK_(\d+)__/g, (_, idx) => codeBlocks[parseInt(idx)]);
-  
   return result;
 }
 
-// ============================================================
-// SEND
-// ============================================================
 async function send() {
   const inputEl = document.getElementById('input');
   const sendBtn = document.getElementById('send-btn');
@@ -988,8 +940,8 @@ async function send() {
   ];
 
   if (!state.isTemp && !state.activeChatId) {
-    const title = await genTitle(text);
-    const chat = { id: uid(), name: title, messages: [], createdAt: Date.now(), projectId: null };
+    const chatCount = state.chats.filter(c => !c.projectId).length + 1;
+    const chat = { id: uid(), name: `Chat ${chatCount}`, messages: [], createdAt: Date.now(), projectId: null };
     state.chats.unshift(chat);
     state.activeChatId = chat.id;
     save();
@@ -998,14 +950,6 @@ async function send() {
 
   const msgs = state.isTemp ? tempMessages : getActiveChat().messages;
   msgs.push({ role: 'user', content: text });
-
-  if (!state.isTemp && getActiveChat() && getActiveChat().messages.length === 1) {
-    genTitle(text).then(title => {
-      if (getActiveChat()) getActiveChat().name = title;
-      save();
-      renderSidebar();
-    });
-  }
 
   if (!state.isTemp) save();
   renderSidebar();
@@ -1077,13 +1021,15 @@ function autoResize(el) {
   if (btn) btn.disabled = !el.value.trim();
 }
 
-const inputElListener = document.getElementById('input');
-if (inputElListener) {
-  inputElListener.addEventListener('input', function() {
-    const btn = document.getElementById('send-btn');
-    if (btn) btn.disabled = !this.value.trim();
-  });
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const inputListener = document.getElementById('input');
+  if (inputListener) {
+    inputListener.addEventListener('input', function() {
+      const btn = document.getElementById('send-btn');
+      if (btn) btn.disabled = !this.value.trim();
+    });
+  }
+});
 
 function fillInput(text) {
   const input = document.getElementById('input');
@@ -1093,9 +1039,6 @@ function fillInput(text) {
   input.focus();
 }
 
-// ============================================================
-// VOICE INPUT
-// ============================================================
 function startVoice() {
   const btn = document.getElementById('voice-btn');
   if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
@@ -1115,9 +1058,6 @@ function startVoice() {
   rec.start();
 }
 
-// ============================================================
-// SEARCH
-// ============================================================
 function handleSearch(q) {
   const res = document.getElementById('search-results');
   if (!res) return;
@@ -1151,9 +1091,6 @@ document.addEventListener('click', e => {
   }
 });
 
-// ============================================================
-// CONTEXT MENU
-// ============================================================
 function showCtxMenu(e, type, id) {
   e.stopPropagation();
   const menu = document.getElementById('ctx-menu');
@@ -1236,9 +1173,6 @@ function moveToProject(chatId) {
   if (c) { c.projectId = p.id; save(); renderSidebar(); showToast(`Moved to "${p.name}"`); }
 }
 
-// ============================================================
-// REGENERATE
-// ============================================================
 function regenerate() {
   const msgs = state.isTemp ? tempMessages : (getActiveChat() ? getActiveChat().messages : []);
   if (!msgs.length) return;
@@ -1250,13 +1184,10 @@ function regenerate() {
   if (!state.isTemp) save();
   renderChat();
   const input = document.getElementById('input');
-  if (input) { input.value = lastUser.content; }
+  if (input) { input.value = lastUser.content; autoResize(input); }
   send();
 }
 
-// ============================================================
-// UTILS
-// ============================================================
 function copyMsgText(btn) {
   const text = (btn.getAttribute('data-text') || '')
     .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
@@ -1296,9 +1227,6 @@ function closeModals(e) {
   document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
 }
 
-// ============================================================
-// MOBILE + KEYBOARD
-// ============================================================
 function checkMobile() {
   const isMobile = window.innerWidth <= 680;
   const btn = document.getElementById('menu-btn');
@@ -1317,18 +1245,18 @@ document.addEventListener('keydown', e => {
   }
 });
 
-document.getElementById('rename-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') confirmRename(); });
-document.getElementById('chat-name-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') createNamedChat(); });
-document.getElementById('project-name-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') createProject(); });
+const renameInput = document.getElementById('rename-input');
+if (renameInput) renameInput.addEventListener('keydown', e => { if (e.key === 'Enter') confirmRename(); });
+const chatNameInput = document.getElementById('chat-name-input');
+if (chatNameInput) chatNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') createNamedChat(); });
+const projectNameInput = document.getElementById('project-name-input');
+if (projectNameInput) projectNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') createProject(); });
 
-// ============================================================
-// INIT
-// ============================================================
 load();
 if (!state.chats.length) {
   const welcome = {
     id: uid(),
-    name: 'Welcome',
+    name: 'Chat 1',
     messages: [{ role: 'assistant', content: "Hi! I'm **Echo AI**. Ask me anything — I'm here to help." }],
     createdAt: Date.now(),
     projectId: null
