@@ -4,6 +4,9 @@
 <meta charset="UTF-8"/>
 <title>Echo AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -24,6 +27,16 @@
   --radius:14px
 }
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;display:flex;height:100vh;overflow:hidden;font-size:13px;line-height:1.6}
+
+/* highlight.js custom tweaks */
+.hljs {
+  background: var(--bg2) !important;
+  border-radius: 10px;
+}
+.ai-body pre code.hljs {
+  padding: 0;
+  background: transparent;
+}
 
 /* SCROLLBARS */
 ::-webkit-scrollbar{width:4px;height:4px}
@@ -544,6 +557,17 @@ const SPEEDS = { slow: 12, normal: 28, fast: 80 };
 let currentSpeed = 'normal';
 
 // ============================================================
+// HIGHLIGHT.JS INTEGRATION
+// ============================================================
+function highlightCodeBlocks() {
+  document.querySelectorAll('.ai-body pre code').forEach((block) => {
+    if (typeof hljs !== 'undefined' && hljs.highlightElement) {
+      hljs.highlightElement(block);
+    }
+  });
+}
+
+// ============================================================
 // TYPING ENGINE
 // ============================================================
 class TypeWriter {
@@ -617,6 +641,7 @@ class TypeWriter {
   _finish() {
     if (this.cursor && this.cursor.parentNode) this.cursor.remove();
     this.container.innerHTML = formatAI(this.fullText);
+    highlightCodeBlocks();
     if (this.onDone) this.onDone();
   }
 }
@@ -902,12 +927,14 @@ function appendMsgEl(role, text, scroll, stream) {
       activeWriter = null;
       hideStreamControls();
       inner.appendChild(buildMsgActions(text));
+      highlightCodeBlocks();
       chat.scrollTop = chat.scrollHeight;
     });
     activeWriter = writer;
     writer.start();
   } else {
     body.innerHTML = formatAI(text);
+    highlightCodeBlocks();
     inner.appendChild(buildMsgActions(text));
     if (scroll) chat.scrollTop = chat.scrollHeight;
   }
@@ -929,12 +956,17 @@ function buildMsgActions(text) {
 // ============================================================
 // FORMAT AI TEXT
 // ============================================================
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function formatAI(text) {
-  let h = String(text)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
-  h = h.replace(/```([\w]*)\n?([\s\S]*?)```/g, (_, lang, code) => `<pre><code class="lang-${lang}">${code.trim()}</code></pre>`);
+  let h = String(text);
+  // Replace code blocks with language support
+  h = h.replace(/```([\w]*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+    const language = lang || 'plaintext';
+    return `<pre><code class="language-${language}">${escapeHtml(code.trim())}</code></pre>`;
+  });
   h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
   h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   h = h.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
@@ -1065,9 +1097,9 @@ function autoResize(el) {
   if (btn) btn.disabled = !el.value.trim();
 }
 
-const inputEl = document.getElementById('input');
-if (inputEl) {
-  inputEl.addEventListener('input', function() {
+const inputElListener = document.getElementById('input');
+if (inputElListener) {
+  inputElListener.addEventListener('input', function() {
     const btn = document.getElementById('send-btn');
     if (btn) btn.disabled = !this.value.trim();
   });
@@ -1258,8 +1290,8 @@ function insertCode() {
   if (!i) return;
   const pos = i.selectionStart;
   const val = i.value;
-  i.value = val.slice(0, pos) + '```\n\n```' + val.slice(pos);
-  i.selectionStart = i.selectionEnd = pos + 4;
+  i.value = val.slice(0, pos) + '```javascript\n\n```' + val.slice(pos);
+  i.selectionStart = i.selectionEnd = pos + 12;
   i.focus();
   autoResize(i);
 }
