@@ -692,37 +692,6 @@ function load() {
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
-// ============================================================
-// TITLE GENERATION
-// ============================================================
-async function genTitle(userText) {
-  try {
-    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [
-          { role: "system", content: "Generate a short 3-5 word chat title. Reply with ONLY the title, no punctuation, no explanation." },
-          { role: "user", content: String(userText).slice(0, 200) }
-        ]
-      })
-    });
-    if (!res.ok) return String(userText).slice(0, 40);
-    const data = await res.json();
-    if (typeof data?.reply === 'string' && data.reply.trim()) return data.reply.trim();
-    if (Array.isArray(data?.content) && data.content.length > 0) {
-      const joined = data.content
-        .filter(b => b?.type === 'text' && typeof b?.text === 'string')
-        .map(b => b.text)
-        .join('')
-        .trim();
-      if (joined) return joined;
-    }
-    return String(userText).slice(0, 40);
-  } catch(e) {
-    return String(userText).slice(0, 40);
-  }
-}
 
 // ============================================================
 // SIDEBAR
@@ -962,11 +931,18 @@ function escapeHtml(str) {
 
 function formatAI(text) {
   let h = String(text);
-  // Replace code blocks with language support
-  h = h.replace(/```([\w]*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+  
+  // First, protect code blocks from other formatting
+  const codeBlocks = [];
+  h = h.replace(/```([\w]*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+    const idx = codeBlocks.length;
     const language = lang || 'plaintext';
-    return `<pre><code class="language-${language}">${escapeHtml(code.trim())}</code></pre>`;
+    // Store the code block with its original whitespace preserved
+    codeBlocks.push(`<pre><code class="language-${language}">${escapeHtml(code)}</code></pre>`);
+    return `__CODE_BLOCK_${idx}__`;
   });
+  
+  // Apply other markdown formatting (but NOT to code blocks)
   h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
   h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   h = h.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
@@ -976,17 +952,20 @@ function formatAI(text) {
   h = h.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
   h = h.replace(/^\s*[-*] (.+)$/gm, '<li>$1</li>');
   h = h.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+  
+  // Handle paragraphs (but avoid breaking inside code blocks)
   const parts = h.split(/\n\n+/);
-  return parts.map(p => {
+  let result = parts.map(p => {
     p = p.trim();
     if (!p) return '';
     if (p.startsWith('<')) return p;
     return `<p>${p.replace(/\n/g, '<br>')}</p>`;
   }).filter(Boolean).join('');
-}
-
-function esc(t) {
-  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  
+  // Restore code blocks
+  result = result.replace(/__CODE_BLOCK_(\d+)__/g, (_, idx) => codeBlocks[parseInt(idx)]);
+  
+  return result;
 }
 
 // ============================================================
