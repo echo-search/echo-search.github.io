@@ -131,6 +131,16 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 #model-pill svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;transition:transform 0.15s}
 #model-name{font-size:12px}
 
+/* Chat title in topbar */
+#chat-title-display{
+  font-size:12px;color:var(--text3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:220px;flex:1;text-align:center;
+  transition:color 0.2s,opacity 0.2s;
+  opacity:0.8;
+}
+#chat-title-display.has-title{color:var(--text2);opacity:1}
+
 #topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 .temp-badge{
   font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px;
@@ -399,6 +409,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   .msg-inner{padding:0 16px}
   #input-area{padding:10px 12px 20px}
   #stream-controls{padding:8px 16px 0}
+  #chat-title-display{max-width:120px}
 }
 </style>
 </head>
@@ -455,6 +466,8 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
       <span id="model-name">Echo AI</span>
       <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
+    <!-- Smart chat title display -->
+    <div id="chat-title-display">💬 New Chat</div>
     <div id="topbar-right">
       <div id="speed-ctrl">
         <button class="speed-btn" onclick="setSpeed('slow')">slow</button>
@@ -559,6 +572,398 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 <div id="ctx-menu" class="ctx-menu" style="display:none"></div>
 
 <script>
+// ============================================================
+// ===  SMART TITLE ENGINE (pure JS, no API, no libraries)  ===
+// ============================================================
+
+const STOP_WORDS = new Set([
+  'a','an','the','and','or','but','in','on','at','to','for','of','with',
+  'by','from','up','about','into','through','during','is','are','was',
+  'were','be','been','being','have','has','had','do','does','did','will',
+  'would','could','should','may','might','shall','can','need','dare',
+  'ought','used','i','me','my','myself','we','our','you','your','he','she',
+  'it','they','them','their','this','that','these','those','what','which',
+  'who','whom','how','when','where','why','all','both','each','few','more',
+  'most','other','some','such','no','not','only','same','so','than','too',
+  'very','just','because','as','until','while','although','if','then',
+  'its','s','t','re','ll','ve','d','m','get','got','make','let','go',
+  'say','said','know','think','see','come','want','give','use','find',
+  'tell','ask','seem','feel','try','leave','call','keep','put','set',
+  'please','help','need','like','look','work','really','also','even',
+  'still','way','thing','things','much','many','any','every','there',
+  'here','now','just','already','yet','never','always','often','usually',
+  'actually','basically','literally','simply','exactly'
+]);
+
+/**
+ * Detect category from text.
+ * Returns { name, emoji }
+ */
+function detectCategory(text) {
+  const t = text.toLowerCase();
+
+  const categories = [
+    {
+      name: 'Coding',
+      emoji: '💻',
+      keywords: ['code','coding','javascript','python','java','typescript','html','css',
+                 'js','ts','api','bug','error','function','class','variable','array',
+                 'object','loop','debug','script','program','algorithm','database','sql',
+                 'react','vue','angular','node','npm','git','github','deploy','fetch',
+                 'async','await','promise','regex','json','xml','http','rest','graphql']
+    },
+    {
+      name: 'News',
+      emoji: '📰',
+      keywords: ['news','latest','today','update','breaking','report','announce',
+                 'release','launch','event','happen','current','recent','new','world',
+                 'politics','government','election','president','minister','war','crisis']
+    },
+    {
+      name: 'Finance',
+      emoji: '💰',
+      keywords: ['price','stock','crypto','bitcoin','ethereum','invest','market','trade',
+                 'money','finance','financial','bank','economy','economic','currency',
+                 'dollar','euro','fund','profit','loss','revenue','salary','tax','budget',
+                 'cost','cheap','expensive','afford','spend','save','portfolio','dividend']
+    },
+    {
+      name: 'Life',
+      emoji: '🌱',
+      keywords: ['life','advice','stress','study','health','mental','anxiety','depression',
+                 'happy','happiness','relationship','love','family','friend','social',
+                 'motivation','habit','routine','sleep','diet','fitness','exercise','yoga',
+                 'mindful','meditation','goal','productivity','career','job','work','balance']
+    },
+    {
+      name: 'Science',
+      emoji: '🔬',
+      keywords: ['science','physics','chemistry','biology','math','mathematics','quantum',
+                 'space','universe','planet','star','galaxy','atom','molecule','dna','gene',
+                 'evolution','climate','environment','energy','research','experiment','theory']
+    },
+    {
+      name: 'Creative',
+      emoji: '🎨',
+      keywords: ['write','writing','story','poem','poetry','art','design','creative',
+                 'draw','paint','music','song','lyrics','video','film','movie','book',
+                 'novel','character','plot','idea','imagine','create','craft','build']
+    },
+    {
+      name: 'Comparison',
+      emoji: '⚖️',
+      keywords: ['vs','versus','compare','difference','better','worse','pros','cons',
+                 'advantage','disadvantage','similar','different','alternative']
+    }
+  ];
+
+  // Score each category by keyword matches
+  let bestCategory = null;
+  let bestScore = 0;
+
+  for (const cat of categories) {
+    let score = 0;
+    for (const kw of cat.keywords) {
+      // Use word boundary matching where possible
+      const re = new RegExp('\\b' + kw + '\\b', 'i');
+      if (re.test(t)) score++;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestCategory = cat;
+    }
+  }
+
+  return bestCategory && bestScore > 0
+    ? { name: bestCategory.name, emoji: bestCategory.emoji }
+    : { name: 'General', emoji: '💬' };
+}
+
+/**
+ * Detect intent from the first words of the message.
+ * Returns a prefix string or null.
+ */
+function detectIntent(text) {
+  const t = text.toLowerCase().trim();
+
+  if (/\bvs\b|\bversus\b|\bcompare\b/.test(t)) return 'Comparison:';
+  if (/\bbest\b/.test(t)) return 'Best';
+  if (/^how\b/.test(t)) return 'How to';
+  if (/^why\b/.test(t)) return 'Why';
+  if (/^what\b/.test(t)) return 'What is';
+  if (/^when\b/.test(t)) return 'When';
+  if (/^where\b/.test(t)) return 'Where';
+  if (/^who\b/.test(t)) return 'Who is';
+  if (/^can\b/.test(t)) return 'Can';
+  if (/^is\b/.test(t)) return 'Is';
+  if (/^does\b/.test(t)) return 'Does';
+  if (/^explain\b/.test(t)) return 'Explain';
+  if (/^write\b/.test(t)) return 'Write';
+  if (/^help\b/.test(t)) return 'Help with';
+  if (/^create\b|^make\b|^build\b/.test(t)) return 'Build';
+
+  return null;
+}
+
+/**
+ * Extract and rank keywords from text.
+ * Returns array of keyword strings, most relevant first.
+ */
+function extractKeywords(text) {
+  // Lowercase and remove punctuation
+  const clean = text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+  const words = clean.split(/\s+/).filter(w => w.length > 2);
+
+  // Filter stop words
+  const meaningful = words.filter(w => !STOP_WORDS.has(w));
+
+  // Count frequency
+  const freq = {};
+  for (const w of meaningful) {
+    freq[w] = (freq[w] || 0) + 1;
+  }
+
+  // Sort by frequency (desc), then length (desc, longer = more specific)
+  const sorted = Object.keys(freq).sort((a, b) => {
+    if (freq[b] !== freq[a]) return freq[b] - freq[a];
+    return b.length - a.length;
+  });
+
+  return sorted;
+}
+
+/**
+ * Capitalise each word in a string.
+ */
+function titleCase(str) {
+  return str.replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/**
+ * Generate a smart title from a single message string.
+ * Returns a string like: 💻 How to Fix Fetch Error
+ */
+function generateTitle(text) {
+  if (!text || !text.trim()) return '💬 New Chat';
+
+  const category = detectCategory(text);
+  const intent = detectIntent(text);
+  const keywords = extractKeywords(text);
+
+  // Pick top 3–4 keywords (prefer longer, more specific ones)
+  const topKeywords = keywords.slice(0, 4);
+
+  let titleBody = '';
+
+  if (intent) {
+    // Use intent prefix + remaining keywords
+    // Remove any keyword that already appears in the intent text
+    const intentLower = intent.toLowerCase();
+    const filteredKws = topKeywords.filter(kw => !intentLower.includes(kw));
+    const kwPart = filteredKws.slice(0, 3).map(titleCase).join(' ');
+
+    if (kwPart) {
+      titleBody = intent + ' ' + kwPart;
+    } else {
+      // Fallback: just first few words of original text, cleaned
+      titleBody = intent + ' ' + titleCase(text.trim().split(/\s+/).slice(1, 4).join(' '));
+    }
+  } else {
+    // No intent — just use keywords
+    if (topKeywords.length > 0) {
+      titleBody = topKeywords.slice(0, 4).map(titleCase).join(' ');
+    } else {
+      // Absolute fallback: first 5 words of original text
+      titleBody = titleCase(text.trim().split(/\s+/).slice(0, 5).join(' '));
+    }
+  }
+
+  // Compose full title with emoji
+  let full = category.emoji + ' ' + titleBody;
+
+  // Enforce ~50 char limit (trim at word boundary)
+  if (full.length > 52) {
+    full = full.slice(0, 50).replace(/\s\S*$/, '').trim() + '…';
+  }
+
+  return full;
+}
+
+/**
+ * Generate an improved title from multiple user messages (up to first 3).
+ * Combines context for a smarter result.
+ */
+function updateDynamicTitle(messages) {
+  if (!messages || !messages.length) return '💬 New Chat';
+
+  // Take first 3 user messages
+  const userMsgs = messages
+    .filter(m => m.role === 'user')
+    .slice(0, 3)
+    .map(m => m.content);
+
+  if (!userMsgs.length) return '💬 New Chat';
+
+  // For just one message, use standard generation
+  if (userMsgs.length === 1) return generateTitle(userMsgs[0]);
+
+  // Combine messages and generate from combined context
+  const combined = userMsgs.join(' ');
+  const category = detectCategory(combined);
+
+  // Use the first message's intent (it's usually the clearest)
+  const intent = detectIntent(userMsgs[0]);
+
+  // Extract keywords from combined text for better coverage
+  const keywords = extractKeywords(combined);
+  const topKeywords = keywords.slice(0, 4);
+
+  let titleBody = '';
+  if (intent) {
+    const intentLower = intent.toLowerCase();
+    const filteredKws = topKeywords.filter(kw => !intentLower.includes(kw));
+    const kwPart = filteredKws.slice(0, 3).map(titleCase).join(' ');
+    titleBody = intent + (kwPart ? ' ' + kwPart : '');
+  } else {
+    titleBody = topKeywords.slice(0, 4).map(titleCase).join(' ');
+  }
+
+  if (!titleBody.trim()) {
+    titleBody = titleCase(userMsgs[0].trim().split(/\s+/).slice(0, 5).join(' '));
+  }
+
+  let full = category.emoji + ' ' + titleBody;
+
+  if (full.length > 52) {
+    full = full.slice(0, 50).replace(/\s\S*$/, '').trim() + '…';
+  }
+
+  return full;
+}
+
+// ============================================================
+// ===  TITLE PERSISTENCE (localStorage)                    ===
+// ============================================================
+
+const TITLE_STORE_KEY = 'echosearch_chat_titles';
+
+/**
+ * Save a generated title for a chat ID.
+ */
+function saveTitle(chatId, title) {
+  if (!chatId || !title) return;
+  try {
+    const store = JSON.parse(localStorage.getItem(TITLE_STORE_KEY) || '{}');
+    store[chatId] = title;
+    localStorage.setItem(TITLE_STORE_KEY, JSON.stringify(store));
+  } catch(e) {
+    // Silently fail if localStorage is unavailable
+  }
+}
+
+/**
+ * Load a saved title for a chat ID.
+ * Returns the title string or null if not found.
+ */
+function loadTitle(chatId) {
+  if (!chatId) return null;
+  try {
+    const store = JSON.parse(localStorage.getItem(TITLE_STORE_KEY) || '{}');
+    return store[chatId] || null;
+  } catch(e) {
+    return null;
+  }
+}
+
+/**
+ * Delete a saved title (called when a chat is deleted).
+ */
+function deleteTitle(chatId) {
+  if (!chatId) return;
+  try {
+    const store = JSON.parse(localStorage.getItem(TITLE_STORE_KEY) || '{}');
+    delete store[chatId];
+    localStorage.setItem(TITLE_STORE_KEY, JSON.stringify(store));
+  } catch(e) {}
+}
+
+// ============================================================
+// ===  TITLE UI HELPERS                                    ===
+// ============================================================
+
+/**
+ * Update the title display in the topbar and the sidebar item name.
+ * Does NOT touch renderSidebar (avoids full re-render flicker).
+ */
+function applyTitleToUI(chatId, title) {
+  // Update topbar display
+  const display = document.getElementById('chat-title-display');
+  if (display) {
+    display.textContent = title;
+    display.classList.toggle('has-title', title !== '💬 New Chat');
+  }
+
+  // Update the matching sidebar item span text (live, no full re-render)
+  if (chatId) {
+    const chatsListEl = document.getElementById('chats-list');
+    if (chatsListEl) {
+      // Find all sidebar items and match by their onclick loadChat argument
+      const items = chatsListEl.querySelectorAll('.sidebar-item');
+      items.forEach(item => {
+        if (item.getAttribute('data-chat-id') === chatId) {
+          const span = item.querySelector('span');
+          if (span) span.textContent = title;
+        }
+      });
+    }
+    // Also update state.chats name so it persists on next renderSidebar
+    const chatObj = state.chats.find(c => c.id === chatId);
+    if (chatObj && chatObj._autoTitled !== false) {
+      chatObj.name = title;
+      chatObj._autoTitled = true; // mark as auto-generated
+      saveMeta();
+    }
+  }
+}
+
+/**
+ * Load and apply the saved title for the currently active chat.
+ * Falls back to '💬 New Chat'.
+ */
+function loadAndApplyTitle(chatId) {
+  const display = document.getElementById('chat-title-display');
+  if (!display) return;
+
+  if (state.isTemp) {
+    display.textContent = '💬 Temporary Chat';
+    display.classList.remove('has-title');
+    return;
+  }
+
+  if (!chatId) {
+    display.textContent = '💬 New Chat';
+    display.classList.remove('has-title');
+    return;
+  }
+
+  const saved = loadTitle(chatId);
+  if (saved) {
+    display.textContent = saved;
+    display.classList.add('has-title');
+  } else {
+    // Try to generate from existing messages
+    const msgs = activeMessages;
+    if (msgs && msgs.length > 0) {
+      const generated = updateDynamicTitle(msgs);
+      display.textContent = generated;
+      display.classList.toggle('has-title', generated !== '💬 New Chat');
+    } else {
+      display.textContent = '💬 New Chat';
+      display.classList.remove('has-title');
+    }
+  }
+}
+
 // ============================================================
 // INDEXEDDB — full unlimited persistence
 // ============================================================
@@ -911,12 +1316,17 @@ function renderChat() {
         <button class="suggestion-pill" onclick="fillInput('What are the best practices for REST API design?')">Best practices for REST API design →</button>
       </div>`;
     chatEl.appendChild(es);
+    // Reset title for empty chat
+    loadAndApplyTitle(state.activeChatId);
     return;
   }
 
   messages.forEach(m => {
     addMessage(m.content, m.role, m.sources || null);
   });
+
+  // Apply saved/generated title after rendering
+  loadAndApplyTitle(state.activeChatId);
 }
 
 // ============================================================
@@ -997,6 +1407,7 @@ function renderSidebar() {
     state.chats.forEach(c => {
       const el = document.createElement('div');
       el.className = 'sidebar-item' + (state.activeChatId === c.id ? ' active' : '');
+      el.setAttribute('data-chat-id', c.id); // used by applyTitleToUI
       el.onclick = () => loadChat(c.id);
       el.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${esc(c.name)}</span><div class="item-actions"><button onclick="event.stopPropagation();showCtxMenu(event,'chat','${c.id}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>`;
       cl.appendChild(el);
@@ -1017,6 +1428,9 @@ async function newChat() {
   saveMeta();
   renderSidebar();
   renderChat();
+  // Reset title for new chat
+  const display = document.getElementById('chat-title-display');
+  if (display) { display.textContent = '💬 New Chat'; display.classList.remove('has-title'); }
 }
 
 function openNewChatModal() {
@@ -1036,6 +1450,9 @@ async function createNamedChat() {
   saveMeta();
   renderSidebar();
   renderChat();
+  // Reset title
+  const display = document.getElementById('chat-title-display');
+  if (display) { display.textContent = '💬 New Chat'; display.classList.remove('has-title'); }
 }
 
 async function loadChat(id) {
@@ -1045,7 +1462,7 @@ async function loadChat(id) {
   document.getElementById('temp-btn').style.color = '';
   await loadConversation(id);
   renderSidebar();
-  renderChat();
+  renderChat(); // renderChat calls loadAndApplyTitle internally
   if (window.innerWidth <= 680) closeSidebar();
 }
 
@@ -1078,6 +1495,9 @@ function toggleTempChat() {
     tempMessages = [];
     renderChat();
     showToast("Temporary — messages won't be saved");
+    // Temp title
+    const display = document.getElementById('chat-title-display');
+    if (display) { display.textContent = '💬 Temporary Chat'; display.classList.remove('has-title'); }
   } else {
     badge.style.display = 'none';
     btn.style.color = '';
@@ -1117,6 +1537,16 @@ async function send() {
   }
 
   const msgs = state.isTemp ? tempMessages : activeMessages;
+
+  // ── SMART TITLE: detect first user message ──────────────────
+  const isFirstUserMessage = !msgs.some(m => m.role === 'user');
+
+  if (!state.isTemp && isFirstUserMessage && state.activeChatId) {
+    const firstTitle = generateTitle(text);
+    saveTitle(state.activeChatId, firstTitle);
+    applyTitleToUI(state.activeChatId, firstTitle);
+  }
+  // ────────────────────────────────────────────────────────────
 
   // Push user message
   msgs.push({ role: 'user', content: text });
@@ -1259,6 +1689,19 @@ async function send() {
   streamController = null;
   hideStreamControls();
   if (sendBtn) sendBtn.disabled = false;
+
+  // ── SMART TITLE: dynamic update after message completes ─────
+  // Only update after 2nd or later user message for better context
+  if (!state.isTemp && state.activeChatId && fullReply) {
+    const userCount = msgs.filter(m => m.role === 'user').length;
+    if (userCount >= 2 && userCount <= 3) {
+      // Refine title with accumulated context
+      const refined = updateDynamicTitle(msgs);
+      saveTitle(state.activeChatId, refined);
+      applyTitleToUI(state.activeChatId, refined);
+    }
+  }
+  // ────────────────────────────────────────────────────────────
 }
 
 // Simulate streaming for non-stream endpoints
@@ -1446,7 +1889,15 @@ function confirmRename() {
   if (!name) { closeModals(); return; }
   if (state.renameType === 'chat') {
     const c = state.chats.find(x => x.id === state.renameTarget);
-    if (c) c.name = name;
+    if (c) {
+      c.name = name;
+      c._autoTitled = false; // user manually renamed — freeze auto-titling
+    }
+    // Update topbar if this is the active chat
+    if (state.renameTarget === state.activeChatId) {
+      const display = document.getElementById('chat-title-display');
+      if (display) { display.textContent = name; display.classList.add('has-title'); }
+    }
   } else {
     const p = state.projects.find(x => x.id === state.renameTarget);
     if (p) p.name = name;
@@ -1460,9 +1911,12 @@ async function deleteChat(id) {
   document.getElementById('ctx-menu').style.display = 'none';
   state.chats = state.chats.filter(c => c.id !== id);
   await dbDelete(id);
+  deleteTitle(id); // clean up title storage
   if (state.activeChatId === id) {
     state.activeChatId = null;
     activeMessages = [];
+    const display = document.getElementById('chat-title-display');
+    if (display) { display.textContent = '💬 New Chat'; display.classList.remove('has-title'); }
     renderChat();
   }
   saveMeta();
@@ -1566,7 +2020,7 @@ async function boot() {
   if (!state.chats.length) {
     const welcome = {
       id: uid(),
-      name: 'Chat 1',
+      name: '💬 New Chat',
       createdAt: Date.now(),
       projectId: null
     };
@@ -1582,7 +2036,7 @@ async function boot() {
   }
 
   renderSidebar();
-  renderChat();
+  renderChat(); // this calls loadAndApplyTitle internally
 }
 
 boot();
