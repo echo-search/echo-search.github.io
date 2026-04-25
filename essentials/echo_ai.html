@@ -29,14 +29,8 @@
 }
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;display:flex;height:100vh;overflow:hidden;font-size:13px;line-height:1.6}
 
-.hljs {
-  background: var(--bg2) !important;
-  border-radius: 10px;
-}
-.ai-body pre code.hljs {
-  padding: 0;
-  background: transparent;
-}
+.hljs{background:var(--bg2)!important;border-radius:10px}
+.ai-body pre code.hljs{padding:0;background:transparent}
 
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -223,7 +217,19 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   color:var(--text2);margin:10px 0;font-style:italic
 }
 
-.cursor{
+/* Typing indicator dots */
+.typing-indicator{display:inline-flex;gap:4px;align-items:center;padding:4px 0}
+.typing-indicator span{
+  width:6px;height:6px;border-radius:50%;background:var(--text3);
+  animation:typingDot 1.2s infinite ease-in-out
+}
+.typing-indicator span:nth-child(1){animation-delay:0s}
+.typing-indicator span:nth-child(2){animation-delay:0.2s}
+.typing-indicator span:nth-child(3){animation-delay:0.4s}
+@keyframes typingDot{0%,80%,100%{opacity:0.2;transform:scale(0.85)}40%{opacity:1;transform:scale(1)}}
+
+/* Streaming cursor */
+.stream-cursor{
   display:inline-block;width:2px;height:1em;background:var(--text2);
   vertical-align:text-bottom;margin-left:1px;border-radius:1px;
   animation:blink 0.85s steps(1) infinite
@@ -242,6 +248,35 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 }
 .msg-actions button:hover{background:var(--bg3);color:var(--text2)}
 .msg-actions button svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* Sources UI */
+.sources-container{
+  margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--border)
+}
+.sources-label{
+  font-size:10px;font-weight:500;color:var(--text3);letter-spacing:0.08em;
+  text-transform:uppercase;margin-bottom:8px
+}
+.sources-grid{display:flex;flex-direction:column;gap:6px}
+.source-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;text-decoration:none;display:block;
+  transition:background 0.12s,border-color 0.12s
+}
+.source-card:hover{background:var(--bg4);border-color:var(--border2)}
+.source-card-title{
+  font-size:12px;font-weight:500;color:var(--text);
+  margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.source-card-snippet{
+  font-size:11px;color:var(--text3);line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.source-card-url{
+  font-size:10px;color:var(--text3);margin-top:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
 
 #stream-controls{
   display:none;align-items:center;gap:8px;
@@ -487,6 +522,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   </div>
 </div>
 
+<!-- Modals -->
 <div id="new-chat-modal" class="modal-overlay" style="display:none" onclick="closeModals(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <h3>New conversation</h3>
@@ -524,6 +560,68 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
 
 <script>
 // ============================================================
+// INDEXEDDB — full unlimited persistence
+// ============================================================
+const DB_NAME = 'echo_ai_db';
+const DB_VERSION = 1;
+const STORE = 'conversations';
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains(STORE)) {
+        d.createObjectStore(STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbGet(id) {
+  return new Promise((resolve, reject) => {
+    if (!db) { resolve(null); return; }
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get(id);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbPut(record) {
+  return new Promise((resolve, reject) => {
+    if (!db) { resolve(); return; }
+    const tx = db.transaction(STORE, 'readwrite');
+    const req = tx.objectStore(STORE).put(record);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbDelete(id) {
+  return new Promise((resolve, reject) => {
+    if (!db) { resolve(); return; }
+    const tx = db.transaction(STORE, 'readwrite');
+    const req = tx.objectStore(STORE).delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbGetAll() {
+  return new Promise((resolve, reject) => {
+    if (!db) { resolve([]); return; }
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// ============================================================
 // STATE
 // ============================================================
 let state = {
@@ -537,116 +635,31 @@ let state = {
   renameType: null
 };
 
+// In-memory messages for active chat (synced to IndexedDB)
+let activeMessages = [];
+let tempMessages = [];
+
 const SPEEDS = { slow: 12, normal: 28, fast: 80 };
 let currentSpeed = 'normal';
 
+// Streaming abort controller
+let streamController = null;
+let isStreaming = false;
+
+// ============================================================
+// HIGHLIGHT HELPER
+// ============================================================
 function highlightCodeBlocks() {
-  document.querySelectorAll('.ai-body pre code').forEach((block) => {
+  document.querySelectorAll('.ai-body pre code:not(.hljs)').forEach(block => {
     if (typeof hljs !== 'undefined' && hljs.highlightElement) {
-      hljs.highlightElement(block);
+      try { hljs.highlightElement(block); } catch(e) {}
     }
   });
 }
 
 // ============================================================
-// TYPING ENGINE
+// SPEED CONTROL
 // ============================================================
-class TypeWriter {
-  constructor(container, fullText, onDone) {
-    this.container = container;
-    this.fullText = fullText;
-    this.onDone = onDone;
-    this.pos = 0;
-    this.stopped = false;
-    this.rafId = null;
-    this.cursor = null;
-    this.lastTime = null;
-    this.charsBuffer = 0;
-  }
-
-  start() {
-    this.cursor = document.createElement('span');
-    this.cursor.className = 'cursor';
-    this.container.appendChild(this.cursor);
-    this._scheduleFrame();
-  }
-
-  _scheduleFrame() {
-    this.rafId = requestAnimationFrame(ts => this._frame(ts));
-  }
-
-  _frame(ts) {
-    if (this.stopped) return;
-    if (!this.lastTime) this.lastTime = ts;
-    const delta = ts - this.lastTime;
-    this.lastTime = ts;
-    const charsPerMs = SPEEDS[currentSpeed] / 16;
-    this.charsBuffer += charsPerMs * delta;
-    const toAdd = Math.floor(this.charsBuffer);
-    this.charsBuffer -= toAdd;
-    if (toAdd > 0) {
-      this.pos = Math.min(this.pos + toAdd, this.fullText.length);
-      this._render();
-    }
-    const chat = document.getElementById('chat');
-    if (chat) chat.scrollTop = chat.scrollHeight;
-    if (this.pos < this.fullText.length) {
-      this._scheduleFrame();
-    } else {
-      this._finish();
-    }
-  }
-
-  _render() {
-    const partial = this.fullText.slice(0, this.pos);
-    this.container.innerHTML = formatAI(partial);
-    this.cursor = document.createElement('span');
-    this.cursor.className = 'cursor';
-    this.container.appendChild(this.cursor);
-  }
-
-  stop() {
-    this.stopped = true;
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this._finish();
-  }
-
-  skip() {
-    this.stopped = true;
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.pos = this.fullText.length;
-    this._render();
-    this._finish();
-  }
-
-  _finish() {
-    if (this.cursor && this.cursor.parentNode) this.cursor.remove();
-    this.container.innerHTML = formatAI(this.fullText);
-    highlightCodeBlocks();
-    if (this.onDone) this.onDone();
-  }
-}
-
-let activeWriter = null;
-
-function stopStreaming() {
-  if (activeWriter) { activeWriter.stop(); activeWriter = null; }
-  hideStreamControls();
-}
-
-function skipToEnd() {
-  if (activeWriter) { activeWriter.skip(); activeWriter = null; }
-  hideStreamControls();
-}
-
-function showStreamControls() {
-  document.getElementById('stream-controls').classList.add('visible');
-}
-
-function hideStreamControls() {
-  document.getElementById('stream-controls').classList.remove('visible');
-}
-
 function setSpeed(s) {
   currentSpeed = s;
   document.querySelectorAll('.speed-btn').forEach(b => {
@@ -655,245 +668,34 @@ function setSpeed(s) {
 }
 
 // ============================================================
-// PERSISTENCE
+// STREAM CONTROLS UI
 // ============================================================
-function save() {
-  try {
-    localStorage.setItem('echo_ai_v2', JSON.stringify({ chats: state.chats, projects: state.projects }));
-  } catch(e) {}
+function showStreamControls() {
+  document.getElementById('stream-controls').classList.add('visible');
+}
+function hideStreamControls() {
+  document.getElementById('stream-controls').classList.remove('visible');
 }
 
-function load() {
-  try {
-    const s = JSON.parse(localStorage.getItem('echo_ai_v2') || '{}');
-    if (s.chats) state.chats = s.chats;
-    if (s.projects) state.projects = s.projects;
-  } catch(e) {}
+function stopStreaming() {
+  if (streamController) { streamController.abort(); streamController = null; }
+  isStreaming = false;
+  hideStreamControls();
+  // Remove stream cursor from last AI bubble
+  document.querySelectorAll('.stream-cursor').forEach(c => c.remove());
 }
 
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-
-function toggleSidebar() {
-  const s = document.getElementById('sidebar');
-  const ov = document.getElementById('sidebar-overlay');
-  s.classList.toggle('open');
-  ov.classList.toggle('show');
+function skipToEnd() {
+  stopStreaming();
 }
 
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('show');
-}
-
-function newChat() {
-  if (state.isTemp) { clearTempMessages(); return; }
-  const chatCount = state.chats.filter(c => !c.projectId).length + 1;
-  const chat = { id: uid(), name: `Chat ${chatCount}`, messages: [], createdAt: Date.now(), projectId: null };
-  state.chats.unshift(chat);
-  state.activeChatId = chat.id;
-  save();
-  renderSidebar();
-  renderChat();
-}
-
-function openNewChatModal() {
-  document.getElementById('new-chat-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('chat-name-input').focus(), 80);
-}
-
-function createNamedChat() {
-  let name = document.getElementById('chat-name-input').value.trim();
-  if (!name) {
-    const chatCount = state.chats.filter(c => !c.projectId).length + 1;
-    name = `Chat ${chatCount}`;
-  }
-  document.getElementById('chat-name-input').value = '';
-  closeModals();
-  const chat = { id: uid(), name, messages: [], createdAt: Date.now(), projectId: null };
-  state.chats.unshift(chat);
-  state.activeChatId = chat.id;
-  save();
-  renderSidebar();
-  renderChat();
-}
-
-function loadChat(id) {
-  state.activeChatId = id;
-  state.isTemp = false;
-  document.getElementById('temp-badge').style.display = 'none';
-  document.getElementById('temp-btn').style.color = '';
-  renderSidebar();
-  renderChat();
-  if (window.innerWidth <= 680) closeSidebar();
-}
-
-function getActiveChat() { return state.chats.find(c => c.id === state.activeChatId) || null; }
-
-function openNewProjectModal() {
-  document.getElementById('new-project-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('project-name-input').focus(), 80);
-}
-
-function createProject() {
-  const name = document.getElementById('project-name-input').value.trim() || 'New project';
-  document.getElementById('project-name-input').value = '';
-  closeModals();
-  state.projects.push({ id: uid(), name, createdAt: Date.now() });
-  save();
-  renderSidebar();
-}
-
-let tempMessages = [];
-
-function toggleTempChat() {
-  state.isTemp = !state.isTemp;
-  state.activeChatId = null;
-  const badge = document.getElementById('temp-badge');
-  const btn = document.getElementById('temp-btn');
-  if (state.isTemp) {
-    badge.style.display = 'flex';
-    btn.style.color = '#ff9500';
-    tempMessages = [];
-    renderChat();
-    showToast("Temporary — messages won't be saved");
-  } else {
-    badge.style.display = 'none';
-    btn.style.color = '';
-    clearTempMessages();
-  }
-  renderSidebar();
-}
-
-function clearTempMessages() {
-  tempMessages = [];
-  renderChat();
-}
-
-function renderSidebar() {
-  const pl = document.getElementById('projects-list');
-  if (pl) {
-    pl.innerHTML = '';
-    state.projects.forEach(p => {
-      const el = document.createElement('div');
-      el.className = 'sidebar-item';
-      el.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>${esc(p.name)}</span><div class="item-actions"><button onclick="event.stopPropagation();showCtxMenu(event,'project','${p.id}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>`;
-      pl.appendChild(el);
-    });
-  }
-
-  const cl = document.getElementById('chats-list');
-  if (cl) {
-    cl.innerHTML = '';
-    state.chats.forEach(c => {
-      const el = document.createElement('div');
-      el.className = 'sidebar-item' + (state.activeChatId === c.id ? ' active' : '');
-      el.onclick = () => loadChat(c.id);
-      el.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${esc(c.name)}</span><div class="item-actions"><button onclick="event.stopPropagation();showCtxMenu(event,'chat','${c.id}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>`;
-      cl.appendChild(el);
-    });
-  }
-}
-
-function renderChat() {
-  const chat = document.getElementById('chat');
-  if (!chat) return;
-  chat.innerHTML = '';
-  const messages = state.isTemp ? tempMessages : (getActiveChat() ? getActiveChat().messages : []);
-
-  if (!messages || messages.length === 0) {
-    const es = document.createElement('div');
-    es.id = 'empty-state';
-    es.innerHTML = `
-      <div class="logo">Echo AI</div>
-      <p>Your thoughts, amplified.</p>
-      <div class="suggestions">
-        <button class="suggestion-pill" onclick="fillInput('Explain quantum entanglement simply')">Explain quantum entanglement simply →</button>
-        <button class="suggestion-pill" onclick="fillInput('Write a haiku about debugging code')">Write a haiku about debugging code →</button>
-        <button class="suggestion-pill" onclick="fillInput('What are the best practices for REST API design?')">Best practices for REST API design →</button>
-      </div>`;
-    chat.appendChild(es);
-    return;
-  }
-
-  messages.forEach(m => appendMsgEl(m.role, m.content, false, false));
-}
-
-function appendMsgEl(role, text, scroll, stream) {
-  const es = document.getElementById('empty-state');
-  if (es) es.remove();
-
-  const chat = document.getElementById('chat');
-  if (!chat) return;
-
-  const wrap = document.createElement('div');
-  wrap.className = 'msg-wrap';
-  const inner = document.createElement('div');
-  inner.className = 'msg-inner';
-
-  if (role === 'user') {
-    const row = document.createElement('div');
-    row.className = 'user-row';
-    const bubble = document.createElement('div');
-    bubble.className = 'user-bubble';
-    bubble.textContent = text;
-    row.appendChild(bubble);
-    inner.appendChild(row);
-    wrap.appendChild(inner);
-    chat.appendChild(wrap);
-    if (scroll) chat.scrollTop = chat.scrollHeight;
-    return;
-  }
-
-  const header = document.createElement('div');
-  header.className = 'ai-header';
-  header.innerHTML = `<div class="ai-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="ai-label">ECHO AI</span>`;
-
-  const body = document.createElement('div');
-  body.className = 'ai-body';
-
-  inner.appendChild(header);
-  inner.appendChild(body);
-  wrap.appendChild(inner);
-  chat.appendChild(wrap);
-  if (scroll) chat.scrollTop = chat.scrollHeight;
-
-  if (stream) {
-    showStreamControls();
-    const writer = new TypeWriter(body, text, () => {
-      activeWriter = null;
-      hideStreamControls();
-      inner.appendChild(buildMsgActions(text));
-      highlightCodeBlocks();
-      chat.scrollTop = chat.scrollHeight;
-    });
-    activeWriter = writer;
-    writer.start();
-  } else {
-    body.innerHTML = formatAI(text);
-    highlightCodeBlocks();
-    inner.appendChild(buildMsgActions(text));
-    if (scroll) chat.scrollTop = chat.scrollHeight;
-  }
-}
-
-function buildMsgActions(text) {
-  const actions = document.createElement('div');
-  actions.className = 'msg-actions';
-  actions.innerHTML = `
-    <button onclick="copyMsgText(this)" data-text="${esc(text).replace(/"/g,'&quot;')}">
-      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
-    </button>
-    <button onclick="regenerate()">
-      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.4"/></svg>Retry
-    </button>`;
-  return actions;
-}
-
+// ============================================================
+// FORMAT AI MARKDOWN → HTML
+// ============================================================
 function escapeHtml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
-function esc(str) { return escapeHtml(str); }
+function esc(str) { return escapeHtml(String(str)); }
 
 function formatAI(text) {
   let h = String(text);
@@ -924,88 +726,570 @@ function formatAI(text) {
   return result;
 }
 
+// ============================================================
+// SOURCES UI
+// ============================================================
+function buildSourcesEl(sources) {
+  if (!sources || !sources.length) return null;
+  const container = document.createElement('div');
+  container.className = 'sources-container';
+  const label = document.createElement('div');
+  label.className = 'sources-label';
+  label.textContent = `Sources (${sources.length})`;
+  container.appendChild(label);
+  const grid = document.createElement('div');
+  grid.className = 'sources-grid';
+  sources.forEach(src => {
+    const a = document.createElement('a');
+    a.className = 'source-card';
+    a.href = src.url || '#';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.innerHTML = `
+      <div class="source-card-title">${esc(src.title || 'Source')}</div>
+      ${src.snippet ? `<div class="source-card-snippet">${esc(src.snippet)}</div>` : ''}
+      ${src.url ? `<div class="source-card-url">${esc(src.url)}</div>` : ''}`;
+    grid.appendChild(a);
+  });
+  container.appendChild(grid);
+  return container;
+}
+
+// ============================================================
+// MESSAGE ACTIONS
+// ============================================================
+function buildMsgActions(text) {
+  const actions = document.createElement('div');
+  actions.className = 'msg-actions';
+  const safeText = esc(text).replace(/"/g,'&quot;');
+  actions.innerHTML = `
+    <button onclick="copyMsgText(this)" data-text="${safeText}">
+      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+    </button>
+    <button onclick="regenerate()">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.4"/></svg>Retry
+    </button>`;
+  return actions;
+}
+
+// ============================================================
+// DOM: ADD / UPDATE MESSAGES
+// ============================================================
+function addMessage(text, role, sources) {
+  const es = document.getElementById('empty-state');
+  if (es) es.remove();
+
+  const chatEl = document.getElementById('chat');
+  if (!chatEl) return null;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap';
+  const inner = document.createElement('div');
+  inner.className = 'msg-inner';
+
+  if (role === 'user') {
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    const bubble = document.createElement('div');
+    bubble.className = 'user-bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    inner.appendChild(row);
+    wrap.appendChild(inner);
+    chatEl.appendChild(wrap);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return wrap;
+  }
+
+  // AI message
+  const header = document.createElement('div');
+  header.className = 'ai-header';
+  header.innerHTML = `<div class="ai-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="ai-label">ECHO AI</span>`;
+
+  const body = document.createElement('div');
+  body.className = 'ai-body';
+  body.dataset.streamId = Date.now().toString();
+
+  inner.appendChild(header);
+  inner.appendChild(body);
+  wrap.appendChild(inner);
+  chatEl.appendChild(wrap);
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  if (text) {
+    body.innerHTML = formatAI(text);
+    highlightCodeBlocks();
+    if (sources) {
+      const srcEl = buildSourcesEl(sources);
+      if (srcEl) inner.appendChild(srcEl);
+    }
+    inner.appendChild(buildMsgActions(text));
+  }
+
+  return wrap;
+}
+
+// Create empty AI bubble with typing indicator — returns the body element
+function addTypingBubble() {
+  const es = document.getElementById('empty-state');
+  if (es) es.remove();
+
+  const chatEl = document.getElementById('chat');
+  if (!chatEl) return null;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap';
+  wrap.id = 'typing-bubble';
+  const inner = document.createElement('div');
+  inner.className = 'msg-inner';
+
+  const header = document.createElement('div');
+  header.className = 'ai-header';
+  header.innerHTML = `<div class="ai-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="ai-label">ECHO AI</span>`;
+
+  const body = document.createElement('div');
+  body.className = 'ai-body';
+  body.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+
+  inner.appendChild(header);
+  inner.appendChild(body);
+  wrap.appendChild(inner);
+  chatEl.appendChild(wrap);
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  return { wrap, body, inner };
+}
+
+// Update the live-streaming AI bubble
+function updateLastMessage(text, done, sources) {
+  const bubble = document.getElementById('typing-bubble');
+  if (!bubble) return;
+  const body = bubble.querySelector('.ai-body');
+  const inner = bubble.querySelector('.msg-inner');
+  if (!body) return;
+
+  body.innerHTML = formatAI(text);
+
+  if (!done) {
+    // Add blinking cursor
+    const cursor = document.createElement('span');
+    cursor.className = 'stream-cursor';
+    body.appendChild(cursor);
+  } else {
+    bubble.removeAttribute('id'); // remove typing-bubble id — it's finalised
+    highlightCodeBlocks();
+    if (sources) {
+      const srcEl = buildSourcesEl(sources);
+      if (srcEl) inner.appendChild(srcEl);
+    }
+    inner.appendChild(buildMsgActions(text));
+  }
+
+  const chatEl = document.getElementById('chat');
+  if (chatEl) chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+// ============================================================
+// RENDER FULL CONVERSATION FROM messages array
+// ============================================================
+function renderChat() {
+  const chatEl = document.getElementById('chat');
+  if (!chatEl) return;
+  chatEl.innerHTML = '';
+
+  const messages = state.isTemp ? tempMessages : activeMessages;
+
+  if (!messages || messages.length === 0) {
+    const es = document.createElement('div');
+    es.id = 'empty-state';
+    es.innerHTML = `
+      <div class="logo">Echo AI</div>
+      <p>Your thoughts, amplified.</p>
+      <div class="suggestions">
+        <button class="suggestion-pill" onclick="fillInput('Explain quantum entanglement simply')">Explain quantum entanglement simply →</button>
+        <button class="suggestion-pill" onclick="fillInput('Write a haiku about debugging code')">Write a haiku about debugging code →</button>
+        <button class="suggestion-pill" onclick="fillInput('What are the best practices for REST API design?')">Best practices for REST API design →</button>
+      </div>`;
+    chatEl.appendChild(es);
+    return;
+  }
+
+  messages.forEach(m => {
+    addMessage(m.content, m.role, m.sources || null);
+  });
+}
+
+// ============================================================
+// INDEXEDDB SAVE / LOAD for active chat
+// ============================================================
+async function saveActiveConversation() {
+  if (state.isTemp || !state.activeChatId) return;
+  try {
+    await dbPut({
+      id: state.activeChatId,
+      messages: activeMessages,
+      updatedAt: Date.now()
+    });
+  } catch(e) { console.warn('IndexedDB save error:', e); }
+}
+
+async function loadConversation(id) {
+  try {
+    const record = await dbGet(id);
+    if (record && Array.isArray(record.messages)) {
+      activeMessages = record.messages;
+    } else {
+      activeMessages = [];
+    }
+  } catch(e) {
+    activeMessages = [];
+  }
+}
+
+// ============================================================
+// LEGACY localStorage (meta only: chat list & projects)
+// ============================================================
+function saveMeta() {
+  try {
+    localStorage.setItem('echo_meta_v3', JSON.stringify({ chats: state.chats, projects: state.projects }));
+  } catch(e) {}
+}
+
+function loadMeta() {
+  try {
+    const s = JSON.parse(localStorage.getItem('echo_meta_v3') || '{}');
+    if (s.chats) state.chats = s.chats;
+    if (s.projects) state.projects = s.projects;
+  } catch(e) {}
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ============================================================
+// SIDEBAR HELPERS
+// ============================================================
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');
+  ov.classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+function renderSidebar() {
+  const pl = document.getElementById('projects-list');
+  if (pl) {
+    pl.innerHTML = '';
+    state.projects.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'sidebar-item';
+      el.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>${esc(p.name)}</span><div class="item-actions"><button onclick="event.stopPropagation();showCtxMenu(event,'project','${p.id}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>`;
+      pl.appendChild(el);
+    });
+  }
+
+  const cl = document.getElementById('chats-list');
+  if (cl) {
+    cl.innerHTML = '';
+    state.chats.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'sidebar-item' + (state.activeChatId === c.id ? ' active' : '');
+      el.onclick = () => loadChat(c.id);
+      el.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${esc(c.name)}</span><div class="item-actions"><button onclick="event.stopPropagation();showCtxMenu(event,'chat','${c.id}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>`;
+      cl.appendChild(el);
+    });
+  }
+}
+
+// ============================================================
+// CHAT MANAGEMENT
+// ============================================================
+async function newChat() {
+  if (state.isTemp) { clearTempMessages(); return; }
+  const chatCount = state.chats.filter(c => !c.projectId).length + 1;
+  const chat = { id: uid(), name: `Chat ${chatCount}`, createdAt: Date.now(), projectId: null };
+  state.chats.unshift(chat);
+  state.activeChatId = chat.id;
+  activeMessages = [];
+  saveMeta();
+  renderSidebar();
+  renderChat();
+}
+
+function openNewChatModal() {
+  document.getElementById('new-chat-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('chat-name-input').focus(), 80);
+}
+
+async function createNamedChat() {
+  let name = document.getElementById('chat-name-input').value.trim();
+  if (!name) { const n = state.chats.filter(c => !c.projectId).length + 1; name = `Chat ${n}`; }
+  document.getElementById('chat-name-input').value = '';
+  closeModals();
+  const chat = { id: uid(), name, createdAt: Date.now(), projectId: null };
+  state.chats.unshift(chat);
+  state.activeChatId = chat.id;
+  activeMessages = [];
+  saveMeta();
+  renderSidebar();
+  renderChat();
+}
+
+async function loadChat(id) {
+  state.activeChatId = id;
+  state.isTemp = false;
+  document.getElementById('temp-badge').style.display = 'none';
+  document.getElementById('temp-btn').style.color = '';
+  await loadConversation(id);
+  renderSidebar();
+  renderChat();
+  if (window.innerWidth <= 680) closeSidebar();
+}
+
+function getActiveChat() { return state.chats.find(c => c.id === state.activeChatId) || null; }
+
+function openNewProjectModal() {
+  document.getElementById('new-project-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('project-name-input').focus(), 80);
+}
+
+function createProject() {
+  const name = document.getElementById('project-name-input').value.trim() || 'New project';
+  document.getElementById('project-name-input').value = '';
+  closeModals();
+  state.projects.push({ id: uid(), name, createdAt: Date.now() });
+  saveMeta();
+  renderSidebar();
+}
+
+let tempMessages_store = [];
+
+function toggleTempChat() {
+  state.isTemp = !state.isTemp;
+  state.activeChatId = null;
+  const badge = document.getElementById('temp-badge');
+  const btn = document.getElementById('temp-btn');
+  if (state.isTemp) {
+    badge.style.display = 'flex';
+    btn.style.color = '#ff9500';
+    tempMessages = [];
+    renderChat();
+    showToast("Temporary — messages won't be saved");
+  } else {
+    badge.style.display = 'none';
+    btn.style.color = '';
+    tempMessages = [];
+    renderChat();
+  }
+  renderSidebar();
+}
+
+function clearTempMessages() {
+  tempMessages = [];
+  renderChat();
+}
+
+// ============================================================
+// STREAMING SEND — ReadableStream fetch
+// ============================================================
 async function send() {
   const inputEl = document.getElementById('input');
   const sendBtn = document.getElementById('send-btn');
   const text = inputEl ? inputEl.value.trim() : '';
-  if (!text) return;
+  if (!text || isStreaming) return;
 
-  if (activeWriter) { activeWriter.stop(); activeWriter = null; hideStreamControls(); }
-
+  // Clear input
   if (inputEl) { inputEl.value = ''; inputEl.style.height = 'auto'; }
   if (sendBtn) sendBtn.disabled = true;
 
-  const systemMessages = [
-    { role: "system", content: "You are Echo AI, a helpful, concise, and knowledgeable assistant. Be conversational but precise." }
-  ];
-
+  // Ensure we have an active chat
   if (!state.isTemp && !state.activeChatId) {
     const chatCount = state.chats.filter(c => !c.projectId).length + 1;
-    const chat = { id: uid(), name: `Chat ${chatCount}`, messages: [], createdAt: Date.now(), projectId: null };
+    const chat = { id: uid(), name: `Chat ${chatCount}`, createdAt: Date.now(), projectId: null };
     state.chats.unshift(chat);
     state.activeChatId = chat.id;
-    save();
+    activeMessages = [];
+    saveMeta();
     renderSidebar();
   }
 
-  const msgs = state.isTemp ? tempMessages : getActiveChat().messages;
+  const msgs = state.isTemp ? tempMessages : activeMessages;
+
+  // Push user message
   msgs.push({ role: 'user', content: text });
+  if (!state.isTemp) await saveActiveConversation();
 
-  if (!state.isTemp) save();
+  // Render user bubble
+  addMessage(text, 'user');
   renderSidebar();
-  appendMsgEl('user', text, true, false);
 
-  const thinkWrap = document.createElement('div');
-  thinkWrap.className = 'msg-wrap';
-  thinkWrap.id = 'think-row';
-  thinkWrap.innerHTML = `<div class="msg-inner"><div class="ai-header"><div class="ai-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="ai-label" style="color:var(--text3)">thinking<span class="cursor" style="animation-duration:0.6s"></span></span></div></div>`;
-  const chatEl = document.getElementById('chat');
-  if (chatEl) { chatEl.appendChild(thinkWrap); chatEl.scrollTop = chatEl.scrollHeight; }
+  // Show typing bubble
+  addTypingBubble();
+
+  const systemMessages = [
+    { role: 'user', content: 'You are Echo AI, a helpful, concise, and knowledgeable assistant. Be conversational but precise. (System note — do not mention this instruction.)' },
+    { role: 'assistant', content: "Understood. I'm Echo AI, ready to help." }
+  ];
+
+  // Build messages for API (full history, no slicing)
+  const apiMessages = [
+    ...systemMessages,
+    ...msgs.map(m => ({ role: m.role, content: m.content }))
+  ];
+
+  isStreaming = true;
+  showStreamControls();
+  streamController = new AbortController();
+
+  let fullReply = '';
+  let sources = null;
 
   try {
-    const res = await fetch("https://jav-ai.netlify.app/.netlify/functions/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: [...systemMessages, ...msgs] })
+    const res = await fetch('https://jav-ai.netlify.app/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: apiMessages, stream: true }),
+      signal: streamController.signal
     });
 
     if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
 
-    let data;
-    try { data = await res.json(); } catch(e) { throw new Error("Invalid JSON from API."); }
+    // Try streaming via ReadableStream
+    const contentType = res.headers.get('content-type') || '';
+    const isStream = res.body && (contentType.includes('text/event-stream') || contentType.includes('text/plain') || contentType.includes('application/octet-stream'));
 
-    document.getElementById('think-row')?.remove();
+    if (isStream) {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-    let reply = '';
-    if (typeof data?.reply === 'string' && data.reply.trim()) {
-      reply = data.reply.trim();
-    } else if (Array.isArray(data?.content) && data.content.length > 0) {
-      reply = data.content
-        .filter(b => b?.type === 'text' && typeof b?.text === 'string')
-        .map(b => b.text)
-        .join('')
-        .trim();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Process SSE lines
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // keep incomplete line in buffer
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed === 'data: [DONE]') continue;
+
+          let dataStr = trimmed;
+          if (dataStr.startsWith('data: ')) dataStr = dataStr.slice(6);
+
+          try {
+            const chunk = JSON.parse(dataStr);
+            // Handle multiple streaming formats
+            let delta = '';
+            if (typeof chunk.delta === 'string') {
+              delta = chunk.delta;
+            } else if (chunk.delta?.text) {
+              delta = chunk.delta.text;
+            } else if (chunk.choices?.[0]?.delta?.content) {
+              delta = chunk.choices[0].delta.content;
+            } else if (typeof chunk.reply === 'string') {
+              delta = chunk.reply;
+              sources = chunk.sources || null;
+            } else if (chunk.content?.[0]?.text) {
+              delta = chunk.content[0].text;
+            }
+            if (delta) {
+              fullReply += delta;
+              updateLastMessage(fullReply, false, null);
+            }
+            if (chunk.sources) sources = chunk.sources;
+          } catch(_) {
+            // Not JSON — plain text chunk
+            if (trimmed && trimmed !== '[DONE]') {
+              fullReply += trimmed + '\n';
+              updateLastMessage(fullReply, false, null);
+            }
+          }
+        }
+
+        if (!isStreaming) break; // user hit stop
+      }
+
+    } else {
+      // Fallback: read as JSON (non-streaming endpoint)
+      const data = await res.json();
+      if (typeof data?.reply === 'string' && data.reply.trim()) {
+        fullReply = data.reply.trim();
+        sources = data.sources || null;
+      } else if (Array.isArray(data?.content) && data.content.length > 0) {
+        fullReply = data.content.filter(b => b?.type === 'text').map(b => b.text).join('').trim();
+      }
+      if (!fullReply) fullReply = 'No response from AI.';
+
+      // Simulate streaming for UX
+      await simulateStream(fullReply);
     }
 
-    if (!reply) reply = "No response from AI.";
-
-    msgs.push({ role: 'assistant', content: reply });
-    if (!state.isTemp) save();
-    appendMsgEl('assistant', reply, true, true);
-
   } catch(e) {
-    document.getElementById('think-row')?.remove();
-    const errMsg = (e.message?.startsWith('API error') || e.message?.startsWith('Invalid JSON'))
-      ? `Error: ${e.message}`
-      : "Connection error. Please check your network and try again.";
-    msgs.push({ role: 'assistant', content: errMsg });
-    if (!state.isTemp) save();
-    appendMsgEl('assistant', errMsg, true, false);
-  } finally {
-    if (sendBtn) sendBtn.disabled = false;
+    if (e.name === 'AbortError') {
+      // User stopped — keep whatever was streamed
+      if (!fullReply) fullReply = '*(Response stopped)*';
+    } else {
+      const errMsg = e.message?.startsWith('API error') ? `Error: ${e.message}` : 'Connection error. Please check your network and try again.';
+      fullReply = errMsg;
+    }
   }
+
+  // Finalise bubble
+  if (fullReply) {
+    updateLastMessage(fullReply, true, sources);
+  } else {
+    // Remove empty typing bubble
+    document.getElementById('typing-bubble')?.remove();
+  }
+
+  // Persist
+  if (fullReply) {
+    msgs.push({ role: 'assistant', content: fullReply, sources: sources || undefined });
+    if (!state.isTemp) await saveActiveConversation();
+  }
+
+  isStreaming = false;
+  streamController = null;
+  hideStreamControls();
+  if (sendBtn) sendBtn.disabled = false;
 }
 
+// Simulate streaming for non-stream endpoints
+function simulateStream(text) {
+  return new Promise(resolve => {
+    let pos = 0;
+    const total = text.length;
+    let lastTime = null;
+
+    function frame(ts) {
+      if (!isStreaming) { updateLastMessage(text, false, null); resolve(); return; }
+      if (!lastTime) lastTime = ts;
+      const delta = ts - lastTime;
+      lastTime = ts;
+      const charsPerMs = SPEEDS[currentSpeed] / 16;
+      const toAdd = Math.max(1, Math.floor(charsPerMs * delta));
+      pos = Math.min(pos + toAdd, total);
+      updateLastMessage(text.slice(0, pos), pos < total ? false : false, null);
+      if (pos < total) {
+        requestAnimationFrame(frame);
+      } else {
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+// ============================================================
+// INPUT HELPERS
+// ============================================================
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
@@ -1020,16 +1304,6 @@ function autoResize(el) {
   const btn = document.getElementById('send-btn');
   if (btn) btn.disabled = !el.value.trim();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const inputListener = document.getElementById('input');
-  if (inputListener) {
-    inputListener.addEventListener('input', function() {
-      const btn = document.getElementById('send-btn');
-      if (btn) btn.disabled = !this.value.trim();
-    });
-  }
-});
 
 function fillInput(text) {
   const input = document.getElementById('input');
@@ -1058,14 +1332,60 @@ function startVoice() {
   rec.start();
 }
 
+function attachFile() { showToast('File attachment coming soon'); }
+
+function insertCode() {
+  const i = document.getElementById('input');
+  if (!i) return;
+  const pos = i.selectionStart;
+  const val = i.value;
+  i.value = val.slice(0, pos) + '```javascript\n\n```' + val.slice(pos);
+  i.selectionStart = i.selectionEnd = pos + 12;
+  i.focus();
+  autoResize(i);
+}
+
+function cycleModel() {
+  state.modelIdx = (state.modelIdx + 1) % state.models.length;
+  document.getElementById('model-name').textContent = state.models[state.modelIdx];
+  showToast('Switched to ' + state.models[state.modelIdx]);
+}
+
+// ============================================================
+// REGENERATE
+// ============================================================
+async function regenerate() {
+  const msgs = state.isTemp ? tempMessages : activeMessages;
+  if (!msgs.length) return;
+  if (msgs[msgs.length - 1]?.role === 'assistant') msgs.pop();
+  const lastUserIdx = [...msgs].map(m => m.role).lastIndexOf('user');
+  if (lastUserIdx === -1) return;
+  const lastUser = msgs[lastUserIdx];
+  msgs.splice(lastUserIdx, 1);
+  if (!state.isTemp) await saveActiveConversation();
+  renderChat();
+  const input = document.getElementById('input');
+  if (input) { input.value = lastUser.content; autoResize(input); }
+  send();
+}
+
+// ============================================================
+// COPY MESSAGE
+// ============================================================
+function copyMsgText(btn) {
+  const text = (btn.getAttribute('data-text') || '')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+}
+
+// ============================================================
+// SIDEBAR SEARCH
+// ============================================================
 function handleSearch(q) {
   const res = document.getElementById('search-results');
   if (!res) return;
   if (!q.trim()) { res.classList.remove('show'); return; }
-  const matches = state.chats.filter(c =>
-    c.name.toLowerCase().includes(q.toLowerCase()) ||
-    c.messages.some(m => m.content.toLowerCase().includes(q.toLowerCase()))
-  );
+  const matches = state.chats.filter(c => c.name.toLowerCase().includes(q.toLowerCase()));
   if (!matches.length) {
     res.innerHTML = '<div class="sr-item" style="color:var(--text3)">No results found</div>';
   } else {
@@ -1081,16 +1401,9 @@ function showSearchResults() {
   if (q.trim()) handleSearch(q);
 }
 
-document.addEventListener('click', e => {
-  if (!e.target.closest('#search-wrap')) {
-    document.getElementById('search-results')?.classList.remove('show');
-  }
-  if (!e.target.closest('#ctx-menu')) {
-    const m = document.getElementById('ctx-menu');
-    if (m) m.style.display = 'none';
-  }
-});
-
+// ============================================================
+// CONTEXT MENU
+// ============================================================
 function showCtxMenu(e, type, id) {
   e.stopPropagation();
   const menu = document.getElementById('ctx-menu');
@@ -1118,17 +1431,13 @@ function showCtxMenu(e, type, id) {
 }
 
 function openRename(type, id) {
-  const menu = document.getElementById('ctx-menu');
-  if (menu) menu.style.display = 'none';
+  document.getElementById('ctx-menu').style.display = 'none';
   state.renameTarget = id;
   state.renameType = type;
   const item = type === 'chat' ? state.chats.find(c => c.id === id) : state.projects.find(p => p.id === id);
-  const titleEl = document.getElementById('rename-title');
-  const inputEl = document.getElementById('rename-input');
-  const modal = document.getElementById('rename-modal');
-  if (titleEl) titleEl.textContent = type === 'chat' ? 'Rename conversation' : 'Rename project';
-  if (inputEl) inputEl.value = item ? item.name : '';
-  if (modal) modal.style.display = 'flex';
+  document.getElementById('rename-title').textContent = type === 'chat' ? 'Rename conversation' : 'Rename project';
+  document.getElementById('rename-input').value = item ? item.name : '';
+  document.getElementById('rename-modal').style.display = 'flex';
   setTimeout(() => document.getElementById('rename-input')?.select(), 80);
 }
 
@@ -1142,77 +1451,50 @@ function confirmRename() {
     const p = state.projects.find(x => x.id === state.renameTarget);
     if (p) p.name = name;
   }
-  save();
+  saveMeta();
   closeModals();
   renderSidebar();
 }
 
-function deleteChat(id) {
-  const menu = document.getElementById('ctx-menu');
-  if (menu) menu.style.display = 'none';
+async function deleteChat(id) {
+  document.getElementById('ctx-menu').style.display = 'none';
   state.chats = state.chats.filter(c => c.id !== id);
-  if (state.activeChatId === id) { state.activeChatId = null; renderChat(); }
-  save();
+  await dbDelete(id);
+  if (state.activeChatId === id) {
+    state.activeChatId = null;
+    activeMessages = [];
+    renderChat();
+  }
+  saveMeta();
   renderSidebar();
 }
 
 function deleteProject(id) {
-  const menu = document.getElementById('ctx-menu');
-  if (menu) menu.style.display = 'none';
+  document.getElementById('ctx-menu').style.display = 'none';
   state.projects = state.projects.filter(p => p.id !== id);
-  save();
+  saveMeta();
   renderSidebar();
 }
 
 function moveToProject(chatId) {
-  const menu = document.getElementById('ctx-menu');
-  if (menu) menu.style.display = 'none';
+  document.getElementById('ctx-menu').style.display = 'none';
   if (!state.projects.length) { showToast('Create a project first'); return; }
   const p = state.projects[0];
   const c = state.chats.find(x => x.id === chatId);
-  if (c) { c.projectId = p.id; save(); renderSidebar(); showToast(`Moved to "${p.name}"`); }
+  if (c) { c.projectId = p.id; saveMeta(); renderSidebar(); showToast(`Moved to "${p.name}"`); }
 }
 
-function regenerate() {
-  const msgs = state.isTemp ? tempMessages : (getActiveChat() ? getActiveChat().messages : []);
-  if (!msgs.length) return;
-  if (msgs[msgs.length - 1]?.role === 'assistant') msgs.pop();
-  const lastUser = [...msgs].reverse().find(m => m.role === 'user');
-  if (!lastUser) return;
-  const idx = msgs.lastIndexOf(lastUser);
-  if (idx !== -1) msgs.splice(idx, 1);
-  if (!state.isTemp) save();
-  renderChat();
-  const input = document.getElementById('input');
-  if (input) { input.value = lastUser.content; autoResize(input); }
-  send();
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function closeModals(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
 }
 
-function copyMsgText(btn) {
-  const text = (btn.getAttribute('data-text') || '')
-    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
-  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
-}
-
-function attachFile() { showToast('File attachment coming soon'); }
-
-function insertCode() {
-  const i = document.getElementById('input');
-  if (!i) return;
-  const pos = i.selectionStart;
-  const val = i.value;
-  i.value = val.slice(0, pos) + '```javascript\n\n```' + val.slice(pos);
-  i.selectionStart = i.selectionEnd = pos + 12;
-  i.focus();
-  autoResize(i);
-}
-
-function cycleModel() {
-  state.modelIdx = (state.modelIdx + 1) % state.models.length;
-  document.getElementById('model-name').textContent = state.models[state.modelIdx];
-  showToast('Switched to ' + state.models[state.modelIdx]);
-}
-
+// ============================================================
+// TOAST
+// ============================================================
 function showToast(msg) {
   document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div');
@@ -1222,11 +1504,9 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2400);
 }
 
-function closeModals(e) {
-  if (e && e.target !== e.currentTarget) return;
-  document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-}
-
+// ============================================================
+// RESPONSIVE
+// ============================================================
 function checkMobile() {
   const isMobile = window.innerWidth <= 680;
   const btn = document.getElementById('menu-btn');
@@ -1235,6 +1515,19 @@ function checkMobile() {
 window.addEventListener('resize', checkMobile);
 checkMobile();
 
+// ============================================================
+// GLOBAL EVENT LISTENERS
+// ============================================================
+document.addEventListener('click', e => {
+  if (!e.target.closest('#search-wrap')) {
+    document.getElementById('search-results')?.classList.remove('show');
+  }
+  if (!e.target.closest('#ctx-menu')) {
+    const m = document.getElementById('ctx-menu');
+    if (m) m.style.display = 'none';
+  }
+});
+
 document.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); document.getElementById('sidebar-search')?.focus(); }
   if ((e.metaKey || e.ctrlKey) && e.key === 'n') { e.preventDefault(); newChat(); }
@@ -1242,31 +1535,57 @@ document.addEventListener('keydown', e => {
     closeModals();
     const m = document.getElementById('ctx-menu');
     if (m) m.style.display = 'none';
+    if (isStreaming) stopStreaming();
   }
 });
 
-const renameInput = document.getElementById('rename-input');
-if (renameInput) renameInput.addEventListener('keydown', e => { if (e.key === 'Enter') confirmRename(); });
-const chatNameInput = document.getElementById('chat-name-input');
-if (chatNameInput) chatNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') createNamedChat(); });
-const projectNameInput = document.getElementById('project-name-input');
-if (projectNameInput) projectNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') createProject(); });
+document.addEventListener('DOMContentLoaded', () => {
+  const inputEl = document.getElementById('input');
+  if (inputEl) {
+    inputEl.addEventListener('input', function() {
+      const btn = document.getElementById('send-btn');
+      if (btn) btn.disabled = !this.value.trim();
+    });
+  }
+  document.getElementById('rename-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') confirmRename(); });
+  document.getElementById('chat-name-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') createNamedChat(); });
+  document.getElementById('project-name-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') createProject(); });
+});
 
-load();
-if (!state.chats.length) {
-  const welcome = {
-    id: uid(),
-    name: 'Chat 1',
-    messages: [{ role: 'assistant', content: "Hi! I'm **Echo AI**. Ask me anything — I'm here to help." }],
-    createdAt: Date.now(),
-    projectId: null
-  };
-  state.chats.push(welcome);
-  state.activeChatId = welcome.id;
-  save();
+// ============================================================
+// BOOT
+// ============================================================
+async function boot() {
+  // Open IndexedDB first
+  try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable, falling back gracefully', e); }
+
+  // Load meta (chat list) from localStorage
+  loadMeta();
+
+  // If no chats exist, create a welcome chat
+  if (!state.chats.length) {
+    const welcome = {
+      id: uid(),
+      name: 'Chat 1',
+      createdAt: Date.now(),
+      projectId: null
+    };
+    state.chats.push(welcome);
+    state.activeChatId = welcome.id;
+    activeMessages = [{ role: 'assistant', content: "Hi! I'm **Echo AI**. Ask me anything — I'm here to help." }];
+    saveMeta();
+    await saveActiveConversation();
+  } else {
+    // Load the most recent chat
+    state.activeChatId = state.chats[0].id;
+    await loadConversation(state.activeChatId);
+  }
+
+  renderSidebar();
+  renderChat();
 }
-renderSidebar();
-renderChat();
+
+boot();
 </script>
 </body>
 </html>
