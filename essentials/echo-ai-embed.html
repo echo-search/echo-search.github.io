@@ -91,10 +91,21 @@ code {
 </div>
 
 <script>
-if (
-  !document.referrer.startsWith("https://echo-search.github.io/") &&
-  !document.referrer.startsWith("https://echo-search.github.io/safesearch/")
-) {
+/* ✅ Secure referrer validation */
+const allowedOrigins = [
+  "https://echo-search.github.io",
+  "https://echo-search-engine.netlify.app"
+];
+
+let refOrigin = "";
+
+try {
+  refOrigin = new URL(document.referrer).origin;
+} catch {
+  refOrigin = "";
+}
+
+if (!allowedOrigins.includes(refOrigin)) {
   document.body.innerHTML = "This embed is not allowed.";
   throw new Error("Unauthorized iframe");
 }
@@ -152,7 +163,6 @@ function formatMessage(text) {
 
   text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 
-  // Replace * at start of lines or after newlines with bullet point
   text = text.replace(/(^|\n)\s*\*\s+/g, "$1• ");
 
   text = text.replace(/\n\n+/g, "</p><p>");
