@@ -19,7 +19,6 @@ const audio67 = document.getElementById("audio67");
 const container = document.getElementById("emojiContainer");
 const frame = document.getElementById("aiFrame");
 
-
 let featurePanel = document.getElementById('featureResult');
 
 window.onerror = function(msg, url, line, col, error) {
@@ -91,8 +90,8 @@ function showFeatureResult({ type = 'generic', title = '', html = '', data = nul
         const v = ev.target.getAttribute('data-val');
         const disp = featurePanel.querySelector('.calc-display');
         if (disp) {
-          const start = disp.selectionStart || disp.value.length;
-          const end = disp.selectionEnd || start;
+          const start = typeof disp.selectionStart === 'number' ? disp.selectionStart : disp.value.length;
+          const end = typeof disp.selectionEnd === 'number' ? disp.selectionEnd : start;
           disp.value = disp.value.slice(0, start) + v + disp.value.slice(end);
           disp.focus();
           disp.selectionStart = disp.selectionEnd = start + v.length;
@@ -126,100 +125,100 @@ function saveLifetime(query) {
 }
 
 const facts = [
-    "Why don't skeletons fight each other? They don't have the guts.",
-    "What do you call fake spaghetti? An impasta.",
-    "Why did the scarecrow win an award? He was outstanding in his field.",
-    "Why don't eggs tell jokes? They'd crack each other up.",
-    "What do you call a fish wearing a bowtie? Sofishticated.",
-    "Why did the bicycle fall over? It was two-tired.",
-    "I tried to catch fog yesterday… Mist.",
-    "Why don't oysters donate to charity? Because they're shellfish.",
-    "What do you call cheese that isn't yours? Nacho cheese.",
-    "Why did the tomato blush? Because it saw the salad dressing!",
-    "Why was the math book sad? Too many problems.",
-    "Why don't crabs share? Because they're shellfish.",
-    "Why can't you trust stairs? They're always up to something.",
-    "Why did the coffee file a police report? It got mugged.",
-    "Why do cows wear bells? Because their horns don't work.",
-    "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
-    "What do you call a sleeping bull? A bulldozer.",
-    "What do you call an alligator in a vest? An investigator.",
-    "Why was six afraid of seven? Because seven eight nine.",
-    "Why can't your nose be 12 inches long? Because then it would be a foot.",
-    "What do you call a belt made of watches? A waist of time.",
-    "Why did the cookie go to the hospital? It felt crumby.",
-    "Why do bees have sticky hair? Because they use honeycombs.",
-    "Why did the computer go to the doctor? It had a virus.",
-    "What do you call a bear with no teeth? A gummy bear.",
-    "Why did the stadium get hot? All the fans left.",
-    "Why was the broom late? It swept in.",
-    "Why don't oranges ever win races? They always peel out.",
-    "Why did the picture go to jail? It was framed.",
-    "Why did the banana go to the doctor? It wasn't peeling well.",
-    "Why did the man run around his bed? He was trying to catch up on sleep.",
-    "What do you call a dinosaur with an extensive vocabulary? A thesaurus.",
-    "Why don't scientists trust atoms? They make up everything.",
-    "Why did the chicken join a band? It had the drumsticks.",
-    "What do you call a factory that makes good products? A satisfactory.",
-    "Why don't vampires have friends? They're a pain in the neck.",
-    "What do you call a snowman with a six-pack? An abdominal snowman.",
-    "Why did the barber win the race? He took a short cut.",
-    "Why did the frog take the bus? His car got toad.",
-    "Why are ghosts bad liars? They are too transparent.",
-    "Why don't elephants use computers? They're afraid of the mouse.",
-    "Why did the grape stop in the middle of the road? It ran out of juice.",
-    "Why don't seagulls fly over the bay? Because then they'd be bagels.",
-    "Why did the music teacher go to jail? She got caught with too many notes.",
-    "What do you call a cow with no legs? Ground beef.",
-    "What do you call a cow with two legs? Lean beef.",
-    "What do you call a cow that just gave birth? Decaffeinated.",
-    "Why did the baker go to therapy? Too much kneaded attention.",
-    "Why are elevator jokes so good? They work on many levels.",
-    "Why don't pirates shower before walking the plank? They'll just wash up on shore.",
-    "Why do chickens sit on eggs? Because they don't have chairs.",
-    "Why was the belt arrested? Holding up a pair of pants.",
-    "Why was the dictionary always calm? Because it had all the right words.",
-    "What do you call a penguin in the desert? Lost.",
-    "Why can't a leopard hide? He's always spotted.",
-    "Why do birds fly south for the winter? It's faster than walking.",
-    "What do you call a potato with glasses? A spec-tater.",
-    "Why did the orange stop half-way up the hill? It ran out of juice.",
-    "Why did the fish blush? It saw the ocean's bottom.",
-    "What did the janitor say when he jumped out of the closet? Supplies!",
-    "Why don't koalas count as bears? They don't have the koalafications.",
-    "Why did the scarecrow keep getting promoted? He was outstanding in his field.",
-    "Why do cows have hooves instead of feet? They lactose.",
-    "Why was the cat sitting on the computer? It wanted to keep an eye on the mouse.",
-    "What do you call an elephant that doesn't matter? An irrelephant.",
-    "What do you call a sleeping dinosaur? Dino-snore.",
-    "Why did the mushroom get invited to the party? He was a fungi.",
-    "Why did the toilet paper roll down the hill? To get to the bottom.",
-    "Why do melons have weddings? Because they cantaloupe.",
-    "Why did the fish get bad grades? Because he was below sea level.",
-    "What do you call a pig that knows karate? A pork chop.",
-    "Why did the cookie go to school? It wanted to be a smart cookie.",
-    "What do you call birds who stick together? Vel-crows.",
-    "Why did the smartphone need glasses? It lost all its contacts.",
-    "Why don't calendars ever get tired? They have too many dates.",
-    "Why did the tree go to the dentist? To get a root canal.",
-    "What do you call a dog magician? A labracadabrador.",
-    "Why couldn't the bicycle stand on its own? It was two-tired.",
-    "Why did the pirate go to school? To improve his arrr-ticulation.",
-    "What did one wall say to the other? I'll meet you at the corner.",
-    "Why did the cookie cry? Its mother was a wafer too long.",
-    "What do you call a frog with no hind legs? Unhoppy.",
-    "Why don't ducks tell jokes while flying? They'd quack up.",
-    "Why was the math lesson so cold? Too many degrees.",
-    "Why was the sand wet? Because the seaweed.",
-    "Why did the balloon go near the needle? It was feeling brave.",
-    "Why did the barber always win arguments? He always cut to the point.",
-    "Why did the clown get fired? He couldn't put on a happy face.",
-    "Why did the banana go out with the prune? It couldn't find a date.",
-    "Why do mushrooms love parties? They're fungi, remember?",
-    "Why did the lightbulb fail school? Too dim.",
-    "Why do math teachers love parks? Natural logs.",
-    "Why did the cookie join the gym? To get a little chip-per.",
-    "Why did the snowman stare at the carrot aisle? Because he was picking his nose."
+  "Why don't skeletons fight each other? They don't have the guts.",
+  "What do you call fake spaghetti? An impasta.",
+  "Why did the scarecrow win an award? He was outstanding in his field.",
+  "Why don't eggs tell jokes? They'd crack each other up.",
+  "What do you call a fish wearing a bowtie? Sofishticated.",
+  "Why did the bicycle fall over? It was two-tired.",
+  "I tried to catch fog yesterday… Mist.",
+  "Why don't oysters donate to charity? Because they're shellfish.",
+  "What do you call cheese that isn't yours? Nacho cheese.",
+  "Why did the tomato blush? Because it saw the salad dressing!",
+  "Why was the math book sad? Too many problems.",
+  "Why don't crabs share? Because they're shellfish.",
+  "Why can't you trust stairs? They're always up to something.",
+  "Why did the coffee file a police report? It got mugged.",
+  "Why do cows wear bells? Because their horns don't work.",
+  "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
+  "What do you call a sleeping bull? A bulldozer.",
+  "What do you call an alligator in a vest? An investigator.",
+  "Why was six afraid of seven? Because seven eight nine.",
+  "Why can't your nose be 12 inches long? Because then it would be a foot.",
+  "What do you call a belt made of watches? A waist of time.",
+  "Why did the cookie go to the hospital? It felt crumby.",
+  "Why do bees have sticky hair? Because they use honeycombs.",
+  "Why did the computer go to the doctor? It had a virus.",
+  "What do you call a bear with no teeth? A gummy bear.",
+  "Why did the stadium get hot? All the fans left.",
+  "Why was the broom late? It swept in.",
+  "Why don't oranges ever win races? They always peel out.",
+  "Why did the picture go to jail? It was framed.",
+  "Why did the banana go to the doctor? It wasn't peeling well.",
+  "Why did the man run around his bed? He was trying to catch up on sleep.",
+  "What do you call a dinosaur with an extensive vocabulary? A thesaurus.",
+  "Why don't scientists trust atoms? They make up everything.",
+  "Why did the chicken join a band? It had the drumsticks.",
+  "What do you call a factory that makes good products? A satisfactory.",
+  "Why don't vampires have friends? They're a pain in the neck.",
+  "What do you call a snowman with a six-pack? An abdominal snowman.",
+  "Why did the barber win the race? He took a short cut.",
+  "Why did the frog take the bus? His car got toad.",
+  "Why are ghosts bad liars? They are too transparent.",
+  "Why don't elephants use computers? They're afraid of the mouse.",
+  "Why did the grape stop in the middle of the road? It ran out of juice.",
+  "Why don't seagulls fly over the bay? Because then they'd be bagels.",
+  "Why did the music teacher go to jail? She got caught with too many notes.",
+  "What do you call a cow with no legs? Ground beef.",
+  "What do you call a cow with two legs? Lean beef.",
+  "What do you call a cow that just gave birth? Decaffeinated.",
+  "Why did the baker go to therapy? Too much kneaded attention.",
+  "Why are elevator jokes so good? They work on many levels.",
+  "Why don't pirates shower before walking the plank? They'll just wash up on shore.",
+  "Why do chickens sit on eggs? Because they don't have chairs.",
+  "Why was the belt arrested? Holding up a pair of pants.",
+  "Why was the dictionary always calm? Because it had all the right words.",
+  "What do you call a penguin in the desert? Lost.",
+  "Why can't a leopard hide? He's always spotted.",
+  "Why do birds fly south for the winter? It's faster than walking.",
+  "What do you call a potato with glasses? A spec-tater.",
+  "Why did the orange stop half-way up the hill? It ran out of juice.",
+  "Why did the fish blush? It saw the ocean's bottom.",
+  "What did the janitor say when he jumped out of the closet? Supplies!",
+  "Why don't koalas count as bears? They don't have the koalafications.",
+  "Why did the scarecrow keep getting promoted? He was outstanding in his field.",
+  "Why do cows have hooves instead of feet? They lactose.",
+  "Why was the cat sitting on the computer? It wanted to keep an eye on the mouse.",
+  "What do you call an elephant that doesn't matter? An irrelephant.",
+  "What do you call a sleeping dinosaur? Dino-snore.",
+  "Why did the mushroom get invited to the party? He was a fungi.",
+  "Why did the toilet paper roll down the hill? To get to the bottom.",
+  "Why do melons have weddings? Because they cantaloupe.",
+  "Why did the fish get bad grades? Because he was below sea level.",
+  "What do you call a pig that knows karate? A pork chop.",
+  "Why did the cookie go to school? It wanted to be a smart cookie.",
+  "What do you call birds who stick together? Vel-crows.",
+  "Why did the smartphone need glasses? It lost all its contacts.",
+  "Why don't calendars ever get tired? They have too many dates.",
+  "Why did the tree go to the dentist? To get a root canal.",
+  "What do you call a dog magician? A labracadabrador.",
+  "Why couldn't the bicycle stand on its own? It was two-tired.",
+  "Why did the pirate go to school? To improve his arrr-ticulation.",
+  "What did one wall say to the other? I'll meet you at the corner.",
+  "Why did the cookie cry? Its mother was a wafer too long.",
+  "What do you call a frog with no hind legs? Unhoppy.",
+  "Why don't ducks tell jokes while flying? They'd quack up.",
+  "Why was the math lesson so cold? Too many degrees.",
+  "Why was the sand wet? Because the seaweed.",
+  "Why did the balloon go near the needle? It was feeling brave.",
+  "Why did the barber always win arguments? He always cut to the point.",
+  "Why did the clown get fired? He couldn't put on a happy face.",
+  "Why did the banana go out with the prune? It couldn't find a date.",
+  "Why do mushrooms love parties? They're fungi, remember?",
+  "Why did the lightbulb fail school? Too dim.",
+  "Why do math teachers love parks? Natural logs.",
+  "Why did the cookie join the gym? To get a little chip-per.",
+  "Why did the snowman stare at the carrot aisle? Because he was picking his nose."
 ];
 
 let openNewTab = false;
@@ -512,7 +511,9 @@ window.__gcse = {
         const searchElement = google.search.cse.element.getElement("searchbox1");
         if (searchElement) {
           searchElement.execute(queryFromUrl);
-          window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+          try {
+            if (gcseResults) window.scrollTo({ top: gcseResults.offsetTop, behavior: "smooth" });
+          } catch (e) {}
         }
       }
     }
@@ -573,207 +574,15 @@ function handleMathConversion(query) {
   return null;
 }
 
-// FLIGHT SEARCH FEATURE - Vanilla JS
-// =====================================
-
 const AVIATION_API_KEY = '5643563ad8c9d64adf783272c2618b84';
 const AVIATION_API_BASE = 'https://api.aviationstack.com/v1/flights';
 
 const flightCache = new Map();
 
-const FLIGHT_CARD_CSS = `
-#flight-card {
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
-  padding: 18px 20px 14px 20px;
-  margin-bottom: 14px;
-  background: var(--fc-bg, #fff);
-  color: var(--fc-text, #202124);
-  animation: fc-fadein 0.28s cubic-bezier(.4,0,.2,1);
-  font-family: 'Google Sans', 'Segoe UI', Arial, sans-serif;
-  overflow: hidden;
-  position: relative;
-}
-@media (prefers-color-scheme: dark) {
-  #flight-card { --fc-bg: #1e1e2e; --fc-text: #e2e2e8; }
-}
-body.dark-mode #flight-card, body.midnight #flight-card, body.matrix #flight-card, body.cyberpunk #flight-card, body.neon #flight-card {
-  --fc-bg: #1e1e2e; --fc-text: #e2e2e8;
-}
-@keyframes fc-fadein {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-#flight-card .fc-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-#flight-card .fc-airline {
-  font-size: 0.85rem;
-  color: var(--fc-muted, #5f6368);
-  flex: 1 1 auto;
-}
-body.dark-mode #flight-card .fc-airline,
-body.midnight #flight-card .fc-airline,
-body.neon #flight-card .fc-airline,
-body.matrix #flight-card .fc-airline,
-body.cyberpunk #flight-card .fc-airline {
-  --fc-muted: #9aa0a6;
-}
-#flight-card .fc-flightnum {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-#flight-card .fc-status {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: capitalize;
-}
-.fc-status-active    { background: #e6f4ea; color: #1e8e3e; }
-.fc-status-landed    { background: #e6f4ea; color: #1e8e3e; }
-.fc-status-delayed   { background: #fef7e0; color: #b06000; }
-.fc-status-scheduled { background: #f1f3f4; color: #5f6368; }
-.fc-status-cancelled { background: #fce8e6; color: #c5221f; }
-.fc-status-unknown   { background: #f1f3f4; color: #5f6368; }
-body.dark-mode .fc-status-active, body.midnight .fc-status-active,
-body.neon .fc-status-active, body.matrix .fc-status-active,
-body.cyberpunk .fc-status-active,
-body.dark-mode .fc-status-landed, body.midnight .fc-status-landed {
-  background: #0d3318; color: #81c995;
-}
-body.dark-mode .fc-status-delayed, body.midnight .fc-status-delayed,
-body.neon .fc-status-delayed {
-  background: #3b2a00; color: #fdd663;
-}
-body.dark-mode .fc-status-cancelled, body.midnight .fc-status-cancelled,
-body.neon .fc-status-cancelled {
-  background: #3c1010; color: #f28b82;
-}
-body.dark-mode .fc-status-scheduled, body.midnight .fc-status-scheduled,
-body.neon .fc-status-scheduled, body.matrix .fc-status-scheduled {
-  background: #2a2a3a; color: #9aa0a6;
-}
-#flight-card .fc-route {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-#flight-card .fc-iata {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-#flight-card .fc-city {
-  font-size: 0.75rem;
-  color: var(--fc-muted, #5f6368);
-  margin-top: 2px;
-}
-#flight-card .fc-arrow {
-  flex: 1;
-  text-align: center;
-  font-size: 1.3rem;
-  color: var(--fc-muted, #5f6368);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-}
-#flight-card .fc-arrow-line {
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
-  border-radius: 2px;
-  margin: 3px 0;
-}
-#flight-card .fc-times {
-  display: flex;
-  gap: 0;
-  margin-bottom: 12px;
-}
-#flight-card .fc-time-block {
-  flex: 1;
-}
-#flight-card .fc-time-block:last-child { text-align: right; }
-#flight-card .fc-time-label {
-  font-size: 0.7rem;
-  color: var(--fc-muted, #5f6368);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 1px;
-}
-#flight-card .fc-time-sched {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-#flight-card .fc-time-est {
-  font-size: 0.78rem;
-  color: var(--fc-muted, #5f6368);
-}
-#flight-card .fc-time-est.delayed { color: #b06000; }
-body.dark-mode #flight-card .fc-time-est.delayed,
-body.midnight #flight-card .fc-time-est.delayed {
-  color: #fdd663;
-}
-#flight-card .fc-divider {
-  border: none;
-  border-top: 1px solid var(--fc-border, #e8eaed);
-  margin: 10px 0;
-}
-body.dark-mode #flight-card .fc-divider,
-body.midnight #flight-card .fc-divider,
-body.neon #flight-card .fc-divider { --fc-border: #3a3a4a; }
-#flight-card .fc-bottom {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-#flight-card .fc-meta-item {
-  display: flex;
-  flex-direction: column;
-}
-#flight-card .fc-meta-label {
-  font-size: 0.69rem;
-  color: var(--fc-muted, #5f6368);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-#flight-card .fc-meta-value {
-  font-size: 0.88rem;
-  font-weight: 500;
-}
-#flight-card .fc-error {
-  color: var(--fc-muted, #5f6368);
-  font-size: 0.92rem;
-  padding: 6px 0;
-}
-#flight-card .fc-source {
-  font-size: 0.68rem;
-  color: var(--fc-muted, #9aa0a6);
-  margin-top: 10px;
-  text-align: right;
-}
-@media (max-width: 480px) {
-  #flight-card { padding: 14px 12px 10px 12px; }
-  #flight-card .fc-iata { font-size: 1.5rem; }
-  #flight-card .fc-time-sched { font-size: 0.95rem; }
-}
-`;
-
 function injectFlightCSS() {
   if (document.getElementById('fc-styles')) return;
   const style = document.createElement('style');
   style.id = 'fc-styles';
-  style.textContent = FLIGHT_CARD_CSS;
   document.head.appendChild(style);
 }
 
@@ -789,6 +598,7 @@ function formatTime(isoStr) {
   if (!isoStr) return '—';
   try {
     const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return '—';
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   } catch { return '—'; }
 }
@@ -796,18 +606,18 @@ function formatTime(isoStr) {
 function getStatusClass(status) {
   if (!status) return 'fc-status-unknown';
   const s = status.toLowerCase();
-  if (s === 'active' || s === 'en-route') return 'fc-status-active';
+  if (s === 'active' || s === 'en-route' || s === 'enroute') return 'fc-status-active';
   if (s === 'landed') return 'fc-status-landed';
   if (s === 'delayed') return 'fc-status-delayed';
   if (s === 'scheduled') return 'fc-status-scheduled';
-  if (s === 'cancelled') return 'fc-status-cancelled';
+  if (s === 'cancelled' || s === 'cancelled') return 'fc-status-cancelled';
   return 'fc-status-unknown';
 }
 
 function getFeatureCard() {
-  let card = document.querySelector('.feature-card');
-  if (!card) card = document.getElementById('featureResult');
-  return card;
+  ensurePanel();
+  const card = featurePanel.querySelector('.feature-card');
+  return card || featurePanel;
 }
 
 function removeFlightCard() {
@@ -819,15 +629,15 @@ function renderFlightCard(flightData) {
   injectFlightCSS();
   removeFlightCard();
 
-  const featureCard = getFeatureCard();
-  if (!featureCard) return;
+  const containerEl = getFeatureCard();
+  if (!containerEl) return;
 
   const card = document.createElement('div');
   card.id = 'flight-card';
 
   if (!flightData) {
     card.innerHTML = `<div class="fc-error">No live flight data found.</div>`;
-    featureCard.prepend(card);
+    containerEl.prepend(card);
     return;
   }
 
@@ -836,7 +646,7 @@ function renderFlightCard(flightData) {
   const airline = (f.airline && f.airline.name) || '—';
   const status = (f.flight_status) || 'unknown';
   const statusClass = getStatusClass(status);
-  const statusLabel = status.charAt(0).toUpperCase() + status.slice(1).replace(/-/g, ' ');
+  const statusLabel = String(status).charAt(0).toUpperCase() + String(status).slice(1).replace(/-/g, ' ');
 
   const depIata = (f.departure && f.departure.iata) || '—';
   const arrIata = (f.arrival && f.arrival.iata) || '—';
@@ -848,10 +658,10 @@ function renderFlightCard(flightData) {
   const arrSched = formatTime(f.arrival && f.arrival.scheduled);
   const arrEst   = formatTime(f.arrival && (f.arrival.estimated || f.arrival.actual));
 
-  const depTerminal = (f.departure && f.departure.terminal) || null;
-  const depGate     = (f.departure && f.departure.gate) || null;
-  const arrTerminal = (f.arrival && f.arrival.terminal) || null;
-  const arrGate     = (f.arrival && f.arrival.gate) || null;
+  const depTerminal = (f.departure && (f.departure.terminal || null)) || null;
+  const depGate     = (f.departure && (f.departure.gate || null)) || null;
+  const arrTerminal = (f.arrival && (f.arrival.terminal || null)) || null;
+  const arrGate     = (f.arrival && (f.arrival.gate || null)) || null;
 
   const depEstDelayed = depEst !== '—' && depEst !== depSched;
   const arrEstDelayed = arrEst !== '—' && arrEst !== arrSched;
@@ -864,8 +674,8 @@ function renderFlightCard(flightData) {
 
   const metaHTML = metaItems.map(m =>
     `<div class="fc-meta-item">
-      <span class="fc-meta-label">${m.label}</span>
-      <span class="fc-meta-value">${m.value}</span>
+      <span class="fc-meta-label">${escapeHtml(m.label)}</span>
+      <span class="fc-meta-value">${escapeHtml(m.value)}</span>
     </div>`
   ).join('');
 
@@ -878,7 +688,7 @@ function renderFlightCard(flightData) {
     <div class="fc-route">
       <div>
         <div class="fc-iata">${escapeHtml(depIata)}</div>
-        <div class="fc-city">${escapeHtml(depCity.substring(0,22))}</div>
+        <div class="fc-city">${escapeHtml(String(depCity).substring(0,22))}</div>
       </div>
       <div class="fc-arrow">
         <div class="fc-arrow-line"></div>
@@ -886,7 +696,7 @@ function renderFlightCard(flightData) {
       </div>
       <div style="text-align:right;">
         <div class="fc-iata">${escapeHtml(arrIata)}</div>
-        <div class="fc-city">${escapeHtml(arrCity.substring(0,22))}</div>
+        <div class="fc-city">${escapeHtml(String(arrCity).substring(0,22))}</div>
       </div>
     </div>
     <div class="fc-times">
@@ -905,7 +715,7 @@ function renderFlightCard(flightData) {
     <div class="fc-source">Flight data · AviationStack</div>
   `;
 
-  featureCard.prepend(card);
+  containerEl.prepend(card);
 }
 
 async function handleFlightSearch(query) {
@@ -917,27 +727,27 @@ async function handleFlightSearch(query) {
 
   injectFlightCSS();
 
-  // Show loading state immediately
   removeFlightCard();
-  const featureCard = getFeatureCard();
-  if (featureCard) {
+  const containerEl = getFeatureCard();
+  if (containerEl) {
     const loadingCard = document.createElement('div');
     loadingCard.id = 'flight-card';
     loadingCard.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;padding:4px 0;">
-        <span style="font-size:0.9rem;color:var(--fc-muted,#5f6368);">Loading flight data…</span>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+        <span style="font-size:0.95rem;color:var(--fc-muted,#5f6368);">Loading flight data…</span>
       </div>`;
-    injectFlightCSS();
-    featureCard.prepend(loadingCard);
+    containerEl.prepend(loadingCard);
   }
 
-  const cacheKey = match.value;
+  const cacheKey = String(match.value).toUpperCase();
   if (flightCache.has(cacheKey)) {
     renderFlightCard(flightCache.get(cacheKey));
     return;
   }
 
   let url = AVIATION_API_BASE + '?access_key=' + encodeURIComponent(AVIATION_API_KEY);
+  url += '&limit=10';
+
   if (match.type === 'route') {
     const parts = match.value.split('-');
     url += '&dep_iata=' + encodeURIComponent(parts[0]) + '&arr_iata=' + encodeURIComponent(parts[1]);
@@ -955,26 +765,47 @@ async function handleFlightSearch(query) {
       renderFlightCard(null);
       return;
     }
-    const best = flights[0];
+
+    let best = flights[0];
+
+    if (match.type === 'flight') {
+      const searchVal = match.value.toUpperCase();
+      const exact = flights.find(ff => {
+        const fnum = (ff.flight && (ff.flight.iata || ff.flight.icao) || '').toUpperCase();
+        return fnum === searchVal;
+      });
+      if (exact) best = exact;
+    }
+
+    if (match.type === 'route') {
+      const parts = match.value.split('-');
+      const dep = parts[0].toUpperCase();
+      const arr = parts[1].toUpperCase();
+      const exactRoute = flights.find(ff => ((ff.departure && ff.departure.iata || '').toUpperCase() === dep) && ((ff.arrival && ff.arrival.iata || '').toUpperCase() === arr));
+      if (exactRoute) best = exactRoute;
+    }
+
     flightCache.set(cacheKey, best);
     renderFlightCard(best);
   } catch (e) {
-    // Fail silently but show "no data"
+    console.error('Flight API error', e);
+    flightCache.set(cacheKey, null);
     renderFlightCard(null);
   }
 }
 
-// Hook into the existing doSearch / searchBtn flow
-// Patches the existing doSearch function non-destructively
 (function patchDoSearch() {
   const _orig = window.doSearch;
   if (typeof _orig === 'function') {
     window.doSearch = async function(query) {
       _orig.call(this, query);
-      await handleFlightSearch(query);
+      try {
+        await handleFlightSearch(query);
+      } catch (e) {
+        console.error('handleFlightSearch threw', e);
+      }
     };
   } else {
-    // Fallback: watch searchBtn click and Enter key
     document.addEventListener('DOMContentLoaded', function() {
       const searchBtn = document.getElementById('searchBtn');
       const searchInput = document.getElementById('searchInput');
@@ -997,7 +828,6 @@ async function handleFlightSearch(query) {
   }
 })();
 
-// escapeHtml utility (safe to redefine — only adds if missing)
 if (typeof window.escapeHtml === 'undefined') {
   window.escapeHtml = function(s) {
     if (s == null) return '';
@@ -1618,18 +1448,20 @@ function play67Effect() {
 
 async function doSearch(query) {
 
-if (chatBtn) chatBtn.style.display = "block";
+  if (chatBtn) chatBtn.style.display = "block";
 
-const frame = document.getElementById("aiFrame");
+  const frame = document.getElementById("aiFrame");
 
-frame.style.display = "block";
-frame.src = `/essentials/echo-ai-embed.html?q=${encodeURIComponent(query)}`;
+  if (frame) {
+    frame.style.display = "block";
+    frame.src = `/essentials/echo-ai-embed.html?q=${encodeURIComponent(query)}`;
 
-if (query.length > 3) {
-  frame.style.display = "block";
-} else {
-  frame.style.display = "none";
-}
+    if (query.length > 3) {
+      frame.style.display = "block";
+    } else {
+      frame.style.display = "none";
+    }
+  }
 
   if (!query || !query.trim()) return;
 
@@ -1993,19 +1825,37 @@ function escapeHtml(s) {
 }
 
 window.addEventListener("message", (e) => {
+  if (!e || !e.data) return;
   if (e.data.height) {
-    document.getElementById("aiFrame").style.height = e.data.height + "px";
+    const aiFrame = document.getElementById("aiFrame");
+    if (aiFrame) aiFrame.style.height = e.data.height + "px";
   }
 });
 
-const iframe = document.querySelector("iframe");
+(function postThemeToIframe() {
+  try {
+    const iframe = document.querySelector("iframe");
+    const styles = getComputedStyle(document.documentElement);
 
-const styles = getComputedStyle(document.documentElement);
-
-iframe.contentWindow.postMessage({
-  text: styles.getPropertyValue("--text"),
-  bg: styles.getPropertyValue("--bg")
-}, "*");
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({
+        text: styles.getPropertyValue("--text"),
+        bg: styles.getPropertyValue("--bg")
+      }, "*");
+    } else {
+      window.addEventListener('load', () => {
+        const iframe2 = document.querySelector("iframe");
+        const styles2 = getComputedStyle(document.documentElement);
+        if (iframe2 && iframe2.contentWindow) {
+          iframe2.contentWindow.postMessage({
+            text: styles2.getPropertyValue("--text"),
+            bg: styles2.getPropertyValue("--bg")
+          }, "*");
+        }
+      });
+    }
+  } catch (e) { /* silent */ }
+})();
 
 function checkWifi() {
   const offlineBox = document.getElementById("offline-box");
@@ -2014,14 +1864,11 @@ function checkWifi() {
   const show = () => offlineBox.style.display = "block";
   const hide = () => offlineBox.style.display = "none";
 
-  // If browser already reports offline, show immediately
   if (navigator.onLine === false) {
     show();
     return;
   }
 
-  // Primary probe: a small cross-origin GET to a 204 endpoint.
-  // Use no-cors so the browser doesn't block the request; when offline this will reject.
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -2033,12 +1880,10 @@ function checkWifi() {
   })
     .then(() => {
       clearTimeout(timeoutId);
-      // request succeeded -> online
       hide();
     })
     .catch(() => {
       clearTimeout(timeoutId);
-      // Primary probe failed -> fallback to local favicon HEAD check (original behavior)
       const controller2 = new AbortController();
       const t2 = setTimeout(() => controller2.abort(), 3000);
 
