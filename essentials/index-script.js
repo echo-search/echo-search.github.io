@@ -573,6 +573,440 @@ function handleMathConversion(query) {
   return null;
 }
 
+// FLIGHT SEARCH FEATURE - Vanilla JS
+// =====================================
+
+const AVIATION_API_KEY = 'YOUR_API_KEY';
+const AVIATION_API_BASE = 'https://api.aviationstack.com/v1/flights';
+
+const flightCache = new Map();
+
+const FLIGHT_CARD_CSS = `
+#flight-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
+  padding: 18px 20px 14px 20px;
+  margin-bottom: 14px;
+  background: var(--fc-bg, #fff);
+  color: var(--fc-text, #202124);
+  animation: fc-fadein 0.28s cubic-bezier(.4,0,.2,1);
+  font-family: 'Google Sans', 'Segoe UI', Arial, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+@media (prefers-color-scheme: dark) {
+  #flight-card { --fc-bg: #1e1e2e; --fc-text: #e2e2e8; }
+}
+body.dark-mode #flight-card, body.midnight #flight-card, body.matrix #flight-card, body.cyberpunk #flight-card, body.neon #flight-card {
+  --fc-bg: #1e1e2e; --fc-text: #e2e2e8;
+}
+@keyframes fc-fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#flight-card .fc-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+#flight-card .fc-airline {
+  font-size: 0.85rem;
+  color: var(--fc-muted, #5f6368);
+  flex: 1 1 auto;
+}
+body.dark-mode #flight-card .fc-airline,
+body.midnight #flight-card .fc-airline,
+body.neon #flight-card .fc-airline,
+body.matrix #flight-card .fc-airline,
+body.cyberpunk #flight-card .fc-airline {
+  --fc-muted: #9aa0a6;
+}
+#flight-card .fc-flightnum {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+#flight-card .fc-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+.fc-status-active    { background: #e6f4ea; color: #1e8e3e; }
+.fc-status-landed    { background: #e6f4ea; color: #1e8e3e; }
+.fc-status-delayed   { background: #fef7e0; color: #b06000; }
+.fc-status-scheduled { background: #f1f3f4; color: #5f6368; }
+.fc-status-cancelled { background: #fce8e6; color: #c5221f; }
+.fc-status-unknown   { background: #f1f3f4; color: #5f6368; }
+body.dark-mode .fc-status-active, body.midnight .fc-status-active,
+body.neon .fc-status-active, body.matrix .fc-status-active,
+body.cyberpunk .fc-status-active,
+body.dark-mode .fc-status-landed, body.midnight .fc-status-landed {
+  background: #0d3318; color: #81c995;
+}
+body.dark-mode .fc-status-delayed, body.midnight .fc-status-delayed,
+body.neon .fc-status-delayed {
+  background: #3b2a00; color: #fdd663;
+}
+body.dark-mode .fc-status-cancelled, body.midnight .fc-status-cancelled,
+body.neon .fc-status-cancelled {
+  background: #3c1010; color: #f28b82;
+}
+body.dark-mode .fc-status-scheduled, body.midnight .fc-status-scheduled,
+body.neon .fc-status-scheduled, body.matrix .fc-status-scheduled {
+  background: #2a2a3a; color: #9aa0a6;
+}
+#flight-card .fc-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+#flight-card .fc-iata {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+#flight-card .fc-city {
+  font-size: 0.75rem;
+  color: var(--fc-muted, #5f6368);
+  margin-top: 2px;
+}
+#flight-card .fc-arrow {
+  flex: 1;
+  text-align: center;
+  font-size: 1.3rem;
+  color: var(--fc-muted, #5f6368);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+#flight-card .fc-arrow-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
+  border-radius: 2px;
+  margin: 3px 0;
+}
+#flight-card .fc-times {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+}
+#flight-card .fc-time-block {
+  flex: 1;
+}
+#flight-card .fc-time-block:last-child { text-align: right; }
+#flight-card .fc-time-label {
+  font-size: 0.7rem;
+  color: var(--fc-muted, #5f6368);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 1px;
+}
+#flight-card .fc-time-sched {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+#flight-card .fc-time-est {
+  font-size: 0.78rem;
+  color: var(--fc-muted, #5f6368);
+}
+#flight-card .fc-time-est.delayed { color: #b06000; }
+body.dark-mode #flight-card .fc-time-est.delayed,
+body.midnight #flight-card .fc-time-est.delayed {
+  color: #fdd663;
+}
+#flight-card .fc-divider {
+  border: none;
+  border-top: 1px solid var(--fc-border, #e8eaed);
+  margin: 10px 0;
+}
+body.dark-mode #flight-card .fc-divider,
+body.midnight #flight-card .fc-divider,
+body.neon #flight-card .fc-divider { --fc-border: #3a3a4a; }
+#flight-card .fc-bottom {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+#flight-card .fc-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+#flight-card .fc-meta-label {
+  font-size: 0.69rem;
+  color: var(--fc-muted, #5f6368);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+#flight-card .fc-meta-value {
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+#flight-card .fc-error {
+  color: var(--fc-muted, #5f6368);
+  font-size: 0.92rem;
+  padding: 6px 0;
+}
+#flight-card .fc-source {
+  font-size: 0.68rem;
+  color: var(--fc-muted, #9aa0a6);
+  margin-top: 10px;
+  text-align: right;
+}
+@media (max-width: 480px) {
+  #flight-card { padding: 14px 12px 10px 12px; }
+  #flight-card .fc-iata { font-size: 1.5rem; }
+  #flight-card .fc-time-sched { font-size: 0.95rem; }
+}
+`;
+
+function injectFlightCSS() {
+  if (document.getElementById('fc-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'fc-styles';
+  style.textContent = FLIGHT_CARD_CSS;
+  document.head.appendChild(style);
+}
+
+function isFlightQuery(query) {
+  if (!query) return false;
+  const q = query.trim().toUpperCase();
+  if (/^[A-Z]{3}-[A-Z]{3}$/.test(q)) return { type: 'route', value: q };
+  if (/^[A-Z]{2,3}\d{1,4}$/.test(q)) return { type: 'flight', value: q };
+  return false;
+}
+
+function formatTime(isoStr) {
+  if (!isoStr) return '—';
+  try {
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  } catch { return '—'; }
+}
+
+function getStatusClass(status) {
+  if (!status) return 'fc-status-unknown';
+  const s = status.toLowerCase();
+  if (s === 'active' || s === 'en-route') return 'fc-status-active';
+  if (s === 'landed') return 'fc-status-landed';
+  if (s === 'delayed') return 'fc-status-delayed';
+  if (s === 'scheduled') return 'fc-status-scheduled';
+  if (s === 'cancelled') return 'fc-status-cancelled';
+  return 'fc-status-unknown';
+}
+
+function getFeatureCard() {
+  let card = document.querySelector('.feature-card');
+  if (!card) card = document.getElementById('featureResult');
+  return card;
+}
+
+function removeFlightCard() {
+  const existing = document.getElementById('flight-card');
+  if (existing) existing.remove();
+}
+
+function renderFlightCard(flightData) {
+  injectFlightCSS();
+  removeFlightCard();
+
+  const featureCard = getFeatureCard();
+  if (!featureCard) return;
+
+  const card = document.createElement('div');
+  card.id = 'flight-card';
+
+  if (!flightData) {
+    card.innerHTML = `<div class="fc-error">No live flight data found.</div>`;
+    featureCard.prepend(card);
+    return;
+  }
+
+  const f = flightData;
+  const flightNum = (f.flight && (f.flight.iata || f.flight.icao)) || '—';
+  const airline = (f.airline && f.airline.name) || '—';
+  const status = (f.flight_status) || 'unknown';
+  const statusClass = getStatusClass(status);
+  const statusLabel = status.charAt(0).toUpperCase() + status.slice(1).replace(/-/g, ' ');
+
+  const depIata = (f.departure && f.departure.iata) || '—';
+  const arrIata = (f.arrival && f.arrival.iata) || '—';
+  const depCity = (f.departure && f.departure.airport) || '';
+  const arrCity = (f.arrival && f.arrival.airport) || '';
+
+  const depSched = formatTime(f.departure && f.departure.scheduled);
+  const depEst   = formatTime(f.departure && (f.departure.estimated || f.departure.actual));
+  const arrSched = formatTime(f.arrival && f.arrival.scheduled);
+  const arrEst   = formatTime(f.arrival && (f.arrival.estimated || f.arrival.actual));
+
+  const depTerminal = (f.departure && f.departure.terminal) || null;
+  const depGate     = (f.departure && f.departure.gate) || null;
+  const arrTerminal = (f.arrival && f.arrival.terminal) || null;
+  const arrGate     = (f.arrival && f.arrival.gate) || null;
+
+  const depEstDelayed = depEst !== '—' && depEst !== depSched;
+  const arrEstDelayed = arrEst !== '—' && arrEst !== arrSched;
+
+  const metaItems = [];
+  if (depTerminal) metaItems.push({ label: 'Dep. Terminal', value: depTerminal });
+  if (depGate)     metaItems.push({ label: 'Dep. Gate', value: depGate });
+  if (arrTerminal) metaItems.push({ label: 'Arr. Terminal', value: arrTerminal });
+  if (arrGate)     metaItems.push({ label: 'Arr. Gate', value: arrGate });
+
+  const metaHTML = metaItems.map(m =>
+    `<div class="fc-meta-item">
+      <span class="fc-meta-label">${m.label}</span>
+      <span class="fc-meta-value">${m.value}</span>
+    </div>`
+  ).join('');
+
+  card.innerHTML = `
+    <div class="fc-top">
+      <span class="fc-airline">${escapeHtml(airline)}</span>
+      <span class="fc-flightnum">${escapeHtml(flightNum)}</span>
+      <span class="fc-status ${statusClass}">${escapeHtml(statusLabel)}</span>
+    </div>
+    <div class="fc-route">
+      <div>
+        <div class="fc-iata">${escapeHtml(depIata)}</div>
+        <div class="fc-city">${escapeHtml(depCity.substring(0,22))}</div>
+      </div>
+      <div class="fc-arrow">
+        <div class="fc-arrow-line"></div>
+        <span style="font-size:0.7rem;color:var(--fc-muted,#5f6368);">✈</span>
+      </div>
+      <div style="text-align:right;">
+        <div class="fc-iata">${escapeHtml(arrIata)}</div>
+        <div class="fc-city">${escapeHtml(arrCity.substring(0,22))}</div>
+      </div>
+    </div>
+    <div class="fc-times">
+      <div class="fc-time-block">
+        <div class="fc-time-label">Departure</div>
+        <div class="fc-time-sched">${depSched}</div>
+        ${depEstDelayed ? `<div class="fc-time-est delayed">Est. ${depEst}</div>` : (depEst !== '—' ? `<div class="fc-time-est">${depEst}</div>` : '')}
+      </div>
+      <div class="fc-time-block">
+        <div class="fc-time-label">Arrival</div>
+        <div class="fc-time-sched">${arrSched}</div>
+        ${arrEstDelayed ? `<div class="fc-time-est delayed">Est. ${arrEst}</div>` : (arrEst !== '—' ? `<div class="fc-time-est">${arrEst}</div>` : '')}
+      </div>
+    </div>
+    ${metaItems.length > 0 ? `<hr class="fc-divider"><div class="fc-bottom">${metaHTML}</div>` : ''}
+    <div class="fc-source">Flight data · AviationStack</div>
+  `;
+
+  featureCard.prepend(card);
+}
+
+async function handleFlightSearch(query) {
+  const match = isFlightQuery(query);
+  if (!match) {
+    removeFlightCard();
+    return;
+  }
+
+  injectFlightCSS();
+
+  // Show loading state immediately
+  removeFlightCard();
+  const featureCard = getFeatureCard();
+  if (featureCard) {
+    const loadingCard = document.createElement('div');
+    loadingCard.id = 'flight-card';
+    loadingCard.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;padding:4px 0;">
+        <span style="font-size:0.9rem;color:var(--fc-muted,#5f6368);">Loading flight data…</span>
+      </div>`;
+    injectFlightCSS();
+    featureCard.prepend(loadingCard);
+  }
+
+  const cacheKey = match.value;
+  if (flightCache.has(cacheKey)) {
+    renderFlightCard(flightCache.get(cacheKey));
+    return;
+  }
+
+  let url = AVIATION_API_BASE + '?access_key=' + encodeURIComponent(AVIATION_API_KEY);
+  if (match.type === 'route') {
+    const parts = match.value.split('-');
+    url += '&dep_iata=' + encodeURIComponent(parts[0]) + '&arr_iata=' + encodeURIComponent(parts[1]);
+  } else {
+    url += '&flight_iata=' + encodeURIComponent(match.value);
+  }
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('API error ' + resp.status);
+    const json = await resp.json();
+    const flights = json && json.data;
+    if (!flights || flights.length === 0) {
+      flightCache.set(cacheKey, null);
+      renderFlightCard(null);
+      return;
+    }
+    const best = flights[0];
+    flightCache.set(cacheKey, best);
+    renderFlightCard(best);
+  } catch (e) {
+    // Fail silently but show "no data"
+    renderFlightCard(null);
+  }
+}
+
+// Hook into the existing doSearch / searchBtn flow
+// Patches the existing doSearch function non-destructively
+(function patchDoSearch() {
+  const _orig = window.doSearch;
+  if (typeof _orig === 'function') {
+    window.doSearch = async function(query) {
+      _orig.call(this, query);
+      await handleFlightSearch(query);
+    };
+  } else {
+    // Fallback: watch searchBtn click and Enter key
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchBtn = document.getElementById('searchBtn');
+      const searchInput = document.getElementById('searchInput');
+
+      if (searchBtn) {
+        searchBtn.addEventListener('click', async function() {
+          const q = searchInput ? searchInput.value.trim() : '';
+          if (q) await handleFlightSearch(q);
+        });
+      }
+      if (searchInput) {
+        searchInput.addEventListener('keydown', async function(e) {
+          if (e.key === 'Enter') {
+            const q = searchInput.value.trim();
+            if (q) await handleFlightSearch(q);
+          }
+        });
+      }
+    });
+  }
+})();
+
+// escapeHtml utility (safe to redefine — only adds if missing)
+if (typeof window.escapeHtml === 'undefined') {
+  window.escapeHtml = function(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, function(m) {
+      return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]);
+    });
+  };
+}
+
 async function handleWeather(input) {
   const tomorrowMatch = input.match(/^weather\s+tomorrow\s+in\s+(.+)$/i);
   const todayMatch = input.match(/^weather\s+in\s+(.+)$/i);
