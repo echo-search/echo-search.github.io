@@ -576,7 +576,7 @@ function handleMathConversion(query) {
 // FLIGHT SEARCH FEATURE - Vanilla JS
 // =====================================
 
-const AVIATION_API_KEY = 'YOUR_API_KEY';
+const AVIATION_API_KEY = '5643563ad8c9d64adf783272c2618b84';
 const AVIATION_API_BASE = 'https://api.aviationstack.com/v1/flights';
 
 const flightCache = new Map();
