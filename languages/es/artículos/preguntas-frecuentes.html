@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PREGUNTAS FRECUENTES - EchoSearch</title>
+  <meta name="description" content="Esta página contiene preguntas frecuentes sobre el motor de búsqueda EchoSearch." />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdfdfd;
+      margin: 0;
+      padding: 2rem;
+    }
+    .faq-component {
+      max-width: 900px;
+      margin: auto;
+    }
+    .faq-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .faq-child {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+      padding: 1rem;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .faq-child:hover {
+      background: #f0f0f0;
+    }
+    .faq-question {
+      font-weight: bold;
+      margin: 0;
+    }
+    .faq-answer {
+      display: none;
+      margin-top: 0.5rem;
+      color: #444;
+    }
+    .faq-child.active .faq-answer {
+      display: block;
+    }
+    .a {
+      color: blue;
+      text-decoration: underline;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 10px 20px;
+      background-color: #00cec9;
+      color: black;
+      margin: 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="faq-component">
+    <h1 class="faq-title">Preguntas Frecuentes</h1>
+
+    <div class="faq-child"><p class="faq-question">¿Qué es EchoSearch?</p><p class="faq-answer">EchoSearch es un motor de búsqueda sin anuncios, para siempre. También te permite elegir el esquema de colores del diseño y mucho más.</p></div>
+    <div class="faq-child"><p class="faq-question">¿EchoSearch es gratis?</p><p class="faq-answer">Sí. EchoSearch es completamente gratuito.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Cómo cambio el tema?</p><p class="faq-answer">Usa el selector de temas en la parte superior de la página principal.</p></div>
+    <div class="faq-child"><p class="faq-question">¿EchoSearch guarda mis búsquedas?</p><p class="faq-answer">El historial de búsqueda se almacena solo localmente en tu navegador.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo borrar mi historial?</p><p class="faq-answer">Sí. Usa el botón “Borrar historial” debajo de la lista de búsquedas.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo usar búsqueda por voz?</p><p class="faq-answer">Sí. Haz clic en el botón del micrófono y di tu búsqueda. Sin embargo, esta función solo está disponible en navegadores basados en Chromium. Los navegadores no basados en Chromium (por ejemplo, Safari) no la soportan.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Cómo hago que EchoSearch sea mi motor de búsqueda predeterminado?</p><p class="faq-answer">Visita la página <a href="how-to-make-EchoSearch-your-default-search-engine.html">Configuración predeterminada de EchoSearch</a> para ver enlaces para Edge y Chrome.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Funciona en móvil?</p><p class="faq-answer">Sí. EchoSearch es adaptable y compatible con dispositivos móviles.</p></div>
+    <div class="faq-child"><p class="faq-question">¿EchoSearch me rastrea?</p><p class="faq-answer">No. No rastrea ni vende tus datos.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo añadir temas personalizados?</p><p class="faq-answer">Sí. Usa la página <a href="/essentials/themes.html">Temas</a> para crear uno.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué navegadores son compatibles?</p><p class="faq-answer">EchoSearch funciona en Chrome, Edge, Firefox y la mayoría de navegadores modernos.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo usarlo sin conexión?</p><p class="faq-answer">No. Necesitas internet para obtener resultados.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo fijar búsquedas favoritas?</p><p class="faq-answer">Aún no, pero está en la hoja de ruta.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué hace el botón “Sorpréndeme”?</p><p class="faq-answer">Te da un chiste muy (no) gracioso.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué es el botón de chat?</p><p class="faq-answer">Abre Echo AI (la IA creada por el fundador de EchoSearch).</p></div>
+    <div class="faq-child"><p class="faq-question">¿EchoSearch admite varios idiomas?</p><p class="faq-answer">No. Sin embargo, está previsto que EchoSearch esté disponible en español pronto.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Cómo reporto errores o sugiero ideas?</p><p class="faq-answer">Ve a <a href="https://github.com/echo-search/echo-search.github.io/issues">https://github.com/echo-search/echo-search.github.io/issues</a>.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo buscar imágenes?</p><p class="faq-answer">Sí. Puedes usar EchoSearch para web e imágenes (por ahora).</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo convertir imágenes a Base64?</p><p class="faq-answer">Sí. Usa la página <a href="/addtoechosearch/imagetobase64.html">Imagen a Base64</a>.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo convertir Base64 a imágenes?</p><p class="faq-answer">Sí. Usa la página <a href="/addtoechosearch/base64toimage.html">Base64 a Imagen</a>.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué es la página de <a href="status.html">estado</a>?</p><p class="faq-answer">Muestra el tiempo de actividad en vivo de EchoSearch.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué es la página de <a href="status-history.html">historial de estado</a>?</p><p class="faq-answer">Registra los tiempos de actividad pasados.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Con qué frecuencia se actualiza EchoSearch?</p><p class="faq-answer">Las actualizaciones se publican en la página de historial de versiones.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo ver nuevas funciones?</p><p class="faq-answer">Sí, consulta el <a href="version-history.html">Historial de versiones</a> para más detalles.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Hay una sección de artículos?</p><p class="faq-answer">Sí, con guías y publicaciones prácticas.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo usar EchoSearch en tabletas?</p><p class="faq-answer">Sí, también funciona muy bien en tabletas. De hecho, funciona perfectamente en todos los dispositivos.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo buscar vídeos?</p><p class="faq-answer">No, pero estamos trabajando en ello. Consulta la página de <a href="version-history.html">Historial de versiones</a> para saber cuándo se lanzará.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Admite atajos de teclado?</p><p class="faq-answer">Se admiten atajos básicos; puede que haya más en el futuro.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo cambiar el tamaño de la barra de búsqueda?</p><p class="faq-answer">Se ajusta automáticamente al tamaño de la pantalla.</p></div>
+    <div class="faq-child"><p class="faq-question">¿El logo cambia con los temas?</p><p class="faq-answer">El logo permanece igual para mantener la consistencia.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Hay una política de privacidad?</p><p class="faq-answer">Sí. Explica el enfoque de no rastreo de EchoSearch.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Muestra anuncios?</p><p class="faq-answer">No. Visita <a href="nosponsoredlinks.html">Sin enlaces patrocinados</a> para saber más.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo bloquear ciertos resultados?</p><p class="faq-answer">Aún no, pero se están considerando opciones de filtrado.</p></div>
+    <div class="faq-child"><p class="faq-question">¿EchoSearch es de código abierto?</p><p class="faq-answer">Sí.</p></div>
+    <div class="faq-child"><p class="faq-question">¿EchoSearch admite widgets?</p><p class="faq-answer">Actualmente no, pero podrían añadirse en el futuro.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo usarlo sin JavaScript?</p><p class="faq-answer">No. Esto se debe a que EchoSearch es un motor de búsqueda, no una guía de noticias.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué hago si mi micrófono no funciona?</p><p class="faq-answer">Comprueba los permisos del micrófono en tu navegador. Si usas un navegador no basado en Chromium (por ejemplo, Safari), la entrada de voz no funcionará.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Qué pasa si el logo no carga?</p><p class="faq-answer">Comprueba tu conexión a internet o borra la caché.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Funciona en modo incógnito?</p><p class="faq-answer">Sí, aunque el historial no se guardará.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Puedo cambiar el color de acento?</p><p class="faq-answer">Los colores dependen de los temas predefinidos. Sin embargo, puedes crear tu propio tema (con control total de colores y diseño) en la página de <a href="/essentials/themes">Temas</a>.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Hay una hoja de ruta?</p><p class="faq-answer">Sí, las actualizaciones y funciones planificadas aparecen en la página de <a href="version-history.html">Historial de versiones</a>.</p></div>
+    <div class="faq-child"><p class="faq-question">¿Dónde puedo aprender a usar todas las funciones de EchoSearch?</p><p class="faq-answer">Visita la página <a href="how-to-use-all-features.html">Cómo usar todas las funciones de EchoSearch</a> para aprender a utilizar las funciones.</p></div>
+
+  </div>
+
+  <a href="/" class="back-button">‹ Volver al inicio <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/></g></svg></a>
+  <script>
+    document.querySelectorAll(".faq-child").forEach(child => {
+      child.addEventListener("click", () => {
+        child.classList.toggle("active");
+      });
+    });
+  </script>
+</body>
+</html>
