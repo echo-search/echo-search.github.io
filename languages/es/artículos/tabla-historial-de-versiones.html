@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tabla de Historial de Versiones</title>
+  <meta name="description" content="Este es el historial de EchoSearch en una tabla."/>
+  <style>
+    body{margin:24px;font-family:Inter, system-ui, sans-serif;background:#f7f8fa;color:#0f172a}
+    table{border-collapse:collapse;width:100%;background:#ffffff;box-shadow:0 1px 4px rgba(12,15,25,0.06)}
+    th,td{border:1px solid #d1d5db;padding:10px;text-align:center}
+    th{background:#f1f5f9;font-weight:700}
+    .current{position:relative}
+    .current::before{content:"↓";position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:#0b5fff;color:white;padding:3px 8px;border-radius:12px;font-size:12px;white-space:nowrap}
+    .back-button, .tabless-btn{display: inline-block;margin-top: 40px;padding: 10px 20px;background-color: #00cec9;color: black;margin: 20px;text-decoration: none;border-radius: 6px;font-weight: bold;transition: background 0.3s ease;}
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>v.1.0</th>
+        <th>v.1.1</th>
+        <th>v.1.2</th>
+        <th>v.2.0</th>
+        <th>v.2.1</th>
+        <th class="current">v.2.2</th>
+        <th>v.3.0</th>
+        <th>v.3.1</th>
+        <th>v.3.2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>10 Temas</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Entrada por Voz</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Sorpréndeme</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Maya Q&A</td><td>✅️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌</td></tr>
+      <tr><td>Favicono y Logo</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Búsqueda en Google</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Imágenes de Fondo</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Insignia de Versión e Historial</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Modo Oscuro accesible</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>❌️</td><td>❌️</td><td>❌️</td></tr>
+      <tr><td>Búsqueda automática tras voz</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Indexado en Google</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Artículos</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Historial de Búsqueda</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Chat con IA</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Autocompletado</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Indexado en Bing</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Calculadora</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Redirección de URL</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>SVGs Añadidos</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Temas Personalizados</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Diccionario</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Disponible en Español</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Historial de por vida</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Cuentas</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Enlaces en nueva pestaña</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Búsqueda por Dominio</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Cambio de Apariencia</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td><td>✅️</td></tr>
+      <tr><td>Juego sin conexión</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>❌️</td><td>✅️</td></tr>
+    </tbody>
+  </table>
+
+  <a href="/" class="back-button">‹ Volver al inicio 
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="16" height="16" viewBox="0 0 256 256" xml:space="preserve"><g style="stroke: none; stroke-width: 0; fill: none;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"><polygon points="75.96,30.96 75.96,13.34 67.26,13.34 67.26,22.26 45,0 0.99,44.02 7.13,50.15 45,12.28 82.88,50.15 89.01,44.02 " style="fill: rgb(0,0,0);"/><polygon points="45,20 14.04,50.95 14.04,90 35.29,90 35.29,63.14 54.71,63.14 54.71,90 75.96,90 75.96,50.95 " style="fill: rgb(0,0,0);"/></g></svg>
+  </a>
+
+  <a href="version-history.html" class="tabless-btn">Ver en formato de lista</a>
+
+</body>
+</html>
