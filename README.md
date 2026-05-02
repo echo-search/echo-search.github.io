@@ -1,7 +1,7 @@
 # EchoSearch - The Future of Web Searching Has Officially Launched!
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v.3.0-teal" alt="v.3.0">
+  <img src="https://img.shields.io/badge/version-v.3.2-teal" alt="v.3.2">
 </p>
 
 Welcome to **EchoSearch**, an innovative web search platform designed to deliver speed, efficiency, and a seamless user experience. EchoSearch is not just a search engine; it is a fully optimized environment that combines high performance, minimalism, and modern design principles to provide an unmatched online search experience. Every aspect of EchoSearch has been carefully crafted to provide users with instant access to the information they need while maintaining a clean, distraction-free interface.
